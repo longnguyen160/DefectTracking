@@ -38,15 +38,20 @@ export default class SignIn extends React.Component {
     const { history } = this.props;
 
     this.setState({ isLoading: true });
-    axios.post('http://localhost:8080/signin', { email, password }).then(res => {
-      this.setState({ isLoading: false });
+    axios
+      .post('http://localhost:8080/auth/signin', { email, password })
+      .then(res => {
+        this.setState({ isLoading: false });
 
-      if (res.data) {
-        history.push('/');
-      } else {
-        this.setState({ error: 'Invalid email or password' });
-      }
-    })
+        if (res.data) {
+          history.push('/');
+        } else {
+          this.setState({ error: 'Invalid email or password' });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   render() {

@@ -82,10 +82,10 @@ export default class SignUp extends Component {
 
     this.setState({ error: null, isLoading: true });
 
-    axios.post('http://localhost:8080/signup', { name, email, password }).then(res => {
+    axios.post('http://localhost:8080/auth/signup', { username: name, email, password }).then(res => {
       this.setState({ isLoading: false });
       console.log(res.data);
-      history.push('/');
+      history.push('/signin');
     });
   };
 

@@ -1,6 +1,6 @@
 package com.capstone.defecttracking.repositories.User;
 
-import com.capstone.defecttracking.models.User;
+import com.capstone.defecttracking.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,17 +14,25 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public User findByUsername(String username) {
-        Query query = new Query(Criteria.where("username").is(username));
+    public User findByEmail(String email) {
+        Query query = new Query(Criteria.where("email").is(email));
 
         return mongoTemplate.findOne(query, User.class);
     }
 
     @Override
-    public boolean login(User user) {
-        Query query = new Query(Criteria.where("username").is(user.getUsername()));
-        User userData = mongoTemplate.findOne(query, User.class);
+    public User findById(String userId) {
+        Query query = new Query(Criteria.where("_id").is(userId));
 
-        return userData.getPassword().equals(user.getPassword());
+        return mongoTemplate.findOne(query, User.class);
     }
+
+    @Override
+    public Boolean isUsernameExisted(String username) {
+        Query query = new Query(Criteria.where("username").is(username));
+        User user = mongoTemplate.findOne(query, User.class);
+
+        return user != null;
+    }
+
 }
