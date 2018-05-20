@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import {
   FormStyled,
@@ -12,9 +15,10 @@ import {
   TitleFormStyled,
   Input,
   Label
-} from '../stylesheets/GeneralStyled';
-import { Button } from '../stylesheets/Button';
-import { CHECK } from '../../enums';
+} from '../../../stylesheets/GeneralStyled';
+import { Button } from '../../../stylesheets/Button';
+import { INPUT_EMAIL, INPUT_PASSWORD } from '../../../utils/enums';
+import { validateForm } from '../../../utils/ultis';
 
 export default class SignUp extends Component {
 

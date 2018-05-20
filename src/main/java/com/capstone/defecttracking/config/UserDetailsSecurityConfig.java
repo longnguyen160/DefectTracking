@@ -35,9 +35,6 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -58,7 +55,7 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/").permitAll()
-            .antMatchers("/auth/**").permitAll()
+            .antMatchers("/user/**").permitAll()
             .anyRequest().fullyAuthenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

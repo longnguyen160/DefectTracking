@@ -4,6 +4,7 @@ import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
 import com.capstone.defecttracking.models.User.User;
+import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -76,5 +77,10 @@ public class UserController {
         serverResponse = new ServerResponse(true, "User registered successfully");
 
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/currentUser")
+    public User getCurrentUser(UserDetailsSecurity currentUser) {
+        return new User(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
     }
 }

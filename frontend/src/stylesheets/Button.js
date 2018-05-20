@@ -92,5 +92,11 @@ export const Button = styled.button`
       background-color: #626262;
       color: #fff;
     }
-    `}
+  ${props => props.disabled && css`
+    &:hover {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  `}  
+`}
 `;
