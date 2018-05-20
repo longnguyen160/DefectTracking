@@ -1,4 +1,4 @@
-package com.capstone.defecttracking.models;
+package com.capstone.defecttracking.models.User;
 
 public class UserProfile {
     private String firstName;

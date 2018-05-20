@@ -1,7 +1,9 @@
-package com.capstone.defecttracking.models;
+package com.capstone.defecttracking.models.User;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 
 @Document(collection = "users")
 
@@ -12,14 +14,23 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private ArrayList<String> roles = new ArrayList<String>();
     private UserProfile profile;
 
     public User() {
     }
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
         this.username = username;
         this.password = password;
+        this.email = email;
+        this.roles = roles;
+        this.profile = profile;
+    }
+
+    public User(String id, String username, String email) {
+        this.id = id;
+        this.username = username;
         this.email = email;
     }
 
@@ -61,5 +72,13 @@ public class User {
 
     public void setProfile(UserProfile profile) {
         this.profile = profile;
+    }
+
+    public ArrayList<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String role) {
+        roles.add(role);
     }
 }

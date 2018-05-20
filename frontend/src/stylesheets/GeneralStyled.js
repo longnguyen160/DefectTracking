@@ -359,3 +359,7 @@ export const InputSearchStyled = styled.div`
     }
   }
 `;
+
+export const Icon = styled.i`
+  margin-right: 5px;
+`;

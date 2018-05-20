@@ -1,8 +1,9 @@
 package com.capstone.defecttracking.repositories.User;
 
-import com.capstone.defecttracking.models.User;
+import com.capstone.defecttracking.models.User.User;
 
 public interface UserRepositoryCustom {
-    public User findByUsername(String name);
-    public boolean login(User user);
+    User findByEmail(String email);
+    User findById(String userId);
+    Boolean isUsernameExisted(String username);
 }
