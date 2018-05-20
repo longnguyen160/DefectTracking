@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { bindActionCreators } from 'redux';
-import axios from 'axios';
 import {
   FormStyled,
   PageStyled,
@@ -17,148 +17,155 @@ import {
   Label
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { INPUT_EMAIL, INPUT_PASSWORD } from '../../../utils/enums';
+import { INPUT_EMAIL, INPUT_PASSWORD, INPUT_CONFIRM_PASSWORD, INPUT_NAME } from '../../../utils/enums';
 import { validateForm } from '../../../utils/ultis';
+import { signUpUser } from '../actions/signUp';
 
-export default class SignUp extends Component {
+const renderField = (field) => {
+  const { input, type, placeholder } = field;
 
-  constructor(props) {
-    super(props);
-    const { error } = this.props;
-    this.state = {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      error: error,
-      isLoading: false,
-    };
-  }
+  return (
+    <Input type={type} placeholder={placeholder} {...input} />
+  );
+};
 
-  componentWillReceiveProps(nextProps) {
-    const { error } = nextProps;
-    this.setState({ error });
-  }
+class SignUp extends Component {
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.error !== this.props.error)
-      this.setState({ error: this.props.error });
-  }
-
-  handleKeyPress = (e) => {
-    if (e.charCode === 13 && !this.state.isLoading) {
-      this.createUser();
-    }
-  };
-
-  handleInput = (type, e) => {
-    const update = {};
-
-    update[type] = e.target.value;
-    this.setState(update);
-  };
-
-  checkEmail = (email) => {
-    return CHECK.IS_EMAIL.test(email);
-  };
-
-  createUser = () => {
-    const { name, email, password, confirmPassword } = this.state;
-    const { history } = this.props;
+  handleSignUp = (values) => {
+    const { name, email, password, confirmPassword } = values;
+    const { history, signUp } = this.props;
 
     // check name
-    if (name.trim() === '')
-      return this.setState({error: 'Name is required.'});
+    if (validateForm.required(name))
+      throw new SubmissionError({ _error: 'Name is required' });
 
     // check email
-    if (!this.checkEmail(email))
-      return this.setState({error: 'Email invalid.'});
+    if (validateForm.email(email))
+      throw new SubmissionError({ _error: 'Invalid email address' });
 
-    this.setState({ error: null });
     // check password
-    if (password.trim() === '')
-      return this.setState({error: 'Password is required.'});
-
-    this.setState({ error: null });
+    if (validateForm.required(password))
+      throw new SubmissionError({ _error: 'Password is required' });
 
     if (password !== confirmPassword)
-      return this.setState({ error: 'Password does not match the confirm password.' });
+      throw new SubmissionError({ _error: 'Confirm Password is not correct' });
 
-    this.setState({ error: null, isLoading: true });
-
-    axios.post('http://localhost:8080/auth/signup', { username: name, email, password }).then(res => {
-      this.setState({ isLoading: false });
-      console.log(res.data);
+    signUp({ username: name, email, password }, () => {
       history.push('/signin');
-    });
+    })
   };
 
   render() {
-    const { error } = this.state;
+    const {
+      pristine,
+      submitting,
+      handleSubmit,
+      account,
+      error,
+      submitFailed,
+      submitSucceeded
+    } = this.props;
+
 
     return (
       <FormStyled>
         <PageStyled>
           <TitleAccountStyled>Defect Tracking</TitleAccountStyled>
           <FormBlockStyled show>
-            <FormGroupStyled>
-              <LineFormStyled hasTitle>
-                <TitleFormStyled>Name</TitleFormStyled>
-                <Input
-                  onChange={(e) => this.handleInput('name', e)}
-                  onKeyPress={this.handleKeyPress}
-                  type='text'
-                />
-              </LineFormStyled>
-            </FormGroupStyled>
-            <FormGroupStyled>
-              <LineFormStyled hasTitle>
-                <TitleFormStyled>Email</TitleFormStyled>
-                <Input
-                  onChange={(e) => this.handleInput('email', e)}
-                  onKeyPress={this.handleKeyPress}
-                  type='email'
-                />
-              </LineFormStyled>
-            </FormGroupStyled>
-            <FormGroupStyled>
-              <LineFormStyled hasTitle>
-                <TitleFormStyled>Password</TitleFormStyled>
-                <Input
-                  onChange={(e) => this.handleInput('password', e)}
-                  onKeyPress={this.handleKeyPress}
-                  type='password'
-                />
-              </LineFormStyled>
-            </FormGroupStyled>
-            <FormGroupStyled>
-              <LineFormStyled hasTitle>
-                <TitleFormStyled>Confirm Password</TitleFormStyled>
-                <Input
-                  onChange={(e) => this.handleInput('confirmPassword', e)}
-                  onKeyPress={this.handleKeyPress}
-                  type='password'
-                />
-              </LineFormStyled>
-            </FormGroupStyled>
-            {
-              error ?
+            <form onSubmit={handleSubmit(this.handleSignUp)} id="SignUpForm">
+              <FormGroupStyled>
+                <LineFormStyled hasTitle>
+                  <TitleFormStyled>Name</TitleFormStyled>
+                  <Field
+                    type={INPUT_NAME}
+                    name={INPUT_NAME}
+                    placeholder={'Name'}
+                    component={renderField}
+                  />
+                </LineFormStyled>
+              </FormGroupStyled>
+              <FormGroupStyled>
+                <LineFormStyled hasTitle>
+                  <TitleFormStyled>Email</TitleFormStyled>
+                  <Field
+                    type={INPUT_EMAIL}
+                    name={INPUT_EMAIL}
+                    placeholder={'Email'}
+                    component={renderField}
+                  />
+                </LineFormStyled>
+              </FormGroupStyled>
+              <FormGroupStyled>
+                <LineFormStyled hasTitle>
+                  <TitleFormStyled>Password</TitleFormStyled>
+                  <Field
+                    type={INPUT_PASSWORD}
+                    name={INPUT_PASSWORD}
+                    placeholder={'Password'}
+                    component={renderField}
+                  />
+                </LineFormStyled>
+              </FormGroupStyled>
+              <FormGroupStyled>
+                <LineFormStyled hasTitle>
+                  <TitleFormStyled>Confirm Password</TitleFormStyled>
+                  <Field
+                    type={INPUT_PASSWORD}
+                    name={INPUT_CONFIRM_PASSWORD}
+                    placeholder={'Confirm Password'}
+                    component={renderField}
+                  />
+                </LineFormStyled>
+              </FormGroupStyled>
+              {
+                ((submitSucceeded && account.error) || (submitFailed && error)) &&
                 <TextErrorStyled error={true}>
-                  {error}
+                  {account.error || error}
                 </TextErrorStyled>
-                : null
-            }
-            {
-              this.state.isLoading ?
-                <Button hasBorder disabled>
-                  <i className="fa fa-circle-o-notch fa-spin" />Loading
-                </Button> :
-                <Button hasBorder onClick={this.createUser.bind(this)}>Sign Up</Button>
-            }
-            <Label><Link to="/signin">You already have account?</Link></Label>
+              }
+              {
+                submitting || account.isFetching ?
+                  <Button hasBorder disabled>
+                    <i className="fa fa-circle-o-notch fa-spin" />Loading
+                  </Button>
+                  :
+                  <Button
+                    hasBorder
+                    type="submit"
+                    form="SignUpForm"
+                    disabled={pristine}
+                  >
+                    Sign Up
+                  </Button>
+              }
+              <Label><Link to="/signin">You already have account?</Link></Label>
+            </form>
           </FormBlockStyled>
         </PageStyled>
       </FormStyled>
     );
   }
 }
+
+SignUp.propTypes = {
+  history: PropTypes.object.isRequired,
+  signUp: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  submitFailed: PropTypes.bool.isRequired,
+  submitSucceeded: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  account: PropTypes.shape({
+    isFetching: PropTypes.bool.isRequired,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  })
+};
+
+const mapStateToProps = state => ({ account: state.account });
+
+const mapDispatchToProps = dispatch => bindActionCreators({ signUp: signUpUser }, dispatch);
+
+export default reduxForm({
+  form: 'SignUpForm',
+})(connect(mapStateToProps, mapDispatchToProps)(SignUp));

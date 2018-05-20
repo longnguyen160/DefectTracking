@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { bindActionCreators } from 'redux';
+import Notifications from 'react-notification-system-redux';
 import { loginUser } from '../actions/login';
 import {
   FormStyled,
@@ -20,6 +21,7 @@ import {
 import { Button } from '../../../stylesheets/Button';
 import { INPUT_EMAIL, INPUT_PASSWORD } from '../../../utils/enums';
 import { validateForm } from '../../../utils/ultis';
+import { notificationStyle } from '../../../stylesheets/Notifications';
 
 const renderField = (field) => {
   const { input, type, placeholder } = field;
@@ -54,11 +56,16 @@ class SignIn extends React.Component {
       account,
       error,
       submitFailed,
-      submitSucceeded
+      submitSucceeded,
+      notifications
     } = this.props;
 
     return (
       <FormStyled>
+        <Notifications
+          notifications={notifications}
+          style={notificationStyle}
+        />
         <PageStyled>
           <TitleAccountStyled>Defect Tracking</TitleAccountStyled>
           <FormBlockStyled show>
@@ -125,13 +132,14 @@ SignIn.propTypes = {
   submitSucceeded: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  notifications: PropTypes.array.isRequired,
   account: PropTypes.shape({
     isFetching: PropTypes.bool.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   })
 };
 
-const mapStateToProps = state => ({ account: state.account });
+const mapStateToProps = state => ({ account: state.account, notifications: state.notifications });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ login: loginUser }, dispatch);
 

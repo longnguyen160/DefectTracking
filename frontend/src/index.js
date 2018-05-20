@@ -35,10 +35,10 @@ ReactDOM.render(
         <Route
           exact
           path="/signin"
-          render={() => (
+          render={props => (
             loggedIn() ?
               (<Redirect to="/" />)
-            : (<SignIn />)
+            : (<SignIn {...props} />)
           )}
         />
         <Route exact path="/signup" component={SignUp}/>
