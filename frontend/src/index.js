@@ -5,12 +5,15 @@ import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
 import 'font-awesome/css/font-awesome.min.css';
 import App from './App';
-import SignIn from './modules/account/component/SignIn';
-import SignUp from './modules/account/component/SignUp';
+import SignIn from './modules/account/components/SignIn';
+import SignUp from './modules/account/components/SignUp';
 import configureStore from './store/configureStore';
+import MainLayout from './modules/layout/components/MainLayout';
+import './index.css';
 
 export const history = createHistory();
 export const store = configureStore();
+
 export function loggedIn() {
   const state = store.getState();
   return state.account.isAuthenticated;
@@ -33,7 +36,6 @@ ReactDOM.render(
     <Router history={history}>
       <Switch>
         <Route
-          exact
           path="/signin"
           render={props => (
             loggedIn() ?
@@ -41,15 +43,19 @@ ReactDOM.render(
             : (<SignIn {...props} />)
           )}
         />
-        <Route exact path="/signup" component={SignUp}/>
         <Route
-          path="/"
-          render={() => (
+          path="/signup"
+          render={props => (
             loggedIn() ?
-              (<App />)
-            : (<Redirect to="/signin" />)
+              (<Redirect to="/" />)
+              : (<SignUp {...props} />)
           )}
         />
+        <MainLayout>
+          <Switch>
+            <PrivateRoute path="/" component={App} />
+          </Switch>
+        </MainLayout>
       </Switch>
     </Router>
   </Provider>

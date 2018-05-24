@@ -8,6 +8,10 @@ export function setAccessToken(authResult) {
   localStorage.setItem('access_token', authResult.accessToken);
 }
 
+export function removeAccessToken() {
+  localStorage.removeItem('access_token');
+}
+
 export function getUserIdFromToken() {
   const token = getAccessToken();
 

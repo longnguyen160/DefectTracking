@@ -249,6 +249,12 @@ export const Image = styled.img`
   height: 80%;
   object-fit: cover;
   margin-bottom: 5px;
+  
+  ${props => props.project && css`
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+  `}
   ${props => props.topNav && css`
     width: 30px;
     height: 30px;

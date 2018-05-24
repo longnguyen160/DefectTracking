@@ -15,10 +15,20 @@ public class UserDetailsSecurity implements UserDetails {
     private String email;
     private Collection<? extends GrantedAuthority> authorities;
 
+    public UserDetailsSecurity() {
+    }
+
     public UserDetailsSecurity(String id, String username, String password, String email, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.email = email;
+        this.authorities = authorities;
+    }
+
+    public UserDetailsSecurity(String id, String username, String email, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
+        this.username = username;
         this.email = email;
         this.authorities = authorities;
     }

@@ -5,6 +5,7 @@ import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
+import com.capstone.defecttracking.security.CurrentUser;
 import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,7 +81,9 @@ public class UserController {
     }
 
     @GetMapping("/currentUser")
-    public User getCurrentUser(UserDetailsSecurity currentUser) {
-        return new User(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
+    public User getCurrentUser(@CurrentUser UserDetailsSecurity currentUser) {
+        User user = userRepositoryCustom.findById(currentUser.getId());
+
+        return new User(user.getId(), user.getUsername(), user.getEmail(), user.getRoles());
     }
 }

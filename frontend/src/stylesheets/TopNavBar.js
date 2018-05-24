@@ -1,5 +1,42 @@
 import styled, {css} from 'styled-components';
 
+export const SubSelectStyled = styled.div`
+  display: none;
+  position: fixed;
+  max-width: 100px;
+  width: 100%;
+  background: #fff;
+  top: 40px;
+  ${props => props.user && css`
+    right: 155px;
+  `}
+  ${props => props.project && css`
+    right: 60px;
+  `}  
+  z-index: 9;
+  box-shadow: 3px 5px 10px -3px rgba(0, 0, 0, .5);
+  border: 1px solid #d1d1d1;
+`;
+
+export const SubSelectListStyled = styled.section`
+  font-size: 14px;
+  padding: 8px 15px;
+  color: #333333;
+  border-bottom: 1px solid #d1d1d1;
+  a{
+    color: #333333;
+  }
+  &:hover{
+    background-color: #f7f7f7;
+    a{
+      color: #626262;
+    }
+  }
+  &:last-child{
+    border-bottom: none;
+  }
+`;
+
 export const HeaderMainStyled = styled.div`
   display: flex;
   min-height: 40px;
@@ -21,7 +58,7 @@ export const HeaderMainItemsStyled = styled.section`
   cursor: pointer;
   font-family: 'Proxima Nova bold';
   ${props => props.relative ? css`
-    position: reltaive;
+    position: relative;
   ` : ''}
   & > a {    
     color: #91d3ee;
@@ -51,6 +88,14 @@ export const HeaderMainItemsStyled = styled.section`
     & > span {
       color: #fff;
     }
+    & > ${SubSelectStyled} {
+      ${props => props.user && css`
+        display: block;
+      `}
+      ${props => props.project && css`
+        display: block;
+      `}
+    }
   }
   ${props => props.active && css`
     & > i {
@@ -62,7 +107,7 @@ export const HeaderMainItemsStyled = styled.section`
   `}
   ${props => props.notification && css`
     position: relative;
-    min-width: 55px;
+    max-width: 55px;
     height: 40px;
     justify-content: center;
     & > i{
@@ -70,14 +115,14 @@ export const HeaderMainItemsStyled = styled.section`
       font-size: 17px;
       color: #ffffff
     }
-    & > span{
+    & > span{      
       position: absolute;
-      left: 30px;
+      right: 2px;
       top: 5px;
-      font-size: 9px;
+      font-size: 10px;
       background: #ff3000;
       min-width: 15px;
-      padding: 2px 4px;
+      padding: 2px;
       border-radius: 5px;
       color: #ffffff;
       text-align: center;
@@ -92,19 +137,11 @@ export const HeaderMainItemsStyled = styled.section`
       background-color: #015579;
       width: 1px;
     }
-    &:before{
-      content: '';
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      height: 40px;
-      background-color: #015579;
-      width: 1px;
-    }
   `};
-  ${props => props.fillter && css`
+  ${props => props.filter && css`
     min-width: 55px;
     justify-content: center;
+
     & > i{
       margin-right: 0px;
     }
@@ -112,23 +149,26 @@ export const HeaderMainItemsStyled = styled.section`
   ${props => props.info && css`
     position: relative;
     height: 40px;
-    & > div{
-      display: ${props.show ? 'block' : 'none'};
+    
+    &:hover {
+      color: #91d3ee;    
     }
     & > span{
       color: #fff;
       max-width: 140px;
-      font-size: 11px;
+      font-size: 13px;
       text-transform: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
     }
     & > i{
       margin-right: 0px;
       margin-left: 10px;
       font-size: 11px;
-      color: #fff
+      color: #fff;
     }
     @media(max-width: 1080px){
       & > span{
@@ -167,36 +207,6 @@ export const LogoStyled = styled.text`
     &:hover{
       color: #fff;
     }
-  }
-`;
-export const SubSelectStyled = styled.div`
-  position: fixed;
-  max-width: 200px;
-  width: 100%;
-  background: #fff;
-  top: 40px;
-  right: 54px;
-  z-index: 9;
-  box-shadow: 3px 5px 10px -3px rgba(0, 0, 0, .5);
-  border: 1px solid #d1d1d1;
-`;
-
-export const SubSelectListStyled = styled.section`
-  font-size: 11px;
-  padding: 8px 15px;
-  color: #333333;
-  border-bottom: 1px solid #d1d1d1;
-  a{
-    color: #333333;
-  }
-  &:hover{
-    background-color: #f7f7f7;
-    a{
-      color: #626262;
-    }
-  }
-  &:last-child{
-    border-bottom: none;
   }
 `;
 
