@@ -1,41 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Svg } from '../../stylesheets/GeneralStyled';
 
 const Icon = props => {
-  const styles = {
-    svg: {
-      display: 'inline-block',
-      verticalAlign: 'middle',
-      marginRight: '5px'
-    },
-    path: {
-      fill: props.color,
-    },
-  };
-
   return (
-    <svg
-      style={styles.svg}
-      width={`${props.size}px`}
-      height={`${props.size}px`}
+    <Svg
       viewBox="0 0 1024 1024"
+      {...props}
     >
-      <path
-        style={styles.path}
-        d={props.icon}
-      ></path>
-    </svg>
+      {
+        props.icon.map(element => (
+          <path key={element} d={element}></path>
+        ))
+      }
+    </Svg>
   );
-};
-
-Icon.propTypes = {
-  icon: PropTypes.string.isRequired,
-  size: PropTypes.number,
-  color: PropTypes.string,
-};
-
-Icon.defaultProps = {
-  size: 16,
 };
 
 export default Icon;

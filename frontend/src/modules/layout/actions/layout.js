@@ -1,8 +1,16 @@
-import { LOAD_CURRENT_USER, REQUEST_LOAD_CURRENT_USER, LOAD_CURRENT_USER_SUCCESS, LOAD_CURRENT_USER_FAILURE} from './types';
+import {
+  LOAD_CURRENT_USER,
+  REQUEST_LOAD_CURRENT_USER,
+  LOAD_CURRENT_USER_SUCCESS,
+  LOAD_CURRENT_USER_FAILURE,
+  OPEN_MODAL,
+  CLOSE_MODAL
+} from './types';
 
-const loadCurrentUser = () => {
+const loadCurrentUser = (goToLoginPage) => {
   return {
-    type: LOAD_CURRENT_USER
+    type: LOAD_CURRENT_USER,
+    goToLoginPage
   }
 };
 
@@ -25,9 +33,24 @@ const loadCurrentUserFailure = () => {
   }
 };
 
+const openModal = (modalType) => {
+  return {
+    type: OPEN_MODAL,
+    modalType
+  }
+};
+
+const closeModal = () => {
+  return {
+    type: CLOSE_MODAL
+  }
+};
+
 export {
   loadCurrentUser,
   requestLoadCurrentUser,
   loadCurrentUserSuccess,
-  loadCurrentUserFailure
+  loadCurrentUserFailure,
+  openModal,
+  closeModal
 }

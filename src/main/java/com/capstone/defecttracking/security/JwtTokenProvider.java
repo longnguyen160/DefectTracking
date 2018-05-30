@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.security;
 
+import com.capstone.defecttracking.models.Token.JwtAuthentication;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import io.jsonwebtoken.*;
 import com.capstone.defecttracking.models.User.User;
@@ -22,19 +23,19 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    public String generateToken(Authentication authentication) {
+    public JwtAuthentication generateToken(Authentication authentication) {
 
         UserDetailsSecurity user = (UserDetailsSecurity) authentication.getPrincipal();
-
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-
-        return Jwts.builder()
+        String token = Jwts.builder()
             .setSubject(user.getId())
             .setIssuedAt(new Date())
             .setExpiration(expiryDate)
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
             .compact();
+
+        return new JwtAuthentication(token, expiryDate);
     }
 
     public String getUserIdFromJWT(String token) {

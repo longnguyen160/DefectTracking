@@ -1,9 +1,17 @@
-import { REQUEST_LOAD_CURRENT_USER, LOAD_CURRENT_USER_SUCCESS, LOAD_CURRENT_USER_FAILURE } from '../actions/types';
+import {
+  REQUEST_LOAD_CURRENT_USER,
+  LOAD_CURRENT_USER_SUCCESS,
+  LOAD_CURRENT_USER_FAILURE,
+  OPEN_MODAL,
+  CLOSE_MODAL
+} from '../actions/types';
 
 const initialState = {
   user: null,
   isLoading: false,
-  error: null
+  error: null,
+  modalIsOpen: false,
+  modalType: ''
 };
 
 export default function account(state = initialState, action) {
@@ -25,6 +33,18 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
+      });
+
+    case OPEN_MODAL:
+      return Object.assign({}, state, {
+        modalIsOpen: true,
+        modalType: action.modalType
+      });
+
+    case CLOSE_MODAL:
+      return Object.assign({}, state, {
+        modalIsOpen: false,
+        modalType: ''
       });
 
     default:

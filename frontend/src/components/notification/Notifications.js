@@ -1,7 +1,7 @@
 import React from 'react';
 import { success, error } from 'react-notification-system-redux';
-import { store } from '../index';
-import { Icon } from '../stylesheets/GeneralStyled';
+import { store } from '../../index';
+import { Icon } from '../../stylesheets/GeneralStyled';
 
 const Notifications = {
   success(message) {

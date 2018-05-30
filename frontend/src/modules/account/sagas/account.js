@@ -4,8 +4,8 @@ import { requestLogin, loginSuccess, loginError } from '../actions/login';
 import { requestSignUp, signUpSuccess, signUpError } from '../actions/signUp';
 import { requestLogOut, logOutSuccess, logOutFailure } from '../actions/logout';
 import API from '../../../utils/api';
-import { setAccessToken, removeAccessToken, getError } from '../../../utils/ultis';
-import { showSuccessNotification } from '../../../components/Notifications';
+import { setAccessToken, setExpiryDate, removeAccessToken, getError } from '../../../utils/ultis';
+import { showSuccessNotification } from '../../../components/notification/Notifications';
 
 // Login
 function* login({ user, goToDashboard }) {
@@ -13,8 +13,10 @@ function* login({ user, goToDashboard }) {
     yield put(requestLogin());
     const { data } = yield call(API.login, user);
 
-    setAccessToken(data);
-    yield put(loginSuccess(data.accessToken));
+    setAccessToken(data.accessToken.token);
+    setExpiryDate(data.accessToken.expiryDate);
+
+    yield put(loginSuccess(data.accessToken.token));
 
     if (goToDashboard && typeof (goToDashboard) === 'function') {
       goToDashboard();

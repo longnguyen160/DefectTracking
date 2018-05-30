@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const SubSelectStyled = styled.div`
   display: none;
@@ -11,8 +11,12 @@ export const SubSelectStyled = styled.div`
     right: 155px;
   `}
   ${props => props.project && css`
-    right: 60px;
-  `}  
+    right: 47px;
+  `}
+  ${props => props.create && css`
+    right: 255px;
+    max-width: 135px;
+  `}
   z-index: 9;
   box-shadow: 3px 5px 10px -3px rgba(0, 0, 0, .5);
   border: 1px solid #d1d1d1;
@@ -27,7 +31,7 @@ export const SubSelectListStyled = styled.section`
     color: #333333;
   }
   &:hover{
-    background-color: #f7f7f7;
+    background-color: #d1d1d1;
     a{
       color: #626262;
     }
@@ -43,6 +47,7 @@ export const HeaderMainStyled = styled.div`
   align-items: center;
   background-color: #026a95;
 `;
+
 export const HeaderMainBlockStyled = styled.div`
   display: flex;
   flex: 1;
@@ -50,6 +55,7 @@ export const HeaderMainBlockStyled = styled.div`
     flex: 0 0 auto;
   `}
 `;
+
 export const HeaderMainItemsStyled = styled.section`
   display: flex;
   flex: 0 0 auto;
@@ -60,6 +66,12 @@ export const HeaderMainItemsStyled = styled.section`
   ${props => props.relative ? css`
     position: relative;
   ` : ''}
+  ${props => props.create && css`
+    & > i {
+      font-size: 20px !important;
+      margin: 0 !important;
+    }
+  `}
   & > a {    
     color: #91d3ee;
     &:hover {
@@ -82,6 +94,9 @@ export const HeaderMainItemsStyled = styled.section`
     margin-right: 5px;
   }
   &:hover {
+    ${props => props.hover && css`
+      background-color: #015579;
+    `}
     & > i {
       color: #fff;
     }
@@ -93,6 +108,9 @@ export const HeaderMainItemsStyled = styled.section`
         display: block;
       `}
       ${props => props.project && css`
+        display: block;
+      `}
+      ${props => props.create && css`
         display: block;
       `}
     }
@@ -111,17 +129,17 @@ export const HeaderMainItemsStyled = styled.section`
     height: 40px;
     justify-content: center;
     & > i{
-      margin-right: 0px;
+      margin-right: 0;
       font-size: 17px;
       color: #ffffff
     }
     & > span{      
       position: absolute;
-      right: 2px;
+      right: 5px;
       top: 5px;
       font-size: 10px;
       background: #ff3000;
-      min-width: 15px;
+      min-width: 17px;
       padding: 2px;
       border-radius: 5px;
       color: #ffffff;
@@ -131,8 +149,8 @@ export const HeaderMainItemsStyled = styled.section`
     &:after{
       content: '';
       position: absolute;
-      top: 0px;
-      right: 0px;
+      top: 0;
+      right: 0;
       height: 40px;
       background-color: #015579;
       width: 1px;
@@ -197,6 +215,7 @@ export const HeaderMainItemsStyled = styled.section`
     `}
   }
 `;
+
 export const LogoStyled = styled.text`
   font-size: 18px;
   color: #fff;

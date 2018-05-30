@@ -5,20 +5,51 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Notifications from 'react-notification-system-redux';
 import TopNavBar from './TopNavBar';
-import { loadCurrentUser } from '../actions/layout';
+import SideBar from './SideBar';
+import { loadCurrentUser, openModal, closeModal } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { notificationStyle } from '../../../stylesheets/Notifications';
+import { FormGroupStyled } from '../../../stylesheets/GeneralStyled';
+import { MODAL_TYPE } from '../../../utils/enums';
+import ModalCreatingProject from '../../../components/modal/ModalCreatingProject';
+import ModalCreatingAccount from '../../../components/modal/ModalCreatingAccount';
+import ModalCreatingIssue from '../../../components/modal/ModalCreatingIssue';
+
+
+const LIST_MODAL = {
+  [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
+  [MODAL_TYPE.CREATING_USER]: ModalCreatingAccount,
+  [MODAL_TYPE.CREATING_ISSUE]: ModalCreatingIssue
+};
 
 class MainLayout extends React.Component {
 
   componentWillMount() {
-    const { loadCurrentUser } = this.props;
+    const { loadCurrentUser, history } = this.props;
 
-    loadCurrentUser();
+    loadCurrentUser(() => {
+      history.push('/signin');
+    });
   }
 
+  handleOpenModal = () => {
+    const { closeModal, layout: { modalIsOpen, modalType } } = this.props;
+    const Modal = LIST_MODAL[modalType];
+
+    if (Modal) {
+      return (
+        <Modal
+          isOpen={modalIsOpen}
+          onClose={closeModal}
+        />
+      );
+    }
+
+    return null;
+  };
+
   render() {
-    const { children, notifications, layout: { user }, logOut, history } = this.props;
+    const { children, notifications, layout: { user }, logOut, history, openModal } = this.props;
 
     return (
       <div className="app-wrapper">
@@ -30,8 +61,13 @@ class MainLayout extends React.Component {
           user={user}
           logOut={logOut}
           history={history}
+          openModal={openModal}
         />
-        {children}
+        <FormGroupStyled>
+          <SideBar history={history} />
+          {children}
+        </FormGroupStyled>
+        {this.handleOpenModal()}
       </div>
     );
   }
@@ -43,18 +79,27 @@ MainLayout.propTypes = {
   notifications: PropTypes.array.isRequired,
   loadCurrentUser: PropTypes.func.isRequired,
   logOut: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
     user: PropTypes.object,
+    modalIsOpen: PropTypes.bool.isRequired,
+    modalType: PropTypes.string.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   })
 };
 
-const mapStateToProps = state => ({ layout: state.layout, notifications: state.notifications });
+const mapStateToProps = state => ({
+  layout: state.layout,
+  notifications: state.notifications
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   loadCurrentUser: loadCurrentUser,
-  logOut: logOut
+  logOut: logOut,
+  openModal: openModal,
+  closeModal: closeModal
 }, dispatch);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainLayout));

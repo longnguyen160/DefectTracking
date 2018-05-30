@@ -1,18 +1,18 @@
 package com.capstone.defecttracking.models.Token;
 
 public class JwtAuthenticationResponse {
-    private String accessToken;
+    private JwtAuthentication accessToken;
     private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponse(String accessToken) {
+    public JwtAuthenticationResponse(JwtAuthentication accessToken) {
         this.accessToken = accessToken;
     }
 
-    public String getAccessToken() {
+    public JwtAuthentication getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(JwtAuthentication accessToken) {
         this.accessToken = accessToken;
     }
 

@@ -4,12 +4,13 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
 import 'font-awesome/css/font-awesome.min.css';
-import App from './App';
 import SignIn from './modules/account/components/SignIn';
 import SignUp from './modules/account/components/SignUp';
 import configureStore from './store/configureStore';
 import MainLayout from './modules/layout/components/MainLayout';
 import './index.css';
+import Projects from './modules/projects/components/Projects';
+import Home from './modules/home/components/Home';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -53,7 +54,8 @@ ReactDOM.render(
         />
         <MainLayout>
           <Switch>
-            <PrivateRoute path="/" component={App} />
+            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path="/projects" component={Projects} />
           </Switch>
         </MainLayout>
       </Switch>

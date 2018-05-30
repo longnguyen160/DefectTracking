@@ -2,6 +2,7 @@ package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Server.ServerResponse;
+import com.capstone.defecttracking.models.Token.JwtAuthentication;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
@@ -52,7 +53,7 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.generateToken(authentication);
+        JwtAuthentication jwt = tokenProvider.generateToken(authentication);
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }

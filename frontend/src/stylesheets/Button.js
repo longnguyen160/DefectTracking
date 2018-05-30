@@ -8,6 +8,8 @@ export const Button = styled.button`
   border-radius: 3px;
   margin: 0px;
   color: #fff;
+  cursor: pointer;
+
   ${props => props.small && css`
     padding: 3px 9px;
   `}
