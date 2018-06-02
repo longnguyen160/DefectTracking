@@ -27,7 +27,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Capstone
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             <LinesEllipsis
               text='abd iijs opsa ospa ocmpda iasjdoa sjasdi asoidsd hfiosd fhisodhf isodfweiw epxic ddic dksnckfiweoweei jijf iowej fiowe'
               maxLine='2'
@@ -41,7 +41,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Tgame
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -49,7 +49,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Cube
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -57,7 +57,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Cloakify
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -65,7 +65,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Hr-Forte
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -73,7 +73,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Capstone
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -81,7 +81,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Tgame
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -89,7 +89,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Cube
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -97,7 +97,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Cloakify
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>
@@ -105,7 +105,7 @@ class Projects extends React.Component {
           <TitleElementStyled>
             Hr-Forte
           </TitleElementStyled>
-          <DescriptionElementStyled className="line-clamp">
+          <DescriptionElementStyled>
             abd iijs opsa ospa ocmpd
           </DescriptionElementStyled>
         </ElementStyled>

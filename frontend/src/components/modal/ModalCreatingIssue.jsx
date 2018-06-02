@@ -113,7 +113,7 @@ class ModalCreatingIssue extends React.Component {
       <Modal onClose={onClose} isOpen={isOpen} openWidth={true}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
-            <span>Create Project</span>
+            <span>Create Issue</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
         <form onSubmit={handleSubmit(this.handleCreateAccount)} id="CreateIssueForm">

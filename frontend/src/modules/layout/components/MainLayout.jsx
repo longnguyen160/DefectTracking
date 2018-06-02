@@ -63,7 +63,7 @@ class MainLayout extends React.Component {
           history={history}
           openModal={openModal}
         />
-        <FormGroupStyled>
+        <FormGroupStyled padding>
           <SideBar history={history} />
           {children}
         </FormGroupStyled>

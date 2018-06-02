@@ -43,7 +43,7 @@ class ModalCreatingAccount extends React.Component {
       <Modal onClose={onClose} isOpen={isOpen}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
-            <span>Create Project</span>
+            <span>Create User</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
         <form onSubmit={handleSubmit(this.handleCreateAccount)} id="CreateAccountForm">

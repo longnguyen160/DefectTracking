@@ -14,7 +14,7 @@ export const SubSelectStyled = styled.div`
     right: 47px;
   `}
   ${props => props.create && css`
-    right: 255px;
+    right: 279px;
     max-width: 135px;
   `}
   z-index: 9;

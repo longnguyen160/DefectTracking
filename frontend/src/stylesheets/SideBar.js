@@ -9,6 +9,7 @@ export const SideBarMainStyled = styled.div`
   justify-content: flex-start;
   margin: 20px 20px 0;
   font-size: 15px;  
+  position: sticky;
 `;
 
 export const SideBarMainBlockStyled = styled.div`

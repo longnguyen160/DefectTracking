@@ -48,11 +48,41 @@ export const PageStyled = styled.div`
 
 export const PageCustomStyled = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: ${props => props.center ? 'center' : 'flex-start'};
   align-items: flex-start;
   flex-wrap: wrap;
   margin: 20px;
+  ${props => props.hasFlex && css`
+    flex: 0.7;
+  `}  
 `;
+
+export const PageBoardStyled = styled.section`
+  display: flex; 
+  width: 100%;
+  padding: 15px;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+`;
+
+export const PageBoardItemStyled = styled.div`
+  flex: 1;
+  margin: 0px 20px;
+  
+  ${props => props.activity && css`
+    flex: 0.6;
+  `};
+  @media(max-width: 1024px){
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    float: none;
+  }
+  @media(max-width: 768px){
+    width: calc(100% - 40px);
+    margin: 0 20px 20px;
+  }
+`;
+
 
 export const TitleAccountStyled = styled.div`
   margin: 0 0 20px 0;
@@ -62,33 +92,43 @@ export const TitleAccountStyled = styled.div`
   color: #026a95;
 `;
 
-export const TitleElementStyled = styled.div`
-  padding: 10px 15px;
-  font-size: 16px;
+export const TitleElementStyled = styled.div`  
+  font-size: ${props => props.fontSize ? props.fontSize : '16px'};
   color: #626262;
-  font-weight: 600;
+  font-weight: ${props => props.fontWeight ? props.fontWeight : 600};
+  flex: 1;
+  ${props => !props.noPadding && css`
+    padding: 10px;
+  `}  
 `;
 
 export const DescriptionElementStyled = styled.div`
-  display: block;
-  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: ${props => props.history ? '0 10px' : '10px 15px'};
   font-size: 14px;
   color: #626262;
   line-height: 20px;
+  width: 100%;
 `;
 
 export const ElementStyled = styled.div`
-  display: block;
-  width: 160px;
+  display: ${props => props.wrapper ? 'flex' : 'block'};
+  width: ${props => props.width ? props.width : '160px'};
+  min-height: 50px;
+  max-height: 300px;
   border-radius: 5px;
   background-color: #e6e6e6;
-  margin: 10px;
-  height: 100px;
+  margin: 10px;  
   cursor: pointer;
+  ${props => props.padding && css`
+    padding: 5px;
+  `}
   
   ${props => props.created && css`
     display: flex;
     align-items: center;        
+    text-align: center;
     & > ${TitleElementStyled} {
       font-size: 15px;
       font-weight: 400;
@@ -100,6 +140,54 @@ export const ElementStyled = styled.div`
     }    
     background-color: #d1d1d1;
   }
+`;
+
+export const ProjectWrapperELementStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+export const ProjectTitleElementStyled = styled.span`
+  font-weight: bold;
+  text-align: right;
+  color: #000000;
+`;
+
+export const ElementHeaderStyled = styled.div`
+  display: flex;  
+  width: 100%;  
+  padding: 5px;
+  align-items: center;
+`;
+
+export const UserElementStyled = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
+export const UserActionElementStyle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
+export const UsernameElementStyle = styled.span`
+  font-weight: bold;
+  font-size: 13px;
+  color: #626262;
+`;
+
+export const TimeElementStyle = styled.span`
+  color: rgba(0,0,0,.5);
+  font-size: 12px;
 `;
 
 export const FormBlockStyled = styled.div`
@@ -124,6 +212,10 @@ export const FormBlockStyled = styled.div`
 export const FormGroupStyled = styled.div`
   display: flex;
   font-size: 13px;
+  overflow-y: auto;
+  ${props => props.padding && css`
+    padding: 10px;
+  `}
   ${props => props.right && css`
     justify-content: flex-end;
   `};
@@ -133,13 +225,6 @@ export const FormGroupStyled = styled.div`
   `};
   ${props => props.margin && css`
     margin: 10px 0;
-  `};
-  ${props => props.chatBox && css`
-    margin-bottom: 10px;
-    height: 92%;       
-  `};
-  ${props => props.chatForm && css`
-    height: 100%;
   `};
   @media(max-width: 700px) {
     ${props => props.input && css`
