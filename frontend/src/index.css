@@ -1,5 +1,93 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+html {
+  height: 100%;
+}
+
+body, #root, .app-wrapper {
+  font-family: 'Proxima Nova Regular';
+  margin: auto 0;
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+*, :after, :before {
+  box-sizing: border-box
+}
+
+@font-face {
+  font-family: 'Proxima Nova Black';
+  src: url('/fonts/proximaNova/ProximaNovaBlack.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Black Italic';
+  src: url('/fonts/proximaNova/ProximaNovaBlackItalic.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Bold';
+  src: url('/fonts/proximaNova/ProximaNovaBold.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Bold Italic';
+  src: url('/fonts/proximaNova/ProximaNovaBoldItalic.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Extra Bold';
+  src: url('/fonts/proximaNova/ProximaNovaExtraBold.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Extra Bold Italic';
+  src: url('/fonts/proximaNova/ProximaNovaExtraBoldItalic.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Light';
+  src: url('/fonts/proximaNova/ProximaNovaLight.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Light Italic';
+  src: url('/fonts/proximaNova/ProximaNovaLightItalic.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Regular';
+  src: url('/fonts/proximaNova/ProximaNovaRegular.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Regular Italic';
+  src: url('/fonts/proximaNova/ProximaNovaRegularItalic.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Semibold';
+  src: url('/fonts/proximaNova/ProximaNovaSemibold.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Semibold Italic';
+  src: url('/fonts/proximaNova/ProximaNovaSemiboldItalic.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Thin';
+  src: url('/fonts/proximaNova/ProximaNovaThin.otf');
+}
+
+@font-face {
+  font-family: 'Proxima Nova Thin Italic';
+  src: url('/fonts/proximaNova/ProximaNovaThinItalic.otf');
 }

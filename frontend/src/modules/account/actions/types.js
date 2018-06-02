@@ -8,6 +8,11 @@ const SIGN_UP_USER = 'account/SIGN_UP_USER';
 const SIGN_UP_REQUEST = 'account/SIGN_UP_REQUEST';
 const SIGN_UP_SUCCESS = 'account/SIGN_UP_SUCCESS';
 const SIGN_UP_FAILURE = 'account/SIGN_UP_FAILURE';
+//Log Out
+const LOG_OUT = 'account/LOG_OUT';
+const REQUEST_LOG_OUT = 'account/REQUEST_LOG_OUT';
+const LOG_OUT_SUCCESS = 'account/LOG_OUT_SUCCESS';
+const LOG_OUT_FAILURE = 'account/LOG_OUT_FAILURE';
 
 export {
   LOGIN_USER,
@@ -17,5 +22,9 @@ export {
   SIGN_UP_USER,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
-  SIGN_UP_FAILURE
+  SIGN_UP_FAILURE,
+  LOG_OUT,
+  REQUEST_LOG_OUT,
+  LOG_OUT_SUCCESS,
+  LOG_OUT_FAILURE
 }

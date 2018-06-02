@@ -28,10 +28,11 @@ public class User {
         this.profile = profile;
     }
 
-    public User(String id, String username, String email) {
+    public User(String id, String username, String email, ArrayList<String> roles) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.roles = roles;
     }
 
     public String getId() {

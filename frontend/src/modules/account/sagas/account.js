@@ -1,19 +1,22 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { LOGIN_USER, SIGN_UP_USER } from '../actions/types';
+import { LOGIN_USER, SIGN_UP_USER, LOG_OUT } from '../actions/types';
 import { requestLogin, loginSuccess, loginError } from '../actions/login';
 import { requestSignUp, signUpSuccess, signUpError } from '../actions/signUp';
+import { requestLogOut, logOutSuccess, logOutFailure } from '../actions/logout';
 import API from '../../../utils/api';
-import { setAccessToken, getError } from '../../../utils/ultis';
-import { showSuccessNotification } from '../../../components/Notifications';
+import { setAccessToken, setExpiryDate, removeAccessToken, getError } from '../../../utils/ultis';
+import { showSuccessNotification } from '../../../components/notification/Notifications';
 
 // Login
 function* login({ user, goToDashboard }) {
   try {
-    yield put(requestLogin(user));
+    yield put(requestLogin());
     const { data } = yield call(API.login, user);
 
-    setAccessToken(data);
-    yield put(loginSuccess(data.accessToken));
+    setAccessToken(data.accessToken.token);
+    setExpiryDate(data.accessToken.expiryDate);
+
+    yield put(loginSuccess(data.accessToken.token));
 
     if (goToDashboard && typeof (goToDashboard) === 'function') {
       goToDashboard();
@@ -27,7 +30,7 @@ function* watchLogin() {
   yield takeLatest(LOGIN_USER, login);
 }
 
-// SignUp
+// Sign Up
 function* signUp({ user, goToLoginPage }) {
   try {
     yield put(requestSignUp(user));
@@ -48,9 +51,31 @@ function* watchSignUp() {
   yield takeLatest(SIGN_UP_USER, signUp);
 }
 
+// Log Out
+function* logOut({ goToLoginPage }) {
+  try {
+    yield put(requestLogOut());
+
+    removeAccessToken();
+    yield put(logOutSuccess());
+
+    if (goToLoginPage && typeof (goToLoginPage) === 'function') {
+      goToLoginPage()
+    }
+  } catch (error) {
+    yield put(logOutFailure(getError(error)))
+  }
+}
+
+function* watchLogOut() {
+  yield takeLatest(LOG_OUT, logOut)
+}
+
+
 export default function* accountFlow() {
   yield all([
     watchLogin(),
-    watchSignUp()
+    watchSignUp(),
+    watchLogOut()
   ]);
 }

@@ -4,13 +4,17 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
 import 'font-awesome/css/font-awesome.min.css';
-import App from './App';
-import SignIn from './modules/account/component/SignIn';
-import SignUp from './modules/account/component/SignUp';
+import SignIn from './modules/account/components/SignIn';
+import SignUp from './modules/account/components/SignUp';
 import configureStore from './store/configureStore';
+import MainLayout from './modules/layout/components/MainLayout';
+import './index.css';
+import Projects from './modules/projects/components/Projects';
+import Home from './modules/home/components/Home';
 
 export const history = createHistory();
 export const store = configureStore();
+
 export function loggedIn() {
   const state = store.getState();
   return state.account.isAuthenticated;
@@ -33,7 +37,6 @@ ReactDOM.render(
     <Router history={history}>
       <Switch>
         <Route
-          exact
           path="/signin"
           render={props => (
             loggedIn() ?
@@ -41,15 +44,20 @@ ReactDOM.render(
             : (<SignIn {...props} />)
           )}
         />
-        <Route exact path="/signup" component={SignUp}/>
         <Route
-          path="/"
-          render={() => (
+          path="/signup"
+          render={props => (
             loggedIn() ?
-              (<App />)
-            : (<Redirect to="/signin" />)
+              (<Redirect to="/" />)
+              : (<SignUp {...props} />)
           )}
         />
+        <MainLayout>
+          <Switch>
+            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path="/projects" component={Projects} />
+          </Switch>
+        </MainLayout>
       </Switch>
     </Router>
   </Provider>

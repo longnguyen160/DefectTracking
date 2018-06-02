@@ -4,8 +4,20 @@ export function getAccessToken() {
   return localStorage.getItem('access_token');
 }
 
-export function setAccessToken(authResult) {
-  localStorage.setItem('access_token', authResult.accessToken);
+export function getExpiryDate() {
+  return localStorage.getItem('expiry_date');
+}
+
+export function setAccessToken(token) {
+  localStorage.setItem('access_token', token);
+}
+
+export function setExpiryDate(expiryDate) {
+  localStorage.setItem('expiry_date', expiryDate);
+}
+
+export function removeAccessToken() {
+  localStorage.removeItem('access_token');
 }
 
 export function getUserIdFromToken() {
@@ -23,7 +35,12 @@ export function getUserIdFromToken() {
 }
 
 export function checkAuthentication() {
-  return !!getUserIdFromToken();
+  if (getUserIdFromToken()) {
+    const expiryDate = getExpiryDate();
+
+    return new Date().getTime() < new Date(expiryDate).getTime();
+  }
+  return false;
 }
 
 export function getError(error) {

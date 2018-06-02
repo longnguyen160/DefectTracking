@@ -20,9 +20,14 @@ const signUp = (user) => {
   return axios.post('user/signup', user);
 };
 
+const loadCurrentUser = () => {
+  return axios.get('user/currentUser');
+};
+
 const API = {
   login,
-  signUp
+  signUp,
+  loadCurrentUser
 };
 
 export default API;

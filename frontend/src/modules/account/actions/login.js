@@ -8,10 +8,9 @@ const loginUser = (user, goToDashboard) => {
   }
 };
 
-const requestLogin = (user) => {
+const requestLogin = () => {
   return {
     type: LOGIN_REQUEST,
-    user
   }
 };
 

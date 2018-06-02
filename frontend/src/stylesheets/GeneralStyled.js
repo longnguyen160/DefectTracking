@@ -1,4 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
+import { SubSelectStyled, SubSelectListStyled } from './TopNavBar';
 
 const zoomIn = keyframes`
  0% {
@@ -21,6 +22,7 @@ export const FormStyled = styled.div`
   height: 100%;
   animation: ${zoomIn} 1s;
 `;
+
 export const PageStyled = styled.div`
   padding: 30px 20px;
   background: #fff;
@@ -43,26 +45,149 @@ export const PageStyled = styled.div`
     padding: 0 0 35px;    
   }
 `;
+
 export const PageCustomStyled = styled.div`
-  padding: 30px 20px;
-  min-width: 320px;
-  max-width: ${props => props.medium ? `700px` : `320px`};
-  width: 100%;
-  ${props => props.chatBox && css`
-    padding: 10px 0;
-    max-width: 100%;
-    border: 1px solid #626262;
-    overflow-x: hidden;
-    overflow-y: auto;  
-    -webkit-overflow-scrolling: touch;
-  `}
+  display: flex;
+  justify-content: ${props => props.center ? 'center' : 'flex-start'};
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 20px;
+  ${props => props.hasFlex && css`
+    flex: 0.7;
+  `}  
 `;
+
+export const PageBoardStyled = styled.section`
+  display: flex; 
+  width: 100%;
+  padding: 15px;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+`;
+
+export const PageBoardItemStyled = styled.div`
+  flex: 1;
+  margin: 0px 20px;
+  
+  ${props => props.activity && css`
+    flex: 0.6;
+  `};
+  @media(max-width: 1024px){
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    float: none;
+  }
+  @media(max-width: 768px){
+    width: calc(100% - 40px);
+    margin: 0 20px 20px;
+  }
+`;
+
+
 export const TitleAccountStyled = styled.div`
   margin: 0 0 20px 0;
   text-align: center;
   font-size: 23px;
   font-weight: 600;
   color: #026a95;
+`;
+
+export const TitleElementStyled = styled.div`  
+  font-size: ${props => props.fontSize ? props.fontSize : '16px'};
+  color: #626262;
+  font-weight: ${props => props.fontWeight ? props.fontWeight : 600};
+  flex: 1;
+  ${props => !props.noPadding && css`
+    padding: 10px;
+  `}  
+`;
+
+export const DescriptionElementStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: ${props => props.history ? '0 10px' : '10px 15px'};
+  font-size: 14px;
+  color: #626262;
+  line-height: 20px;
+  width: 100%;
+`;
+
+export const ElementStyled = styled.div`
+  display: ${props => props.wrapper ? 'flex' : 'block'};
+  width: ${props => props.width ? props.width : '160px'};
+  min-height: 50px;
+  max-height: 300px;
+  border-radius: 5px;
+  background-color: #e6e6e6;
+  margin: 10px;  
+  cursor: pointer;
+  ${props => props.padding && css`
+    padding: 5px;
+  `}
+  
+  ${props => props.created && css`
+    display: flex;
+    align-items: center;        
+    text-align: center;
+    & > ${TitleElementStyled} {
+      font-size: 15px;
+      font-weight: 400;
+    }
+  `}
+  &:hover {
+    & > ${TitleElementStyled} {
+      color: #026a95;
+    }    
+    background-color: #d1d1d1;
+  }
+`;
+
+export const ProjectWrapperELementStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+export const ProjectTitleElementStyled = styled.span`
+  font-weight: bold;
+  text-align: right;
+  color: #000000;
+`;
+
+export const ElementHeaderStyled = styled.div`
+  display: flex;  
+  width: 100%;  
+  padding: 5px;
+  align-items: center;
+`;
+
+export const UserElementStyled = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
+export const UserActionElementStyle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
+export const UsernameElementStyle = styled.span`
+  font-weight: bold;
+  font-size: 13px;
+  color: #626262;
+`;
+
+export const TimeElementStyle = styled.span`
+  color: rgba(0,0,0,.5);
+  font-size: 12px;
 `;
 
 export const FormBlockStyled = styled.div`
@@ -87,6 +212,10 @@ export const FormBlockStyled = styled.div`
 export const FormGroupStyled = styled.div`
   display: flex;
   font-size: 13px;
+  overflow-y: auto;
+  ${props => props.padding && css`
+    padding: 10px;
+  `}
   ${props => props.right && css`
     justify-content: flex-end;
   `};
@@ -97,13 +226,6 @@ export const FormGroupStyled = styled.div`
   ${props => props.margin && css`
     margin: 10px 0;
   `};
-  ${props => props.chatBox && css`
-    margin-bottom: 10px;
-    height: 92%;       
-  `};
-  ${props => props.chatForm && css`
-    height: 100%;
-  `};
   @media(max-width: 700px) {
     ${props => props.input && css`
       padding: 0 5px;    
@@ -113,11 +235,14 @@ export const FormGroupStyled = styled.div`
 
 export const LineFormStyled = styled.div`
   display: flex;
-  margin: 0 5px;
+  margin: 0 0 10px 0;
   font-size: 13px;
   align-items: center;
   flex: 1;
-  position: relative;  
+  position: relative;
+  .react-select__menu {
+    position: relative;
+  }  
   textarea, input, select {
     background: #fff;
     border: 1px solid #d1d1d1;
@@ -125,7 +250,11 @@ export const LineFormStyled = styled.div`
     color: #626262;
     font-style: italic;
     border-radius: 3px;
-    width: 100%;
+    font-size: 13px;
+    width: ${props => props.autoWidth ? 'auto' : '100%'};
+    ${props => props.noMargin && css`
+      margin: 0 5px;
+    `}
     &:focus{
       border-color: #036a95;
       outline: 0;
@@ -188,28 +317,11 @@ export const LineFormStyled = styled.div`
       cursor: pointer;
     }
   `}
-  ${props => props.user === 'opposite' ? css`
-    background-color: #d1d1d1;
-    color: #000;
-    padding: 5px;
-    border-radius: 10px;
-    margin: 5px 0;
-  ` :
-  props.user === 'current' && css`
-    background-color: #026a95;
-    color: #fff;
-    padding: 5px;
-    border-radius: 10px;
-    margin: 5px 0;
-  `}
   ${props => props.position === 'left' ? css`
     align-items: flex-start;
   ` :
   props.position === 'right' && css`
     align-items: flex-end;
-  `}
-  ${props => props.chatBox && css`
-    margin-top: auto;    
   `}
   ${props => props.pointer && css`
     cursor: pointer;
@@ -249,6 +361,12 @@ export const Image = styled.img`
   height: 80%;
   object-fit: cover;
   margin-bottom: 5px;
+  
+  ${props => props.project && css`
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+  `}
   ${props => props.topNav && css`
     width: 30px;
     height: 30px;
@@ -269,26 +387,22 @@ export const TextErrorStyled = styled.span`
   margin-bottom: 10px;
   font-weight: 600;
   transition: all 0.3s ease;
-  cursor: normal;
+  cursor: default;
   color: red;
   display: inline-block;
   min-height: 13px;
 `;
 
 export const Input = styled.input`
-  font-size: 1.15em;
-  padding: 0.5em;
+  font-size: ${props => props.fontSize || '1.25em'};
+  padding: ${props => props.padding || '0.5em'};
   color: #000;
   background: #fff;
   border: none;
   border-radius: 3px;
   width: 280px;
-  border: 1px solid #626262;
   transition: all 0.3s ease;
-  ${props => props.chat && css`
-    width: 100%;
-    margin-right: 5px;
-  `}
+  outline: none;
   &:hover {
     border: 1px solid #026a95;
   }
@@ -296,6 +410,7 @@ export const Input = styled.input`
     outline :none;
     border: 1px solid #026a95;
   }
+
 `;
 
 export const TextArea = styled.textarea`
@@ -305,9 +420,10 @@ export const TextArea = styled.textarea`
   background: #fff;
   border: none;
   border-radius: 3px;
-  width: 100%;
-  border: 1px solid #626262;
+  width: 100%;  
   transition: all 0.3s ease;
+  height: 70px;
+  resize: none;
   &:hover {
     border: 1px solid #026a95;
   }
@@ -332,34 +448,88 @@ export const Label = styled.label`
   }
 `;
 
-export const SearchStyled = styled.article`
+export const FilterBoxStyled = styled.div`
+  display: block;  
+  padding: 4px 0;
+  font-size: 13px;
+  width: 110px;
+  ${props => props.showFilter && css`
+    & > ${SubSelectStyled} {
+      display: block;
+      max-width: 110px;
+      border: none;
+      top: 31px;
+      
+      & > ${SubSelectListStyled} {
+        font-size: 13px;
+        padding: 3px 10px;
+        display: flex;
+        align-items: center;
+        
+        span {
+          flex: 1
+        }
+        
+        i {
+          color: #00c056;
+        }
+      }
+    }
+  `}
+  span {
+    margin-right: 3px;
+  }
+`;
+
+export const FilterBoxTopStyled = styled.div`
+  padding: 0 10px;
+  border-left: 1px solid #ccd3d3;
+  display: flex;
+  align-items: center;
+  
+  span {
+    flex: 1;
+  }
+`;
+
+export const FilterBoxWrapperStyled = styled.div`
+  display: flex;
+  flex: 1;
 `;
 
 export const InputSearchStyled = styled.div`
   width: 100%;
-  display: inline-block;
+  display: flex;
   height: 22px;
-  input{
-    background-color: #7f7f7f;
-    width: 100%;
-    padding-left: 25px;
-    padding-right: 10px;
-    font-size: 11px;
-    height: 100%;
-    color: #fff;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    background-image: url(/images/cl-search.svg);
-    background-repeat: no-repeat;
-    background-size: 11px;
-    background-position: 6px 4px;
-    outline: none;
-    &:focus{
-      border: 1px solid #fff;
+  background-color: #fff;
+  border-radius: 5px 0 0 5px;
+  font-family: 'Proxima Nova Regular';
+  input {
+    &:hover {
+      border: none;
+    }
+    &:focus {
+      border: none;
     }
   }
 `;
 
 export const Icon = styled.i`
   margin-right: 5px;
+`;
+
+export const Svg = styled.svg`
+  display: inline-block;
+  vertical-align: middle;
+  ${props => props.margin && css`
+    margin: ${props.margin} !important;
+  `};
+  margin-right: ${props => props.marginRight ? `${props.marginRight}px` : '5px'};
+  padding: ${props => props.padding};
+  width: ${props => props.width ? `${props.width}px` : '16px'};
+  height: ${props => props.height ? `${props.height}px` : '16px'};
+  fill: ${props => props.color};
+  ${props => props.rotated && css`
+    transform: rotateX(180deg);
+  `}
 `;
