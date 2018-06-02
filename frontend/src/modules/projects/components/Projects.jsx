@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { PageCustomStyled, ElementStyled, TitleElementStyled, DescriptionElementStyled } from '../../../stylesheets/GeneralStyled';
 import { openModal } from '../../layout/actions/layout';
 import { MODAL_TYPE } from '../../../utils/enums';
+import { loadAllProjects } from '../actions/project';
 
 class Projects extends React.Component {
 
@@ -18,97 +19,35 @@ class Projects extends React.Component {
     };
   }
 
+  componentWillMount() {
+    const { loadAllProjects } = this.props;
+
+    loadAllProjects();
+  }
+
   render() {
-    const { openModal } = this.props;
+    const { openModal, project: { projects } } = this.props;
 
     return (
       <PageCustomStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Capstone
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            <LinesEllipsis
-              text='abd iijs opsa ospa ocmpda iasjdoa sjasdi asoidsd hfiosd fhisodhf isodfweiw epxic ddic dksnckfiweoweei jijf iowej fiowe'
-              maxLine='2'
-              ellipsis='...'
-              trimRight
-              basedOn='letters'
-            />
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Tgame
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Cube
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Cloakify
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Hr-Forte
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Capstone
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Tgame
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Cube
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Cloakify
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
-        <ElementStyled>
-          <TitleElementStyled>
-            Hr-Forte
-          </TitleElementStyled>
-          <DescriptionElementStyled>
-            abd iijs opsa ospa ocmpd
-          </DescriptionElementStyled>
-        </ElementStyled>
+        {
+          projects.map(project => (
+            <ElementStyled key={project.id}>
+              <TitleElementStyled>
+                {project.name}
+              </TitleElementStyled>
+              <DescriptionElementStyled>
+                <LinesEllipsis
+                  text={project.description}
+                  maxLine='2'
+                  ellipsis='...'
+                  trimRight
+                  basedOn='letters'
+                />
+              </DescriptionElementStyled>
+            </ElementStyled>
+          ))
+        }
         <ElementStyled created onClick={() => openModal(MODAL_TYPE.CREATING_PROJECT)}>
           <TitleElementStyled>
             Create new project...
@@ -121,10 +60,20 @@ class Projects extends React.Component {
 
 Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
+  loadAllProjects: PropTypes.func.isRequired,
+  project: PropTypes.shape({
+    projects: PropTypes.array.isRequired,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  })
 };
 
+const mapStateToProps = state => ({
+  project: state.project
+});
+
 const mapDispatchToProps = dispatch => bindActionCreators({
-  openModal: openModal
+  openModal: openModal,
+  loadAllProjects: loadAllProjects
 }, dispatch);
 
-export default connect(null, mapDispatchToProps)(Projects);
+export default connect(mapStateToProps, mapDispatchToProps)(Projects);

@@ -115,7 +115,7 @@ export const DescriptionElementStyled = styled.div`
 export const ElementStyled = styled.div`
   display: ${props => props.wrapper ? 'flex' : 'block'};
   width: ${props => props.width ? props.width : '160px'};
-  min-height: 50px;
+  min-height: 100px;
   max-height: 300px;
   border-radius: 5px;
   background-color: #e6e6e6;

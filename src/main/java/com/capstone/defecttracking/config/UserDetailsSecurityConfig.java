@@ -56,6 +56,7 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/").permitAll()
             .antMatchers("/user/**").permitAll()
+            .antMatchers("/admin/").hasRole("ADMIN")
             .anyRequest().fullyAuthenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -24,10 +24,20 @@ const loadCurrentUser = () => {
   return axios.get('user/currentUser');
 };
 
+const createProject = (project) => {
+  return axios.post('admin/createProject', project);
+};
+
+const loadAllProjects = (userId) => {
+  return axios.post('loadAllProjects', userId);
+};
+
 const API = {
   login,
   signUp,
-  loadCurrentUser
+  loadCurrentUser,
+  createProject,
+  loadAllProjects
 };
 
 export default API;

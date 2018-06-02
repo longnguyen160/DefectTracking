@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import Modal from './Modal';
 import {
   ModalHeaderStyled,
@@ -10,9 +12,12 @@ import {
   ModalLineContentStyled,
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
-import { Input, LineFormStyled, TextArea } from '../../stylesheets/GeneralStyled';
+import { Input, LineFormStyled, TextArea, TextErrorStyled } from '../../stylesheets/GeneralStyled';
 import { INPUT_NAME, INPUT_DESCRIPTION, INPUT_STATUS } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
+import { validateForm } from '../../utils/ultis';
+import { createProject } from '../../modules/projects/actions/project';
+
 
 const renderField = (field) => {
   const { input, type, placeholder, renderType } = field;
@@ -38,11 +43,26 @@ class ModalCreatingProject extends React.Component {
   }
 
   handleCreateProject = (values) => {
-    console.log(values);
+    const { name, description, status } = values;
+    const { createProject, onClose } = this.props;
+
+    if (validateForm.required(name)) {
+      throw new SubmissionError({ _error: 'Name is required' });
+    }
+    if (validateForm.required(description)) {
+      throw new SubmissionError({ _error: 'Description is required' });
+    }
+    if (validateForm.required(status)) {
+      throw new SubmissionError({ _error: 'Status is required' });
+    }
+
+    createProject(values, () => {
+      onClose();
+    });
   };
 
   render() {
-    const { onClose, isOpen, handleSubmit } = this.props;
+    const { onClose, isOpen, handleSubmit, submitFailed, error, submitSucceeded, project, submitting } = this.props;
 
     return (
       <Modal onClose={onClose} isOpen={isOpen}>
@@ -120,9 +140,20 @@ class ModalCreatingProject extends React.Component {
             <ModalLineStyled>
               <ModalLineContentStyled>
                 {
-                  <Button type='submit' btnModal>
-                    Create
-                  </Button>
+                  ((submitSucceeded && project.error) || (submitFailed && error)) &&
+                  <TextErrorStyled error={true}>
+                    {project.error || error}
+                  </TextErrorStyled>
+                }
+                {
+                  submitting || project.isLoading ?
+                    <Button hasBorder btnModal disabled>
+                      <i className="fa fa-circle-o-notch fa-spin" />Loading
+                    </Button>
+                  :
+                    <Button type='submit' btnModal hasBorder>
+                      Create
+                    </Button>
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -137,8 +168,23 @@ ModalCreatingProject.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  submitFailed: PropTypes.bool.isRequired,
+  submitSucceeded: PropTypes.bool.isRequired,
+  createProject: PropTypes.func.isRequired,
+  error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  project: PropTypes.shape({
+    isLoading: PropTypes.bool.isRequired,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  })
 };
+
+const mapStateToProps = state => ({ project: state.project });
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  createProject: createProject
+}, dispatch);
 
 export default reduxForm({
   form: 'CreateProjectForm'
-})(ModalCreatingProject);
+})(connect(mapStateToProps, mapDispatchToProps)(ModalCreatingProject));
