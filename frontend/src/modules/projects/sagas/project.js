@@ -32,9 +32,9 @@ function* watchCreateProject() {
   yield takeLatest(CREATE_PROJECT, createProject);
 }
 
-function* loadAllProjects(userId) {
+function* loadAllProjects() {
   try {
-    const { data } = yield call(API.loadAllProjects, userId);
+    const { data } = yield call(API.loadAllProjects);
 
     yield put(loadAllProjectsSuccess(data));
   } catch (error) {

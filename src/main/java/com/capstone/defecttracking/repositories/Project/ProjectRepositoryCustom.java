@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ProjectRepositoryCustom {
     Project findById(String projectId);
-    Boolean isProjectExisted(String projectName);
+    Boolean doesProjectExisted(String projectName);
     List<Project> loadAllProjectsForCurrentUser(String userId);
 }

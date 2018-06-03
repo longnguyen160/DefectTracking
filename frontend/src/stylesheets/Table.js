@@ -66,7 +66,7 @@ export const ListTableBodyStyled = styled.div`
     transition: all 250ms ease-in;
     z-index: 999;    
   }
-  ${props => props.list && css`
+  ${props => props.showList && css`
     min-height: 55px;
     padding: 0px;
     align-items: center;

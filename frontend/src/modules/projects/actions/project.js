@@ -35,10 +35,9 @@ const createProjectFailure = (error) => {
   }
 };
 
-const loadAllProjects = (userId) => {
+const loadAllProjects = () => {
   return {
-    type: LOAD_ALL_PROJECTS,
-    userId
+    type: LOAD_ALL_PROJECTS
   }
 };
 

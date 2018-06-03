@@ -28,7 +28,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public Boolean isUsernameExisted(String username) {
+    public Boolean doesUsernameExisted(String username) {
         Query query = new Query(Criteria.where("username").is(username));
         User user = mongoTemplate.findOne(query, User.class);
 

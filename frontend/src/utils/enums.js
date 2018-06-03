@@ -1,3 +1,5 @@
+const WEB_SOCKET_URL = 'http://localhost:8080/ws';
+
 const INPUT_EMAIL = 'email';
 
 const INPUT_PASSWORD = 'password';
@@ -70,5 +72,6 @@ export {
   SIDE_BAR_BEFORE_SELECT_PROJECT,
   MODAL_TYPE,
   INPUT_DESCRIPTION,
-  INPUT_STATUS
+  INPUT_STATUS,
+  WEB_SOCKET_URL
 }

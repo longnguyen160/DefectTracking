@@ -11,6 +11,7 @@ import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import com.capstone.defecttracking.repositories.User.UserRepository;
 import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 
 @RestController
@@ -41,6 +43,12 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    private SimpMessagingTemplate template;
+
+    @Inject
+    public UserController(SimpMessagingTemplate template) {
+        this.template = template;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody User user) {
@@ -66,7 +74,7 @@ public class UserController {
             serverResponse = new ServerResponse(false, "Email is existed!!!");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
-        } else if (userRepositoryCustom.isUsernameExisted(user.getUsername())) {
+        } else if (userRepositoryCustom.doesUsernameExisted(user.getUsername())) {
             serverResponse = new ServerResponse(false, "Username is existed!!!");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
@@ -84,7 +92,7 @@ public class UserController {
     @GetMapping("/currentUser")
     public User getCurrentUser(@CurrentUser UserDetailsSecurity currentUser) {
         User user = userRepositoryCustom.findById(currentUser.getId());
-
+        template.convertAndSend("/topic/user", "lololol");
         return new User(user.getId(), user.getUsername(), user.getEmail(), user.getRoles());
     }
 }

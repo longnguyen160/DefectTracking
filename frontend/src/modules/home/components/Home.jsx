@@ -32,7 +32,7 @@ class Home extends React.Component {
                 <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
               </ListTableHeaderStyled>
               <ListTableBodyContainerStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -43,7 +43,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -54,7 +54,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -65,7 +65,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -76,7 +76,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -87,7 +87,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -98,7 +98,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -109,7 +109,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -120,7 +120,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -144,7 +144,7 @@ class Home extends React.Component {
           <div>
             <div>
               <ListTableBodyContainerStyled borderTop activity>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -155,7 +155,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -166,7 +166,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -177,7 +177,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -188,7 +188,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -199,7 +199,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -210,7 +210,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -221,7 +221,7 @@ class Home extends React.Component {
                     High
                   </ListTableBodyItemStyled>
                 </ListTableBodyStyled>
-                <ListTableBodyStyled list>
+                <ListTableBodyStyled showList>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>

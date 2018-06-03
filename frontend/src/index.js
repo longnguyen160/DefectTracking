@@ -11,6 +11,7 @@ import MainLayout from './modules/layout/components/MainLayout';
 import './index.css';
 import Projects from './modules/projects/components/Projects';
 import Home from './modules/home/components/Home';
+import registerServiceWorker from './registerServiceWorker';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -63,4 +64,4 @@ ReactDOM.render(
   </Provider>
   , document.getElementById('root')
 );
-// registerServiceWorker();
+registerServiceWorker();

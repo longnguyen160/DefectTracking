@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import SockJsClient from "react-stomp";
 import { PageCustomStyled, ElementStyled, TitleElementStyled, DescriptionElementStyled } from '../../../stylesheets/GeneralStyled';
 import { openModal } from '../../layout/actions/layout';
-import { MODAL_TYPE } from '../../../utils/enums';
+import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjects } from '../actions/project';
 
 class Projects extends React.Component {
@@ -15,7 +16,8 @@ class Projects extends React.Component {
 
     this.state = {
       selectedProject: '',
-      priority: ''
+      priority: '',
+      clientConnected: false
     };
   }
 
@@ -24,6 +26,17 @@ class Projects extends React.Component {
 
     loadAllProjects();
   }
+
+  onMessageReceive = (message, topic) => {
+    console.log(message, topic);
+    const { loadAllProjects } = this.props;
+
+    loadAllProjects();
+  };
+
+  send = () => {
+
+  };
 
   render() {
     const { openModal, project: { projects } } = this.props;
@@ -53,6 +66,12 @@ class Projects extends React.Component {
             Create new project...
           </TitleElementStyled>
         </ElementStyled>
+        <SockJsClient
+          url={WEB_SOCKET_URL}
+          topics={['/topic/projects']}
+          onMessage={this.onMessageReceive}
+          debug={true}
+        />
       </PageCustomStyled>
     );
   }

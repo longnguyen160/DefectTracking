@@ -26,7 +26,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public Boolean isProjectExisted(String projectName) {
+    public Boolean doesProjectExisted(String projectName) {
         Query query = new Query(Criteria.where("name").is(projectName));
         Project project = mongoTemplate.findOne(query, Project.class);
 

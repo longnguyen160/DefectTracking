@@ -5,5 +5,5 @@ import com.capstone.defecttracking.models.User.User;
 public interface UserRepositoryCustom {
     User findByEmail(String email);
     User findById(String userId);
-    Boolean isUsernameExisted(String username);
+    Boolean doesUsernameExisted(String username);
 }
