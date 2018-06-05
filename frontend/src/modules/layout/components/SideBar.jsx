@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { SideBarMainStyled, SideBarMainBlockStyled } from '../../../stylesheets/SideBar';
-import { SIDE_BAR_BEFORE_SELECT_PROJECT } from '../../../utils/enums';
+import { SIDE_BAR_BEFORE_SELECT_PROJECT, SIDE_BAR_AFTER_SELECT_PROJECT } from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
 
 
@@ -8,11 +9,35 @@ class SideBar extends React.Component {
   constructor(props) {
     super(props);
 
-    const { history } = props;
+    const { history, selectedProject } = props;
+    let sideBar = SIDE_BAR_BEFORE_SELECT_PROJECT;
+
+    if (selectedProject) {
+      sideBar = SIDE_BAR_AFTER_SELECT_PROJECT
+    }
 
     this.state = {
-      selected: SIDE_BAR_BEFORE_SELECT_PROJECT.find(element => element.url === history.location.pathname)
+      selected: sideBar.find(element => history.location.pathname.includes(element.url)),
+      sideBar
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let { sideBar } = this.state;
+    const { history } = this.props;
+
+    if (nextProps.selectedProject) {
+      sideBar = SIDE_BAR_AFTER_SELECT_PROJECT;
+    } else {
+      sideBar = SIDE_BAR_BEFORE_SELECT_PROJECT;
+    }
+
+    this.setState({
+      sideBar,
+      selected: sideBar.find(element =>
+        (history.location.pathname.includes(element.url) && element.url !== '/') || (element.url === '/' && history.location.pathname === '/')
+      )
+    });
   }
 
   handleSelectSideBar = (value) => {
@@ -23,12 +48,12 @@ class SideBar extends React.Component {
   };
 
   render() {
-    const { selected } = this.state;
+    const { selected, sideBar } = this.state;
 
     return (
       <SideBarMainStyled>
         {
-          SIDE_BAR_BEFORE_SELECT_PROJECT.map(item => (
+          selected && sideBar.map(item => (
             <SideBarMainBlockStyled
               onClick={() => this.handleSelectSideBar(item)}
               selected={selected.name === item.name}
@@ -44,5 +69,10 @@ class SideBar extends React.Component {
     );
   }
 }
+
+SideBar.propTypes = {
+  selectedProject: PropTypes.object,
+  history: PropTypes.object
+};
 
 export default SideBar;

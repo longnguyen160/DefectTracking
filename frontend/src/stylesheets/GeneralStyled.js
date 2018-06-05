@@ -63,6 +63,11 @@ export const PageBoardStyled = styled.section`
   padding: 15px;
   height: calc(100vh - 100px);
   overflow: hidden;
+  ${props => props.backlog && css`
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+  `}
 `;
 
 export const PageBoardItemStyled = styled.div`
@@ -96,7 +101,7 @@ export const TitleElementStyled = styled.div`
   font-size: ${props => props.fontSize ? props.fontSize : '16px'};
   color: #626262;
   font-weight: ${props => props.fontWeight ? props.fontWeight : 600};
-  flex: 1;
+  flex: ${props => props.flex ? props.flex : 1};
   ${props => !props.noPadding && css`
     padding: 10px;
   `}  
@@ -142,52 +147,11 @@ export const ElementStyled = styled.div`
   }
 `;
 
-export const ProjectWrapperELementStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-export const ProjectTitleElementStyled = styled.span`
-  font-weight: bold;
-  text-align: right;
-  color: #000000;
-`;
-
 export const ElementHeaderStyled = styled.div`
   display: flex;  
   width: 100%;  
-  padding: 5px;
-  align-items: center;
-`;
-
-export const UserElementStyled = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  & > div {
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-export const UserActionElementStyle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-`;
-
-export const UsernameElementStyle = styled.span`
-  font-weight: bold;
-  font-size: 13px;
-  color: #626262;
-`;
-
-export const TimeElementStyle = styled.span`
-  color: rgba(0,0,0,.5);
-  font-size: 12px;
+  padding: ${props => props.padding ? props.padding : '5px'};
+  align-items: center;  
 `;
 
 export const FormBlockStyled = styled.div`

@@ -5,21 +5,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import SockJsClient from "react-stomp";
 import { PageCustomStyled, ElementStyled, TitleElementStyled, DescriptionElementStyled } from '../../../stylesheets/GeneralStyled';
-import { openModal } from '../../layout/actions/layout';
+import { openModal, selectProject } from '../../layout/actions/layout';
 import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjects } from '../actions/project';
 
 class Projects extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedProject: '',
-      priority: '',
-      clientConnected: false
-    };
-  }
 
   componentWillMount() {
     const { loadAllProjects } = this.props;
@@ -27,15 +17,17 @@ class Projects extends React.Component {
     loadAllProjects();
   }
 
-  onMessageReceive = (message, topic) => {
-    console.log(message, topic);
+  onMessageReceive = () => {
     const { loadAllProjects } = this.props;
 
     loadAllProjects();
   };
 
-  send = () => {
+  handleSelectProject = (project) => {
+    const { selectProject, history } = this.props;
 
+    selectProject(project);
+    history.push(`/${project.id}/backlog`);
   };
 
   render() {
@@ -45,7 +37,7 @@ class Projects extends React.Component {
       <PageCustomStyled>
         {
           projects.map(project => (
-            <ElementStyled key={project.id}>
+            <ElementStyled key={project.id} onClick={() => this.handleSelectProject(project)}>
               <TitleElementStyled>
                 {project.name}
               </TitleElementStyled>
@@ -80,6 +72,8 @@ class Projects extends React.Component {
 Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadAllProjects: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   project: PropTypes.shape({
     projects: PropTypes.array.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -92,7 +86,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
-  loadAllProjects: loadAllProjects
+  loadAllProjects: loadAllProjects,
+  selectProject: selectProject
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);

@@ -4,47 +4,46 @@ import {
   LOAD_CURRENT_USER_SUCCESS,
   LOAD_CURRENT_USER_FAILURE,
   OPEN_MODAL,
-  CLOSE_MODAL
+  CLOSE_MODAL,
+  SELECT_PROJECT,
+  RESET_PROJECT
 } from './types';
 
-const loadCurrentUser = (goToLoginPage) => {
-  return {
-    type: LOAD_CURRENT_USER,
-    goToLoginPage
-  }
-};
+const loadCurrentUser = goToLoginPage => ({
+  type: LOAD_CURRENT_USER,
+  goToLoginPage
+});
 
-const requestLoadCurrentUser = () => {
-  return {
-    type: REQUEST_LOAD_CURRENT_USER
-  }
-};
+const requestLoadCurrentUser = () => ({
+  type: REQUEST_LOAD_CURRENT_USER
+});
 
-const loadCurrentUserSuccess = (data) => {
-  return {
-    type: LOAD_CURRENT_USER_SUCCESS,
-    data
-  }
-};
+const loadCurrentUserSuccess = data => ({
+  type: LOAD_CURRENT_USER_SUCCESS,
+  data
+});
 
-const loadCurrentUserFailure = () => {
-  return {
-    type: LOAD_CURRENT_USER_FAILURE
-  }
-};
+const loadCurrentUserFailure = () => ({
+  type: LOAD_CURRENT_USER_FAILURE
+});
 
-const openModal = (modalType) => {
-  return {
-    type: OPEN_MODAL,
-    modalType
-  }
-};
+const openModal = modalType => ({
+  type: OPEN_MODAL,
+  modalType
+});
 
-const closeModal = () => {
-  return {
-    type: CLOSE_MODAL
-  }
-};
+const closeModal = () => ({
+  type: CLOSE_MODAL
+});
+
+const selectProject = project => ({
+  type: SELECT_PROJECT,
+  project
+});
+
+const resetProject = () => ({
+  type: RESET_PROJECT
+});
 
 export {
   loadCurrentUser,
@@ -52,5 +51,7 @@ export {
   loadCurrentUserSuccess,
   loadCurrentUserFailure,
   openModal,
-  closeModal
+  closeModal,
+  selectProject,
+  resetProject
 }

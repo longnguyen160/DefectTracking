@@ -4,14 +4,15 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
 import 'font-awesome/css/font-awesome.min.css';
+import configureStore from './store/configureStore';
+import registerServiceWorker from './registerServiceWorker';
+import MainLayout from './modules/layout/components/MainLayout';
 import SignIn from './modules/account/components/SignIn';
 import SignUp from './modules/account/components/SignUp';
-import configureStore from './store/configureStore';
-import MainLayout from './modules/layout/components/MainLayout';
-import './index.css';
 import Projects from './modules/projects/components/Projects';
 import Home from './modules/home/components/Home';
-import registerServiceWorker from './registerServiceWorker';
+import BackLog from './modules/backlog/components/BackLog';
+import './index.css';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -57,6 +58,7 @@ ReactDOM.render(
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/projects" component={Projects} />
+            <PrivateRoute exact path="/:projectId?/backlog" component={BackLog} />
           </Switch>
         </MainLayout>
       </Switch>

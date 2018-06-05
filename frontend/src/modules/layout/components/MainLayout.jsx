@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Notifications from 'react-notification-system-redux';
 import TopNavBar from './TopNavBar';
 import SideBar from './SideBar';
-import { loadCurrentUser, openModal, closeModal } from '../actions/layout';
+import { loadCurrentUser, openModal, closeModal, resetProject, selectProject } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { notificationStyle } from '../../../stylesheets/Notifications';
 import { FormGroupStyled } from '../../../stylesheets/GeneralStyled';
@@ -49,7 +49,15 @@ class MainLayout extends React.Component {
   };
 
   render() {
-    const { children, notifications, layout: { user }, logOut, history, openModal } = this.props;
+    const {
+      children,
+      notifications,
+      layout: { user, selectedProject },
+      logOut,
+      history,
+      openModal,
+      selectProject
+    } = this.props;
 
     return (
       <div className="app-wrapper">
@@ -62,9 +70,13 @@ class MainLayout extends React.Component {
           logOut={logOut}
           history={history}
           openModal={openModal}
+          selectProject={selectProject}
         />
         <FormGroupStyled padding>
-          <SideBar history={history} />
+          <SideBar
+            history={history}
+            selectedProject={selectedProject}
+          />
           {children}
         </FormGroupStyled>
         {this.handleOpenModal()}
@@ -81,11 +93,13 @@ MainLayout.propTypes = {
   logOut: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
     user: PropTypes.object,
     modalIsOpen: PropTypes.bool.isRequired,
     modalType: PropTypes.string.isRequired,
+    selectedProject: PropTypes.object,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   })
 };
@@ -99,7 +113,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   loadCurrentUser: loadCurrentUser,
   logOut: logOut,
   openModal: openModal,
-  closeModal: closeModal
+  closeModal: closeModal,
+  resetProject: resetProject,
+  selectProject: selectProject
 }, dispatch);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainLayout));

@@ -17,7 +17,7 @@ export const ListTableHeaderItemsStyled = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   `};
-  ${props => props.title && css`
+  ${props => props.issueName && css`
     flex: 1;
   `};
   ${props => props.priority && css`
@@ -48,7 +48,12 @@ export const ListTableBodyContainerStyled = styled.div`
   height: calc(100vh - ${props => props.activity ? '145px' : '176px'});
   ${props => props.borderTop && css`
     border-top: 1px solid #d1d1d1;
-  `}  
+  `}
+  ${props => props.dynamicHeight && css`
+    max-height: calc(100vh - ${props => props.activity ? '145px' : '176px'});
+    min-height: 100px;
+    height: 100%;
+  `}
 `;
 
 export const ListTableBodyStyled = styled.div`
@@ -70,7 +75,9 @@ export const ListTableBodyStyled = styled.div`
     min-height: 55px;
     padding: 0px;
     align-items: center;
-  `}  
+  `};
+  background-color: ${({isDragging}) => (isDragging ? 'rgb(185, 244, 188)' : 'white')};
+  box-shadow: ${({isDragging}) => (isDragging ? '2px 2px 1px rgba(0,0,0,0.2)' : 'none')};
 `;
 
 export const ListTableBodyItemStyled = styled.div`
@@ -83,7 +90,7 @@ export const ListTableBodyItemStyled = styled.div`
     flex: 0 0 85px;
     padding: 0 5px 0 10px;
   `}
-  ${props => props.title && css`
+  ${props => props.issueName && css`
     flex: 1;
   `}
   ${props => props.priority && css`

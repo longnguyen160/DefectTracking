@@ -4,7 +4,7 @@ import { Field, reduxForm, SubmissionError } from 'redux-form';
 import Select from 'react-select';
 import Uppy from 'uppy/lib/core';
 import Tus from 'uppy/lib/plugins/Tus';
-import { DragDrop } from 'uppy/lib/react';
+import Form from 'uppy/lib/plugins/Form';
 import Modal from './Modal';
 import {
   ModalHeaderStyled,
@@ -16,17 +16,8 @@ import {
 } from '../../stylesheets/Modal';
 import { Input, LineFormStyled, TextArea } from '../../stylesheets/GeneralStyled';
 import { Button } from '../../stylesheets/Button';
-
-// const uppy = Uppy({
-//   autoProceed: true
-// });
-//
-// uppy.use(Tus, { endpoint: 'https://master.tus.io/files/' });
-//
-// uppy.on('complete', (result) => {
-//   const url = result.successful[0].tus.uploadUrl;
-//   console.log(url);
-// });
+import DragAndDrop from '../upload/DragAndDrop';
+import DragDrop from 'uppy/lib/plugins/DragDrop/index';
 
 const renderField = (field) => {
   const { input, type, placeholder, renderType } = field;
@@ -57,24 +48,6 @@ const renderSelect = (field) => {
   );
 };
 
-const renderUploadFile = (field) => {
-  const { input, uppy } = field;
-
-  return (
-    <DragDrop
-      uppy={uppy}
-      locale={{
-        strings: {
-          dropHereOr: 'Drop here or %{browse}',
-          // Used as the label for the link that opens the system file selection dialog.
-          browse: 'browse'
-        }
-      }}
-      {...input}
-    />
-  );
-};
-
 class ModalCreatingIssue extends React.Component {
 
   constructor(props) {
@@ -84,17 +57,32 @@ class ModalCreatingIssue extends React.Component {
       project: '',
       priority: ''
     };
+
   }
 
-  componentWillMount() {
-    this.uppy = new Uppy({ autoProceed: false }).use(Tus, { endpoint: 'https://master.tus.io/files/' });
+  componentDidMount() {
+    const options = Object.assign(
+      { id: 'react:DragDrop' },
+      { target: this.container }
+    );
+    this.uppy = new Uppy({ debug: true })
+      .use(Tus, { endpoint: 'https://master.tus.io/files/' })
+      .use(Form, {
+        target: this.creatingForm,
+        getMetaFromForm: true,
+        addResultToForm: true,
+        resultName: 'uppyResult',
+        submitOnSuccess: false
+      })
+      .use(DragDrop, options);
+    this.plugin = this.uppy.getPlugin(options.id);
     this.uppy.on('complete', (result) => {
       console.log(result);
     });
   }
 
   componentWillUnmount () {
-    this.uppy.close();
+    this.uppy.removePlugin(this.plugin);
   }
 
   handleChange = (value, type) => {
@@ -116,7 +104,11 @@ class ModalCreatingIssue extends React.Component {
             <span>Create Issue</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
-        <form onSubmit={handleSubmit(this.handleCreateAccount)} id="CreateIssueForm">
+        <form
+          onSubmit={handleSubmit(this.handleCreateAccount)}
+          id="CreateIssueForm"
+          ref={(e) => this.creatingForm = e}
+        >
           <ModalContentStyled>
             <ModalLineStyled hasRows>
               <ModalLineContentStyled alignLeft>
@@ -190,12 +182,11 @@ class ModalCreatingIssue extends React.Component {
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Attachment</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    {/*<Field*/}
-                      {/*name={'attachment'}*/}
-                      {/*component={renderUploadFile}*/}
-                      {/*uppy={this.uppy}*/}
-                    {/*/>*/}
+                  <LineFormStyled innerRef={(e) => this.container = e}>
+                    <Field
+                      name={'attachment'}
+                      component={renderField}
+                    />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
