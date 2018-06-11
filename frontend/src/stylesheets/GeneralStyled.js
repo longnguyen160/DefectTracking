@@ -36,11 +36,6 @@ export const PageStyled = styled.div`
     max-width: 700px;
     height: 568px;
   `};
-  ${props => props.chatBox && css`
-    width: 100%;
-    max-width: 700px;
-    height: 100%;
-  `};
   @media(max-width: 700px) {
     padding: 0 0 35px;    
   }
@@ -51,10 +46,13 @@ export const PageCustomStyled = styled.div`
   justify-content: ${props => props.center ? 'center' : 'flex-start'};
   align-items: flex-start;
   flex-wrap: wrap;
-  margin: 20px;
+  margin: ${props => props.margin ? props.margin : '20px'};
   ${props => props.hasFlex && css`
     flex: 0.7;
-  `}  
+  `}
+  ${props => props.showColumn && css`
+    flex-direction: column;
+  `}
 `;
 
 export const PageBoardStyled = styled.section`
@@ -63,11 +61,22 @@ export const PageBoardStyled = styled.section`
   padding: 15px;
   height: calc(100vh - 100px);
   overflow: hidden;
+  ${props => props.backlog && css`
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+  `}
+  & > .ReactTable {
+    flex: 1;
+  }
+  ${props => props.noPadding && css`
+    padding: 0;
+  `}
 `;
 
 export const PageBoardItemStyled = styled.div`
   flex: 1;
-  margin: 0px 20px;
+  margin: ${props => props.margin ? props.margin : '0px 20px'};
   
   ${props => props.activity && css`
     flex: 0.6;
@@ -96,10 +105,13 @@ export const TitleElementStyled = styled.div`
   font-size: ${props => props.fontSize ? props.fontSize : '16px'};
   color: #626262;
   font-weight: ${props => props.fontWeight ? props.fontWeight : 600};
-  flex: 1;
+  flex: ${props => props.flex ? props.flex : 1};
   ${props => !props.noPadding && css`
     padding: 10px;
-  `}  
+  `}
+  ${props => props.padding && css`
+    padding: ${props.padding};
+  `}
 `;
 
 export const DescriptionElementStyled = styled.div`
@@ -110,12 +122,15 @@ export const DescriptionElementStyled = styled.div`
   color: #626262;
   line-height: 20px;
   width: 100%;
+  ${props => props.noPadding && css`
+    padding: 0;
+  `}
 `;
 
 export const ElementStyled = styled.div`
   display: ${props => props.wrapper ? 'flex' : 'block'};
   width: ${props => props.width ? props.width : '160px'};
-  min-height: 50px;
+  min-height: 100px;
   max-height: 300px;
   border-radius: 5px;
   background-color: #e6e6e6;
@@ -142,52 +157,27 @@ export const ElementStyled = styled.div`
   }
 `;
 
-export const ProjectWrapperELementStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-export const ProjectTitleElementStyled = styled.span`
-  font-weight: bold;
-  text-align: right;
-  color: #000000;
-`;
-
 export const ElementHeaderStyled = styled.div`
   display: flex;  
   width: 100%;  
-  padding: 5px;
+  padding: ${props => props.padding ? props.padding : '5px'};
   align-items: center;
-`;
-
-export const UserElementStyled = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  & > div {
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-export const UserActionElementStyle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-`;
-
-export const UsernameElementStyle = styled.span`
-  font-weight: bold;
-  font-size: 13px;
-  color: #626262;
-`;
-
-export const TimeElementStyle = styled.span`
-  color: rgba(0,0,0,.5);
-  font-size: 12px;
+  
+  input {
+    background: #fff;
+    border: 1px solid #d1d1d1;
+    padding: 5px 8px;
+    color: #626262;
+    font-style: italic;
+    border-radius: 3px;
+    font-size: 13px;
+    width: 100%;
+    
+    &:focus{
+      border-color: #036a95;
+      outline: 0;
+    }
+  }  
 `;
 
 export const FormBlockStyled = styled.div`
@@ -226,6 +216,10 @@ export const FormGroupStyled = styled.div`
   ${props => props.margin && css`
     margin: 10px 0;
   `};
+  & > .Select {
+    width: ${props => props.widthSelect ? props.widthSelect : '100%'};
+    padding: ${props => props.paddingSelect ? props.paddingSelect : '20px 5px'};
+  }
   @media(max-width: 700px) {
     ${props => props.input && css`
       padding: 0 5px;    
@@ -240,9 +234,10 @@ export const LineFormStyled = styled.div`
   align-items: center;
   flex: 1;
   position: relative;
-  .react-select__menu {
-    position: relative;
-  }  
+  & > .Select {
+    max-width: 240px;
+    width: 100%;
+  }
   textarea, input, select {
     background: #fff;
     border: 1px solid #d1d1d1;
@@ -258,14 +253,6 @@ export const LineFormStyled = styled.div`
     &:focus{
       border-color: #036a95;
       outline: 0;
-    }
-  }
-  .icon-cl-expand{
-    font-size:  8px;
-    color: #036a95;
-    cursor: pointer;
-    &:hover{
-      color: #333;
     }
   }
   span[name="calendar"]{
@@ -326,6 +313,16 @@ export const LineFormStyled = styled.div`
   ${props => props.pointer && css`
     cursor: pointer;
   `}
+  ${props => props.fullWidth && css`
+    & > div {
+      width: 100%;
+    }
+  `}
+  ${props => props.reactSelect && css`
+    input {
+      padding: 0 !important;
+    }
+  `}
 `;
 
 export const TitleFormStyled = styled.span`
@@ -373,10 +370,17 @@ export const Image = styled.img`
     margin: 0 5px;
     border-radius: 25px;
   `}
-  ${props => props.search && css`
-    width: 50px;
-    height: 50px;
-    margin: 0 5px;
+  ${props => props.avatar && css`
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+  `}
+  ${props => props.margin && css`
+    margin: ${props.margin}
+  `}
+  ${props => props.dynamic && css`
+    width: ${props.dynamic}
+    height: ${props.dynamic}
     border-radius: 25px;
   `}
 `;
@@ -410,7 +414,9 @@ export const Input = styled.input`
     outline :none;
     border: 1px solid #026a95;
   }
-
+  ${props => props.fullWidth && css`
+    width: 100%;
+  `}
 `;
 
 export const TextArea = styled.textarea`
@@ -444,7 +450,7 @@ export const Label = styled.label`
     color: black
   }
   a:hover{
-    color: #026a95
+    color: #026a95;
   }
 `;
 
@@ -453,12 +459,13 @@ export const FilterBoxStyled = styled.div`
   padding: 4px 0;
   font-size: 13px;
   width: 110px;
+  position: relative;
   ${props => props.showFilter && css`
     & > ${SubSelectStyled} {
       display: block;
       max-width: 110px;
       border: none;
-      top: 31px;
+      top: 22px;
       
       & > ${SubSelectListStyled} {
         font-size: 13px;
@@ -495,6 +502,7 @@ export const FilterBoxTopStyled = styled.div`
 export const FilterBoxWrapperStyled = styled.div`
   display: flex;
   flex: 1;
+  align-items: center;
 `;
 
 export const InputSearchStyled = styled.div`
@@ -530,6 +538,73 @@ export const Svg = styled.svg`
   height: ${props => props.height ? `${props.height}px` : '16px'};
   fill: ${props => props.color};
   ${props => props.rotated && css`
-    transform: rotateX(180deg);
+    transform: ${props => props.rotate ? props.rotate : 'rotateX(180deg)'};
   `}
+  ${props => props.hoverPointer && css`
+    cursor: pointer;
+    &:hover {
+      fill: #d1d1d1;
+    }
+  `}
+`;
+
+export const TableBlockStyled = styled.div`
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-wrap: wrap;
+  ${props => props.alignLeft && css`
+    justify-content: flex-start;
+  `}
+`;
+
+export const IssueStatusStyled = styled.div`
+  display: block;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 3px;
+  
+  ${props => {
+    if (props.status) {
+      switch (props.status) {
+        case 'To Do':
+          return css`
+            border: 1px solid #d1d1d1;
+            background-color: #d1d1d1;
+            color: #1a1a1a;   
+          `;
+        case 'In Progress':
+          return css`
+            border: 1px solid #026a95;
+            background-color: #026a95;
+            color: #fff;
+          `;
+        case 'Testing':
+          return css`
+            border: 1px solid #fe8f00;
+            background-color: #fe8f00;
+            color: #fff;
+          `;
+        case 'Done':
+          return css`
+            border: 1px solid #00c056;
+            background-color: #00c056;
+            color: #fff;
+          `;
+      } 
+    }
+  }} 
+`;
+
+export const LabelStyled = styled.div`
+  display: block;
+  padding: ${props => props.padding ? props.padding : '3px'};
+  font-size: ${props => props.fontSize ? props.fontSize : '13'};
+  border-radius: 3px;
+  border: 1px solid ${props => props.color ? props.color : '#d1d1d1'};
+  background-color: ${props => props.color ? props.color : '#d1d1d1'};
+  color: ${props => props.textColor ? props.textColor : '#000'};
+  text-align: center;
+  margin: 0 3px;
 `;

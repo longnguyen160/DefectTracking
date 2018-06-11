@@ -18,8 +18,28 @@ a {
   text-decoration: none !important;
 }
 
+.uppy-DragDrop-arrow {
+  width: 25px !important;
+  height: 25px !important;
+  margin: 0 !important;
+}
+.uppy-DragDrop-label {
+  font-size: 0.8em !important;
+}
+.uppy-DragDrop-inner {
+  padding: 5px !important;
+}
+
+.uppy-FileInput-btn {
+  padding: 5px 4px!important;
+}
+.react-datepicker__time-list {
+  padding: 8px;
+}
+
 *, :after, :before {
-  box-sizing: border-box
+  box-sizing: border-box;
+  outline: none;
 }
 
 @font-face {

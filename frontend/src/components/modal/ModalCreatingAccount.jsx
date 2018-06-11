@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { reduxForm, SubmissionError } from 'redux-form';
 import Modal from './Modal';
 import {
   ModalHeaderStyled,
@@ -11,16 +11,9 @@ import {
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
 import { Input, LineFormStyled } from '../../stylesheets/GeneralStyled';
-import { INPUT_NAME, INPUT_EMAIL, INPUT_PASSWORD } from '../../utils/enums';
+import { INPUT_TEXT, INPUT_PASSWORD } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
-
-const renderField = (field) => {
-  const { input, type, placeholder } = field;
-
-  return (
-    <Input type={type} placeholder={placeholder} {...input} />
-  );
-};
+import InputField from '../form/InputField';
 
 class ModalCreatingAccount extends React.Component {
 
@@ -57,11 +50,10 @@ class ModalCreatingAccount extends React.Component {
                 <ModalLineTitleStyled>Username</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={INPUT_NAME}
-                      name={INPUT_NAME}
+                    <InputField
+                      type={INPUT_TEXT}
+                      name={'uesrname'}
                       placeholder={'Username...'}
-                      component={renderField}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -72,11 +64,10 @@ class ModalCreatingAccount extends React.Component {
                 <ModalLineTitleStyled>Email</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={INPUT_EMAIL}
-                      name={INPUT_EMAIL}
+                    <InputField
+                      type={INPUT_TEXT}
+                      name={'email'}
                       placeholder={'Email...'}
-                      component={renderField}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -87,11 +78,10 @@ class ModalCreatingAccount extends React.Component {
                 <ModalLineTitleStyled>Password</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
+                    <InputField
                       type={INPUT_PASSWORD}
                       name={INPUT_PASSWORD}
                       placeholder={'Password...'}
-                      component={renderField}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>

@@ -14,11 +14,12 @@ export const SideBarMainStyled = styled.div`
 
 export const SideBarMainBlockStyled = styled.div`
   display: flex;  
-  height: 30px;
+  height: 40px;
   width: 100%;
   justify-content: flex-start;
   align-items: center;
-  padding: 5px;
+  padding: 10px 5px;
+  cursor: pointer;
 
   &:hover {
     background-color: #d1d1d1;

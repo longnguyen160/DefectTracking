@@ -3,12 +3,19 @@ package com.capstone.defecttracking.models.User;
 public class UserProfile {
     private String firstName;
     private String lastName;
-    private String address;
+    private String age;
+    private String phone;
+    private String avatarURL;
 
-    public UserProfile(String firstName, String lastName, String address) {
+    public UserProfile() {
+    }
+
+    public UserProfile(String firstName, String lastName, String age, String phone, String avatarURL) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
+        this.age = age;
+        this.phone = phone;
+        this.avatarURL = avatarURL;
     }
 
     public String getFirstName() {
@@ -27,11 +34,27 @@ public class UserProfile {
         this.lastName = lastName;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAge() {
+        return age;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAvatarURL() {
+        return avatarURL;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
     }
 }
