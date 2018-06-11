@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { reduxForm, SubmissionError } from 'redux-form';
 import { bindActionCreators } from 'redux';
 import {
   FormStyled,
@@ -17,9 +17,10 @@ import {
   Label
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { INPUT_EMAIL, INPUT_PASSWORD, INPUT_CONFIRM_PASSWORD, INPUT_NAME } from '../../../utils/enums';
+import { INPUT_TEXT, INPUT_PASSWORD } from '../../../utils/enums';
 import { validateForm } from '../../../utils/ultis';
 import { signUpUser } from '../actions/signUp';
+import InputField from '../../../components/form/InputField';
 
 const renderField = (field) => {
   const { input, type, placeholder } = field;
@@ -76,9 +77,9 @@ class SignUp extends Component {
               <FormGroupStyled>
                 <LineFormStyled hasTitle>
                   <TitleFormStyled>Name</TitleFormStyled>
-                  <Field
-                    type={INPUT_NAME}
-                    name={INPUT_NAME}
+                  <InputField
+                    type={INPUT_TEXT}
+                    name={'name'}
                     placeholder={'Name'}
                     component={renderField}
                   />
@@ -87,9 +88,9 @@ class SignUp extends Component {
               <FormGroupStyled>
                 <LineFormStyled hasTitle>
                   <TitleFormStyled>Email</TitleFormStyled>
-                  <Field
-                    type={INPUT_EMAIL}
-                    name={INPUT_EMAIL}
+                  <InputField
+                    type={INPUT_TEXT}
+                    name={'email'}
                     placeholder={'Email'}
                     component={renderField}
                   />
@@ -98,7 +99,7 @@ class SignUp extends Component {
               <FormGroupStyled>
                 <LineFormStyled hasTitle>
                   <TitleFormStyled>Password</TitleFormStyled>
-                  <Field
+                  <InputField
                     type={INPUT_PASSWORD}
                     name={INPUT_PASSWORD}
                     placeholder={'Password'}
@@ -109,9 +110,9 @@ class SignUp extends Component {
               <FormGroupStyled>
                 <LineFormStyled hasTitle>
                   <TitleFormStyled>Confirm Password</TitleFormStyled>
-                  <Field
+                  <InputField
                     type={INPUT_PASSWORD}
-                    name={INPUT_CONFIRM_PASSWORD}
+                    name={'confirmPassword'}
                     placeholder={'Confirm Password'}
                     component={renderField}
                   />

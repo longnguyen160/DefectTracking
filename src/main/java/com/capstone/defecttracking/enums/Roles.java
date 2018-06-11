@@ -1,5 +1,11 @@
 package com.capstone.defecttracking.enums;
 
 public enum Roles {
-    USER
+
+    USER {
+        @Override
+        public String toString() {
+            return "USER";
+        }
+    }
 }

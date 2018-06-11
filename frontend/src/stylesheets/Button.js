@@ -12,7 +12,10 @@ export const Button = styled.button`
 
   ${props => props.small && css`
     padding: 3px 9px;
+    font-size: 13px !important;
+    width: 80px !important;
   `}
+  
   ${props => props.btnModal && css`
     font-family: Proxima Nova bold;
     font-size: 14px;
@@ -28,6 +31,7 @@ export const Button = styled.button`
     text-transform: uppercase;
     margin-top: 10px;
   `}
+  
   ${props => props.none && css`
     background: transparent;
     color: #036a95;
@@ -36,6 +40,7 @@ export const Button = styled.button`
       text-decoration: underline;
     }
   `}
+  
   ${props => props.hasBorder && css`
     background: transparent;
     font-size: 14px;
@@ -49,8 +54,7 @@ export const Button = styled.button`
     border-radius: 3px;
     transition: all 0.3s ease;
     cursor: pointer;
-    color: #026a95;
-    border: 2px solid #026a95;
+    color: #026a95;    
     justify-content: center;
     i{
       margin-right: 5px;
@@ -60,17 +64,22 @@ export const Button = styled.button`
       color: #fff;
     }
   `}
+  
   &:hover{
   }
+  
   ${props => props.fullHeight && css`
     height: 100%;
   `}
+  
   ${props => props.fullWidth && css`
     width: 100%;    
   `}
+  
   ${props => props.right && css`
-    margin: 0;
+    margin: 10px 0 10px auto;
   `}
+  
   ${props => props.edit && css`
     border: 2px solid #00c056;
     color: #00c056;
@@ -79,6 +88,7 @@ export const Button = styled.button`
       color: #fff;
     }
   `}
+  
   ${props => props.remove && css`
     border: 2px solid #ff3000;
     color: #ff3000;
@@ -87,6 +97,7 @@ export const Button = styled.button`
       color: #fff;
     }
   `}
+  
   ${props => props.no && css`
     border: 2px solid #626262;
     color: #626262;
@@ -94,11 +105,17 @@ export const Button = styled.button`
       background-color: #626262;
       color: #fff;
     }
+  `}
+  
   ${props => props.disabled && css`
     &:hover {
       cursor: not-allowed;
       opacity: 0.5;
     }
-  `}  
-`}
+  `}
+  
+  ${props => props.autoHeight && css`
+    height: auto;
+  `}
 `;
+

@@ -2,21 +2,21 @@ import styled, { css } from 'styled-components';
 
 export const SubSelectStyled = styled.div`
   display: none;
-  position: fixed;
-  max-width: 100px;
-  width: 100%;
+  position: absolute;
+  ${props => props.fixedWidth ?
+    css`
+      width: 140px;
+    `
+  :
+    css`
+      max-width: 150px;
+      width: 100%;    
+  `};
+  overflow: auto;
+  max-height: 250px;
   background: #fff;
   top: 40px;
-  ${props => props.user && css`
-    right: 155px;
-  `}
-  ${props => props.project && css`
-    right: 47px;
-  `}
-  ${props => props.create && css`
-    right: 279px;
-    max-width: 135px;
-  `}
+  right: 0;
   z-index: 9;
   box-shadow: 3px 5px 10px -3px rgba(0, 0, 0, .5);
   border: 1px solid #d1d1d1;

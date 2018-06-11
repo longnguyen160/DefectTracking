@@ -20,6 +20,15 @@ public class User {
     public User() {
     }
 
+    public User(String id, String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+        this.profile = profile;
+    }
+
     public User(String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
         this.username = username;
         this.password = password;
@@ -34,6 +43,7 @@ public class User {
         this.email = email;
         this.roles = roles;
     }
+
 
     public String getId() {
         return id;

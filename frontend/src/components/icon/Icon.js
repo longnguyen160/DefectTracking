@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Svg } from '../../stylesheets/GeneralStyled';
 
 const Icon = props => {
@@ -14,6 +15,10 @@ const Icon = props => {
       }
     </Svg>
   );
+};
+
+Icon.propTypes = {
+  icon: PropTypes.array.isRequired
 };
 
 export default Icon;

@@ -3,7 +3,9 @@ import {
   LOAD_CURRENT_USER_SUCCESS,
   LOAD_CURRENT_USER_FAILURE,
   OPEN_MODAL,
-  CLOSE_MODAL
+  CLOSE_MODAL,
+  SELECT_PROJECT,
+  RESET_PROJECT
 } from '../actions/types';
 
 const initialState = {
@@ -11,6 +13,7 @@ const initialState = {
   isLoading: false,
   error: null,
   modalIsOpen: false,
+  selectedProject: null,
   modalType: ''
 };
 
@@ -45,6 +48,16 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         modalIsOpen: false,
         modalType: ''
+      });
+
+    case SELECT_PROJECT:
+      return Object.assign({}, state, {
+        selectedProject: action.project
+      });
+
+    case RESET_PROJECT:
+      return Object.assign({}, state, {
+        selectedProject: null
       });
 
     default:

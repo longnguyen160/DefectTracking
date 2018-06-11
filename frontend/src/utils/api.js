@@ -24,10 +24,40 @@ const loadCurrentUser = () => {
   return axios.get('user/currentUser');
 };
 
+const createProject = (project) => {
+  return axios.post('admin/createProject', project);
+};
+
+const loadAllProjects = () => {
+  return axios.get('loadAllProjects');
+};
+
+const loadAllUsers = () => {
+  return axios.get('user/loadAllUsers');
+};
+
+const createIssue = (issue) => {
+  return axios.post('user/createIssue', issue);
+};
+
+const loadAllIssues = () => {
+  return axios.get('user/loadAllIssues');
+};
+
+const updateProfile = (profile, email) => {
+  return axios.post('user/updateProfile', { profile, email })
+};
+
 const API = {
   login,
   signUp,
-  loadCurrentUser
+  loadCurrentUser,
+  createProject,
+  loadAllProjects,
+  loadAllUsers,
+  createIssue,
+  loadAllIssues,
+  updateProfile
 };
 
 export default API;
