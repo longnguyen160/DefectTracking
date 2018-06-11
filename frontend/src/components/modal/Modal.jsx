@@ -12,7 +12,7 @@ export default class Modal extends React.Component {
   };
 
   render() {
-    const { isOpen, openWidth } = this.props;
+    const { isOpen, maxWidth } = this.props;
 
     return (
       <MyModal
@@ -20,7 +20,7 @@ export default class Modal extends React.Component {
         onClick={this.closeModal}
         isOpen={isOpen}
       >
-        <ModalContent onClick={this.clickModal} openWidth={openWidth}>
+        <ModalContent onClick={this.clickModal} maxWidth={maxWidth}>
           {this.props.children}
         </ModalContent>
       </MyModal>
@@ -28,13 +28,9 @@ export default class Modal extends React.Component {
   }
 };
 
-Modal.defaultProps = {
-  openWidth: false
-};
-
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  children: PropTypes.element.isRequired,
-  openWidth: PropTypes.bool
+  children: PropTypes.node.isRequired,
+  maxWidth: PropTypes.string
 };

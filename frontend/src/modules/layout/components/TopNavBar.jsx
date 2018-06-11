@@ -11,7 +11,7 @@ import {
   SubSelectListStyled,
   SubSelectStyled
 } from '../../../stylesheets/TopNavBar';
-import { Image } from "../../../stylesheets/GeneralStyled";
+import { FilterBoxWrapperStyled , Image} from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
 import { ICONS, MODAL_TYPE } from '../../../utils/enums';
 
@@ -63,15 +63,23 @@ class TopNavBar extends Component {
             </HeaderMainItemsStyled>
             <HeaderMainItemsStyled info user hover>
               <span>
-                <Image topNav src={user.profile ? user.profile.imageSrc : '/images/default_avatar.jpg'}/>
+                <Image topNav src={user.profile ? user.profile.avatarURL : '/images/default_avatar.jpg'}/>
                 <span>{user ? user.username : null}</span>
               </span>
               <i className="fa fa-chevron-down" />
               <SubSelectStyled>
+                <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.PROFILE)}>
+                  <FilterBoxWrapperStyled>
+                    <Icon icon={ICONS.USER} color={'#1A1A1A'} width={20} height={20}/>
+                    <span>Profile</span>
+                  </FilterBoxWrapperStyled>
+                </SubSelectListStyled>
                 <SubSelectListStyled onClick={this.logOut}>
                   <Link to='/signin'>
-                    <i className="fa fa-sign-out" />
-                    Logout
+                    <FilterBoxWrapperStyled>
+                      <Icon icon={ICONS.LOGOUT} color={'#1A1A1A'} width={20} height={20}/>
+                      <spam>Logout</spam>
+                    </FilterBoxWrapperStyled>
                   </Link>
                 </SubSelectListStyled>
               </SubSelectStyled>

@@ -6,6 +6,8 @@ import com.capstone.defecttracking.models.Token.JwtAuthentication;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
+import com.capstone.defecttracking.models.User.UserProfile;
+import com.capstone.defecttracking.models.User.UserProfileRequest;
 import com.capstone.defecttracking.security.CurrentUser;
 import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -92,7 +95,33 @@ public class UserController {
     @GetMapping("/currentUser")
     public User getCurrentUser(@CurrentUser UserDetailsSecurity currentUser) {
         User user = userRepositoryCustom.findById(currentUser.getId());
-        template.convertAndSend("/topic/user", "lololol");
-        return new User(user.getId(), user.getUsername(), user.getEmail(), user.getRoles());
+
+        return new User(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles(), user.getProfile());
+    }
+
+    @GetMapping("/loadAllUsers")
+    public List<User> getAllUsers() {
+        return userRepositoryCustom.getAllUsers();
+    }
+
+    @PostMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestBody UserProfileRequest profileRequest) {
+        ServerResponse serverResponse;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
+
+        if ((profileRequest.getEmail() == null && profileRequest.getProfile() == null)
+            || !userRepositoryCustom.updateUserProfile(userDetailsSecurity.getId(), profileRequest.getProfile(), profileRequest.getEmail())) {
+            serverResponse = new ServerResponse(false, "Update failed!!!");
+
+            return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+
+        }
+
+        serverResponse = new ServerResponse(true, "Update profile successfully");
+
+        template.convertAndSend("/topic/currentUser", serverResponse);
+
+        return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
 }

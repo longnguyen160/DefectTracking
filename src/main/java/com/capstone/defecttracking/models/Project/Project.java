@@ -3,6 +3,8 @@ package com.capstone.defecttracking.models.Project;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+
 @Document(collection = "projects")
 
 public class Project {
@@ -12,12 +14,12 @@ public class Project {
     private String name;
     private String description;
     private String status;
-    private MembersInProject members;
+    private ArrayList<String> members = new ArrayList<String>();
 
     public Project() {
     }
 
-    public Project(String id, String name, String description, String status, MembersInProject members) {
+    public Project(String id, String name, String description, String status, ArrayList<String> members) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -57,11 +59,11 @@ public class Project {
         this.status = status;
     }
 
-    public MembersInProject getMembers() {
+    public ArrayList<String> getMembers() {
         return members;
     }
 
-    public void setMembers(MembersInProject members) {
-        this.members = members;
+    public void setMembers(String members) {
+        this.members.add(members);
     }
 }

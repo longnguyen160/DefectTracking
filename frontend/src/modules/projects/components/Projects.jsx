@@ -4,10 +4,19 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import SockJsClient from "react-stomp";
-import { PageCustomStyled, ElementStyled, TitleElementStyled, DescriptionElementStyled } from '../../../stylesheets/GeneralStyled';
+import {
+  PageCustomStyled,
+  ElementStyled,
+  TitleElementStyled,
+  DescriptionElementStyled,
+  PageBoardItemStyled,
+  PageBoardStyled,
+  ElementHeaderStyled
+} from '../../../stylesheets/GeneralStyled';
 import { openModal, selectProject } from '../../layout/actions/layout';
-import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { ICONS, MODAL_TYPE, PROJECT_STATUS, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjects } from '../actions/project';
+import Icon from '../../../components/icon/Icon';
 
 class Projects extends React.Component {
 
@@ -30,11 +39,15 @@ class Projects extends React.Component {
     history.push(`/${project.id}/backlog`);
   };
 
-  render() {
-    const { openModal, project: { projects } } = this.props;
-
-    return (
-      <PageCustomStyled>
+  renderProjects = (projects, icon, title) => (
+    <PageBoardItemStyled margin={'20px'}>
+      <ElementHeaderStyled>
+        <Icon icon={icon} color={'#1A1A1A'} width={30} height={30}/>
+        <TitleElementStyled noPadding fontSize={'20px'}>
+          {title}
+        </TitleElementStyled>
+      </ElementHeaderStyled>
+      <PageCustomStyled margin={'0'}>
         {
           projects.map(project => (
             <ElementStyled key={project.id} onClick={() => this.handleSelectProject(project)}>
@@ -53,18 +66,31 @@ class Projects extends React.Component {
             </ElementStyled>
           ))
         }
-        <ElementStyled created onClick={() => openModal(MODAL_TYPE.CREATING_PROJECT)}>
+        <ElementStyled created onClick={() => this.props.openModal(MODAL_TYPE.CREATING_PROJECT)}>
           <TitleElementStyled>
             Create new project...
           </TitleElementStyled>
         </ElementStyled>
+      </PageCustomStyled>
+    </PageBoardItemStyled>
+  );
+
+  render() {
+    const { project: { projects } } = this.props;
+    const privateProject = projects.filter(project => project.status === PROJECT_STATUS.PRIVATE);
+    const publicProject = projects.filter(project => project.status === PROJECT_STATUS.PUBLIC);
+
+    return (
+      <PageBoardStyled backlog>
+        {this.renderProjects(privateProject, ICONS.PRIVATE, 'Private')}
+        {this.renderProjects(publicProject, ICONS.PUBLIC, 'Public')}
         <SockJsClient
           url={WEB_SOCKET_URL}
           topics={['/topic/projects']}
           onMessage={this.onMessageReceive}
           debug={true}
         />
-      </PageCustomStyled>
+      </PageBoardStyled>
     );
   }
 }

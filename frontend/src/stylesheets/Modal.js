@@ -54,7 +54,7 @@ export const ModalContent = styled.div`
   box-shadow: 0px 0px 50px -10px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
   min-width: 320px;
-  max-width: ${props => props.openWidth ? '740px' : '320px'};
+  max-width: ${props => props.maxWidth ? props.maxWidth : '320px'};
   width: 100%;
   max-height: 600px;
   overflow-y: auto;
@@ -75,9 +75,19 @@ export const ModalHeaderTitleStyled = styled.div`
   }
 `;
 
+export const ModalBodyStyled = styled.div`
+  display: flex;
+`;
+
 export const ModalContentStyled = styled.div`
   display: flex;
   flex-direction: column;
+  ${props => props.flex && css`
+    flex: ${props.flex};    
+  `}
+  ${props => props.padding && css`
+    padding: ${props.padding}
+  `}
 `;
 
 export const ModalLineStyled = styled.div`
@@ -85,8 +95,15 @@ export const ModalLineStyled = styled.div`
   ${props => props.hasRows && css`
     flex-direction: row;
     display: flex;
+    
+    & > ${ModalLineContentStyled} {
+      padding: 5px;
+    }
   `}
 
+  ${props => props.padding && css`
+    padding: ${props.padding};
+  `}
   ${props => props.multipleLine && css`
     & > div:first-child {
       display: flex;
@@ -169,15 +186,17 @@ export const ModalLineContentStyled = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow: hidden;
-  i[class*='fa-cc'] {
-    font-size: 36px;
-    margin-right: 5px;
-  }
+  ${props => props.hasOverflow && css`
+    overflow: hidden;
+  `}  
 
+  svg {
+    margin: 0 5px;  
+  }
+  
   img{
     max-width: 75px;
-    margin-right: 15px;
+    margin: 0 5px;
   }
   ${props => props.messageError && css`
     color: #ff3000;

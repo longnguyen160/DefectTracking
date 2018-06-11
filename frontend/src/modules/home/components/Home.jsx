@@ -14,8 +14,9 @@ import {
   ListTableBodyItemStyled,
   ListTableBodyContainerStyled
 } from '../../../stylesheets/Table';
-import { resetProject } from '../../layout/actions/layout';
+import { openModal, resetProject } from '../../layout/actions/layout';
 import { bindActionCreators } from 'redux';
+import { MODAL_TYPE } from '../../../utils/enums';
 
 class Home extends React.Component {
 
@@ -26,6 +27,8 @@ class Home extends React.Component {
   }
 
   render() {
+    const { openModal } = this.props;
+
     return (
       <PageBoardStyled>
         <PageBoardItemStyled>
@@ -42,7 +45,7 @@ class Home extends React.Component {
                 <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
               </ListTableHeaderStyled>
               <ListTableBodyContainerStyled>
-                <ListTableBodyStyled showList>
+                <ListTableBodyStyled showList onClick={() => openModal(MODAL_TYPE.ISSUE_DETAILS)}>
                   <ListTableBodyItemStyled itemId>
                     ISSUE-1
                   </ListTableBodyItemStyled>
@@ -253,10 +256,12 @@ class Home extends React.Component {
 
 Home.propTypes = {
   resetProject: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  resetProject: resetProject
+  resetProject: resetProject,
+  openModal: openModal
 }, dispatch);
 
 export default connect(null, mapDispatchToProps)(Home);

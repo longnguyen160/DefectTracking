@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { reduxForm, SubmissionError } from 'redux-form';
 import { bindActionCreators } from 'redux';
 import Notifications from 'react-notification-system-redux';
 import { loginUser } from '../actions/login';
@@ -19,9 +19,10 @@ import {
   Label
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { INPUT_EMAIL, INPUT_PASSWORD } from '../../../utils/enums';
+import { INPUT_TEXT, INPUT_PASSWORD } from '../../../utils/enums';
 import { validateForm } from '../../../utils/ultis';
 import { notificationStyle } from '../../../stylesheets/Notifications';
+import InputField from '../../../components/form/InputField';
 
 const renderField = (field) => {
   const { input, type, placeholder } = field;
@@ -73,9 +74,9 @@ class SignIn extends React.Component {
               <FormGroupStyled>
                 <LineFormStyled hasTitle>
                   <TitleFormStyled>Email</TitleFormStyled>
-                  <Field
-                    type={INPUT_EMAIL}
-                    name={INPUT_EMAIL}
+                  <InputField
+                    type={INPUT_TEXT}
+                    name={'email'}
                     placeholder={'Email'}
                     component={renderField}
                   />
@@ -84,7 +85,7 @@ class SignIn extends React.Component {
               <FormGroupStyled>
                 <LineFormStyled hasTitle>
                   <TitleFormStyled>Password</TitleFormStyled>
-                  <Field
+                  <InputField
                     type={INPUT_PASSWORD}
                     name={INPUT_PASSWORD}
                     placeholder={'Password'}

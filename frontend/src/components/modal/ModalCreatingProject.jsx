@@ -12,23 +12,19 @@ import {
   ModalLineContentStyled,
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
-import { Input, LineFormStyled, TextArea, TextErrorStyled } from '../../stylesheets/GeneralStyled';
-import { INPUT_NAME, INPUT_DESCRIPTION, INPUT_STATUS } from '../../utils/enums';
+import { Input, LineFormStyled, TextErrorStyled } from '../../stylesheets/GeneralStyled';
+import { INPUT_TEXT, TEXT_AREA } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import { validateForm } from '../../utils/ultis';
 import { createProject } from '../../modules/projects/actions/project';
+import InputField from '../form/InputField';
 
 
 const renderField = (field) => {
-  const { input, type, placeholder, renderType } = field;
-  let InputType = Input;
-
-  if (renderType === 'textarea') {
-    InputType = TextArea;
-  }
+  const { input, type, placeholder } = field;
 
   return (
-    <InputType type={type} placeholder={placeholder} {...input} />
+    <Input type={type} placeholder={placeholder} {...input} />
   );
 };
 
@@ -82,12 +78,11 @@ class ModalCreatingProject extends React.Component {
                 <ModalLineTitleStyled>Project Name</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={INPUT_NAME}
-                      name={INPUT_NAME}
+                    <InputField
+                      type={INPUT_TEXT}
+                      name={'name'}
                       placeholder={'Project name...'}
                       renderType={'input'}
-                      component={renderField}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -98,12 +93,11 @@ class ModalCreatingProject extends React.Component {
                 <ModalLineTitleStyled>Description</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={INPUT_DESCRIPTION}
-                      name={INPUT_DESCRIPTION}
+                    <InputField
+                      type={TEXT_AREA}
+                      name={'description'}
                       placeholder={'Description...'}
                       renderType={'textarea'}
-                      component={renderField}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -116,7 +110,7 @@ class ModalCreatingProject extends React.Component {
                   <LineFormStyled noMargin autoWidth>
                     <Field
                       type="radio"
-                      name={INPUT_STATUS}
+                      name={'status'}
                       component={renderField}
                       value="public"
                     />
@@ -129,7 +123,7 @@ class ModalCreatingProject extends React.Component {
                   <LineFormStyled noMargin autoWidth>
                     <Field
                       type="radio"
-                      name={INPUT_STATUS}
+                      name={'status'}
                       component={renderField}
                       value="private"
                     />

@@ -7,11 +7,17 @@ import {
   SIGN_UP_FAILURE,
   REQUEST_LOG_OUT,
   LOG_OUT_SUCCESS,
-  LOG_OUT_FAILURE
+  LOG_OUT_FAILURE,
+  LOAD_ALL_USERS_SUCCESS,
+  LOAD_ALL_USERS_FAILURE,
+  UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAILURE
 } from '../actions/types';
 import { getUserIdFromToken, checkAuthentication } from '../../../utils/ultis';
 
 const initialState = {
+  users: [],
   isFetching: false,
   isAuthenticated: checkAuthentication(),
   userId: getUserIdFromToken(),
@@ -71,6 +77,35 @@ export default function account(state = initialState, action) {
       });
 
     case LOG_OUT_FAILURE:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: action.error
+      });
+
+    case LOAD_ALL_USERS_SUCCESS:
+      return Object.assign({}, state, {
+        users: action.users,
+        error: null
+      });
+
+    case LOAD_ALL_USERS_FAILURE:
+      return Object.assign({}, state, {
+        error: action.error
+      });
+
+    case UPDATE_PROFILE_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true,
+        error: null
+      });
+
+    case UPDATE_PROFILE_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: null
+      });
+
+    case UPDATE_PROFILE_FAILURE:
       return Object.assign({}, state, {
         isFetching: false,
         error: action.error

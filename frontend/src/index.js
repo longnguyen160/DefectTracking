@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
-import 'font-awesome/css/font-awesome.min.css';
 import configureStore from './store/configureStore';
 import registerServiceWorker from './registerServiceWorker';
 import MainLayout from './modules/layout/components/MainLayout';
@@ -12,7 +11,17 @@ import SignUp from './modules/account/components/SignUp';
 import Projects from './modules/projects/components/Projects';
 import Home from './modules/home/components/Home';
 import BackLog from './modules/backlog/components/BackLog';
+import UsersList from './modules/account/components/UsersList';
+import IssueList from './modules/issue/components/IssueList';
+import Sprint from './modules/sprint/components/Sprint';
+import ProjectsManagement from './modules/management/components/ProjectsManagement';
+import UsersManagement from './modules/management/components/UsersManagement';
+
+import 'font-awesome/css/font-awesome.min.css';
+import 'react-table/react-table.css';
+import '../src/stylesheets/uppy.css';
 import './index.css';
+
 
 export const history = createHistory();
 export const store = configureStore();
@@ -59,6 +68,11 @@ ReactDOM.render(
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/projects" component={Projects} />
             <PrivateRoute exact path="/:projectId?/backlog" component={BackLog} />
+            <PrivateRoute exact path="/:projectId?/members" component={UsersList} />
+            <PrivateRoute exact path="/:projectId?/activeSprint" component={Sprint} />
+            <PrivateRoute exact path="/issues" component={IssueList} />
+            <PrivateRoute exact path="/manage/projects" component={ProjectsManagement} />
+            <PrivateRoute exact path="/manage/users" component={UsersManagement} />
           </Switch>
         </MainLayout>
       </Switch>

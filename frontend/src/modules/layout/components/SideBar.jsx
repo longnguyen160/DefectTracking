@@ -41,10 +41,15 @@ class SideBar extends React.Component {
   }
 
   handleSelectSideBar = (value) => {
-    const { history } = this.props;
+    const { history, selectedProject } = this.props;
 
     this.setState({ selected: value });
-    history.push(value.url);
+
+    if (selectedProject) {
+      history.push(`/${selectedProject.id}${value.url}`);
+    } else {
+      history.push(value.url);
+    }
   };
 
   render() {

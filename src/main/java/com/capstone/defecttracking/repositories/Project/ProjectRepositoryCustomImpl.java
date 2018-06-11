@@ -38,8 +38,8 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         Query query = new Query(Criteria.where("_id").is(userId));
         User user = mongoTemplate.findOne(query, User.class);
 
-        if (user.getRoles().contains(Roles.USER)) {
-            query = new Query(Criteria.where("members.$").is(userId));
+        if (user.getRoles().contains(Roles.USER.toString())) {
+            query = new Query(Criteria.where("members").is(userId));
 
             return mongoTemplate.find(query, Project.class);
         } else {

@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
-import Select from 'react-select';
+import { reduxForm, SubmissionError } from 'redux-form';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Uppy from 'uppy/lib/core';
 import Tus from 'uppy/lib/plugins/Tus';
-import Form from 'uppy/lib/plugins/Form';
+import moment from 'moment';
 import Modal from './Modal';
 import {
   ModalHeaderStyled,
@@ -14,39 +15,28 @@ import {
   ModalLineContentStyled,
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
-import { Input, LineFormStyled, TextArea } from '../../stylesheets/GeneralStyled';
+import {
+  LineFormStyled,
+  FilterBoxWrapperStyled,
+  TitleElementStyled,
+  Image,
+  TextErrorStyled
+} from '../../stylesheets/GeneralStyled';
 import { Button } from '../../stylesheets/Button';
-import DragAndDrop from '../upload/DragAndDrop';
-import DragDrop from 'uppy/lib/plugins/DragDrop/index';
-
-const renderField = (field) => {
-  const { input, type, placeholder, renderType } = field;
-  let InputType = Input;
-
-  if (renderType === 'textarea') {
-    InputType = TextArea;
-  }
-
-  return (
-    <InputType type={type} placeholder={placeholder} {...input} />
-  );
-};
-
-const renderSelect = (field) => {
-  const { input, options } = field;
-
-  return (
-    <Select
-      isSearchable={false}
-      options={options}
-      onChange={() => input.onChange(input.name)}
-      value={input.value}
-      classNamePrefix="react-select"
-      name={input.name}
-      {...input}
-    />
-  );
-};
+import Icon from '../icon/Icon';
+import {
+  ICONS,
+  SELECT,
+  INPUT_TEXT,
+  TEXT_AREA,
+  FILE,
+  DATETIME_PICKER,
+  CREATABLE,
+  ISSUE_STATUS_ARRAY
+} from '../../utils/enums';
+import InputField from '../form/InputField';
+import { validateForm } from '../../utils/ultis';
+import { createIssue } from '../../modules/issue/actions/issue';
 
 class ModalCreatingIssue extends React.Component {
 
@@ -54,76 +44,105 @@ class ModalCreatingIssue extends React.Component {
     super(props);
 
     this.state = {
-      project: '',
-      priority: ''
+      uploadedFile: []
     };
 
   }
 
-  componentDidMount() {
-    const options = Object.assign(
-      { id: 'react:DragDrop' },
-      { target: this.container }
-    );
+  componentWillMount() {
     this.uppy = new Uppy({ debug: true })
-      .use(Tus, { endpoint: 'https://master.tus.io/files/' })
-      .use(Form, {
-        target: this.creatingForm,
-        getMetaFromForm: true,
-        addResultToForm: true,
-        resultName: 'uppyResult',
-        submitOnSuccess: false
-      })
-      .use(DragDrop, options);
-    this.plugin = this.uppy.getPlugin(options.id);
+      .use(Tus, { endpoint: 'https://master.tus.io/files/' });
+  }
+
+  componentDidMount() {
+    const { selectedProject, change, user } = this.props;
+
+    if (selectedProject) {
+      change('projectId', selectedProject.id);
+    }
+    change('reporter', user.id);
     this.uppy.on('complete', (result) => {
-      console.log(result);
+      this.setState(prevState => {
+        prevState.uploadedFile.push(...result.successful);
+
+        return {
+          uploadedFile: prevState.uploadedFile
+        }
+      });
     });
   }
 
   componentWillUnmount () {
-    this.uppy.removePlugin(this.plugin);
+    this.uppy.close();
   }
 
-  handleChange = (value, type) => {
-    this.setState({ [type]: value });
+  handleCreateIssue = (values) => {
+    const { createIssue, onClose } = this.props;
+
+    if (validateForm.required(values.projectId)) {
+      throw new SubmissionError({ _error: 'Project is required' });
+    }
+    if (validateForm.required(values.issueName)) {
+      throw new SubmissionError({ _error: 'Summary is required' });
+    }
+    if (validateForm.required(values.assignee)) {
+      throw new SubmissionError({ _error: 'Assignee is required' });
+    }
+
+    createIssue(
+      {
+        ...values,
+        dueDate: moment(values.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+        createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      }, () => {
+      onClose();
+    })
   };
 
-  handleCreateAccount = (values) => {
-    console.log(values);
+  handleDeleteAttachment = (fileURL) => {
+    this.setState(prevState => ({
+      uploadedFile: prevState.uploadedFile.filter(file => file.uploadURL !== fileURL)
+    }));
   };
 
   render() {
-    const { onClose, isOpen, handleSubmit } = this.props;
-    const { project, priority } = this.state;
+    const {
+      onClose,
+      isOpen,
+      handleSubmit,
+      projects,
+      user,
+      issue,
+      pristine,
+      submitting,
+      error,
+      submitFailed,
+      submitSucceeded
+    } = this.props;
+    const { uploadedFile } = this.state;
 
     return (
-      <Modal onClose={onClose} isOpen={isOpen} openWidth={true}>
+      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'600px'}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
             <span>Create Issue</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
         <form
-          onSubmit={handleSubmit(this.handleCreateAccount)}
+          onSubmit={handleSubmit(this.handleCreateIssue)}
           id="CreateIssueForm"
-          ref={(e) => this.creatingForm = e}
         >
           <ModalContentStyled>
             <ModalLineStyled hasRows>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Project</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <Field
-                      name={'project'}
-                      onChange={(e) => this.handleChange(e, 'project')}
-                      component={renderSelect}
-                      value={project && project.value}
-                      options={[
-                        { value: 'one', label: 'One' },
-                        { value: 'two', label: 'Two' }
-                      ]}
+                  <LineFormStyled reactSelect>
+                    <InputField
+                      name={'projectId'}
+                      type={SELECT}
+                      options={projects}
+                      searchable={false}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -131,16 +150,13 @@ class ModalCreatingIssue extends React.Component {
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <Field
+                  <LineFormStyled reactSelect>
+                    <InputField
                       name={'priority'}
-                      onChange={(e) => this.handleChange(e, 'priority')}
-                      component={renderSelect}
-                      value={priority && priority.value}
-                      options={[
-                        { value: 'high', label: 'High' },
-                        { value: 'low', label: 'Low' }
-                      ]}
+                      type={SELECT}
+                      options={ISSUE_STATUS_ARRAY}
+                      searchable={false}
+                      renderCustom
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -151,11 +167,10 @@ class ModalCreatingIssue extends React.Component {
                 <ModalLineTitleStyled>Summary</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={'text'}
+                    <InputField
+                      type={INPUT_TEXT}
                       name={'issueName'}
                       placeholder={'Summary...'}
-                      component={renderField}
                       renderType={'input'}
                     />
                   </LineFormStyled>
@@ -167,12 +182,15 @@ class ModalCreatingIssue extends React.Component {
                 <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={'text'}
+                    <InputField
+                      type={SELECT}
                       name={'reporter'}
                       placeholder={'Reporter...'}
-                      component={renderField}
-                      renderType={'input'}
+                      options={[
+                        { value: user.id, label: user.username, ...user }
+                      ]}
+                      renderCustom
+                      disabled={true}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -182,13 +200,38 @@ class ModalCreatingIssue extends React.Component {
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Attachment</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
-                  <LineFormStyled innerRef={(e) => this.container = e}>
-                    <Field
+                  <LineFormStyled fullWidth>
+                    <InputField
                       name={'attachment'}
-                      component={renderField}
+                      type={FILE}
+                      renderType={'file'}
+                      uppy={this.uppy}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
+                <ModalLineContentStyled>
+                  {
+                    uploadedFile.map(file => (
+                      <FilterBoxWrapperStyled key={file.uploadURL}>
+                        {
+                          file.type && file.type.includes('image') ?
+                            <Image project src={file.uploadURL}/>
+                          :
+                            <Icon icon={ICONS.ATTACHMENT} color={'#1A1A1A'} width={30} height={30}/>
+                        }
+                        <TitleElementStyled padding={'10px 0'}>{file.name}</TitleElementStyled>
+                        <Icon
+                          icon={ICONS.DELETE}
+                          color={'#1A1A1A'}
+                          width={10}
+                          height={10}
+                          onClick={() => this.handleDeleteAttachment(file.uploadURL)}
+                          hoverPointer
+                        />
+                      </FilterBoxWrapperStyled>
+                    ))
+                  }
+                </ModalLineContentStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled>
@@ -196,11 +239,9 @@ class ModalCreatingIssue extends React.Component {
                 <ModalLineTitleStyled>Due Date</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={'text'}
+                    <InputField
+                      type={DATETIME_PICKER}
                       name={'dueDate'}
-                      component={renderField}
-                      renderType={'input'}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -211,42 +252,40 @@ class ModalCreatingIssue extends React.Component {
                 <ModalLineTitleStyled>Description</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
-                    <Field
-                      type={'text'}
+                    <InputField
+                      type={TEXT_AREA}
                       name={'description'}
-                      component={renderField}
                       renderType={'textarea'}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
-            <ModalLineStyled>
+            <ModalLineStyled hasRows>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <Field
+                  <LineFormStyled reactSelect>
+                    <InputField
                       name={'assignee'}
-                      onChange={(e) => this.handleChange(e, 'assignee')}
-                      component={renderSelect}
+                      type={SELECT}
                       options={[
                         { value: 'Me', label: 'me' },
                       ]}
+                      renderCustom
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Labels</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <Field
+                  <LineFormStyled reactSelect>
+                    <InputField
                       name={'label'}
-                      onChange={(e) => this.handleChange(e, 'label')}
-                      component={renderSelect}
+                      type={CREATABLE}
+                      options={[]}
+                      multi={true}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -255,9 +294,25 @@ class ModalCreatingIssue extends React.Component {
             <ModalLineStyled>
               <ModalLineContentStyled>
                 {
-                  <Button type='submit' btnModal>
-                    Create
-                  </Button>
+                  ((submitSucceeded && issue.error) || (submitFailed && error)) &&
+                    <TextErrorStyled error={true}>
+                      {issue.error || error}
+                    </TextErrorStyled>
+                }
+                {
+                  submitting || issue.isLoading ?
+                    <Button hasBorder disabled>
+                      <i className="fa fa-circle-o-notch fa-spin" />Loading
+                    </Button>
+                  :
+                    <Button
+                      hasBorder
+                      type="submit"
+                      form="CreateIssueForm"
+                      disabled={pristine}
+                    >
+                      Create
+                    </Button>
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -272,8 +327,36 @@ ModalCreatingIssue.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  projects: PropTypes.array.isRequired,
+  selectedProject: PropTypes.object.isRequired,
+  change: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  createIssue: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  submitFailed: PropTypes.bool.isRequired,
+  submitSucceeded: PropTypes.bool.isRequired,
+  error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  issue: PropTypes.shape({
+    isLoading: PropTypes.bool.isRequired,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  })
 };
 
-export default reduxForm({
+const mapStateToProps = state => ({
+  projects: state.project.projects.map(project => ({
+    value: project.id,
+    label: project.name
+  })),
+  user: state.layout.user,
+  selectedProject: state.layout.selectedProject,
+  issue: state.issue
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  createIssue: createIssue
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   form: 'CreateIssueForm'
-})(ModalCreatingIssue);
+})(ModalCreatingIssue));

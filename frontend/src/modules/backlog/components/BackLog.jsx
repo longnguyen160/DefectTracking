@@ -8,7 +8,6 @@ import {
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
-  ListTableBodyContainerStyled, ListTableBodyItemStyled, ListTableBodyStyled,
   ListTableHeaderItemsStyled,
   ListTableHeaderStyled
 } from '../../../stylesheets/Table';
@@ -111,7 +110,7 @@ class BackLog extends React.Component {
           <PageBoardItemStyled activity>
             <ElementHeaderStyled padding={'20px 5px'}>
               <TitleElementStyled noPadding flex={'0 0 85px'}>
-                Backlog
+                Issues
               </TitleElementStyled>
               <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
                 14 Issues
