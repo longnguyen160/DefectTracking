@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { reduxForm, SubmissionError } from 'redux-form';
 import Modal from './Modal';
 import {
@@ -10,27 +12,47 @@ import {
   ModalLineContentStyled,
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
-import { Input, LineFormStyled } from '../../stylesheets/GeneralStyled';
-import { INPUT_TEXT, INPUT_PASSWORD } from '../../utils/enums';
+import {LineFormStyled, TextErrorStyled} from '../../stylesheets/GeneralStyled';
+import {INPUT_PASSWORD, INPUT_TEXT} from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import InputField from '../form/InputField';
+import { signUpUser } from '../../modules/account/actions/signUp';
+import { validateForm } from '../../utils/ultis';
 
 class ModalCreatingAccount extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-
-    };
-  }
-
   handleCreateAccount = (values) => {
-    console.log(values);
+    const { username, email, password } = values;
+    const { createAccount } = this.props;
+
+    // check name
+    if (validateForm.required(username))
+      throw new SubmissionError({ _error: 'Name is required' });
+
+    // check email
+    if (validateForm.email(email))
+      throw new SubmissionError({ _error: 'Invalid email address' });
+
+    // check password
+    if (validateForm.required(password))
+      throw new SubmissionError({ _error: 'Password is required' });
+
+    createAccount({ username, email, password })
+
   };
 
   render() {
-    const { onClose, isOpen, handleSubmit } = this.props;
+    const {
+      onClose,
+      isOpen,
+      handleSubmit,
+      account,
+      pristine,
+      submitting,
+      error,
+      submitFailed,
+      submitSucceeded
+    } = this.props;
 
     return (
       <Modal onClose={onClose} isOpen={isOpen}>
@@ -52,7 +74,7 @@ class ModalCreatingAccount extends React.Component {
                   <LineFormStyled>
                     <InputField
                       type={INPUT_TEXT}
-                      name={'uesrname'}
+                      name={'username'}
                       placeholder={'Username...'}
                     />
                   </LineFormStyled>
@@ -80,7 +102,7 @@ class ModalCreatingAccount extends React.Component {
                   <LineFormStyled>
                     <InputField
                       type={INPUT_PASSWORD}
-                      name={INPUT_PASSWORD}
+                      name={'password'}
                       placeholder={'Password...'}
                     />
                   </LineFormStyled>
@@ -90,9 +112,20 @@ class ModalCreatingAccount extends React.Component {
             <ModalLineStyled>
               <ModalLineContentStyled>
                 {
-                  <Button type='submit' btnModal>
-                    Create
-                  </Button>
+                  ((submitSucceeded && account.error) || (submitFailed && error)) &&
+                    <TextErrorStyled error={true}>
+                      {account.error || error}
+                    </TextErrorStyled>
+                }
+                {
+                  submitting || account.isFetching ?
+                    <Button hasBorder btnModal disabled>
+                      <i className="fa fa-circle-o-notch fa-spin" />Loading
+                    </Button>
+                  :
+                    <Button type='submit' btnModal disabled={pristine}>
+                      Create
+                    </Button>
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -107,8 +140,27 @@ ModalCreatingAccount.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  createAccount: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  submitFailed: PropTypes.bool.isRequired,
+  submitSucceeded: PropTypes.bool.isRequired,
+  error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  account: PropTypes.shape({
+    isFetching: PropTypes.bool.isRequired,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  })
+
 };
 
-export default reduxForm({
+const mapStateToProps = state => ({
+  account: state.account
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  createAccount: signUpUser
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   form: 'CreateAccountForm'
-})(ModalCreatingAccount);
+})(ModalCreatingAccount));

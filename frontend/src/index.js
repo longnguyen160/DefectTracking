@@ -16,12 +16,12 @@ import IssueList from './modules/issue/components/IssueList';
 import Sprint from './modules/sprint/components/Sprint';
 import ProjectsManagement from './modules/management/components/ProjectsManagement';
 import UsersManagement from './modules/management/components/UsersManagement';
+import CategoriesManagement from './modules/management/components/CategoriesManagement';
 
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
 import '../src/stylesheets/uppy.css';
 import './index.css';
-
 
 export const history = createHistory();
 export const store = configureStore();
@@ -73,6 +73,7 @@ ReactDOM.render(
             <PrivateRoute exact path="/issues" component={IssueList} />
             <PrivateRoute exact path="/manage/projects" component={ProjectsManagement} />
             <PrivateRoute exact path="/manage/users" component={UsersManagement} />
+            <PrivateRoute exact path="/manage/categories" component={CategoriesManagement} />
           </Switch>
         </MainLayout>
       </Switch>

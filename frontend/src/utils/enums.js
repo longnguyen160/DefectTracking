@@ -126,7 +126,8 @@ const MODAL_TYPE = {
   CREATING_ISSUE: 'Creating issue',
   ISSUE_DETAILS: 'Issue Details',
   PROFILE: 'Profile',
-  ADD_USER: 'Add user'
+  ADD_USER: 'Add user',
+  ADD_CATEGORY: 'Add category'
 };
 
 const PROJECT_STATUS = {

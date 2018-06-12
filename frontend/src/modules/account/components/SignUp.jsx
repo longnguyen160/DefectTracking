@@ -129,7 +129,7 @@ class SignUp extends Component {
                   <Button hasBorder disabled>
                     <i className="fa fa-circle-o-notch fa-spin" />Loading
                   </Button>
-                  :
+                :
                   <Button
                     hasBorder
                     type="submit"

@@ -35,7 +35,7 @@ function* watchLogin() {
 // Sign Up
 function* signUp({ user, goToLoginPage }) {
   try {
-    yield put(requestSignUp(user));
+    yield put(requestSignUp());
     const { data } = yield call(API.signUp, user);
 
     yield put(signUpSuccess());
@@ -90,7 +90,7 @@ function* watchLoadAllUsers() {
 function* updateProfile({ profile, email }) {
   try {
     yield put(updateProfileRequest());
-    const { data } = yield call(API.updateProfile, profile, email);
+    const { data } = yield call(API.updateProfile, { profile, email });
 
     yield put(updateProfileSuccess());
     showSuccessNotification(data.message);
