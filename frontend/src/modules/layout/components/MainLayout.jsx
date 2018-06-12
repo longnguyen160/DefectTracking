@@ -18,6 +18,7 @@ import ModalCreatingIssue from '../../../components/modal/ModalCreatingIssue';
 import ModalProfile from '../../../components/modal/ModalProfile';
 import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddUser';
+import ModalAddCategory from '../../../components/modal/ModalAddCategory';
 
 
 const LIST_MODAL = {
@@ -26,7 +27,8 @@ const LIST_MODAL = {
   [MODAL_TYPE.CREATING_ISSUE]: ModalCreatingIssue,
   [MODAL_TYPE.PROFILE]: ModalProfile,
   [MODAL_TYPE.ISSUE_DETAILS]: ModalIssueDetails,
-  [MODAL_TYPE.ADD_USER]: ModalAddUser
+  [MODAL_TYPE.ADD_USER]: ModalAddUser,
+  [MODAL_TYPE.ADD_CATEGORY]: ModalAddCategory,
 };
 
 class MainLayout extends React.Component {

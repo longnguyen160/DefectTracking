@@ -63,7 +63,7 @@ class TopNavBar extends Component {
             </HeaderMainItemsStyled>
             <HeaderMainItemsStyled info user hover>
               <span>
-                <Image topNav src={user.profile ? user.profile.avatarURL : '/images/default_avatar.jpg'}/>
+                <Image topNav src={user.profile && user.profile.avatarURL ? user.profile.avatarURL : '/images/default_avatar.jpg'}/>
                 <span>{user ? user.username : null}</span>
               </span>
               <i className="fa fa-chevron-down" />

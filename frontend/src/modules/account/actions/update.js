@@ -16,7 +16,7 @@ const updateProfileRequest = () => {
 
 const updateProfileSuccess = () => {
   return {
-    type: UPDATE_PROFILE,
+    type: UPDATE_PROFILE_SUCCESS,
   }
 };
 

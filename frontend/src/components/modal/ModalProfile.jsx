@@ -76,7 +76,7 @@ class ModalProfile extends React.Component {
   };
 
   render() {
-    const { onClose, isOpen, handleSubmit, submitFailed, error, submitSucceeded, submitting, user } = this.props;
+    const { onClose, isOpen, handleSubmit, submitFailed, error, submitSucceeded, submitting, user, account } = this.props;
     const { avatarURL } = this.state;
     let url = '/images/default_avatar.jpg';
 
@@ -176,13 +176,13 @@ class ModalProfile extends React.Component {
               <ModalLineStyled>
                 <ModalLineContentStyled>
                   {
-                    ((submitSucceeded) || (submitFailed && error)) &&
+                    ((submitSucceeded && account.error) || (submitFailed && error)) &&
                     <TextErrorStyled error={true}>
-                      {error}
+                      {account.error || error}
                     </TextErrorStyled>
                   }
                   {
-                    submitting ?
+                    submitting || account.isFetching ?
                       <Button hasBorder btnModal disabled>
                         <i className="fa fa-circle-o-notch fa-spin" />Loading
                       </Button>
@@ -210,11 +210,17 @@ ModalProfile.propTypes = {
   submitting: PropTypes.bool.isRequired,
   submitFailed: PropTypes.bool.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired
+  error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  user: PropTypes.object.isRequired,
+  account: PropTypes.shape({
+    isFetching: PropTypes.bool.isRequired,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  })
 };
 
 const mapStateToProps = state => ({
   user: state.layout.user,
+  account: state.account
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

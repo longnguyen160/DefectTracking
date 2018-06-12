@@ -104,7 +104,7 @@ class UsersList extends React.Component {
 UsersList.propTypes = {
   users: PropTypes.array.isRequired,
   loadAllUsers: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

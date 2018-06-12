@@ -44,8 +44,8 @@ const loadAllIssues = () => {
   return axios.get('user/loadAllIssues');
 };
 
-const updateProfile = (profile, email) => {
-  return axios.post('user/updateProfile', { profile, email })
+const updateProfile = ({ profile, email }) => {
+  return axios.post('user/updateProfile', { profile, email });
 };
 
 const API = {

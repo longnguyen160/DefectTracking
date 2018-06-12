@@ -8,10 +8,9 @@ const signUpUser = (user, goToLoginPage) => {
   }
 };
 
-const requestSignUp = (user) => {
+const requestSignUp = () => {
   return {
     type: SIGN_UP_REQUEST,
-    user
   }
 };
 

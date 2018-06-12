@@ -117,5 +117,8 @@ export const Button = styled.button`
   ${props => props.autoHeight && css`
     height: auto;
   `}
+  ${props => props.autoWidth && css`
+    width: auto;
+  `}
 `;
 
