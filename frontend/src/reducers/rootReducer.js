@@ -5,12 +5,14 @@ import account from '../modules/account/reducers/account';
 import layout from '../modules/layout/reducers/layout';
 import project from '../modules/projects/reducers/project';
 import issue from '../modules/issue/reducers/issue';
+import management from '../modules/management/reducers/management';
 
 const appReducer = combineReducers({
   account,
   layout,
   project,
   issue,
+  management,
   form: reducerForm,
   notifications
 });

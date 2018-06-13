@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.models.Project;
 
+import com.capstone.defecttracking.models.User.UserRole;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,12 +15,12 @@ public class Project {
     private String name;
     private String description;
     private String status;
-    private ArrayList<String> members = new ArrayList<String>();
+    private ArrayList<UserRole> members = new ArrayList<UserRole>();
 
     public Project() {
     }
 
-    public Project(String id, String name, String description, String status, ArrayList<String> members) {
+    public Project(String id, String name, String description, String status, ArrayList<UserRole> members) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -59,11 +60,11 @@ public class Project {
         this.status = status;
     }
 
-    public ArrayList<String> getMembers() {
+    public ArrayList<UserRole> getMembers() {
         return members;
     }
 
-    public void setMembers(String members) {
+    public void setMembers(UserRole members) {
         this.members.add(members);
     }
 }

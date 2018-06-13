@@ -16,7 +16,7 @@ class CustomValueForSelect extends React.Component {
         );
       default:
         return (
-          <Image topNav src={value.profile ? value.profile.imageSrc : '/images/default_avatar.jpg'}/>
+          <Image topNav src={value.avatarURL || '/images/default_avatar.jpg'}/>
         );
     }
   };

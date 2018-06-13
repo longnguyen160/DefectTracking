@@ -114,7 +114,7 @@ class SignIn extends React.Component {
                     Sign In
                   </Button>
               }
-              <Label><Link to='/signup'>Create Account</Link></Label>
+              <Label><Link to='/signup'>Sign up</Link></Label>
             </form>
           </FormBlockStyled>
         </PageStyled>

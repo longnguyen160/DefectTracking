@@ -58,6 +58,9 @@ export const ModalContent = styled.div`
   width: 100%;
   max-height: 600px;
   overflow-y: auto;
+  ${props => props.noScroll && css`
+    overflow: visible;
+  `}
 `;
 
 export const ModalHeaderStyled = styled.div`
