@@ -100,8 +100,8 @@ public class UserController {
     }
 
     @GetMapping("/loadAllUsers")
-    public List<User> getAllUsers() {
-        return userRepositoryCustom.getAllUsers();
+    public List<User> getAllUsers(@RequestParam(value = "input") String input) {
+        return userRepositoryCustom.getAllUsers(input);
     }
 
     @PostMapping("/updateProfile")

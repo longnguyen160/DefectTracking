@@ -165,6 +165,12 @@ const ISSUE_STATUS_ARRAY = [
   },
 ];
 
+const USER_ROLE_IN_PROJECT = [
+  { value: 'developer', label: 'Developer' },
+  { value: 'reporter', label: 'Reporter' },
+  { value: 'manager', label: 'Manager' }
+];
+
 export {
   INPUT_TEXT,
   INPUT_PASSWORD,
@@ -181,5 +187,6 @@ export {
   WEB_SOCKET_URL,
   PROJECT_STATUS,
   ISSUE_STATUS,
-  ISSUE_STATUS_ARRAY
+  ISSUE_STATUS_ARRAY,
+  USER_ROLE_IN_PROJECT
 }

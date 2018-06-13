@@ -7,27 +7,18 @@ import { MODAL_TYPE } from '../../../utils/enums';
 import { ElementHeaderStyled, PageBoardStyled, TitleElementStyled } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
+import { loadAllCategories } from '../actions/category';
 
 class CategoriesManagement extends React.Component {
+
+  componentWillMount() {
+    const { loadAllCategories } = this.props;
+
+    // loadAllCategories();
+  }
+
   render() {
-    const { openModal } = this.props;
-    const data = [
-      {
-        name: 'Technology',
-        description: 'blah blah blah',
-        project: 'ewq'
-      },
-      {
-        name: 'Music',
-        description: 'la la la la la',
-        project: 'def'
-      },
-      {
-        name: 'App',
-        description: 'he he he he he',
-        project: 'abc'
-      },
-    ];
+    const { openModal, categories } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -76,7 +67,7 @@ class CategoriesManagement extends React.Component {
           </Button>
         </ElementHeaderStyled>
         <ReactTable
-          data={data}
+          data={categories}
           columns={columns}
           defaultPageSize={10}
           className="-striped -highlight"
@@ -88,13 +79,17 @@ class CategoriesManagement extends React.Component {
 
 CategoriesManagement.propTypes = {
   openModal: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
+  loadAllCategories: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
+  categories: state.management.categories
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  openModal: openModal
+  openModal: openModal,
+  loadAllCategories: loadAllCategories
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoriesManagement);

@@ -1,5 +1,5 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { CREATE_PROJECT, LOAD_ALL_PROJECTS } from '../actions/types';
+import { CREATE_PROJECT, LOAD_ALL_PROJECTS, ADD_USER_TO_PROJECT } from '../actions/types';
 import {
   requestCreateProject,
   createProjectSuccess,
@@ -7,6 +7,7 @@ import {
   loadAllProjectsFailure,
   loadAllProjectsSuccess
 } from '../actions/project';
+import { addUserToProjectRequest, addUserToProjectSuccess, addUserToProjectFailure } from '../actions/usersInProject';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
@@ -46,9 +47,28 @@ function* watchLoadAllProjects() {
   yield takeLatest(LOAD_ALL_PROJECTS, loadAllProjects);
 }
 
+function* addUserToProject({ requestData }) {
+  try {
+    yield put(addUserToProjectRequest());
+
+    const { data } = yield call(API.addUserToProject, requestData);
+
+    yield put(addUserToProjectSuccess());
+    showSuccessNotification(data.message);
+
+  } catch (error) {
+    yield put(addUserToProjectFailure(getError(error)));
+  }
+}
+
+function* watchAddUserToProject() {
+  yield takeLatest(ADD_USER_TO_PROJECT, addUserToProject);
+}
+
 export default function* projectFlow() {
   yield all([
     watchCreateProject(),
-    watchLoadAllProjects()
+    watchLoadAllProjects(),
+    watchAddUserToProject()
   ]);
 }

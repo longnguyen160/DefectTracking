@@ -9,6 +9,6 @@ public interface UserRepositoryCustom {
     User findByEmail(String email);
     User findById(String userId);
     Boolean doesUsernameExisted(String username);
-    List<User> getAllUsers();
+    List<User> getAllUsers(String input);
     Boolean updateUserProfile(String userId, UserProfile profile, String email);
 }

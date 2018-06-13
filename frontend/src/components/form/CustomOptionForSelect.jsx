@@ -31,7 +31,7 @@ class CustomOptionForSelect extends React.Component {
         );
       default:
         return (
-          <Image topNav src={option.profile ? option.profile.imageSrc : '/images/default_avatar.jpg'}/>
+          <Image topNav src={option.avatarURL || '/images/default_avatar.jpg'}/>
         );
     }
   };
