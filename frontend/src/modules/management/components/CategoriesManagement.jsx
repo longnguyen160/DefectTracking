@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTable from "react-table";
-import { MODAL_TYPE } from '../../../utils/enums';
+import SockJsClient from "react-stomp";
+import {MODAL_TYPE, WEB_SOCKET_URL} from '../../../utils/enums';
 import { ElementHeaderStyled, PageBoardStyled, TitleElementStyled } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
@@ -16,6 +17,12 @@ class CategoriesManagement extends React.Component {
 
     // loadAllCategories();
   }
+
+  onMessageReceive = () => {
+    const { loadAllCategories } = this.props;
+
+    loadAllCategories();
+  };
 
   render() {
     const { openModal, categories } = this.props;
@@ -71,6 +78,12 @@ class CategoriesManagement extends React.Component {
           columns={columns}
           defaultPageSize={10}
           className="-striped -highlight"
+        />
+        <SockJsClient
+          url={WEB_SOCKET_URL}
+          topics={['/topic/categories']}
+          onMessage={this.onMessageReceive}
+          debug={true}
         />
       </PageBoardStyled>
     );
