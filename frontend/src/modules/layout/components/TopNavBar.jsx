@@ -29,7 +29,7 @@ class TopNavBar extends Component {
     const { selectProject, history } = this.props;
 
     selectProject(project);
-    history.push(`/${project.id}/backlog`);
+    history.push(`/project/${project.id}/backlog`);
   };
 
   render() {

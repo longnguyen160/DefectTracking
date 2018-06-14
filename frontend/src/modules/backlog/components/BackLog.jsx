@@ -21,7 +21,7 @@ class BackLog extends React.Component {
 
     const object = {
       id: 'ISSUE-1',
-      name: 'As a developer, I\'d like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint\'s items can be updated',
+      name: 'As a developer, I\'d like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Phase\'s items can be updated',
       priority: 'High'
     };
     const b = [];
@@ -86,7 +86,7 @@ class BackLog extends React.Component {
           <PageBoardItemStyled>
             <ElementHeaderStyled padding={'20px 5px'}>
               <TitleElementStyled noPadding flex={'0 0 85px'}>
-                Sprint 1
+                Phase 1
               </TitleElementStyled>
               <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
                 14 Issues

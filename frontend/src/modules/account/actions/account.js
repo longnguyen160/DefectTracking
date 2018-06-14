@@ -1,9 +1,10 @@
 import { LOAD_ALL_USERS, LOAD_ALL_USERS_SUCCESS, LOAD_ALL_USERS_FAILURE } from './types';
 
-const loadAllUsers = (input) => {
+const loadAllUsers = (input, projectId) => {
   return {
     type: LOAD_ALL_USERS,
-    input
+    input,
+    projectId
   }
 };
 

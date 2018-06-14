@@ -32,8 +32,12 @@ const loadAllProjects = () => {
   return axios.get('loadAllProjects');
 };
 
-const loadAllUsers = (input) => {
-  return axios.get(`user/loadAllUsers?input=${input}`);
+const loadAllUsers = (input, projectId) => {
+  return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
+};
+
+const loadALlUsersInProject = (projectId) => {
+  return axios.get(`user/loadAllUsersInProject?projectId=${projectId}`);
 };
 
 const createIssue = (issue) => {
@@ -72,7 +76,8 @@ const API = {
   updateProfile,
   addUserToProject,
   createCategory,
-  loadAllCategories
+  loadAllCategories,
+  loadALlUsersInProject
 };
 
 export default API;

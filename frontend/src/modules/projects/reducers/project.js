@@ -6,7 +6,10 @@ import {
   LOAD_ALL_PROJECTS_FAILURE,
   ADD_USER_TO_PROJECT_REQUEST,
   ADD_USER_TO_PROJECT_SUCCESS,
-  ADD_USER_TO_PROJECT_FAILURE
+  ADD_USER_TO_PROJECT_FAILURE,
+  LOAD_ALL_USERS_IN_PROJECT_REQUEST,
+  LOAD_ALL_USERS_IN_PROJECT_SUCCESS,
+  LOAD_ALL_USERS_IN_PROJECT_FAILURE
 } from '../actions/types';
 
 const initialState = {
@@ -20,7 +23,8 @@ export default function project(state = initialState, action) {
   switch (action.type) {
     case REQUEST_CREATE_PROJECT:
       return Object.assign({}, state, {
-        isLoading: true
+        isLoading: true,
+        error: null
       });
 
     case CREATE_PROJECT_SUCCESS:
@@ -58,6 +62,24 @@ export default function project(state = initialState, action) {
       });
 
     case ADD_USER_TO_PROJECT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_ALL_USERS_IN_PROJECT_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case LOAD_ALL_USERS_IN_PROJECT_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        usersInProject: action.data
+      });
+
+    case LOAD_ALL_USERS_IN_PROJECT_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error

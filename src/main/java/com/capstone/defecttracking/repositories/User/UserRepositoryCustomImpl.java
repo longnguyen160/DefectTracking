@@ -1,8 +1,7 @@
 package com.capstone.defecttracking.repositories.User;
 
-import com.capstone.defecttracking.models.User.User;
-import com.capstone.defecttracking.models.User.UserDetailsSecurity;
-import com.capstone.defecttracking.models.User.UserProfile;
+import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.User.*;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -13,7 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
@@ -44,7 +45,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public List<User> getAllUsers(String input) {
+    public List<User> getAllUsers(String input, String projectId) {
         if (input.length() == 0) {
             return mongoTemplate.findAll(User.class);
         }
@@ -52,13 +53,27 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
         Criteria criteria = new Criteria();
+        Query query;
 
-        criteria.andOperator(
-            Criteria.where("_id").ne(userDetailsSecurity.getId()),
-            criteria.orOperator(Criteria.where("username").regex(input), Criteria.where("email").regex(input))
-        );
+        if (projectId.length() > 0) {
+            query = new Query(Criteria.where("_id").is(projectId));
+            Project project = mongoTemplate.findOne(query, Project.class);
+            List<String> memberIds = project.getMembers().stream().map(UserRole::getUserId).collect(Collectors.toList());
 
-        Query query = new Query(criteria);
+            criteria.andOperator(
+                Criteria.where("_id").ne(userDetailsSecurity.getId()),
+                Criteria.where("_id").nin(memberIds),
+                criteria.orOperator(Criteria.where("username").regex(input), Criteria.where("email").regex(input))
+            );
+        } else {
+            criteria.andOperator(
+                Criteria.where("_id").ne(userDetailsSecurity.getId()),
+                criteria.orOperator(Criteria.where("username").regex(input), Criteria.where("email").regex(input))
+            );
+        }
+
+
+        query = new Query(criteria);
 
         return mongoTemplate.find(query, User.class);
     }
@@ -75,6 +90,27 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         result = mongoTemplate.updateFirst(query, update, User.class);
 
         return result != null;
+    }
+
+    @Override
+    public List<UserProjectResponse> getAllUsersInProject(String projectId) {
+        Query query = new Query(Criteria.where("_id").is(projectId));
+        Project project = mongoTemplate.findOne(query, Project.class);
+
+        return project
+            .getMembers()
+            .stream()
+            .map(member -> {
+                Query subQuery = new Query(Criteria.where("_id").is(member.getUserId()));
+                User user = mongoTemplate.findOne(subQuery, User.class);
+
+                if (user.getProfile() != null && user.getProfile().getAvatarURL() != null) {
+                    return new UserProjectResponse(user.getUsername(), user.getEmail(), member.getRole(), user.getProfile().getAvatarURL());
+                } else {
+                    return new UserProjectResponse(user.getUsername(), user.getEmail(), member.getRole());
+                }
+            })
+            .collect(Collectors.toList());
     }
 
 }

@@ -61,6 +61,10 @@ public class ProjectController {
 
     @PostMapping("/project/addUserToProject")
     public ResponseEntity<?> addUserToProject(@RequestBody UserProjectRequest userProjectRequest) {
-        return projectRepositoryCustom.addUserToProject(userProjectRequest);
+        ResponseEntity<?> responseEntity = projectRepositoryCustom.addUserToProject(userProjectRequest);
+
+        template.convertAndSend("/topic/usersInProject", responseEntity);
+
+        return responseEntity;
     }
 }
