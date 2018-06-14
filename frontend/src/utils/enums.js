@@ -104,9 +104,9 @@ const SIDE_BAR_AFTER_SELECT_PROJECT = [
     url: '/backlog'
   },
   {
-    name: 'Active Sprints',
+    name: 'Active Phase',
     icon: ICONS.SPRINT,
-    url: '/activeSprint'
+    url: '/activePhase'
   },
   {
     name: 'Summary',

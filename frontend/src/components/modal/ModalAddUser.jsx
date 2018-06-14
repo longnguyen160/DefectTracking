@@ -44,9 +44,11 @@ class ModalAddUser extends React.Component {
   };
 
   loadUsers = (input) => {
-    const { loadAllUsers } = this.props;
+    const { loadAllUsers, selectedProject } = this.props;
 
-    loadAllUsers(input);
+    if (input.length > 0) {
+      loadAllUsers(input, selectedProject.id);
+    }
   };
 
   handleSelectOnChange = (type, value) => {
@@ -59,13 +61,15 @@ class ModalAddUser extends React.Component {
 
   handleAddUserToProject = () => {
     const { selectedUser, selectedRole } = this.state;
-    const { addUserToProject, selectedProject } = this.props;
+    const { addUserToProject, selectedProject, onClose } = this.props;
 
     if (selectedUser && selectedRole) {
       addUserToProject({
         userId: selectedUser.value,
         role: selectedRole.value,
         projectId: selectedProject.id
+      }, () => {
+        onClose();
       });
     }
   };

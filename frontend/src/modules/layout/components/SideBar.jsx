@@ -46,7 +46,7 @@ class SideBar extends React.Component {
     this.setState({ selected: value });
 
     if (selectedProject) {
-      history.push(`/${selectedProject.id}${value.url}`);
+      history.push(`/project/${selectedProject.id}${value.url}`);
     } else {
       history.push(value.url);
     }
