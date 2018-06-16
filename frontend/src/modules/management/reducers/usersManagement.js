@@ -29,8 +29,9 @@ export default function usersManagement(state=initialState,action){
 
         case BAN_USER_FAILURE:
             return Object.assign({}, state, {
+            isLoading: false,
             error: action.error
-            });
+        });
 
          default: 
             return state;   
