@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Notifications from 'react-notification-system-redux';
 import SockJsClient from "react-stomp";
@@ -31,14 +31,29 @@ const LIST_MODAL = {
   [MODAL_TYPE.ADD_CATEGORY]: ModalAddCategory,
 };
 
+const getParams = pathname => {
+  const matchProfile = matchPath(pathname, {
+    path: `/project/:projectId/`,
+  });
+  return (matchProfile && matchProfile.params) || {};
+};
+
 class MainLayout extends React.Component {
 
   componentWillMount() {
     const { loadCurrentUser, history } = this.props;
+    const { pathname } = this.props.location;
+    const currentParams = getParams(pathname);
 
     loadCurrentUser(() => {
       history.push('/signin');
     });
+
+    if (currentParams.projectId) {
+      const { selectProject } = this.props;
+
+      selectProject(currentParams.projectId);
+    }
   }
 
   handleOpenModal = () => {

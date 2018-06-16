@@ -1,6 +1,7 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Project.UserProjectRequest;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Project.ProjectRepository;
@@ -56,5 +57,14 @@ public class ProjectController {
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         return projectRepositoryCustom.loadAllProjectsForCurrentUser(userDetailsSecurity.getId());
+    }
+
+    @PostMapping("/project/addUserToProject")
+    public ResponseEntity<?> addUserToProject(@RequestBody UserProjectRequest userProjectRequest) {
+        ResponseEntity<?> responseEntity = projectRepositoryCustom.addUserToProject(userProjectRequest);
+
+        template.convertAndSend("/topic/usersInProject", responseEntity);
+
+        return responseEntity;
     }
 }

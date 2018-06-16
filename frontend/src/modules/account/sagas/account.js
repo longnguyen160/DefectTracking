@@ -73,9 +73,19 @@ function* watchLogOut() {
   yield takeLatest(LOG_OUT, logOut)
 }
 
-function* loadAllUsers() {
+function* loadAllUsers({ input, projectId }) {
   try {
-    const { data } = yield call(API.loadAllUsers);
+    let textInput = '';
+    let textProjectId = '';
+
+    if (input) {
+      textInput = input;
+    }
+    if (projectId) {
+      textProjectId = projectId;
+    }
+
+    const { data } = yield call(API.loadAllUsers, textInput, textProjectId);
 
     yield put(loadAllUsersSuccess(data));
   } catch (error) {

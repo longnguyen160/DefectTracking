@@ -32,8 +32,12 @@ const loadAllProjects = () => {
   return axios.get('loadAllProjects');
 };
 
-const loadAllUsers = () => {
-  return axios.get('user/loadAllUsers');
+const loadAllUsers = (input, projectId) => {
+  return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
+};
+
+const loadALlUsersInProject = (projectId) => {
+  return axios.get(`user/loadAllUsersInProject?projectId=${projectId}`);
 };
 
 const createIssue = (issue) => {
@@ -48,6 +52,18 @@ const updateProfile = ({ profile, email }) => {
   return axios.post('user/updateProfile', { profile, email });
 };
 
+const addUserToProject = (requestData) => {
+  return axios.post('project/addUserToProject', requestData);
+};
+
+const createCategory = (category) => {
+  return axios.post('admin/createCategory', category);
+};
+
+const loadAllCategories = () => {
+  return axios.get('admin/loadAllCategories');
+};
+
 const API = {
   login,
   signUp,
@@ -57,7 +73,11 @@ const API = {
   loadAllUsers,
   createIssue,
   loadAllIssues,
-  updateProfile
+  updateProfile,
+  addUserToProject,
+  createCategory,
+  loadAllCategories,
+  loadALlUsersInProject
 };
 
 export default API;

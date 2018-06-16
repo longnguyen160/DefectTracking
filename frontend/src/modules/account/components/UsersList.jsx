@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import SockJsClient from "react-stomp";
 import ReactTable from "react-table";
-import { loadAllUsers } from '../actions/account';
 import {
   ElementHeaderStyled,
   Image,
@@ -13,33 +13,47 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
-import { MODAL_TYPE } from '../../../utils/enums';
+import {MODAL_TYPE, WEB_SOCKET_URL} from '../../../utils/enums';
+import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 
 class UsersList extends React.Component {
 
   componentWillMount() {
-    const { loadAllUsers } = this.props;
+    const { loadAllUsersInProject, selectedProject } = this.props;
 
-    loadAllUsers();
+    if (selectedProject) {
+      loadAllUsersInProject(selectedProject.id);
+    }
   }
+
+  onMessageReceive = () => {
+    const { loadAllUsersInProject, selectedProject } = this.props;
+
+    if (selectedProject) {
+      loadAllUsersInProject(selectedProject.id);
+    }
+  };
 
   render() {
     const { users, openModal } = this.props;
+    const styleColumn = {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        fontSize: '13px'
+      },
+      headerStyle: {
+        textAlign: 'left'
+      },
+    };
     const columns = [
       {
         Header: 'Username',
         accessor: 'username',
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: '13px'
-        },
-        headerStyle: {
-          textAlign: 'left'
-        },
+        ...styleColumn,
         Cell: row => (
           <TableBlockStyled>
-            <Image topNav src={row.row.profile ? row.row.profile.imageSrc : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.row.avatarURL || '/images/default_avatar.jpg'}/>
             {row.value}
           </TableBlockStyled>
         )
@@ -47,14 +61,7 @@ class UsersList extends React.Component {
       {
         Header: 'Email',
         accessor: 'email',
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: '13px'
-        },
-        headerStyle: {
-          textAlign: 'left'
-        },
+        ...styleColumn,
         Cell: row => (
           <TableBlockStyled>
             {row.value}
@@ -63,15 +70,12 @@ class UsersList extends React.Component {
       },
       {
         Header: 'Role',
-        headerStyle: {
-          textAlign: 'left'
-        },
+        accessor: 'role',
+        ...styleColumn,
       },
       {
         Header: '',
-        headerStyle: {
-          textAlign: 'left'
-        },
+        ...styleColumn,
         Cell: row => (
           <Button hasBorder remove>
             Remove
@@ -96,6 +100,12 @@ class UsersList extends React.Component {
           defaultPageSize={10}
           className="-striped -highlight"
         />
+        <SockJsClient
+          url={WEB_SOCKET_URL}
+          topics={['/topic/usersInProject']}
+          onMessage={this.onMessageReceive}
+          debug={true}
+        />
       </PageBoardStyled>
     );
   }
@@ -103,16 +113,18 @@ class UsersList extends React.Component {
 
 UsersList.propTypes = {
   users: PropTypes.array.isRequired,
-  loadAllUsers: PropTypes.func.isRequired,
-    openModal: PropTypes.func.isRequired,
+  loadAllUsersInProject: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
+  selectedProject: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  users: state.account.users,
+  users: state.project.usersInProject,
+  selectedProject: state.layout.selectedProject
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  loadAllUsers: loadAllUsers,
+  loadAllUsersInProject: loadAllUsersInProject,
   openModal: openModal
 }, dispatch);
 

@@ -4,10 +4,7 @@ import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Token.JwtAuthentication;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
-import com.capstone.defecttracking.models.User.User;
-import com.capstone.defecttracking.models.User.UserDetailsSecurity;
-import com.capstone.defecttracking.models.User.UserProfile;
-import com.capstone.defecttracking.models.User.UserProfileRequest;
+import com.capstone.defecttracking.models.User.*;
 import com.capstone.defecttracking.security.CurrentUser;
 import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,8 +97,13 @@ public class UserController {
     }
 
     @GetMapping("/loadAllUsers")
-    public List<User> getAllUsers() {
-        return userRepositoryCustom.getAllUsers();
+    public List<User> getAllUsers(@RequestParam(value = "input") String input, @RequestParam(value = "projectId") String projectId) {
+        return userRepositoryCustom.getAllUsers(input, projectId);
+    }
+
+    @GetMapping("/loadAllUsersInProject")
+    public List<UserProjectResponse> getAllUsersInProject(@RequestParam(value = "projectId") String projectId) {
+        return userRepositoryCustom.getAllUsersInProject(projectId);
     }
 
     @PostMapping("/updateProfile")

@@ -36,7 +36,7 @@ class Projects extends React.Component {
     const { selectProject, history } = this.props;
 
     selectProject(project);
-    history.push(`/${project.id}/backlog`);
+    history.push(`/project/${project.id}/backlog`);
   };
 
   renderProjects = (projects, icon, title) => (

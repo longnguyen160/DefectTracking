@@ -1,8 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
 import {
-  DescriptionElementStyled, ElementHeaderStyled,
-  ElementStyled, FormGroupStyled,
+  DescriptionElementStyled,
+  ElementHeaderStyled,
+  ElementStyled,
+  FormGroupStyled,
   Image,
   LabelStyled,
   PageBoardItemStyled,
@@ -19,14 +21,14 @@ import {
 import Icon from '../../../components/icon/Icon';
 import { ICONS } from '../../../utils/enums';
 
-class Sprint extends React.Component {
+class Phase extends React.Component {
 
   render() {
     return (
       <PageBoardStyled backlog>
         <ElementHeaderStyled padding={'10px 20px'}>
           <TitleElementStyled noPadding>
-            Sprint 1
+            Phase 1
           </TitleElementStyled>
         </ElementHeaderStyled>
         <FormGroupStyled paddingSelect={'10px 0px 10px 20px'} widthSelect={'150px'}>
@@ -226,4 +228,4 @@ class Sprint extends React.Component {
   }
 }
 
-export default Sprint;
+export default Phase;
