@@ -6,12 +6,13 @@ import CustomInput from './CustomInput';
 import CustomSelect from './CustomSelect';
 import CustomCreatable from './CustomCreatable';
 import CustomDateTime from './CustomDateTime';
+import CustomDropZone from './CustomDropZone';
 
 const typeComponents = {
   [INPUT_TEXT]: CustomInput,
   [INPUT_PASSWORD]: CustomInput,
   [TEXT_AREA]: CustomInput,
-  [FILE]: CustomInput,
+  [FILE]: CustomDropZone,
   [SELECT]: CustomSelect,
   [CREATABLE]: CustomCreatable,
   [DATETIME_PICKER]: CustomDateTime,

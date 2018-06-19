@@ -1,11 +1,17 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { CREATE_ISSUE, LOAD_ALL_ISSUES } from '../actions/types';
+import { CREATE_ISSUE, LOAD_ALL_ISSUES, LOAD_ALL_ISSUES_SHORTCUT, LOAD_ISSUE_DETAILS } from '../actions/types';
 import {
   createIssueRequest,
   createIssueSuccess,
   createIssueFailure,
   loadAllIssuesSuccess,
-  loadAllIssuesFailure
+  loadAllIssuesFailure,
+  loadAllIssuesShortcutRequest,
+  loadAllIssuesShortcutSuccess,
+  loadAllIssuesShortcutFailure,
+  loadIssueDetailsRequest,
+  loadIssueDetailsSuccess,
+  loadIssueDetailsFailure
 } from '../actions/issue';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
@@ -46,9 +52,43 @@ function* watchLoadAllIssues() {
   yield takeLatest(LOAD_ALL_ISSUES, loadAllIssues)
 }
 
+function* loadAllIssuesShortcut({ userId }) {
+  try {
+    yield put(loadAllIssuesShortcutRequest());
+
+    const { data } = yield call(API.loadAllIssuesShortcut, userId);
+
+    yield put(loadAllIssuesShortcutSuccess(data));
+  } catch (error) {
+    yield put(loadAllIssuesShortcutFailure(getError(error)))
+  }
+}
+
+function* watchLoadAllIssuesShortcut() {
+  yield takeLatest(LOAD_ALL_ISSUES_SHORTCUT, loadAllIssuesShortcut)
+}
+
+function* loadIssueDetails({ issueId }) {
+  try {
+    yield put(loadIssueDetailsRequest());
+
+    const { data } = yield call(API.loadIssueDetails, issueId);
+
+    yield put(loadIssueDetailsSuccess(data));
+  } catch (error) {
+    yield put(loadIssueDetailsFailure(getError(error)))
+  }
+}
+
+function* watchLoadIssueDetails() {
+  yield takeLatest(LOAD_ISSUE_DETAILS, loadIssueDetails);
+}
+
 export default function* issueFlow() {
   yield all([
     watchCreateIssue(),
-    watchLoadAllIssues()
+    watchLoadAllIssues(),
+    watchLoadAllIssuesShortcut(),
+    watchLoadIssueDetails()
   ])
 }

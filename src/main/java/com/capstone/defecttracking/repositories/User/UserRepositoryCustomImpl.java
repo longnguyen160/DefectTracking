@@ -105,9 +105,9 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 User user = mongoTemplate.findOne(subQuery, User.class);
 
                 if (user.getProfile() != null && user.getProfile().getAvatarURL() != null) {
-                    return new UserProjectResponse(user.getUsername(), user.getEmail(), member.getRole(), user.getProfile().getAvatarURL());
+                    return new UserProjectResponse(user.getId(), user.getUsername(), user.getEmail(), member.getRole(), user.getProfile().getAvatarURL());
                 } else {
-                    return new UserProjectResponse(user.getUsername(), user.getEmail(), member.getRole());
+                    return new UserProjectResponse(user.getId(), user.getUsername(), user.getEmail(), member.getRole());
                 }
             })
             .collect(Collectors.toList());

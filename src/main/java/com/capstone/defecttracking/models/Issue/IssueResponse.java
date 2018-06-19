@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class IssueResponse {
     private String id;
+    private String issueKey;
     private String issueName;
     private String projectId;
     private String description;
@@ -15,9 +16,14 @@ public class IssueResponse {
     private String priority;
     private Date dueDate;
     private Date createdAt;
+    private Date updatedAt;
 
-    public IssueResponse(String id, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt) {
+    public IssueResponse() {
+    }
+
+    public IssueResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt) {
         this.id = id;
+        this.issueKey = issueKey;
         this.issueName = issueName;
         this.projectId = projectId;
         this.description = description;
@@ -27,6 +33,7 @@ public class IssueResponse {
         this.priority = priority;
         this.dueDate = dueDate;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public String getId() {
@@ -35,6 +42,14 @@ public class IssueResponse {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getIssueKey() {
+        return issueKey;
+    }
+
+    public void setIssueKey(String issueKey) {
+        this.issueKey = issueKey;
     }
 
     public String getIssueName() {
@@ -107,5 +122,13 @@ public class IssueResponse {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

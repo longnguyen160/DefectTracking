@@ -1,5 +1,7 @@
 const WEB_SOCKET_URL = 'http://localhost:8080/ws';
 
+const FILE_BASE_URL = 'http://localhost:8080/files/?fileId=';
+
 const INPUT_TEXT = 'text';
 const INPUT_PASSWORD = 'password';
 const TEXT_AREA = 'textarea';
@@ -99,7 +101,7 @@ const SIDE_BAR_BEFORE_SELECT_PROJECT = [
 
 const SIDE_BAR_AFTER_SELECT_PROJECT = [
   {
-    name: 'Backlog',
+    name: 'Dashboard',
     icon: ICONS.BACKLOG,
     url: '/backlog'
   },
@@ -151,17 +153,17 @@ const ISSUE_STATUS_ARRAY = [
   {
     value: 'high',
     label: 'High',
-    color: '#ffa200'
+    color: '#e68507'
   },
   {
     value: 'medium',
     label: 'Medium',
-    color: '#FFFF00'
+    color: '#029243'
   },
   {
     value: 'low',
     label: 'Low',
-    color: '#00c056'
+    color: '#0083b9'
   },
 ];
 
@@ -188,5 +190,6 @@ export {
   PROJECT_STATUS,
   ISSUE_STATUS,
   ISSUE_STATUS_ARRAY,
-  USER_ROLE_IN_PROJECT
+  USER_ROLE_IN_PROJECT,
+  FILE_BASE_URL
 }

@@ -46,6 +46,9 @@ export const ListTableBodyContainerStyled = styled.div`
   display: block;
   overflow-y: auto;
   height: calc(100vh - ${props => props.activity ? '145px' : '176px'});
+  ${props => props.willChange && css`
+    will-change: transform;
+  `}
   ${props => props.borderTop && css`
     border-top: 1px solid #d1d1d1;
   `}
@@ -54,6 +57,12 @@ export const ListTableBodyContainerStyled = styled.div`
     min-height: 100px;
     height: 100%;
   `}
+`;
+
+export const ListTableStyled = styled.div`
+  background-color: ${props => props.odd ? '#f7f7f7' : '#fff'};
+  min-height: 55px;
+  width: 100%;
 `;
 
 export const ListTableBodyStyled = styled.div`
@@ -69,15 +78,21 @@ export const ListTableBodyStyled = styled.div`
   &:hover{
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
     transition: all 250ms ease-in;
-    z-index: 999;    
+    z-index: 999;
+    ${props => props.fixed && css`
+      position: fixed;
+    `}    
   }
   ${props => props.showList && css`
     min-height: 55px;
     padding: 0px;
     align-items: center;
   `};
-  background-color: ${({isDragging}) => (isDragging ? 'rgb(185, 244, 188)' : 'white')};
-  box-shadow: ${({isDragging}) => (isDragging ? '2px 2px 1px rgba(0,0,0,0.2)' : 'none')};
+  background-color: ${({ isDragging }) => (isDragging ? 'rgb(185, 244, 188)' : 'white')};
+  box-shadow: ${({ isDragging }) => (isDragging ? '2px 2px 1px rgba(0,0,0,0.2)' : 'none')};
+  ${props => props.noBackground && css`
+    background-color: inherit;
+  `}
 `;
 
 export const ListTableBodyItemStyled = styled.div`
@@ -98,9 +113,9 @@ export const ListTableBodyItemStyled = styled.div`
     flex: 1;
   `}
   ${props => props.priority && css`
-    flex: 0 0 55px;    
-    font-family: "Proxima Nova bold";
-    padding: 0px 5px 0px 0px;    
+    flex: 0 0 55px;
+    padding: 0px 5px 0px 0px;
+    justify-content: center;
   `}
   ${props => props.container && css`
     flex-direction: column;

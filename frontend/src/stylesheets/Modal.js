@@ -49,23 +49,32 @@ export const MyModal = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  padding: 30px 20px;
+  padding: 20px 20px;
   background: #fff;
   box-shadow: 0px 0px 50px -10px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
   min-width: 320px;
   max-width: ${props => props.maxWidth ? props.maxWidth : '320px'};
-  width: 100%;
+  width: 100%;  
   max-height: 600px;
   overflow-y: auto;
   ${props => props.noScroll && css`
     overflow: visible;
+  `}
+  ${props => props.isHidden && css`
+    overflow: hidden;
+  `}
+  ${props => props.fullHeight && css`
+    height: 100%;
   `}
 `;
 
 export const ModalHeaderStyled = styled.div`
   display: flex;
   margin-bottom: 10px;
+  ${props => props.noMargin && css`
+    margin: 0;
+  `}
 `;
 
 export const ModalHeaderTitleStyled = styled.div`
@@ -80,11 +89,15 @@ export const ModalHeaderTitleStyled = styled.div`
 
 export const ModalBodyStyled = styled.div`
   display: flex;
+  overflow: auto;
+  height: 100%;
+  ${props => props.padding && css`
+    padding: ${props.padding};
+  `}
 `;
 
 export const ModalContentStyled = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: block;  
   ${props => props.flex && css`
     flex: ${props.flex};    
   `}
@@ -101,9 +114,14 @@ export const ModalLineStyled = styled.div`
     
     & > ${ModalLineContentStyled} {
       padding: 5px;
+      ${props => props.noPadding && css`
+        padding: 0;
+      `}     
     }
   `}
-
+  ${props => props.noMargin && css`
+    margin: 0;
+  `}
   ${props => props.padding && css`
     padding: ${props.padding};
   `}
@@ -131,12 +149,6 @@ export const ModalLineStyled = styled.div`
     align-items: flex-end;
   `}
 
-  ${props => props.iconPrimary && css`
-    [class^="icon-"], [class*=" icon-"]{
-      font-size: 30px;
-      color: ${props.theme.BorderColorPrimary};
-    }
-  `}
   ${props => props.LineSingle && css`
       margin-bottom: 0px;
   `}

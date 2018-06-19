@@ -6,6 +6,7 @@ import layout from '../modules/layout/reducers/layout';
 import project from '../modules/projects/reducers/project';
 import issue from '../modules/issue/reducers/issue';
 import management from '../modules/management/reducers/management';
+import file from '../modules/file/reducers/file';
 
 const appReducer = combineReducers({
   account,
@@ -13,6 +14,7 @@ const appReducer = combineReducers({
   project,
   issue,
   management,
+  file,
   form: reducerForm,
   notifications
 });

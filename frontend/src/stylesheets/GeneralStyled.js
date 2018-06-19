@@ -1,5 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 import { SubSelectStyled, SubSelectListStyled } from './TopNavBar';
+import Dropzone from "react-dropzone";
 
 const zoomIn = keyframes`
  0% {
@@ -203,6 +204,9 @@ export const FormGroupStyled = styled.div`
   display: flex;
   font-size: 13px;
   overflow-y: auto;
+  ${props => props.visible && css`
+    overflow-y: visible;
+  `}
   ${props => props.padding && css`
     padding: 10px;
   `}
@@ -382,6 +386,9 @@ export const Image = styled.img`
     width: ${props.dynamic}
     height: ${props.dynamic}
     border-radius: 25px;
+  `}
+  ${props => props.noRadius && css`
+    border-radius: 0;
   `}
 `;
 
@@ -597,6 +604,127 @@ export const IssueStatusStyled = styled.div`
   }} 
 `;
 
+export const AttachmentWrapperStyled = styled.div`
+  height: 125px;
+  width: 156px;
+  padding: 5px;
+`;
+
+export const AttachmentContainerStyled = styled.div`
+  width: 100%;
+  height: 100%;
+  box-shadow: rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.24) 0px 0px 1px 0px;
+  border-radius: 3px;
+  background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+  cursor: pointer;
+  line-height: normal;
+  position: relative;
+`;
+
+export const AttachmentContentStyled = styled.div`
+  border-radius: 3px;
+  background: rgb(244, 245, 247) none repeat scroll 0% 0%;
+  display: block;
+  height: inherit;
+  position: relative;
+`;
+
+export const AttachmentImageStyled = styled.div`
+  border-radius: 3px;
+  position: relative;
+  width: inherit;
+  height: inherit;
+  display: block;
+`;
+
+export const AttachmentImageContentStyled = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-repeat: no-repeat, repeat;
+  background-position: center center, center center;
+  background-size: cover, auto auto;
+  
+  img {
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }  
+`;
+
+export const AttachmentDetailsHeaderStyled = styled.div`
+  box-sizing: border-box;
+  overflow-wrap: break-word;  
+  font-size: 12px;
+  line-height: 18px;
+  transition: opacity 0.3s ease 0s;
+  color: white;
+  visibility: hidden;
+  opacity: 0;
+  
+  &:hover {
+    opacity: 1;
+    visibility: visible;
+  }
+`;
+
+export const AttachmentDetailsBodyStyled = styled.div`
+  opacity: 0;
+  transition: transform 0.2s ease 0s, opacity 0.5s ease 0s;
+  transform: translateY(35px);
+  display: flex;
+  align-items: center;  
+  z-index: 1;
+  height: 16px;
+  color: white;
+  font-size: 11px;
+  
+  &:hover {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+`;
+
+export const AttachmentDetailsStyled = styled.div`
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, border-color 0.3s ease 0s;
+  background: transparent none repeat scroll 0% 0%;  
+  border: 2px solid transparent;
+  position: absolute;
+  top: 0;
+  left: 0;  
+  justify-content: space-between;
+  padding: 16px;
+  
+  &:hover {
+    background-color: rgba(9, 30, 66, 0.5);
+    
+    & > ${AttachmentDetailsHeaderStyled} {
+      opacity: 1;
+      visibility: visible;          
+    }
+    & > ${AttachmentDetailsBodyStyled} {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+`;
+
+export const AttachmentDetailsBodySizeStyled = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+`;
+
+export const AttachmentDetailsBodyDeleteStyled = styled.div`
+
+`;
+
 export const LabelStyled = styled.div`
   display: block;
   padding: ${props => props.padding ? props.padding : '3px'};
@@ -607,4 +735,16 @@ export const LabelStyled = styled.div`
   color: ${props => props.textColor ? props.textColor : '#000'};
   text-align: center;
   margin: 0 3px;
+`;
+
+export const DropZoneStyled = styled(Dropzone)`
+  background: #f8f8f8;
+  border: 1px dashed #ddd;
+  width: 100%;
+  height: 35px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
 `;

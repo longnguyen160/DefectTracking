@@ -1,6 +1,7 @@
 package com.capstone.defecttracking.models.User;
 
 public class UserProjectResponse {
+    private String id;
     private String username;
     private String email;
     private String role;
@@ -9,17 +10,27 @@ public class UserProjectResponse {
     public UserProjectResponse() {
     }
 
-    public UserProjectResponse(String username, String email, String role) {
+    public UserProjectResponse(String id, String username, String email, String role) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.role = role;
     }
 
-    public UserProjectResponse(String username, String email, String role, String avatarURL) {
+    public UserProjectResponse(String id, String username, String email, String role, String avatarURL) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.role = role;
         this.avatarURL = avatarURL;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -53,4 +64,5 @@ public class UserProjectResponse {
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
     }
+
 }

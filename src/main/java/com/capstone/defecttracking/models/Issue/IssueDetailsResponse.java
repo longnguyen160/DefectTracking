@@ -1,24 +1,18 @@
 package com.capstone.defecttracking.models.Issue;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.capstone.defecttracking.models.User.UserResponse;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-@Document(collection = "issues")
-
-public class Issue {
-    @Id
+public class IssueDetailsResponse {
     private String id;
-
-    private String issueName;
     private String issueKey;
+    private String issueName;
     private String projectId;
     private String description;
-    private String reporter;
-    private String assignee;
+    private UserResponse reporter;
+    private UserResponse assignee;
     private String status;
     private String priority;
     private Date dueDate;
@@ -27,7 +21,10 @@ public class Issue {
     private ArrayList<String> label = new ArrayList<String>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
-    public Issue(String id, String issueKey, String issueName, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> label, ArrayList<String> attachments) {
+    public IssueDetailsResponse() {
+    }
+
+    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> label, ArrayList<String> attachments) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
@@ -42,9 +39,6 @@ public class Issue {
         this.updatedAt = updatedAt;
         this.label = label;
         this.attachments = attachments;
-    }
-
-    public Issue() {
     }
 
     public String getId() {
@@ -87,44 +81,20 @@ public class Issue {
         this.description = description;
     }
 
-    public String getReporter() {
+    public UserResponse getReporter() {
         return reporter;
     }
 
-    public void setReporter(String reporter) {
+    public void setReporter(UserResponse reporter) {
         this.reporter = reporter;
     }
 
-    public String getAssignee() {
+    public UserResponse getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(String assignee) {
+    public void setAssignee(UserResponse assignee) {
         this.assignee = assignee;
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public ArrayList<String> getLabel() {
-        return label;
-    }
-
-    public void setLabel(ArrayList<String> label) {
-        this.label = label;
-    }
-
-    public ArrayList<String> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(ArrayList<String> attachments) {
-        this.attachments = attachments;
     }
 
     public String getStatus() {
@@ -143,6 +113,14 @@ public class Issue {
         this.priority = priority;
     }
 
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -157,5 +135,21 @@ public class Issue {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public ArrayList<String> getLabel() {
+        return label;
+    }
+
+    public void setLabel(ArrayList<String> label) {
+        this.label = label;
+    }
+
+    public ArrayList<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(ArrayList<String> attachments) {
+        this.attachments = attachments;
     }
 }
