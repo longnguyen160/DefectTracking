@@ -55,6 +55,7 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/").permitAll()
+            .antMatchers("/files/**").permitAll()
             .antMatchers("/user/**").permitAll()
             .antMatchers("/ws/**").permitAll()
             .antMatchers("/admin/").hasRole("ADMIN")

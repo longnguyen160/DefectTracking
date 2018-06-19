@@ -2,11 +2,14 @@ package com.capstone.defecttracking.repositories.Issue;
 
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Issue.Issue;
+import com.capstone.defecttracking.models.Issue.IssueDetailsResponse;
 import com.capstone.defecttracking.models.Issue.IssueResponse;
+import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,8 +26,26 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public Issue findById(String issueId) {
-        return null;
+    public IssueDetailsResponse loadIssueDetails(String issueId) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+        return new IssueDetailsResponse(
+            issue.getId(),
+            issue.getIssueKey(),
+            issue.getIssueName(),
+            issue.getProjectId(),
+            issue.getDescription(),
+            getUserResponse(issue.getReporter()),
+            getUserResponse(issue.getAssignee()),
+            issue.getStatus(),
+            issue.getPriority(),
+            issue.getDueDate(),
+            issue.getCreatedAt(),
+            issue.getUpdatedAt(),
+            issue.getLabel(),
+            issue.getAttachments()
+        );
     }
 
     @Override
@@ -40,7 +61,22 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         return null;
     }
 
-    public UserResponse getUserResponse(String userId) {
+    @Override
+    public String generateIssueKey() {
+        Query query = new Query().with(Sort.by("updatedAt").descending());
+        Issue latestIssue = mongoTemplate.findOne(query, Issue.class);
+
+        if (latestIssue != null) {
+            String key = latestIssue.getIssueKey();
+            String[] arr = key.split("-");
+
+            return "ISSUE-" + (Integer.parseInt(arr[arr.length - 1]) + 1) + "";
+        } else {
+            return "ISSUE-1";
+        }
+    }
+
+    private UserResponse getUserResponse(String userId) {
         Query query = new Query(Criteria.where("_id").is(userId));
         User user = mongoTemplate.findOne(query, User.class);
 
@@ -58,7 +94,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         List<Issue> issueList;
 
         if (user.getRoles().contains(Roles.USER.toString())) {
-            query = new Query(Criteria.where("members").is(userId));
+            query = new Query(Criteria.where("members.userId").is(userId));
             List<Project> projects = mongoTemplate.find(query, Project.class);
             List<String> projectIds = projects.stream().map(Project::getId).collect(Collectors.toList());
 
@@ -72,6 +108,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             .stream()
             .map(issue -> new IssueResponse(
                 issue.getId(),
+                issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getProjectId(),
                 issue.getDescription(),
@@ -80,7 +117,48 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getStatus(),
                 issue.getPriority(),
                 issue.getDueDate(),
-                issue.getCreatedAt()
+                issue.getCreatedAt(),
+                issue.getUpdatedAt()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueResponse> loadAllIssuesBasedOnFilter(String value, String filter) {
+        Query query = new Query(Criteria.where(filter).is(value));
+        List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+
+        return issueList
+            .stream()
+            .map(issue -> new IssueResponse(
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getProjectId(),
+                issue.getDescription(),
+                getUserResponse(issue.getReporter()),
+                getUserResponse(issue.getAssignee()),
+                issue.getStatus(),
+                issue.getPriority(),
+                issue.getDueDate(),
+                issue.getCreatedAt(),
+                issue.getUpdatedAt()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueShortcutResponse> loadAllIssuesShortcut(String userId) {
+        Query query = new Query(Criteria.where("assignee").is(userId)).with(Sort.by("updatedAt").descending());
+        List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+
+        return issueList
+            .stream()
+            .map(issue -> new IssueShortcutResponse(
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getPriority()
             ))
             .collect(Collectors.toList());
     }

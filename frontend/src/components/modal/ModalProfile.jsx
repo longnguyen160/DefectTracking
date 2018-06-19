@@ -1,8 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Uppy from 'uppy/lib/core';
-import Tus from 'uppy/lib/plugins/Tus';
-import FileInput from 'uppy/lib/plugins/FileInput';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm, SubmissionError } from 'redux-form';
@@ -17,11 +14,12 @@ import {
   ModalBodyStyled
 } from '../../stylesheets/Modal';
 import { Image, LineFormStyled, TextErrorStyled } from '../../stylesheets/GeneralStyled';
-import { INPUT_TEXT } from '../../utils/enums';
+import { INPUT_TEXT, FILE_BASE_URL } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import { validateForm } from '../../utils/ultis';
 import InputField from '../form/InputField';
 import { updateProfile } from '../../modules/account/actions/update';
+import { loadFile, resetState, uploadFile } from '../../modules/file/actions/file';
 
 class ModalProfile extends React.Component {
 
@@ -39,19 +37,20 @@ class ModalProfile extends React.Component {
       change('phone', user.profile.phone);
     }
     change('email', user.email);
+  }
 
-    this.uppy = new Uppy({ debug: true })
-      .use(Tus, { endpoint: 'https://master.tus.io/files/' })
-      .use(FileInput, { target: this.avatar });
-    this.uppy.on('complete', (result) => {
-      this.setState({ avatarURL: result.successful[0].uploadURL });
-    });
+  componentWillReceiveProps(nextProps) {
+    const { fileIds } = nextProps;
 
-    document.querySelector('.uppy-FileInput-btn').innerHTML = 'Choose image';
+    if (fileIds.length > 0) {
+      this.setState({ avatarURL: FILE_BASE_URL + fileIds[0] });
+    }
   }
 
   componentWillUnmount() {
-    this.uppy.close();
+    const { resetState } = this.props;
+
+    resetState();
   }
 
   handleEditProfile = (values) => {
@@ -73,6 +72,18 @@ class ModalProfile extends React.Component {
       phone: values.phone,
       avatarURL
     }, values.email);
+  };
+
+  handleOpenFileDialog = () => {
+    this.inputFile.click();
+  };
+
+  handleChangeFile = (e) => {
+    const { uploadFile } = this.props;
+    const file = new FormData();
+
+    file.append("files", e.target.files[0]);
+    uploadFile(file);
   };
 
   render() {
@@ -99,6 +110,23 @@ class ModalProfile extends React.Component {
             <ModalContentStyled>
               <LineFormStyled hasTitle image alignCenter innerRef={(e) => this.avatar = e}>
                 <Image avatar src={url} />
+                <Button
+                  hasBorder
+                  no
+                  small
+                  autoHeight
+                  autoWidth
+                  onClick={this.handleOpenFileDialog}
+                  type="button"
+                >
+                  Choose Image
+                </Button>
+                <input
+                  type="file"
+                  style={{display: 'none'}}
+                  ref={(e) => this.inputFile = e}
+                  onChange={this.handleChangeFile}
+                />
               </LineFormStyled>
             </ModalContentStyled>
             <ModalContentStyled>
@@ -205,12 +233,16 @@ ModalProfile.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   change: PropTypes.func.isRequired,
+  uploadFile: PropTypes.func.isRequired,
+  loadFile: PropTypes.func.isRequired,
+  resetState: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   updateProfile: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
   submitFailed: PropTypes.bool.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  fileIds: PropTypes.array.isRequired,
   user: PropTypes.object.isRequired,
   account: PropTypes.shape({
     isFetching: PropTypes.bool.isRequired,
@@ -220,11 +252,16 @@ ModalProfile.propTypes = {
 
 const mapStateToProps = state => ({
   user: state.layout.user,
-  account: state.account
+  account: state.account,
+  fileIds: state.file.fileIds,
+  fileData: state.file.fileData
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateProfile: updateProfile
+  updateProfile: updateProfile,
+  uploadFile: uploadFile,
+  loadFile: loadFile,
+  resetState: resetState
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Uppy from 'uppy/lib/core';
-import Tus from 'uppy/lib/plugins/Tus';
 import moment from 'moment';
 import Modal from './Modal';
 import {
@@ -32,11 +30,14 @@ import {
   FILE,
   DATETIME_PICKER,
   CREATABLE,
-  ISSUE_STATUS_ARRAY
+  ISSUE_STATUS_ARRAY,
+  FILE_BASE_URL
 } from '../../utils/enums';
 import InputField from '../form/InputField';
 import { validateForm } from '../../utils/ultis';
 import { createIssue } from '../../modules/issue/actions/issue';
+import { deleteFile, resetState, uploadFile } from '../../modules/file/actions/file';
+import { loadAllUsersInProject } from '../../modules/projects/actions/usersInProject';
 
 class ModalCreatingIssue extends React.Component {
 
@@ -49,35 +50,41 @@ class ModalCreatingIssue extends React.Component {
 
   }
 
-  componentWillMount() {
-    this.uppy = new Uppy({ debug: true })
-      .use(Tus, { endpoint: 'https://master.tus.io/files/' });
-  }
-
   componentDidMount() {
-    const { selectedProject, change, user } = this.props;
+    const { selectedProject, change, user, loadAllUsersInProject } = this.props;
 
     if (selectedProject) {
       change('projectId', selectedProject.id);
     }
     change('reporter', user.id);
-    this.uppy.on('complete', (result) => {
-      this.setState(prevState => {
-        prevState.uploadedFile.push(...result.successful);
 
-        return {
-          uploadedFile: prevState.uploadedFile
-        }
-      });
+    if (selectedProject) {
+      loadAllUsersInProject(selectedProject.id);
+    }
+  }
+
+  componentWillUnmount() {
+    const { resetState } = this.props;
+
+    resetState();
+  }
+
+  onDrop = (files) => {
+    const { uploadFile } = this.props;
+    const { uploadedFile } = this.state;
+    const attachments = new FormData();
+
+    Object.keys(files).filter(element => element !== 'preventDefault').map((file) =>{
+      attachments.append('files', files[file]);
+      uploadedFile.push(files[file]);
+      this.setState({ uploadedFile });
     });
-  }
 
-  componentWillUnmount () {
-    this.uppy.close();
-  }
+    uploadFile(attachments);
+  };
 
   handleCreateIssue = (values) => {
-    const { createIssue, onClose } = this.props;
+    const { createIssue, onClose, fileIds } = this.props;
 
     if (validateForm.required(values.projectId)) {
       throw new SubmissionError({ _error: 'Project is required' });
@@ -92,17 +99,24 @@ class ModalCreatingIssue extends React.Component {
     createIssue(
       {
         ...values,
+        attachments: fileIds,
+        status: 'To Do',
         dueDate: moment(values.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
-        createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+        createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+        updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
       }, () => {
       onClose();
     })
   };
 
-  handleDeleteAttachment = (fileURL) => {
+  handleDeleteAttachment = (fileId, index) => {
+    const { deleteFile } = this.props;
+
     this.setState(prevState => ({
-      uploadedFile: prevState.uploadedFile.filter(file => file.uploadURL !== fileURL)
+      uploadedFile: prevState.uploadedFile.filter((file, i) => i !== index)
     }));
+
+    deleteFile(fileId);
   };
 
   render() {
@@ -117,7 +131,9 @@ class ModalCreatingIssue extends React.Component {
       submitting,
       error,
       submitFailed,
-      submitSucceeded
+      submitSucceeded,
+      fileIds,
+      usersInProject
     } = this.props;
     const { uploadedFile } = this.state;
 
@@ -187,7 +203,7 @@ class ModalCreatingIssue extends React.Component {
                       name={'reporter'}
                       placeholder={'Reporter...'}
                       options={[
-                        { value: user.id, label: user.username, ...user }
+                        { value: user.id, label: user.username, avatarURL: user.profile.avatarURL }
                       ]}
                       renderCustom
                       disabled={true}
@@ -202,20 +218,20 @@ class ModalCreatingIssue extends React.Component {
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled fullWidth>
                     <InputField
-                      name={'attachment'}
+                      name={'attachments'}
                       type={FILE}
                       renderType={'file'}
-                      uppy={this.uppy}
+                      onDrop={this.onDrop}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
                 <ModalLineContentStyled>
                   {
-                    uploadedFile.map(file => (
-                      <FilterBoxWrapperStyled key={file.uploadURL}>
+                    uploadedFile.map((file, index) => (
+                      <FilterBoxWrapperStyled key={fileIds[index]}>
                         {
                           file.type && file.type.includes('image') ?
-                            <Image project src={file.uploadURL}/>
+                            <Image project src={FILE_BASE_URL + fileIds[index]} />
                           :
                             <Icon icon={ICONS.ATTACHMENT} color={'#1A1A1A'} width={30} height={30}/>
                         }
@@ -225,7 +241,7 @@ class ModalCreatingIssue extends React.Component {
                           color={'#1A1A1A'}
                           width={10}
                           height={10}
-                          onClick={() => this.handleDeleteAttachment(file.uploadURL)}
+                          onClick={() => this.handleDeleteAttachment(fileIds[index], index)}
                           hoverPointer
                         />
                       </FilterBoxWrapperStyled>
@@ -269,9 +285,7 @@ class ModalCreatingIssue extends React.Component {
                     <InputField
                       name={'assignee'}
                       type={SELECT}
-                      options={[
-                        { value: 'Me', label: 'me' },
-                      ]}
+                      options={usersInProject}
                       renderCustom
                     />
                   </LineFormStyled>
@@ -327,15 +341,21 @@ ModalCreatingIssue.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  loadAllUsersInProject: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
+  usersInProject: PropTypes.array.isRequired,
   selectedProject: PropTypes.object.isRequired,
   change: PropTypes.func.isRequired,
+  resetState: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   createIssue: PropTypes.func.isRequired,
+  uploadFile: PropTypes.func.isRequired,
+  deleteFile: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   submitFailed: PropTypes.bool.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
+  fileIds: PropTypes.array.isRequired,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   issue: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
@@ -348,13 +368,23 @@ const mapStateToProps = state => ({
     value: project.id,
     label: project.name
   })),
+  usersInProject: state.project.usersInProject.map(user => ({
+    value: user.id,
+    label: user.username,
+    ...user
+  })),
   user: state.layout.user,
   selectedProject: state.layout.selectedProject,
-  issue: state.issue
+  issue: state.issue,
+  fileIds: state.file.fileIds,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createIssue: createIssue
+  createIssue: createIssue,
+  uploadFile: uploadFile,
+  resetState: resetState,
+  loadAllUsersInProject: loadAllUsersInProject,
+  deleteFile: deleteFile
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({

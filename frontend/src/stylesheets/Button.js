@@ -11,7 +11,7 @@ export const Button = styled.button`
   cursor: pointer;
 
   ${props => props.small && css`
-    padding: 3px 9px;
+    padding: 3px 5px !important;
     font-size: 13px !important;
     width: 80px !important;
   `}
@@ -115,10 +115,10 @@ export const Button = styled.button`
   `}
   
   ${props => props.autoHeight && css`
-    height: auto;
+    height: auto !important;
   `}
   ${props => props.autoWidth && css`
-    width: auto;
+    width: auto !important;
   `}
 `;
 

@@ -47,8 +47,8 @@ class IssueList extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
-            {row.value.username}
+            <Image topNav src={row.value && row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
+            {row.value && row.value.username}
           </TableBlockStyled>
         )
       },
@@ -58,8 +58,8 @@ class IssueList extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
-            {row.value.username}
+            <Image topNav src={row.value && row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
+            {row.value && row.value.username}
           </TableBlockStyled>
         )
       },
@@ -94,7 +94,7 @@ class IssueList extends React.Component {
             Issues
           </TitleElementStyled>
         </ElementHeaderStyled>
-        <FormGroupStyled>
+        <FormGroupStyled visible>
           <Select
             isSearchable={false}
             placeholder={'Project'}

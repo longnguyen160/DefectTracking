@@ -1,7 +1,9 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Issue.Issue;
+import com.capstone.defecttracking.models.Issue.IssueDetailsResponse;
 import com.capstone.defecttracking.models.Issue.IssueResponse;
+import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Issue.IssueRepository;
@@ -12,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -46,7 +45,25 @@ public class IssueController {
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
 
-        issueRepository.save(issue);
+        String issueKey = issueRepositoryCustom.generateIssueKey();
+        issueRepository.save(
+            new Issue(
+                issue.getId(),
+                issueKey,
+                issue.getIssueName(),
+                issue.getProjectId(),
+                issue.getDescription(),
+                issue.getReporter(),
+                issue.getAssignee(),
+                issue.getStatus(),
+                issue.getPriority(),
+                issue.getDueDate(),
+                issue.getCreatedAt(),
+                issue.getUpdatedAt(),
+                issue.getLabel(),
+                issue.getAttachments()
+            )
+        );
         serverResponse = new ServerResponse(true, "Create issue successfully");
 
         template.convertAndSend("/topic/issuesList", serverResponse);
@@ -60,5 +77,20 @@ public class IssueController {
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         return issueRepositoryCustom.loadAllIssues(userDetailsSecurity.getId());
+    }
+
+    @GetMapping("user/loadAllIssuesBasedOnFilter")
+    public List<IssueResponse> loadAllIssuesBasedOnFilter(@RequestParam(value = "value") String value, @RequestParam(value = "filter") String filter) {
+        return issueRepositoryCustom.loadAllIssuesBasedOnFilter(value, filter);
+    }
+
+    @GetMapping("user/loadAllIssuesShortcut")
+    public List<IssueShortcutResponse> loadAllIssuesShortcut(@RequestParam(value = "userId") String userId) {
+        return issueRepositoryCustom.loadAllIssuesShortcut(userId);
+    }
+
+    @GetMapping("user/loadIssueDetails")
+    public IssueDetailsResponse loadIssueDetails(@RequestParam(value = "issueId") String issueId) {
+        return issueRepositoryCustom.loadIssueDetails(issueId);
     }
 }

@@ -12,6 +12,7 @@ axios.interceptors.request.use((_config) => {
   return config;
 });
 
+// Account
 const login = (user) => {
   return axios.post('user/signin', user);
 };
@@ -24,6 +25,15 @@ const loadCurrentUser = () => {
   return axios.get('user/currentUser');
 };
 
+const updateProfile = ({ profile, email }) => {
+  return axios.post('user/updateProfile', { profile, email });
+};
+
+const loadAllUsers = (input, projectId) => {
+  return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
+};
+
+// Project
 const createProject = (project) => {
   return axios.post('admin/createProject', project);
 };
@@ -32,14 +42,15 @@ const loadAllProjects = () => {
   return axios.get('loadAllProjects');
 };
 
-const loadAllUsers = (input, projectId) => {
-  return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
-};
-
 const loadALlUsersInProject = (projectId) => {
   return axios.get(`user/loadAllUsersInProject?projectId=${projectId}`);
 };
 
+const addUserToProject = (requestData) => {
+  return axios.post('project/addUserToProject', requestData);
+};
+
+// Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
 };
@@ -48,20 +59,34 @@ const loadAllIssues = () => {
   return axios.get('user/loadAllIssues');
 };
 
-const updateProfile = ({ profile, email }) => {
-  return axios.post('user/updateProfile', { profile, email });
+const loadAllIssuesShortcut = (userId) => {
+  return axios.get(`user/loadAllIssuesShortcut?userId=${userId}`);
 };
 
-const addUserToProject = (requestData) => {
-  return axios.post('project/addUserToProject', requestData);
+const loadIssueDetails = (issueId) => {
+  return axios.get(`user/loadIssueDetails?issueId=${issueId}`);
 };
 
+// Category
 const createCategory = (category) => {
   return axios.post('admin/createCategory', category);
 };
 
 const loadAllCategories = () => {
   return axios.get('admin/loadAllCategories');
+};
+
+// File
+const uploadFile = (file) => {
+  return axios.post('files/uploadFile', file);
+};
+
+const loadFile = (fileId) => {
+  return axios.get(`files/load?fileId=${fileId}`);
+};
+
+const deleteFile = (fileId) => {
+  return axios.delete(`files/delete/${fileId}`);
 };
 
 const API = {
@@ -77,7 +102,12 @@ const API = {
   addUserToProject,
   createCategory,
   loadAllCategories,
-  loadALlUsersInProject
+  loadALlUsersInProject,
+  uploadFile,
+  loadFile,
+  deleteFile,
+  loadAllIssuesShortcut,
+  loadIssueDetails
 };
 
 export default API;

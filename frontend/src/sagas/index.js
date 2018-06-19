@@ -4,6 +4,7 @@ import layoutFlow from '../modules/layout/sagas/layout';
 import projectFlow from '../modules/projects/sagas/project';
 import issueFlow from '../modules/issue/sagas/issue';
 import managementFlow from '../modules/management/sagas/management';
+import fileFlow from '../modules/file/sagas/file';
 
 export default function* rootSaga() {
   yield all([
@@ -11,6 +12,7 @@ export default function* rootSaga() {
     layoutFlow(),
     projectFlow(),
     issueFlow(),
-    managementFlow()
+    managementFlow(),
+    fileFlow()
   ]);
 }
