@@ -15,7 +15,7 @@ class CategoriesManagement extends React.Component {
   componentWillMount() {
     const { loadAllCategories } = this.props;
 
-    // loadAllCategories();
+    loadAllCategories();
   }
 
   onMessageReceive = () => {
