@@ -12,11 +12,13 @@ import {
   AttachmentContentStyled,
   AttachmentContainerStyled,
   AttachmentDetailsBodySizeStyled,
-  AttachmentDetailsBodyDeleteStyled, Image
+  AttachmentDetailsBodyDeleteStyled,
+  Image
 } from '../../stylesheets/GeneralStyled';
-import { loadFile } from '../../modules/file/actions/file';
-import { FILE_BASE_URL } from '../../utils/enums';
+import { loadFile, resetState } from '../../modules/file/actions/file';
+import {FILE_BASE_URL, ICONS} from '../../utils/enums';
 import { formatBytes } from '../../utils/ultis';
+import Icon from '../icon/Icon';
 
 class Attachment extends React.Component {
   state = {
@@ -30,16 +32,23 @@ class Attachment extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { attachment } = nextProps;
+    const { attachment, fileId } = nextProps;
 
-    if (!this.state.attachment) {
+    if (!this.state.attachment && attachment.id === fileId) {
       this.setState({ attachment });
     }
+  }
+
+  componentWillUnmount() {
+    const { resetState } = this.props;
+
+    resetState();
   }
 
   render() {
     const { handleDeleteAttachment, fileId } = this.props;
     const { attachment } = this.state;
+    const isImage = attachment && attachment.contentType.includes('image');
 
     return (
       <AttachmentWrapperStyled>
@@ -48,21 +57,33 @@ class Attachment extends React.Component {
             <AttachmentImageStyled>
               <AttachmentImageContentStyled>
                 {
-                  attachment && attachment.contentType.includes('image') &&
+                  isImage &&
                     <Image dynamic={'100%'} src={FILE_BASE_URL + fileId} />
                 }
               </AttachmentImageContentStyled>
             </AttachmentImageStyled>
             <AttachmentDetailsStyled>
-              <AttachmentDetailsHeaderStyled>
+              <AttachmentDetailsHeaderStyled color={isImage ? '#fff' : '#1A1A1A'}>
                 {attachment && attachment.name}
               </AttachmentDetailsHeaderStyled>
-              <AttachmentDetailsBodyStyled>
+              <AttachmentDetailsBodyStyled color={isImage ? '#fff' : '#1A1A1A'}>
                 <AttachmentDetailsBodySizeStyled>
+                  {
+                    isImage ?
+                      <Icon icon={ICONS.IMAGE} color={'#fff'} width={15} height={15} />
+                    :
+                      <Icon icon={ICONS.ATTACHMENT} color={'#1A1A1A'} width={15} height={15} />
+                  }
                   {attachment && formatBytes(attachment.size, 3)}
                 </AttachmentDetailsBodySizeStyled>
                 <AttachmentDetailsBodyDeleteStyled onClick={handleDeleteAttachment}>
-                  X
+                  <Icon
+                    icon={ICONS.DELETE}
+                    color={isImage ? '#fff' : '#1A1A1A'}
+                    width={10}
+                    height={10}
+                    hoverPointer
+                  />
                 </AttachmentDetailsBodyDeleteStyled>
               </AttachmentDetailsBodyStyled>
             </AttachmentDetailsStyled>
@@ -76,6 +97,7 @@ class Attachment extends React.Component {
 Attachment.propTypes = {
   handleDeleteAttachment: PropTypes.func.isRequired,
   loadFile: PropTypes.func.isRequired,
+  resetState: PropTypes.func.isRequired,
   attachment: PropTypes.object,
   fileId: PropTypes.string.isRequired
 };
@@ -85,7 +107,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  loadFile: loadFile
+  loadFile: loadFile,
+  resetState: resetState
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Attachment);

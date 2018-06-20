@@ -13,7 +13,8 @@ import {
   LOAD_ISSUE_DETAILS,
   LOAD_ISSUE_DETAILS_REQUEST,
   LOAD_ISSUE_DETAILS_SUCCESS,
-  LOAD_ISSUE_DETAILS_FAILURE
+  LOAD_ISSUE_DETAILS_FAILURE,
+  RESET_ISSUE_DETAILS
 } from './types';
 
 const createIssue = (issue, closeModal) => {
@@ -117,6 +118,12 @@ const loadIssueDetailsFailure = (error) => {
   }
 };
 
+const resetIssueDetails = () => {
+  return {
+    type: RESET_ISSUE_DETAILS
+  }
+};
+
 export {
   createIssue,
   createIssueRequest,
@@ -132,5 +139,6 @@ export {
   loadIssueDetails,
   loadIssueDetailsRequest,
   loadIssueDetailsSuccess,
-  loadIssueDetailsFailure
+  loadIssueDetailsFailure,
+  resetIssueDetails
 }

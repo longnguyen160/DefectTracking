@@ -1,6 +1,7 @@
 package com.capstone.defecttracking.models.File;
 
 public class FileResponse {
+    private String id;
     private String contentType;
     private String name;
     private long size;
@@ -8,10 +9,19 @@ public class FileResponse {
     public FileResponse() {
     }
 
-    public FileResponse(String contentType, String name, long size) {
+    public FileResponse(String id, String contentType, String name, long size) {
+        this.id = id;
         this.contentType = contentType;
         this.name = name;
         this.size = size;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getContentType() {

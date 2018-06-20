@@ -7,7 +7,7 @@ import Notifications from 'react-notification-system-redux';
 import SockJsClient from "react-stomp";
 import TopNavBar from './TopNavBar';
 import SideBar from './SideBar';
-import { loadCurrentUser, openModal, closeModal, resetProject, selectProject } from '../actions/layout';
+import { loadCurrentUser, openModal, closeModal, resetProject, selectProject, loadProjectDetails } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { notificationStyle } from '../../../stylesheets/Notifications';
 import { FormGroupStyled } from '../../../stylesheets/GeneralStyled';
@@ -19,7 +19,7 @@ import ModalProfile from '../../../components/modal/ModalProfile';
 import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddUser';
 import ModalAddCategory from '../../../components/modal/ModalAddCategory';
-
+import {loadAllProjects} from '../../projects/actions/project';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
@@ -41,18 +41,19 @@ const getParams = pathname => {
 class MainLayout extends React.Component {
 
   componentWillMount() {
-    const { loadCurrentUser, history } = this.props;
+    const { loadCurrentUser, history, loadAllProjects } = this.props;
     const { pathname } = this.props.location;
     const currentParams = getParams(pathname);
 
+    loadAllProjects();
     loadCurrentUser(() => {
       history.push('/signin');
     });
 
     if (currentParams.projectId) {
-      const { selectProject } = this.props;
+      const { loadProjectDetails } = this.props;
 
-      selectProject(currentParams.projectId);
+      loadProjectDetails(currentParams.projectId);
     }
   }
 
@@ -126,6 +127,8 @@ MainLayout.propTypes = {
   history: PropTypes.object.isRequired,
   notifications: PropTypes.array.isRequired,
   loadCurrentUser: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
+  loadAllProjects: PropTypes.func.isRequired,
   logOut: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
@@ -151,7 +154,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   closeModal: closeModal,
   resetProject: resetProject,
-  selectProject: selectProject
+  selectProject: selectProject,
+  loadAllProjects: loadAllProjects,
+  loadProjectDetails: loadProjectDetails
 }, dispatch);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainLayout));

@@ -658,7 +658,7 @@ export const AttachmentDetailsHeaderStyled = styled.div`
   font-size: 12px;
   line-height: 18px;
   transition: opacity 0.3s ease 0s;
-  color: white;
+  color: ${props => props.color};
   visibility: hidden;
   opacity: 0;
   
@@ -676,7 +676,7 @@ export const AttachmentDetailsBodyStyled = styled.div`
   align-items: center;  
   z-index: 1;
   height: 16px;
-  color: white;
+  color: ${props => props.color};
   font-size: 11px;
   
   &:hover {
@@ -706,7 +706,7 @@ export const AttachmentDetailsStyled = styled.div`
     
     & > ${AttachmentDetailsHeaderStyled} {
       opacity: 1;
-      visibility: visible;          
+      visibility: visible;
     }
     & > ${AttachmentDetailsBodyStyled} {
       opacity: 1;

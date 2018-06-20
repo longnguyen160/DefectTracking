@@ -63,7 +63,7 @@ public class FileController {
             .find(Query.query(GridFsCriteria.where("_id").in(fileIds)))
             .into(list)
             .stream()
-            .map(file -> new FileResponse(file.getId().toString(), file.getFilename(), file.getLength()))
+            .map(file -> new FileResponse(file.getObjectId().toHexString(), file.getMetadata().get("_contentType").toString(), file.getFilename(), file.getLength()))
             .collect(Collectors.toList());
     }
 
@@ -71,7 +71,7 @@ public class FileController {
     public FileResponse loadFile(@RequestParam(value = "fileId") String fileId) {
         GridFSFile file = gridFsTemplate.findOne(Query.query(GridFsCriteria.where("_id").is(fileId)));
 
-        return new FileResponse(file.getMetadata().get("_contentType").toString(), file.getFilename(), file.getLength());
+        return new FileResponse(fileId, file.getMetadata().get("_contentType").toString(), file.getFilename(), file.getLength());
     }
 
     @GetMapping("/")
