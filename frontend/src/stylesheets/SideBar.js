@@ -28,4 +28,7 @@ export const SideBarMainBlockStyled = styled.div`
     background-color: #e6e6e6;
     font-weight: bold;
   `}
+  ${props => props.isHeader && css`
+    margin-bottom: 20px;
+  `}
 `;

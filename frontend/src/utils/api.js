@@ -50,6 +50,9 @@ const addUserToProject = (requestData) => {
   return axios.post('project/addUserToProject', requestData);
 };
 
+const loadProjectDetails = (projectId) => {
+  return axios.get(`user/loadProjectDetails?projectId=${projectId}`);
+};
 // Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
@@ -103,6 +106,7 @@ const API = {
   createCategory,
   loadAllCategories,
   loadALlUsersInProject,
+  loadProjectDetails,
   uploadFile,
   loadFile,
   deleteFile,

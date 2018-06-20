@@ -1,6 +1,13 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { LOAD_CURRENT_USER } from '../actions/types';
-import { requestLoadCurrentUser, loadCurrentUserSuccess, loadCurrentUserFailure } from '../actions/layout';
+import { LOAD_CURRENT_USER, LOAD_PROJECT_DETAILS } from '../actions/types';
+import {
+  requestLoadCurrentUser,
+  loadCurrentUserSuccess,
+  loadCurrentUserFailure,
+  loadProjectDetailsRequest,
+  loadProjectDetailsSuccess,
+  loadProjectDetailsFailure
+} from '../actions/layout';
 import API from '../../../utils/api';
 import { getError, removeAccessToken } from '../../../utils/ultis';
 
@@ -25,8 +32,25 @@ function* watchLoadCurrentUser() {
   yield takeLatest(LOAD_CURRENT_USER, loadCurrentUser);
 }
 
+function* loadProjectDetails({ projectId }) {
+  try {
+    yield put(loadProjectDetailsRequest());
+
+    const { data } = yield call(API.loadProjectDetails, projectId);
+
+    yield put(loadProjectDetailsSuccess(data));
+  } catch (error) {
+    yield put(loadProjectDetailsFailure(getError((error))));
+  }
+}
+
+function* watchLoadProjectDetails() {
+  yield takeLatest(LOAD_PROJECT_DETAILS, loadProjectDetails);
+}
+
 export default function* accountFlow() {
   yield all([
     watchLoadCurrentUser(),
+    watchLoadProjectDetails()
   ]);
 }

@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import { UPLOAD_FILE, LOAD_FILE, DELETE_FILE } from '../actions/types';
 import {
   uploadFileRequest,
@@ -44,7 +44,7 @@ function* loadFile({ fileId }) {
 }
 
 function* watchLoadFile() {
-  yield takeLatest(LOAD_FILE, loadFile);
+  yield takeEvery(LOAD_FILE, loadFile);
 }
 
 function* deleteFile({ fileId }) {

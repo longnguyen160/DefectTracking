@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface ProjectRepositoryCustom {
-    Project findById(String projectId);
+    Project loadProjectDetails(String projectId);
     Boolean doesProjectExisted(String projectName);
     List<Project> loadAllProjectsForCurrentUser(String userId);
     ResponseEntity<?> addUserToProject(UserProjectRequest userProjectRequest);

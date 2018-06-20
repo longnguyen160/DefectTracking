@@ -75,6 +75,7 @@ export const ModalHeaderStyled = styled.div`
   ${props => props.noMargin && css`
     margin: 0;
   `}
+  padding: ${props => props.padding ? props.padding : '0'};
 `;
 
 export const ModalHeaderTitleStyled = styled.div`

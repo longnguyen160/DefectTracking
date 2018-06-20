@@ -59,6 +59,11 @@ public class ProjectController {
         return projectRepositoryCustom.loadAllProjectsForCurrentUser(userDetailsSecurity.getId());
     }
 
+    @GetMapping("user/loadProjectDetails")
+    public Project loadProjectDetails(@RequestParam(value = "projectId") String projectId) {
+        return projectRepositoryCustom.loadProjectDetails(projectId);
+    }
+
     @PostMapping("/project/addUserToProject")
     public ResponseEntity<?> addUserToProject(@RequestBody UserProjectRequest userProjectRequest) {
         ResponseEntity<?> responseEntity = projectRepositoryCustom.addUserToProject(userProjectRequest);

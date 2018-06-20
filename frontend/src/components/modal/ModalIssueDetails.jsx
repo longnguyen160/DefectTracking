@@ -24,16 +24,23 @@ import {
   IssueStatusStyled,
   DropZoneStyled
 } from '../../stylesheets/GeneralStyled';
-import {ICONS, ISSUE_STATUS_ARRAY} from '../../utils/enums';
+import { ICONS, ISSUE_STATUS_ARRAY } from '../../utils/enums';
 import Icon from '../icon/Icon';
 import {deleteFile, uploadFile} from '../../modules/file/actions/file';
 import Attachment from '../attachment/Attachment';
+import { resetIssueDetails } from '../../modules/issue/actions/issue';
 
 class ModalIssueDetails extends React.Component {
 
   state = {
     uploadedFile: []
   };
+
+  componentWillUnmount() {
+    const { resetIssueDetails } = this.props;
+
+    resetIssueDetails();
+  }
 
   onDrop = (files) => {
     const { uploadFile } = this.props;
@@ -62,10 +69,11 @@ class ModalIssueDetails extends React.Component {
 
     return (
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'750px'} isHidden={true} fullHeight={true}>
-        <ModalHeaderStyled noMargin>
+        <ModalHeaderStyled noMargin padding={'0 0 10px 0'}>
           <ModalHeaderTitleStyled>
             <span>{issue && issue.issueKey}</span>
           </ModalHeaderTitleStyled>
+          <Icon icon={ICONS.EYE} width={20} height={20} color={'#626262'} />
         </ModalHeaderStyled>
         <ModalBodyStyled padding={'10px 0'}>
           <ModalContentStyled flex={'0 0 540px'} padding={'0 10px'}>
@@ -222,6 +230,7 @@ ModalIssueDetails.propTypes = {
   onClose: PropTypes.func.isRequired,
   uploadFile: PropTypes.func.isRequired,
   deleteFile: PropTypes.func.isRequired,
+  resetIssueDetails: PropTypes.func.isRequired,
   issue: PropTypes.object,
   user: PropTypes.object.isRequired
 };
@@ -233,7 +242,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   uploadFile: uploadFile,
-  deleteFile: deleteFile
+  deleteFile: deleteFile,
+  resetIssueDetails: resetIssueDetails
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalIssueDetails);

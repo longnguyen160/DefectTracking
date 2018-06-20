@@ -9,7 +9,8 @@ import {
   LOAD_ALL_ISSUES_SHORTCUT_FAILURE,
   LOAD_ISSUE_DETAILS_REQUEST,
   LOAD_ISSUE_DETAILS_SUCCESS,
-  LOAD_ISSUE_DETAILS_FAILURE
+  LOAD_ISSUE_DETAILS_FAILURE,
+  RESET_ISSUE_DETAILS
 } from '../actions/types';
 
 const initialState = {
@@ -85,6 +86,11 @@ export default function issue(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
+      });
+
+    case RESET_ISSUE_DETAILS:
+      return Object.assign({}, state, {
+        issue: null
       });
 
     default:

@@ -71,6 +71,7 @@ ReactDOM.render(
             <PrivateRoute exact path="/project/:projectId?/members" component={UsersList} />
             <PrivateRoute exact path="/project/:projectId?/activePhase" component={Phase} />
             <PrivateRoute exact path="/issues" component={IssueList} />
+            <PrivateRoute exact path="/manage/issues" component={IssueList} />
             <PrivateRoute exact path="/manage/projects" component={ProjectsManagement} />
             <PrivateRoute exact path="/manage/users" component={UsersManagement} />
             <PrivateRoute exact path="/manage/categories" component={CategoriesManagement} />

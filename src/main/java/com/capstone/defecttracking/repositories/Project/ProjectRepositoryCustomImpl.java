@@ -25,7 +25,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public Project findById(String projectId) {
+    public Project loadProjectDetails(String projectId) {
         Query query = new Query(Criteria.where("_id").is(projectId));
 
         return mongoTemplate.findOne(query, Project.class);

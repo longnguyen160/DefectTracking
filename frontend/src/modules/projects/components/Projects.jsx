@@ -20,12 +20,6 @@ import Icon from '../../../components/icon/Icon';
 
 class Projects extends React.Component {
 
-  componentWillMount() {
-    const { loadAllProjects } = this.props;
-
-    loadAllProjects();
-  }
-
   onMessageReceive = () => {
     const { loadAllProjects } = this.props;
 
@@ -97,7 +91,6 @@ class Projects extends React.Component {
 
 Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
-  loadAllProjects: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   project: PropTypes.shape({
@@ -112,7 +105,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
-  loadAllProjects: loadAllProjects,
   selectProject: selectProject
 }, dispatch);
 
