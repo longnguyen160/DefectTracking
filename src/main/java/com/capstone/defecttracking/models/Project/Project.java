@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class Project {
     @Id
     private String id;
-
     private String name;
     private String description;
     private String status;
