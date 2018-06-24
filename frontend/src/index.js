@@ -13,14 +13,13 @@ import Home from './modules/home/components/Home';
 import BackLog from './modules/backlog/components/BackLog';
 import UsersList from './modules/account/components/UsersList';
 import IssueList from './modules/issue/components/IssueList';
-import Phase from './modules/sprint/components/Phase';
+import Phase from './modules/phase/components/Phase';
 import ProjectsManagement from './modules/management/components/ProjectsManagement';
 import UsersManagement from './modules/management/components/UsersManagement';
 import CategoriesManagement from './modules/management/components/CategoriesManagement';
 
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
-import '../src/stylesheets/uppy.css';
 import './index.css';
 
 export const history = createHistory();

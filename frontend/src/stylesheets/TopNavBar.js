@@ -11,7 +11,7 @@ export const SubSelectStyled = styled.div`
     css`
       max-width: 150px;
       width: 100%;    
-  `};
+  `};  
   overflow: auto;
   max-height: 250px;
   background: #fff;
@@ -31,7 +31,7 @@ export const SubSelectListStyled = styled.section`
     color: #333333;
   }
   &:hover{
-    background-color: #d1d1d1;
+    opacity: 0.7;
     a{
       color: #626262;
     }
@@ -39,6 +39,12 @@ export const SubSelectListStyled = styled.section`
   &:last-child{
     border-bottom: none;
   }
+  ${props => props.background && css`
+    background: ${props.background};
+  `}
+  ${props => props.color && css`
+    color: ${props.color};
+  `}
 `;
 
 export const HeaderMainStyled = styled.div`

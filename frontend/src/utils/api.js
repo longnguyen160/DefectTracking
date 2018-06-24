@@ -70,6 +70,9 @@ const loadIssueDetails = (issueId) => {
   return axios.get(`user/loadIssueDetails?issueId=${issueId}`);
 };
 
+const updateIssue = (data) => {
+  return axios.post('user/updateIssue', data);
+};
 // Category
 const createCategory = (category) => {
   return axios.post('admin/createCategory', category);
@@ -92,6 +95,15 @@ const deleteFile = (fileId) => {
   return axios.delete(`files/delete/${fileId}`);
 };
 
+//Phase
+const createPhase = (phase) => {
+  return axios.post('user/createPhase', phase);
+};
+
+const loadAllPhases = (projectId) => {
+  return axios.get(`user/loadAllPhases?projectId=${projectId}`);
+};
+
 const API = {
   login,
   signUp,
@@ -111,7 +123,10 @@ const API = {
   loadFile,
   deleteFile,
   loadAllIssuesShortcut,
-  loadIssueDetails
+  loadIssueDetails,
+  updateIssue,
+  createPhase,
+  loadAllPhases
 };
 
 export default API;

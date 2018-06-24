@@ -18,21 +18,35 @@ a {
   text-decoration: none !important;
 }
 
-.uppy-DragDrop-arrow {
-  width: 25px !important;
-  height: 25px !important;
-  margin: 0 !important;
-}
-.uppy-DragDrop-label {
-  font-size: 0.8em !important;
-}
-.uppy-DragDrop-inner {
-  padding: 5px !important;
+.btn {
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  margin: 2px;
+  cursor: pointer;
 }
 
-.uppy-FileInput-btn {
-  padding: 5px 4px!important;
+.btn-success {
+  border: 2px solid #00c056;
+  color: #00c056;
 }
+
+.btn-success:hover {
+  background-color: #00c056;
+  color: #fff;
+}
+
+.btn-danger {
+  border: 2px solid #ff3000;
+  color: #ff3000;
+}
+
+.btn-danger:hover {
+  background-color: #ff3000;
+  color: #fff;
+}
+
 .react-datepicker__time-list {
   padding: 8px;
 }

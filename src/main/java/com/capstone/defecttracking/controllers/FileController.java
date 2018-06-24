@@ -11,7 +11,6 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +37,7 @@ public class FileController {
 
     @PostMapping("/uploadFile")
     public ArrayList<String> uploadFile(@RequestBody MultipartFile[] files) {
-        ArrayList<String> listIds = new ArrayList<String>();
+        ArrayList<String> listIds = new ArrayList<>();
 
         for (MultipartFile file : files) {
             String name = file.getOriginalFilename();
@@ -57,7 +55,7 @@ public class FileController {
 
     @GetMapping("/list")
     public List<FileResponse> getList(@RequestParam(value = "fileIds") ArrayList<String> fileIds) {
-        List<GridFSFile> list = new ArrayList<GridFSFile>();
+        List<GridFSFile> list = new ArrayList<>();
 
         return gridFsTemplate
             .find(Query.query(GridFsCriteria.where("_id").in(fileIds)))

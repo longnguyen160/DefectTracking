@@ -8,13 +8,16 @@ import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -43,6 +46,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getDueDate(),
             issue.getCreatedAt(),
             issue.getUpdatedAt(),
+            new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
             issue.getLabel(),
             issue.getAttachments()
         );
@@ -161,5 +165,45 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getPriority()
             ))
             .collect(Collectors.toList());
+    }
+
+    private Update configUpdate(ArrayList<?> list, String type, String value) {
+        if (list.contains(value)) {
+            return new Update().pull(type, value);
+        } else {
+            return new Update().push(type, value);
+        }
+    }
+    @Override
+    public Boolean updateIssue(String issueId, String type, String value) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+        Update update = new Update();
+
+        switch (type) {
+            case "watchers":
+                update = configUpdate(issue.getWatchers(), type, value);
+                break;
+
+            case "attachments":
+                update = configUpdate(issue.getAttachments(), type, value);
+                break;
+            default:
+                update.set(type, value);
+                break;
+        }
+
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Issue.class);
+
+        return result != null;
+    }
+
+    @Override
+    public void addIssueToBacklog(String issueId, String projectId) {
+        Query query = new Query(Criteria.where("_id").is(projectId));
+        Update update = new Update();
+
+        update.push("backlog", issueId);
+        mongoTemplate.updateFirst(query, update, Project.class);
     }
 }

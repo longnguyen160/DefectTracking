@@ -15,16 +15,18 @@ public class Project {
     private String description;
     private String status;
     private ArrayList<UserRole> members = new ArrayList<UserRole>();
+    private ArrayList<String> backlog = new ArrayList<>();
 
     public Project() {
     }
 
-    public Project(String id, String name, String description, String status, ArrayList<UserRole> members) {
+    public Project(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
         this.members = members;
+        this.backlog = backlog;
     }
 
     public String getId() {
@@ -65,5 +67,13 @@ public class Project {
 
     public void setMembers(UserRole members) {
         this.members.add(members);
+    }
+
+    public ArrayList<String> getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(ArrayList<String> backlog) {
+        this.backlog = backlog;
     }
 }

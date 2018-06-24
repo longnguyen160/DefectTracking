@@ -1,9 +1,6 @@
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.models.Issue.Issue;
-import com.capstone.defecttracking.models.Issue.IssueDetailsResponse;
-import com.capstone.defecttracking.models.Issue.IssueResponse;
-import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
+import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Issue.IssueRepository;
@@ -40,17 +37,17 @@ public class IssueController {
         ServerResponse serverResponse;
 
         if (issueRepositoryCustom.didIssueExisted(issue.getIssueName())) {
-            serverResponse = new ServerResponse(false, "An issue with that name already exists");
+            serverResponse = new ServerResponse(false, "An issue with that name already existed");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
 
         String issueKey = issueRepositoryCustom.generateIssueKey();
-        issueRepository.save(
+        String issueId = issueRepository.save(
             new Issue(
                 issue.getId(),
-                issueKey,
                 issue.getIssueName(),
+                issueKey,
                 issue.getProjectId(),
                 issue.getDescription(),
                 issue.getReporter(),
@@ -60,10 +57,13 @@ public class IssueController {
                 issue.getDueDate(),
                 issue.getCreatedAt(),
                 issue.getUpdatedAt(),
+                issue.getWatchers(),
                 issue.getLabel(),
                 issue.getAttachments()
             )
-        );
+        ).getId();
+
+        issueRepositoryCustom.addIssueToBacklog(issueId, issue.getProjectId());
         serverResponse = new ServerResponse(true, "Create issue successfully");
 
         template.convertAndSend("/topic/issuesList", serverResponse);
@@ -92,5 +92,21 @@ public class IssueController {
     @GetMapping("user/loadIssueDetails")
     public IssueDetailsResponse loadIssueDetails(@RequestParam(value = "issueId") String issueId) {
         return issueRepositoryCustom.loadIssueDetails(issueId);
+    }
+
+    @PostMapping("user/updateIssue")
+    public ResponseEntity<?> updateIssue(@RequestBody IssueUpdateRequest data) {
+        ServerResponse serverResponse;
+
+        if (issueRepositoryCustom.updateIssue(data.getIssueId(), data.getType(), data.getValue())) {
+            serverResponse = new ServerResponse(true, "Update issue successfully");
+
+            template.convertAndSend("/topic/issuesList", serverResponse);
+            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+        }
+
+        serverResponse = new ServerResponse(true, "Update issue failed");
+
+        return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
 }

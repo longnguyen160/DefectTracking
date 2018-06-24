@@ -14,6 +14,10 @@ import {
   LOAD_ISSUE_DETAILS_REQUEST,
   LOAD_ISSUE_DETAILS_SUCCESS,
   LOAD_ISSUE_DETAILS_FAILURE,
+  UPDATE_ISSUE,
+  UPDATE_ISSUE_REQUEST,
+  UPDATE_ISSUE_SUCCESS,
+  UPDATE_ISSUE_FAILURE,
   RESET_ISSUE_DETAILS
 } from './types';
 
@@ -118,6 +122,32 @@ const loadIssueDetailsFailure = (error) => {
   }
 };
 
+const updateIssue = (issueData) => {
+  return {
+    type: UPDATE_ISSUE,
+    issueData
+  };
+};
+
+const updateIssueRequest = () => {
+  return {
+    type: UPDATE_ISSUE_REQUEST
+  };
+};
+
+const updateIssueSuccess = () => {
+  return {
+    type: UPDATE_ISSUE_SUCCESS,
+  };
+};
+
+const updateIssueFailure = (error) => {
+  return {
+    type: UPDATE_ISSUE_FAILURE,
+    error
+  };
+};
+
 const resetIssueDetails = () => {
   return {
     type: RESET_ISSUE_DETAILS
@@ -140,5 +170,9 @@ export {
   loadIssueDetailsRequest,
   loadIssueDetailsSuccess,
   loadIssueDetailsFailure,
+  updateIssue,
+  updateIssueRequest,
+  updateIssueSuccess,
+  updateIssueFailure,
   resetIssueDetails
 }

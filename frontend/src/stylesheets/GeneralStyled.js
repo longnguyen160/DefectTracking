@@ -238,10 +238,11 @@ export const LineFormStyled = styled.div`
   align-items: center;
   flex: 1;
   position: relative;
+  color: initial;
   & > .Select {
     max-width: 240px;
     width: 100%;
-  }
+  } 
   textarea, input, select {
     background: #fff;
     border: 1px solid #d1d1d1;
@@ -326,6 +327,17 @@ export const LineFormStyled = styled.div`
     input {
       padding: 0 !important;
     }
+  `}
+  ${props => props.datePicker && css`
+    & > div {
+      width: 100%;
+      & > .react-datepicker-wrapper {
+        width: 100%;
+        & > .react-datepicker__input-container {
+          width: 100%;
+        }
+      }
+    }  
   `}
 `;
 
@@ -435,7 +447,7 @@ export const TextArea = styled.textarea`
   border-radius: 3px;
   width: 100%;  
   transition: all 0.3s ease;
-  height: 70px;
+  height: 80px;
   resize: none;
   &:hover {
     border: 1px solid #026a95;
@@ -463,20 +475,21 @@ export const Label = styled.label`
 
 export const FilterBoxStyled = styled.div`
   display: block;  
-  padding: 4px 0;
+  padding: ${props => props.padding || '4px 0'};
   font-size: 13px;
   width: 110px;
   position: relative;
+  cursor: pointer;
   ${props => props.showFilter && css`
     & > ${SubSelectStyled} {
       display: block;
-      max-width: 110px;
+      max-width: ${props => props.fullWidth ? '100%' : '110px'};
       border: none;
-      top: 22px;
+      top: ${props => props.top || '22px'};
       
       & > ${SubSelectListStyled} {
         font-size: 13px;
-        padding: 3px 10px;
+        padding: ${props => props.childPadding || '3px 10px'};
         display: flex;
         align-items: center;
         
@@ -493,6 +506,15 @@ export const FilterBoxStyled = styled.div`
   span {
     margin-right: 3px;
   }
+  ${props => props.fullWidth && css`
+    width: 100%;
+  `}
+  ${props => props.background && css`
+    background: ${props.background};
+  `}
+  ${props => props.color && css`
+    color: ${props.color};
+  `}
 `;
 
 export const FilterBoxTopStyled = styled.div`
@@ -501,6 +523,10 @@ export const FilterBoxTopStyled = styled.div`
   display: flex;
   align-items: center;
   
+  ${props => props.noBorder && css`
+    border: none;
+  `};
+
   span {
     flex: 1;
   }
@@ -571,6 +597,7 @@ export const IssueStatusStyled = styled.div`
   padding: 10px;
   font-size: 14px;
   border-radius: 3px;
+  font-family: 'Proxima Nova Bold';
   
   ${props => {
     if (props.status) {
@@ -638,6 +665,9 @@ export const AttachmentImageStyled = styled.div`
 `;
 
 export const AttachmentImageContentStyled = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   border-radius: inherit;

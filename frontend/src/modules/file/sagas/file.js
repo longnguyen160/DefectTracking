@@ -15,13 +15,16 @@ import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
 
-function* uploadFile({ file }) {
+function* uploadFile({ file, updateData }) {
   try {
     yield put(uploadFileRequest());
 
     const { data } = yield call(API.uploadFile, file);
 
     yield put(uploadFileSuccess(data));
+    if (updateData && typeof updateData === 'function') {
+      updateData(data);
+    }
   } catch (error) {
     yield put(uploadFileFailure(getError(error)));
   }

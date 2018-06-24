@@ -30,7 +30,7 @@ import {
   FILE,
   DATETIME_PICKER,
   CREATABLE,
-  ISSUE_STATUS_ARRAY,
+  ISSUE_PRIORITY_ARRAY,
   FILE_BASE_URL
 } from '../../utils/enums';
 import InputField from '../form/InputField';
@@ -92,8 +92,14 @@ class ModalCreatingIssue extends React.Component {
     if (validateForm.required(values.issueName)) {
       throw new SubmissionError({ _error: 'Summary is required' });
     }
-    if (validateForm.required(values.assignee)) {
+    if (validateForm.required(values.priority)) {
       throw new SubmissionError({ _error: 'Assignee is required' });
+    }
+
+    let watchers = [values.reporter];
+
+    if (values.reporter !== values.assignee) {
+      watchers.push(values.assignee);
     }
 
     createIssue(
@@ -101,6 +107,7 @@ class ModalCreatingIssue extends React.Component {
         ...values,
         attachments: fileIds,
         status: 'To Do',
+        watchers,
         dueDate: moment(values.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
         createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
         updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
@@ -170,7 +177,7 @@ class ModalCreatingIssue extends React.Component {
                     <InputField
                       name={'priority'}
                       type={SELECT}
-                      options={ISSUE_STATUS_ARRAY}
+                      options={ISSUE_PRIORITY_ARRAY}
                       searchable={false}
                       renderCustom
                     />

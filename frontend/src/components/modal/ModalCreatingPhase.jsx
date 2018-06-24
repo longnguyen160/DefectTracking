@@ -13,31 +13,40 @@ import {
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
 import {LineFormStyled, TextErrorStyled} from '../../stylesheets/GeneralStyled';
-import {INPUT_PASSWORD, INPUT_TEXT} from '../../utils/enums';
+import { DATETIME_PICKER, INPUT_TEXT, TEXT_AREA } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import InputField from '../form/InputField';
-import { signUpUser } from '../../modules/account/actions/signUp';
 import { validateForm } from '../../utils/ultis';
+import moment from 'moment/moment';
+import { createPhase } from '../../modules/phase/actions/phase';
 
-class ModalCreatingAccount extends React.Component {
+class ModalCreatingPhase extends React.Component {
 
-  handleCreateAccount = (values) => {
-    const { username, email, password } = values;
-    const { createAccount } = this.props;
+  handleCreatePhase = (values) => {
+    const { name, startDate, endDate } = values;
+    const { createPhase, onClose, project } = this.props;
 
     // check name
-    if (validateForm.required(username))
+    if (validateForm.required(name))
       throw new SubmissionError({ _error: 'Name is required' });
 
-    // check email
-    if (validateForm.email(email))
-      throw new SubmissionError({ _error: 'Invalid email address' });
+    // check start date
+    if (validateForm.required(startDate))
+      throw new SubmissionError({ _error: 'Start date is required' });
 
-    // check password
-    if (validateForm.required(password))
-      throw new SubmissionError({ _error: 'Password is required' });
+    // check end date
+    if (validateForm.required(endDate))
+      throw new SubmissionError({ _error: 'End date is required' });
 
-    createAccount({ username, email, password });
+    createPhase({
+      ...values,
+      projectId: project.id,
+      issueList: [],
+      startDate: moment(values.startDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+      endDate: moment(values.endDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+    }, () => {
+      onClose();
+    });
   };
 
   render() {
@@ -45,7 +54,7 @@ class ModalCreatingAccount extends React.Component {
       onClose,
       isOpen,
       handleSubmit,
-      account,
+      phase,
       pristine,
       submitting,
       error,
@@ -54,55 +63,61 @@ class ModalCreatingAccount extends React.Component {
     } = this.props;
 
     return (
-      <Modal onClose={onClose} isOpen={isOpen}>
+      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'700px'} isVisible>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
-            <span>Create User</span>
+            <span>Create Phase</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
-        <form onSubmit={handleSubmit(this.handleCreateAccount)} id="CreateAccountForm">
+        <form onSubmit={handleSubmit(this.handleCreatePhase)} id="CreatePhaseForm">
           <ModalContentStyled>
-            <ModalLineStyled hasRow>
+            <ModalLineStyled padding={'5px'}>
               <ModalLineContentStyled alignLeft>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Username</ModalLineTitleStyled>
+                <ModalLineTitleStyled>Name</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
                     <InputField
                       type={INPUT_TEXT}
-                      name={'username'}
-                      placeholder={'Username...'}
+                      name={'name'}
+                      placeholder={'Name...'}
+                    />
+                  </LineFormStyled>
+                </ModalLineTitleStyled>
+              </ModalLineContentStyled>
+            </ModalLineStyled >
+            <ModalLineStyled hasRows>
+              <ModalLineContentStyled alignLeft>
+                <ModalLineTitleStyled>Start Date</ModalLineTitleStyled>
+                <ModalLineTitleStyled fullInput>
+                  <LineFormStyled datePicker>
+                    <InputField
+                      type={DATETIME_PICKER}
+                      name={'startDate'}
+                    />
+                  </LineFormStyled>
+                </ModalLineTitleStyled>
+              </ModalLineContentStyled>
+              <ModalLineContentStyled alignLeft>
+                <ModalLineTitleStyled>End Date</ModalLineTitleStyled>
+                <ModalLineTitleStyled fullInput>
+                  <LineFormStyled datePicker>
+                    <InputField
+                      type={DATETIME_PICKER}
+                      name={'endDate'}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
-            <ModalLineStyled>
+            <ModalLineStyled padding={'5px'}>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Email</ModalLineTitleStyled>
+                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
                     <InputField
-                      type={INPUT_TEXT}
-                      name={'email'}
-                      placeholder={'Email...'}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Password</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={INPUT_PASSWORD}
-                      name={'password'}
-                      placeholder={'Password...'}
+                      type={TEXT_AREA}
+                      name={'description'}
+                      renderType={'textarea'}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -111,18 +126,18 @@ class ModalCreatingAccount extends React.Component {
             <ModalLineStyled>
               <ModalLineContentStyled>
                 {
-                  ((submitSucceeded && account.error) || (submitFailed && error)) &&
-                    <TextErrorStyled error={true}>
-                      {account.error || error}
-                    </TextErrorStyled>
+                  ((submitSucceeded && phase.error) || (submitFailed && error)) &&
+                  <TextErrorStyled error={true}>
+                    {phase.error || error}
+                  </TextErrorStyled>
                 }
                 {
-                  submitting || account.isFetching ?
+                  submitting || phase.isLoading ?
                     <Button hasBorder btnModal disabled>
                       <i className="fa fa-circle-o-notch fa-spin" />Loading
                     </Button>
-                  :
-                    <Button type='submit' btnModal disabled={pristine}>
+                    :
+                    <Button type='submit' btnModal hasBorder disabled={pristine}>
                       Create
                     </Button>
                 }
@@ -135,31 +150,33 @@ class ModalCreatingAccount extends React.Component {
   }
 }
 
-ModalCreatingAccount.propTypes = {
+ModalCreatingPhase.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  createAccount: PropTypes.func.isRequired,
+  createPhase: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   submitFailed: PropTypes.bool.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
+  project: PropTypes.object.isRequired,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  account: PropTypes.shape({
-    isFetching: PropTypes.bool.isRequired,
+  phase: PropTypes.shape({
+    isLoading: PropTypes.bool.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   })
 
 };
 
 const mapStateToProps = state => ({
-  account: state.account
+  phase: state.phase,
+  project: state.layout.selectedProject
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createAccount: signUpUser
+  createPhase: createPhase
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  form: 'CreateAccountForm'
-})(ModalCreatingAccount));
+  form: 'CreatePhaseForm'
+})(ModalCreatingPhase));

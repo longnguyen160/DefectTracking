@@ -14,10 +14,11 @@ import {
   RESET_FILE_STATE
 } from './types';
 
-const uploadFile = (file) => {
+const uploadFile = (file, updateData) => {
   return {
     type: UPLOAD_FILE,
-    file
+    file,
+    updateData
   }
 };
 
