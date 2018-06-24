@@ -16,4 +16,5 @@ public interface IssueRepositoryCustom {
     List<IssueResponse>loadAllIssuesBasedOnFilter(String value, String filter);
     List<IssueShortcutResponse> loadAllIssuesShortcut(String userId);
     Boolean updateIssue(String issueId, String type, String value);
+    void addIssueToBacklog(String issueId, String projectId);
 }

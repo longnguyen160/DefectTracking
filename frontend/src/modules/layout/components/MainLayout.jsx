@@ -9,6 +9,7 @@ import TopNavBar from './TopNavBar';
 import SideBar from './SideBar';
 import { loadCurrentUser, openModal, closeModal, resetProject, selectProject, loadProjectDetails } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
+import { loadAllProjects } from '../../projects/actions/project';
 import { notificationStyle } from '../../../stylesheets/Notifications';
 import { FormGroupStyled } from '../../../stylesheets/GeneralStyled';
 import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
@@ -19,7 +20,7 @@ import ModalProfile from '../../../components/modal/ModalProfile';
 import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddUser';
 import ModalAddCategory from '../../../components/modal/ModalAddCategory';
-import { loadAllProjects } from '../../projects/actions/project';
+import ModalCreatingPhase from '../../../components/modal/ModalCreatingPhase';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
@@ -29,6 +30,7 @@ const LIST_MODAL = {
   [MODAL_TYPE.ISSUE_DETAILS]: ModalIssueDetails,
   [MODAL_TYPE.ADD_USER]: ModalAddUser,
   [MODAL_TYPE.ADD_CATEGORY]: ModalAddCategory,
+  [MODAL_TYPE.CREATING_PHASE]: ModalCreatingPhase
 };
 
 const getParams = pathname => {

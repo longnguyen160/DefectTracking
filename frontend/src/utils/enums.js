@@ -186,6 +186,7 @@ const MODAL_TYPE = {
   CREATING_PROJECT: 'Creating project',
   CREATING_USER: 'Creating user',
   CREATING_ISSUE: 'Creating issue',
+  CREATING_PHASE: 'Creating phase',
   ISSUE_DETAILS: 'Issue Details',
   PROFILE: 'Profile',
   ADD_USER: 'Add user',

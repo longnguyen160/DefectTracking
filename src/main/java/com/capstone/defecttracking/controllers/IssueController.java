@@ -37,13 +37,13 @@ public class IssueController {
         ServerResponse serverResponse;
 
         if (issueRepositoryCustom.didIssueExisted(issue.getIssueName())) {
-            serverResponse = new ServerResponse(false, "An issue with that name already exists");
+            serverResponse = new ServerResponse(false, "An issue with that name already existed");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
 
         String issueKey = issueRepositoryCustom.generateIssueKey();
-        issueRepository.save(
+        String issueId = issueRepository.save(
             new Issue(
                 issue.getId(),
                 issue.getIssueName(),
@@ -61,7 +61,9 @@ public class IssueController {
                 issue.getLabel(),
                 issue.getAttachments()
             )
-        );
+        ).getId();
+
+        issueRepositoryCustom.addIssueToBacklog(issueId, issue.getProjectId());
         serverResponse = new ServerResponse(true, "Create issue successfully");
 
         template.convertAndSend("/topic/issuesList", serverResponse);

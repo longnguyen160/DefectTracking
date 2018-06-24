@@ -242,7 +242,7 @@ export const LineFormStyled = styled.div`
   & > .Select {
     max-width: 240px;
     width: 100%;
-  }
+  } 
   textarea, input, select {
     background: #fff;
     border: 1px solid #d1d1d1;
@@ -327,6 +327,17 @@ export const LineFormStyled = styled.div`
     input {
       padding: 0 !important;
     }
+  `}
+  ${props => props.datePicker && css`
+    & > div {
+      width: 100%;
+      & > .react-datepicker-wrapper {
+        width: 100%;
+        & > .react-datepicker__input-container {
+          width: 100%;
+        }
+      }
+    }  
   `}
 `;
 

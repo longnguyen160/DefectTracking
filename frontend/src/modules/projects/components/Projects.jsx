@@ -93,6 +93,7 @@ Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  loadAllProjects: PropTypes.func.isRequired,
   project: PropTypes.shape({
     projects: PropTypes.array.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -105,7 +106,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
-  selectProject: selectProject
+  selectProject: selectProject,
+  loadAllProjects: loadAllProjects,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);

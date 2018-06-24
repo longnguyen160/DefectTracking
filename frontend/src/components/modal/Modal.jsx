@@ -12,7 +12,7 @@ export default class Modal extends React.Component {
   };
 
   render() {
-    const { isOpen, maxWidth, noScroll, isHidden, fullHeight } = this.props;
+    const { isOpen, maxWidth, noScroll, isHidden, fullHeight, isVisible } = this.props;
 
     return (
       <MyModal
@@ -26,6 +26,7 @@ export default class Modal extends React.Component {
           noScroll={noScroll}
           isHidden={isHidden}
           fullHeight={fullHeight}
+          isVisible={isVisible}
         >
           {this.props.children}
         </ModalContent>
@@ -41,5 +42,6 @@ Modal.propTypes = {
   maxWidth: PropTypes.string,
   noScroll: PropTypes.bool,
   isHidden: PropTypes.bool,
+  isVisible: PropTypes.bool,
   fullHeight: PropTypes.bool,
 };

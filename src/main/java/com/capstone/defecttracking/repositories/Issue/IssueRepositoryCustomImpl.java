@@ -197,4 +197,13 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
         return result != null;
     }
+
+    @Override
+    public void addIssueToBacklog(String issueId, String projectId) {
+        Query query = new Query(Criteria.where("_id").is(projectId));
+        Update update = new Update();
+
+        update.push("backlog", issueId);
+        mongoTemplate.updateFirst(query, update, Project.class);
+    }
 }

@@ -95,6 +95,15 @@ const deleteFile = (fileId) => {
   return axios.delete(`files/delete/${fileId}`);
 };
 
+//Phase
+const createPhase = (phase) => {
+  return axios.post('user/createPhase', phase);
+};
+
+const loadAllPhases = (projectId) => {
+  return axios.get(`user/loadAllPhases?projectId=${projectId}`);
+};
+
 const API = {
   login,
   signUp,
@@ -115,7 +124,9 @@ const API = {
   deleteFile,
   loadAllIssuesShortcut,
   loadIssueDetails,
-  updateIssue
+  updateIssue,
+  createPhase,
+  loadAllPhases
 };
 
 export default API;

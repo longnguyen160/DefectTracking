@@ -22,7 +22,6 @@ const initialState = {
 export default function project(state = initialState, action) {
   switch (action.type) {
 
-    
     case REQUEST_CREATE_PROJECT:
       return Object.assign({}, state, {
         isLoading: true,

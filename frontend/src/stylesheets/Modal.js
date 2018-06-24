@@ -67,6 +67,9 @@ export const ModalContent = styled.div`
   ${props => props.fullHeight && css`
     height: 100%;
   `}
+  ${props => props.isVisible && css`
+    overflow: visible;
+  `}
 `;
 
 export const ModalHeaderStyled = styled.div`
