@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
+import Editable from 'react-x-editable';
+import SockJsClient from "react-stomp";
 import Modal from './Modal';
 import {
   ModalHeaderStyled,
@@ -19,16 +21,18 @@ import {
   FilterBoxWrapperStyled,
   Image,
   LineFormStyled,
-  TitleElementStyled,
   Input,
   IssueStatusStyled,
   DropZoneStyled
 } from '../../stylesheets/GeneralStyled';
-import { ICONS, ISSUE_STATUS_ARRAY } from '../../utils/enums';
+import { ICONS, INPUT_TEXT, ISSUE_PRIORITY_ARRAY, TEXT_AREA, WEB_SOCKET_URL } from '../../utils/enums';
 import Icon from '../icon/Icon';
-import {deleteFile, uploadFile} from '../../modules/file/actions/file';
+import { deleteFile, uploadFile } from '../../modules/file/actions/file';
 import Attachment from '../attachment/Attachment';
-import { resetIssueDetails } from '../../modules/issue/actions/issue';
+import { loadIssueDetails, resetIssueDetails, updateIssue } from '../../modules/issue/actions/issue';
+import CustomInput from '../editable/CustomInput';
+import CustomSelect from '../editable/CustomSelect';
+import CustomSelectStatus from '../editable/CustomSelectStatus';
 
 class ModalIssueDetails extends React.Component {
 
@@ -42,6 +46,16 @@ class ModalIssueDetails extends React.Component {
     resetIssueDetails();
   }
 
+  updateIssue = (type, value) => {
+    const { updateIssue, issue } = this.props;
+
+    updateIssue({
+      issueId: issue.id,
+      type,
+      value
+    });
+  };
+
   onDrop = (files) => {
     const { uploadFile } = this.props;
     const { uploadedFile } = this.state;
@@ -53,19 +67,51 @@ class ModalIssueDetails extends React.Component {
       this.setState({ uploadedFile });
     });
 
-    uploadFile(attachments);
+    uploadFile(attachments, (fileIds) => {
+      fileIds.map(fileId =>
+        this.updateIssue('attachments', fileId)
+      );
+    });
   };
 
   handleDeleteAttachment = (fileId) => {
     const { deleteFile } = this.props;
 
     deleteFile(fileId);
+    this.updateIssue('attachments', fileId);
+  };
+
+  handleSubmit = (e) => {
+    let value = null;
+
+    switch (e.props.name) {
+      case 'priority':
+        value = e.value.value;
+        break;
+
+      default:
+        value = e.value.id ? e.value.id : e.value;
+    }
+    this.updateIssue(e.props.name, value);
+  };
+
+  handleWatchingIssue = () => {
+    const { user } = this.props;
+
+    this.updateIssue('watchers', user.id);
+  };
+
+  onMessageReceive = () => {
+    const { loadIssueDetails, issue } = this.props;
+
+    loadIssueDetails(issue.id);
   };
 
   render() {
     const { onClose, isOpen, issue, user } = this.props;
-
-    const priority = issue && ISSUE_STATUS_ARRAY.find(element => element.value === issue.priority);
+    const projectId = issue && issue.projectId;
+    const priority = issue && ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
+    const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'750px'} isHidden={true} fullHeight={true}>
@@ -73,15 +119,39 @@ class ModalIssueDetails extends React.Component {
           <ModalHeaderTitleStyled>
             <span>{issue && issue.issueKey}</span>
           </ModalHeaderTitleStyled>
-          <Icon icon={ICONS.EYE} width={20} height={20} color={'#626262'} />
+          <Icon
+            icon={isWatching ? ICONS.EYE : ICONS.EYE_CROSS}
+            width={20}
+            height={20}
+            color={'#626262'}
+            hoverPointer
+            onClick={() => this.handleWatchingIssue()}
+          />
         </ModalHeaderStyled>
         <ModalBodyStyled padding={'10px 0'}>
           <ModalContentStyled flex={'0 0 540px'} padding={'0 10px'}>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>
-                  {issue && issue.issueName}
-                </ModalLineTitleStyled>
+                <Editable
+                  name={'issueName'}
+                  dataType={'custom'}
+                  mode={'inline'}
+                  value={issue && issue.issueName}
+                  showButtons={true}
+                  display={(value) => (
+                    <ModalLineTitleStyled hover>
+                      {value}
+                    </ModalLineTitleStyled>
+                  )}
+                  customComponent={(props, state) => (
+                    <CustomInput
+                      {...props}
+                      {...state}
+                      renderType={INPUT_TEXT}
+                    />
+                  )}
+                  handleSubmit={this.handleSubmit}
+                />
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled hasRows noMargin padding={'0 0 10px 0'} noPadding>
@@ -95,26 +165,61 @@ class ModalIssueDetails extends React.Component {
               </ModalLineContentStyled>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
-                <LineFormStyled>
-                  <Icon
-                    icon={ICONS.ARROW}
-                    color={priority && priority.color}
-                    width={15}
-                    height={15}
-                    rotated rotate={'rotateZ(90deg)'}
-                  />
-                  <span>{issue && priority.label}</span>
-                </LineFormStyled>
+                <Editable
+                  name={'priority'}
+                  dataType={'custom'}
+                  mode={'inline'}
+                  value={issue && priority}
+                  showButtons={true}
+                  options={ISSUE_PRIORITY_ARRAY}
+                  display={(value) => (
+                    <LineFormStyled hover>
+                      <Icon
+                        icon={ICONS.ARROW}
+                        color={value.color}
+                        width={15}
+                        height={15}
+                        rotated rotate={'rotateZ(90deg)'}
+                      />
+                      <span>{value.label}</span>
+                    </LineFormStyled>
+                  )}
+                  customComponent={(props, state) => (
+                    <CustomSelect
+                      renderCustom={true}
+                      {...props}
+                      {...state}
+                    />
+                  )}
+                  handleSubmit={this.handleSubmit}
+                />
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Description</ModalLineTitleStyled>
-                <LineFormStyled>
-                  <span>
-                    {issue && issue.description}
-                  </span>
-                </LineFormStyled>
+                <Editable
+                  name={'description'}
+                  dataType={'custom'}
+                  mode={'inline'}
+                  value={issue && issue.description}
+                  showButtons={true}
+                  display={(value) => (
+                    <LineFormStyled hover>
+                      <span>
+                        {value}
+                      </span>
+                    </LineFormStyled>
+                  )}
+                  customComponent={(props, state) => (
+                    <CustomInput
+                      {...props}
+                      {...state}
+                      renderType={TEXT_AREA}
+                    />
+                  )}
+                  handleSubmit={this.handleSubmit}
+                />
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
@@ -128,7 +233,7 @@ class ModalIssueDetails extends React.Component {
                 <LineFormStyled>
                   {
                     issue && issue.attachments && issue.attachments.map(fileId => (
-                      <Attachment fileId={fileId} handleDeleteAttachment={() => this.handleDeleteAttachment(fileId)}/>
+                      <Attachment key={fileId} fileId={fileId} handleDeleteAttachment={() => this.handleDeleteAttachment(fileId)}/>
                     ))
                   }
                 </LineFormStyled>
@@ -156,13 +261,29 @@ class ModalIssueDetails extends React.Component {
               </ModalLineTitleStyled>
             </ModalLineStyled>
           </ModalContentStyled>
-          <ModalContentStyled padding={'0 10px'}>
+          <ModalContentStyled padding={'0 10px'} fullWidth>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Status</ModalLineTitleStyled>
-                <LineFormStyled>
-                  <IssueStatusStyled status={issue && issue.status}>{issue && issue.status}</IssueStatusStyled>
-                </LineFormStyled>
+                <Editable
+                  name={'status'}
+                  dataType={'custom'}
+                  mode={'inline'}
+                  value={issue && issue.status}
+                  showButtons={true}
+                  display={(value) => (
+                    <LineFormStyled hover>
+                      <IssueStatusStyled status={value}>{value}</IssueStatusStyled>
+                    </LineFormStyled>
+                  )}
+                  customComponent={(props, state) => (
+                    <CustomSelectStatus
+                      {...props}
+                      {...state}
+                    />
+                  )}
+                  handleSubmit={this.handleSubmit}
+                />
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
@@ -170,7 +291,7 @@ class ModalIssueDetails extends React.Component {
                 <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
                 <LineFormStyled>
                   <ElementHeaderStyled padding={'0'}>
-                    <Image topNav src={issue && issue.reporter.avatarURL} margin={'0 5px'} />
+                    <Image topNav src={issue && issue.reporter.avatarURL ?  issue.reporter.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
                     <span>{issue && issue.reporter.username}</span>
                   </ElementHeaderStyled>
                 </LineFormStyled>
@@ -179,26 +300,43 @@ class ModalIssueDetails extends React.Component {
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
-                <LineFormStyled>
-                  <ElementHeaderStyled padding={'0'}>
-                    <Image topNav src={issue && issue.assignee.avatarURL} margin={'0 5px'} />
-                    <span>{issue && issue.assignee.username}</span>
-                  </ElementHeaderStyled>
-                </LineFormStyled>
+                <Editable
+                  name={'assignee'}
+                  dataType={'custom'}
+                  mode={'inline'}
+                  value={issue && { ...issue.assignee, projectId }}
+                  showButtons={true}
+                  display={(value) => (
+                    <LineFormStyled hover>
+                      <ElementHeaderStyled padding={'0'}>
+                        <Image topNav src={value.avatarURL? value.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
+                        <span>{value.username}</span>
+                      </ElementHeaderStyled>
+                    </LineFormStyled>
+                  )}
+                  customComponent={(props, state) => (
+                    <CustomSelect
+                      renderCustom={true}
+                      {...props}
+                      {...state}
+                    />
+                  )}
+                  handleSubmit={this.handleSubmit}
+                />
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Watchers</ModalLineTitleStyled>
                 <LineFormStyled hasTitle>
-                  <ElementHeaderStyled padding={'0'}>
-                    <Image topNav src={'/images/default_avatar.jpg'} margin={'0 5px'} />
-                    <span>bim beo</span>
-                  </ElementHeaderStyled>
-                  <ElementHeaderStyled padding={'0'}>
-                    <Image topNav src={'/images/default_avatar.jpg'} margin={'0 5px'} />
-                    <span>bim bim</span>
-                  </ElementHeaderStyled>
+                  {
+                    issue && issue.watchers.map(watcher => (
+                      <ElementHeaderStyled padding={'0'} key={watcher.id}>
+                        <Image topNav src={watcher.avatarURL ? watcher.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
+                        <span>{watcher.username}</span>
+                      </ElementHeaderStyled>
+                    ))
+                  }
                 </LineFormStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -220,6 +358,12 @@ class ModalIssueDetails extends React.Component {
             </ModalLineStyled>
           </ModalContentStyled>
         </ModalBodyStyled>
+        <SockJsClient
+          url={WEB_SOCKET_URL}
+          topics={['/topic/issuesList']}
+          onMessage={this.onMessageReceive}
+          debug={true}
+        />
       </Modal>
     );
   }
@@ -231,6 +375,8 @@ ModalIssueDetails.propTypes = {
   uploadFile: PropTypes.func.isRequired,
   deleteFile: PropTypes.func.isRequired,
   resetIssueDetails: PropTypes.func.isRequired,
+  updateIssue: PropTypes.func.isRequired,
+  loadIssueDetails: PropTypes.func.isRequired,
   issue: PropTypes.object,
   user: PropTypes.object.isRequired
 };
@@ -243,6 +389,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   uploadFile: uploadFile,
   deleteFile: deleteFile,
+  updateIssue: updateIssue,
+  loadIssueDetails: loadIssueDetails,
   resetIssueDetails: resetIssueDetails
 }, dispatch);
 

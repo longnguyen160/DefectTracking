@@ -70,6 +70,9 @@ const loadIssueDetails = (issueId) => {
   return axios.get(`user/loadIssueDetails?issueId=${issueId}`);
 };
 
+const updateIssue = (data) => {
+  return axios.post('user/updateIssue', data);
+};
 // Category
 const createCategory = (category) => {
   return axios.post('admin/createCategory', category);
@@ -111,7 +114,8 @@ const API = {
   loadFile,
   deleteFile,
   loadAllIssuesShortcut,
-  loadIssueDetails
+  loadIssueDetails,
+  updateIssue
 };
 
 export default API;

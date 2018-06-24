@@ -86,6 +86,9 @@ export const ModalHeaderTitleStyled = styled.div`
   p {
     color: crimson;
   }
+  ${props => props.flex && css`
+    flex: ${props.flex}
+  `}
 `;
 
 export const ModalBodyStyled = styled.div`
@@ -104,6 +107,9 @@ export const ModalContentStyled = styled.div`
   `}
   ${props => props.padding && css`
     padding: ${props.padding}
+  `}
+  ${props => props.fullWidth && css`
+    width: 100%;
   `}
 `;
 
@@ -195,6 +201,12 @@ export const ModalLineTitleStyled = styled.div`
   `}
   ${props => props.autoWith && css`
     width: auto;
+  `}
+  ${props => props.hover && css`
+    &:hover {
+      color: #026a95;
+      cursor: pointer;
+    }
   `}
 `;
 

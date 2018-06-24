@@ -1,6 +1,7 @@
 package com.capstone.defecttracking.models.Issue;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -23,14 +24,16 @@ public class Issue {
     private String priority;
     private Date dueDate;
     private Date createdAt;
+    @LastModifiedDate
     private Date updatedAt;
+    private ArrayList<String> watchers = new ArrayList<String>();
     private ArrayList<String> label = new ArrayList<String>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
-    public Issue(String id, String issueKey, String issueName, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> label, ArrayList<String> attachments) {
+    public Issue(String id, String issueName, String issueKey, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> watchers, ArrayList<String> label, ArrayList<String> attachments) {
         this.id = id;
-        this.issueKey = issueKey;
         this.issueName = issueName;
+        this.issueKey = issueKey;
         this.projectId = projectId;
         this.description = description;
         this.reporter = reporter;
@@ -40,6 +43,7 @@ public class Issue {
         this.dueDate = dueDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.watchers = watchers;
         this.label = label;
         this.attachments = attachments;
     }
@@ -157,5 +161,13 @@ public class Issue {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public ArrayList<String> getWatchers() {
+        return watchers;
+    }
+
+    public void setWatchers(ArrayList<String> watchers) {
+        this.watchers = watchers;
     }
 }

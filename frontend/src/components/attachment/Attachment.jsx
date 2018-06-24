@@ -34,7 +34,7 @@ class Attachment extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { attachment, fileId } = nextProps;
 
-    if (!this.state.attachment && attachment.id === fileId) {
+    if (!this.state.attachment && attachment && attachment.id === fileId) {
       this.setState({ attachment });
     }
   }
@@ -57,29 +57,31 @@ class Attachment extends React.Component {
             <AttachmentImageStyled>
               <AttachmentImageContentStyled>
                 {
-                  isImage &&
+                  isImage ?
                     <Image dynamic={'100%'} src={FILE_BASE_URL + fileId} />
+                  :
+                    <Icon icon={ICONS.FILE} color={'#d1d1d1'} width={50} height={50} />
                 }
               </AttachmentImageContentStyled>
             </AttachmentImageStyled>
             <AttachmentDetailsStyled>
-              <AttachmentDetailsHeaderStyled color={isImage ? '#fff' : '#1A1A1A'}>
+              <AttachmentDetailsHeaderStyled color={'#fff'}>
                 {attachment && attachment.name}
               </AttachmentDetailsHeaderStyled>
-              <AttachmentDetailsBodyStyled color={isImage ? '#fff' : '#1A1A1A'}>
+              <AttachmentDetailsBodyStyled color={'#fff'}>
                 <AttachmentDetailsBodySizeStyled>
                   {
                     isImage ?
                       <Icon icon={ICONS.IMAGE} color={'#fff'} width={15} height={15} />
                     :
-                      <Icon icon={ICONS.ATTACHMENT} color={'#1A1A1A'} width={15} height={15} />
+                      <Icon icon={ICONS.ATTACHMENT} color={'#fff'} width={15} height={15} />
                   }
                   {attachment && formatBytes(attachment.size, 3)}
                 </AttachmentDetailsBodySizeStyled>
                 <AttachmentDetailsBodyDeleteStyled onClick={handleDeleteAttachment}>
                   <Icon
                     icon={ICONS.DELETE}
-                    color={isImage ? '#fff' : '#1A1A1A'}
+                    color={'#fff'}
                     width={10}
                     height={10}
                     hoverPointer

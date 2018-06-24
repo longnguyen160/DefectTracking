@@ -24,13 +24,13 @@
     "react-select": "^1.2.1",
     "react-stomp": "^3.2.0",
     "react-table": "^6.8.6",
+    "react-x-editable": "^0.0.10-beta",
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-form": "^7.3.0",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
-    "styled-components": "^3.2.6",
-    "uppy": "^0.25.5"
+    "styled-components": "^3.2.6"
   },
   "devDependencies": {
     "react-scripts": "1.1.4"

@@ -18,7 +18,7 @@ import {
   ListTableStyled
 } from '../../../stylesheets/Table';
 import { openModal, resetProject } from '../../layout/actions/layout';
-import { ICONS, ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllIssuesShortcut, loadIssueDetails } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
 
@@ -78,7 +78,7 @@ class Home extends React.Component {
               <ListTableBodyContainerStyled willChange>
                 {
                   issues.map((issue, index) => {
-                    const priority = ISSUE_STATUS_ARRAY.find(element => element.value === issue.priority);
+                    const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
 
                     return (
                       <ListTableStyled

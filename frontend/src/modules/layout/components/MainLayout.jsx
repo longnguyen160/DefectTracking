@@ -19,7 +19,7 @@ import ModalProfile from '../../../components/modal/ModalProfile';
 import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddUser';
 import ModalAddCategory from '../../../components/modal/ModalAddCategory';
-import {loadAllProjects} from '../../projects/actions/project';
+import { loadAllProjects } from '../../projects/actions/project';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,

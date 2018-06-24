@@ -18,13 +18,14 @@ public class IssueDetailsResponse {
     private Date dueDate;
     private Date createdAt;
     private Date updatedAt;
+    private ArrayList<UserResponse> watchers = new ArrayList<UserResponse>();
     private ArrayList<String> label = new ArrayList<String>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
     public IssueDetailsResponse() {
     }
 
-    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> label, ArrayList<String> attachments) {
+    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<String> label, ArrayList<String> attachments) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
@@ -37,6 +38,7 @@ public class IssueDetailsResponse {
         this.dueDate = dueDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.watchers = watchers;
         this.label = label;
         this.attachments = attachments;
     }
@@ -151,5 +153,13 @@ public class IssueDetailsResponse {
 
     public void setAttachments(ArrayList<String> attachments) {
         this.attachments = attachments;
+    }
+
+    public ArrayList<UserResponse> getWatchers() {
+        return watchers;
+    }
+
+    public void setWatchers(ArrayList<UserResponse> watchers) {
+        this.watchers = watchers;
     }
 }

@@ -20,7 +20,6 @@ import CategoriesManagement from './modules/management/components/CategoriesMana
 
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
-import '../src/stylesheets/uppy.css';
 import './index.css';
 
 export const history = createHistory();

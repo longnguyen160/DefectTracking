@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Input, TextArea } from '../../stylesheets/GeneralStyled';
 
 const CustomInput = (field) => {
-  const { input, type, placeholder, renderType, uppy, meta: { touched, error } } = field;
+  const { input, type, placeholder, renderType, meta: { touched, error } } = field;
   let InputType = Input;
 
   switch (renderType) {
