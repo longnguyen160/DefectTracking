@@ -58,7 +58,7 @@ public class IssueController {
                 issue.getCreatedAt(),
                 issue.getUpdatedAt(),
                 issue.getWatchers(),
-                issue.getLabel(),
+                issue.getCategory(),
                 issue.getAttachments()
             )
         ).getId();
@@ -87,6 +87,11 @@ public class IssueController {
     @GetMapping("user/loadAllIssuesShortcut")
     public List<IssueShortcutResponse> loadAllIssuesShortcut(@RequestParam(value = "userId") String userId) {
         return issueRepositoryCustom.loadAllIssuesShortcut(userId);
+    }
+
+    @GetMapping("user/loadAllIssuesInPhase")
+    public List<IssuePhaseResponse> loadAllIssuesInPhase(@RequestParam(value = "issueIds") IssueListRequest issueIds) {
+        return issueRepositoryCustom.loadAllIssuesInPhase(issueIds.getIssueList());
     }
 
     @GetMapping("user/loadIssueDetails")

@@ -58,16 +58,16 @@ class BackLog extends React.Component {
       loadAllPhases(selectedProject.id);
     }
     if (phases.length > 0 && JSON.stringify(phases) !== JSON.stringify(this.props.phases)) {
-      phases.map(phase => {
-        let { list } = this.state;
+      let { list } = this.state;
 
+      phases.map(phase => {
         list = Object.assign({}, list, {
           [phase.name]: phase.issueList
         });
-        this.setState({ list });
 
         return null;
       });
+      this.setState({ list });
     }
   }
 

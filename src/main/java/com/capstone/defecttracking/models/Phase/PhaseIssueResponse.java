@@ -1,35 +1,28 @@
 package com.capstone.defecttracking.models.Phase;
 
+import com.capstone.defecttracking.models.Issue.IssuePhaseResponse;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-@Document(collection = "phases")
-public class Phase {
+public class PhaseIssueResponse {
     @Id
     private String id;
     private String name;
-    private String projectId;
     private Date startDate;
     private Date endDate;
-    private Date completeDate;
-    private String description;
     private Boolean starting;
-    private ArrayList<String> issueList;
+    private ArrayList<IssuePhaseResponse> issueList = new ArrayList<>();
 
-    public Phase() {
+    public PhaseIssueResponse() {
     }
 
-    public Phase(String id, String name, String projectId, Date startDate, Date endDate, Date completeDate, String description, Boolean starting, ArrayList<String> issueList) {
+    public PhaseIssueResponse(String id, String name, Date startDate, Date endDate, Boolean starting, ArrayList<IssuePhaseResponse> issueList) {
         this.id = id;
         this.name = name;
-        this.projectId = projectId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.completeDate = completeDate;
-        this.description = description;
         this.starting = starting;
         this.issueList = issueList;
     }
@@ -50,14 +43,6 @@ public class Phase {
         this.name = name;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
     public Date getStartDate() {
         return startDate;
     }
@@ -74,35 +59,19 @@ public class Phase {
         this.endDate = endDate;
     }
 
-    public Date getCompleteDate() {
-        return completeDate;
-    }
-
-    public void setCompleteDate(Date completeDate) {
-        this.completeDate = completeDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Boolean getStarting() {
         return starting;
     }
 
     public void setStarting(Boolean starting) {
-        starting = starting;
+        this.starting = starting;
     }
 
-    public ArrayList<String> getIssueList() {
+    public ArrayList<IssuePhaseResponse> getIssueList() {
         return issueList;
     }
 
-    public void setIssueList(ArrayList<String> issueList) {
+    public void setIssueList(ArrayList<IssuePhaseResponse> issueList) {
         this.issueList = issueList;
     }
 }

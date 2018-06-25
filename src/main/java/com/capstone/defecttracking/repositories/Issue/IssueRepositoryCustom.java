@@ -1,10 +1,8 @@
 package com.capstone.defecttracking.repositories.Issue;
 
-import com.capstone.defecttracking.models.Issue.Issue;
-import com.capstone.defecttracking.models.Issue.IssueDetailsResponse;
-import com.capstone.defecttracking.models.Issue.IssueResponse;
-import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
+import com.capstone.defecttracking.models.Issue.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IssueRepositoryCustom {
@@ -16,6 +14,7 @@ public interface IssueRepositoryCustom {
     List<IssueResponse> loadAllIssues(String userId);
     List<IssueResponse>loadAllIssuesBasedOnFilter(String value, String filter);
     List<IssueShortcutResponse> loadAllIssuesShortcut(String userId);
+    List<IssuePhaseResponse> loadAllIssuesInPhase(ArrayList<String> issueIds);
     Boolean updateIssue(String issueId, String type, String value);
     void addIssueToBacklog(String issueId, String projectId);
 }

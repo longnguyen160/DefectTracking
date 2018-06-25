@@ -112,6 +112,10 @@ const loadAllPhases = (projectId) => {
   return axios.get(`user/loadAllPhases?projectId=${projectId}`);
 };
 
+const loadActivePhase = (projectId) => {
+  return axios.get(`user/loadActivePhase?projectId=${projectId}`);
+};
+
 const updatePhaseIssuesList = (phaseId, issueList) => {
   return axios.post('user/updatePhaseIssueList', { phaseId, issueList });
 };
@@ -141,7 +145,8 @@ const API = {
   loadAllPhases,
   loadIssueShortcut,
   updateBacklog,
-  updatePhaseIssuesList
+  updatePhaseIssuesList,
+  loadActivePhase
 };
 
 export default API;

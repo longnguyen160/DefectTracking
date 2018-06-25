@@ -2,6 +2,7 @@ package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Phase.Phase;
 import com.capstone.defecttracking.models.Phase.PhaseIssueRequest;
+import com.capstone.defecttracking.models.Phase.PhaseIssueResponse;
 import com.capstone.defecttracking.models.Phase.PhaseResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.repositories.Phase.PhaseRepository;
@@ -51,6 +52,11 @@ public class PhaseController {
     @GetMapping("user/loadAllPhases")
     public List<PhaseResponse> loadAllPhases(@RequestParam(value = "projectId") String projectId) {
         return phaseRepositoryCustom.loadAllPhases(projectId);
+    }
+
+    @GetMapping("user/loadActivePhase")
+    public PhaseIssueResponse loadActivePhase(@RequestParam(value = "projectId") String projectId) {
+        return phaseRepositoryCustom.loadActivePhase(projectId);
     }
 
     @PostMapping("/user/updatePhaseIssueList")
