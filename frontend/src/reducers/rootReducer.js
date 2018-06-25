@@ -8,6 +8,7 @@ import issue from '../modules/issue/reducers/issue';
 import management from '../modules/management/reducers/management';
 import file from '../modules/file/reducers/file';
 import phase from '../modules/phase/reducers/phase';
+import backlog from '../modules/backlog/reducers/backlog';
 
 const appReducer = combineReducers({
   account,
@@ -17,6 +18,7 @@ const appReducer = combineReducers({
   management,
   file,
   phase,
+  backlog,
   form: reducerForm,
   notifications
 });

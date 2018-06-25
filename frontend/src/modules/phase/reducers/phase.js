@@ -4,7 +4,8 @@ import {
   CREATE_PHASE_FAILURE,
   LOAD_ALL_PHASES_REQUEST,
   LOAD_ALL_PHASES_SUCCESS,
-  LOAD_ALL_PHASES_FAILURE
+  LOAD_ALL_PHASES_FAILURE,
+  RESET_PHASE
 } from '../actions/types';
 
 const initialState = {
@@ -50,6 +51,9 @@ export default function phase(state = initialState, action) {
       return Object.assign({}, state, {
         error: action.error
       });
+
+    case RESET_PHASE:
+      return initialState;
 
     default:
       return state;

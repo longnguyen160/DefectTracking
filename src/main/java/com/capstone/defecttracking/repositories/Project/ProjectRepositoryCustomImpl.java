@@ -2,6 +2,7 @@ package com.capstone.defecttracking.repositories.Project;
 
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Project.ProjectResponse;
 import com.capstone.defecttracking.models.Project.UserProjectRequest;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
@@ -17,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
@@ -41,16 +44,34 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public List<Project> loadAllProjectsForCurrentUser(String userId) {
+    public List<ProjectResponse> loadAllProjectsForCurrentUser(String userId) {
         Query query = new Query(Criteria.where("_id").is(userId));
         User user = mongoTemplate.findOne(query, User.class);
 
         if (user.getRoles().contains(Roles.USER.toString())) {
             query = new Query(Criteria.where("members.userId").is(userId));
 
-            return mongoTemplate.find(query, Project.class);
+            return mongoTemplate
+                .find(query, Project.class)
+                .stream()
+                .map(project -> new ProjectResponse(
+                    project.getId(),
+                    project.getName(),
+                    project.getDescription(),
+                    project.getStatus()
+                ))
+                .collect(Collectors.toList());
         } else {
-            return mongoTemplate.findAll(Project.class);
+            return mongoTemplate
+                .findAll(Project.class)
+                .stream()
+                .map(project -> new ProjectResponse(
+                    project.getId(),
+                    project.getName(),
+                    project.getDescription(),
+                    project.getStatus()
+                ))
+                .collect(Collectors.toList());
         }
     }
 
@@ -100,13 +121,21 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
             update.set("members", members);
             UpdateResult result = mongoTemplate.updateFirst(query, update, Project.class);
             if (result != null) {
-                   serverResponse = new ServerResponse(true, "Remove user from project successfully");
+                serverResponse = new ServerResponse(true, "Remove user from project successfully");
 
-            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+                return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
             }
         }
-       serverResponse = new ServerResponse(false, "Remove user from project failed");
+        serverResponse = new ServerResponse(false, "Remove user from project failed");
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    public void updateBacklog(String projectId, ArrayList<String> backlog) {
+        Query query = new Query(Criteria.where("_id").is(projectId));
+        Update update = new Update();
+
+        update.set("backlog", backlog);
+        mongoTemplate.updateFirst(query, update, Project.class);
     }
 }

@@ -14,6 +14,7 @@ import {
 import { FilterBoxWrapperStyled , Image} from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
 import { ICONS, MODAL_TYPE } from '../../../utils/enums';
+import { loadProjectDetails } from '../actions/layout';
 
 class TopNavBar extends Component {
 
@@ -25,11 +26,11 @@ class TopNavBar extends Component {
     });
   };
 
-  handleSelectProject = (project) => {
-    const { selectProject, history } = this.props;
+  handleSelectProject = (projectId) => {
+    const { loadProjectDetails, history } = this.props;
 
-    selectProject(project);
-    history.push(`/project/${project.id}/backlog`);
+    loadProjectDetails(projectId);
+    history.push(`/project/${projectId}/backlog`);
   };
 
   render() {
@@ -92,7 +93,7 @@ class TopNavBar extends Component {
               <SubSelectStyled fixedWidth>
                 {
                   projects.map(project => (
-                    <SubSelectListStyled key={project.id} onClick={() => this.handleSelectProject(project)}>
+                    <SubSelectListStyled key={project.id} onClick={() => this.handleSelectProject(project.id)}>
                       <span>{project.name}</span>
                     </SubSelectListStyled>
                   ))
@@ -118,7 +119,7 @@ TopNavBar.propTypes = {
   openModal: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
-  selectProject: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

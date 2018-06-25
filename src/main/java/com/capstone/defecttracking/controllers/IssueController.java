@@ -94,6 +94,11 @@ public class IssueController {
         return issueRepositoryCustom.loadIssueDetails(issueId);
     }
 
+    @GetMapping("user/loadIssueShortcut")
+    public IssueShortcutResponse loadIssueShortcut(@RequestParam(value = "issueId") String issueId) {
+        return issueRepositoryCustom.loadIssueShortcut(issueId);
+    }
+
     @PostMapping("user/updateIssue")
     public ResponseEntity<?> updateIssue(@RequestBody IssueUpdateRequest data) {
         ServerResponse serverResponse;

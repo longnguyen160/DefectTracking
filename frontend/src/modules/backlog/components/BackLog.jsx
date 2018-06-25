@@ -19,41 +19,21 @@ import {
 import BacklogDetails from './BacklogDetails';
 import { reorderMap } from '../../../utils/ultis';
 import { Button } from '../../../stylesheets/Button';
-import { openModal } from '../../layout/actions/layout';
+import { loadProjectDetails, openModal } from '../../layout/actions/layout';
 import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
-import { loadAllPhases } from '../../phase/actions/phase';
+import { loadAllPhases, resetPhase, updatePhaseIssuesList } from '../../phase/actions/phase';
+import { updateBacklog } from '../actions/backlog';
 
 class BackLog extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const object = {
-      id: 'ISSUE-1',
-      name: 'As a developer, I\'d like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Phase\'s items can be updated',
-      priority: 'High'
-    };
-    const b = [];
-    const a = [];
-
-    for (let i = 1; i <= 10; i+=1) {
-      a.push({
-        ...object,
-        id: `ISSUE-${i}`
-      });
-    }
-
-    for (let i = 11; i <= 20; i+=1) {
-      b.push({
-        ...object,
-        id: `ISSUE-${i}`
-      });
-    }
+    const { selectedProject } = props;
 
     this.state = {
       list: {
-        a,
-        b
+        backlog: selectedProject ? selectedProject.backlog : []
       }
     };
   }
@@ -67,11 +47,34 @@ class BackLog extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { loadAllPhases, selectedProject } = nextProps;
+    const { loadAllPhases, selectedProject, phases } = nextProps;
 
     if (selectedProject && !this.props.selectedProject) {
+      const list = {
+        backlog: selectedProject.backlog
+      };
+
+      this.setState({ list });
       loadAllPhases(selectedProject.id);
     }
+    if (phases.length > 0 && JSON.stringify(phases) !== JSON.stringify(this.props.phases)) {
+      phases.map(phase => {
+        let { list } = this.state;
+
+        list = Object.assign({}, list, {
+          [phase.name]: phase.issueList
+        });
+        this.setState({ list });
+
+        return null;
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { resetPhase } = this.props;
+
+    resetPhase();
   }
 
   onDragEnd = (result) => {
@@ -81,20 +84,39 @@ class BackLog extends React.Component {
     }
 
     const { list } = this.state;
+    const { selectedProject, updateBacklog, phases, updatePhaseIssuesList } = this.props;
+    const updatedList = reorderMap(
+      list,
+      result.source,
+      result.destination
+    );
 
     this.setState({
-      list: reorderMap(
-        list,
-        result.source,
-        result.destination
-      ),
+      list: updatedList,
+    });
+
+    if (JSON.stringify(updatedList.backlog) !== JSON.stringify(selectedProject.backlog)) {
+      updateBacklog(selectedProject.id, updatedList.backlog);
+    }
+    phases.map(phase => {
+      if (JSON.stringify(phase.issueList) !== JSON.stringify(updatedList[phase.name])) {
+        updatePhaseIssuesList(phase.id, updatedList[phase.name]);
+      }
     });
   };
 
-  onMessageReceive = () => {
-    const { loadAllPhases, selectedProject } = this.props;
+  onMessageReceive = (message) => {
+    const { loadAllPhases, selectedProject, loadProjectDetails } = this.props;
 
-    loadAllPhases(selectedProject.id);
+    switch (message.message) {
+      case 'Update backlog successfully':
+        loadProjectDetails(selectedProject.id);
+        break;
+
+      default:
+        loadAllPhases(selectedProject.id);
+        break;
+    }
   };
 
   render() {
@@ -139,9 +161,9 @@ class BackLog extends React.Component {
                       <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
                     </ListTableHeaderStyled>
                     <BacklogDetails
-                      listId="a"
+                      listId={phase.name}
                       listType="card"
-                      data={list.a}
+                      data={list[phase.name]}
                     />
                   </div>
                 </div>
@@ -151,10 +173,10 @@ class BackLog extends React.Component {
           <PageBoardItemStyled activity>
             <ElementHeaderStyled padding={'20px 5px'}>
               <TitleElementStyled noPadding flex={'0 0 85px'}>
-                Waiting
+                New Issues
               </TitleElementStyled>
               <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
-                14 Issues
+                {list.backlog.length} Issues
               </TitleElementStyled>
               <TitleElementStyled noPadding flex={'0'}>
                 <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_PHASE)}>
@@ -172,7 +194,7 @@ class BackLog extends React.Component {
                 <BacklogDetails
                   listId="backlog"
                   listType="card"
-                  data={list.b}
+                  data={list.backlog}
                 />
               </div>
             </div>
@@ -180,7 +202,7 @@ class BackLog extends React.Component {
         </DragDropContext>
         <SockJsClient
           url={WEB_SOCKET_URL}
-          topics={['/topic/phase']}
+          topics={['/topic/phase', '/topic/projects']}
           onMessage={this.onMessageReceive}
           debug={true}
         />
@@ -192,6 +214,10 @@ class BackLog extends React.Component {
 BackLog.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadAllPhases: PropTypes.func.isRequired,
+  resetPhase: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
+  updateBacklog: PropTypes.func.isRequired,
+  updatePhaseIssuesList: PropTypes.func.isRequired,
   phases: PropTypes.array.isRequired,
   selectedProject: PropTypes.object
 };
@@ -203,7 +229,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
-  loadAllPhases: loadAllPhases
+  loadAllPhases: loadAllPhases,
+  resetPhase: resetPhase,
+  loadProjectDetails: loadProjectDetails,
+  updateBacklog: updateBacklog,
+  updatePhaseIssuesList: updatePhaseIssuesList
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackLog);

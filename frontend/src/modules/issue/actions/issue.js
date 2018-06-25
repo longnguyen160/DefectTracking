@@ -18,6 +18,10 @@ import {
   UPDATE_ISSUE_REQUEST,
   UPDATE_ISSUE_SUCCESS,
   UPDATE_ISSUE_FAILURE,
+  LOAD_ISSUE_SHORTCUT,
+  LOAD_ISSUE_SHORTCUT_REQUEST,
+  LOAD_ISSUE_SHORTCUT_SUCCESS,
+  LOAD_ISSUE_SHORTCUT_FAILURE,
   RESET_ISSUE_DETAILS
 } from './types';
 
@@ -91,6 +95,33 @@ const loadAllIssuesShortcutSuccess = (data) => {
 const loadAllIssuesShortcutFailure = (error) => {
   return {
     type: LOAD_ALL_ISSUES_SHORTCUT_FAILURE,
+    error
+  }
+};
+
+const loadIssueShortcut = (issueId) => {
+  return {
+    type: LOAD_ISSUE_SHORTCUT,
+    issueId
+  }
+};
+
+const loadIssueShortcutRequest = () => {
+  return {
+    type: LOAD_ISSUE_SHORTCUT_REQUEST
+  }
+};
+
+const loadIssueShortcutSuccess = (data) => {
+  return {
+    type: LOAD_ISSUE_SHORTCUT_SUCCESS,
+    data
+  }
+};
+
+const loadIssueShortcutFailure = (error) => {
+  return {
+    type: LOAD_ISSUE_SHORTCUT_FAILURE,
     error
   }
 };
@@ -174,5 +205,9 @@ export {
   updateIssueRequest,
   updateIssueSuccess,
   updateIssueFailure,
+  loadIssueShortcut,
+  loadIssueShortcutRequest,
+  loadIssueShortcutSuccess,
+  loadIssueShortcutFailure,
   resetIssueDetails
 }

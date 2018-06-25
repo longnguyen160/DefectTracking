@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,5 +55,14 @@ public class PhaseRepositoryCustomImpl implements PhaseRepositoryCustom {
                 phase.getIssueList()
             ))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateIssueList(String phaseId, ArrayList<String> issueList) {
+        Query query = new Query(Criteria.where("_id").is(phaseId));
+        Update update = new Update();
+
+        update.set("issueList", issueList);
+        mongoTemplate.updateFirst(query, update, Phase.class);
     }
 }

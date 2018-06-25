@@ -6,7 +6,12 @@ import {
   LOAD_ALL_PHASES,
   LOAD_ALL_PHASES_REQUEST,
   LOAD_ALL_PHASES_SUCCESS,
-  LOAD_ALL_PHASES_FAILURE
+  LOAD_ALL_PHASES_FAILURE,
+  UPDATE_PHASE_ISSUES_LIST,
+  UPDATE_PHASE_ISSUES_LIST_REQUEST,
+  UPDATE_PHASE_ISSUES_LIST_SUCCESS,
+  UPDATE_PHASE_ISSUES_LIST_FAILURE,
+  RESET_PHASE
 } from './types';
 
 const createPhase = (phase, closeModal) => {
@@ -63,6 +68,39 @@ const loadAllPhasesFailure = (error) => {
   }
 };
 
+const resetPhase = () => {
+  return {
+    type: RESET_PHASE
+  }
+};
+
+const updatePhaseIssuesList = (phaseId, issueList) => {
+  return {
+    type: UPDATE_PHASE_ISSUES_LIST,
+    phaseId,
+    issueList
+  }
+};
+
+const updatePhaseIssuesListRequest = () => {
+  return {
+    type: UPDATE_PHASE_ISSUES_LIST_REQUEST
+  }
+};
+
+const updatePhaseIssuesListSuccess = () => {
+  return {
+    type: UPDATE_PHASE_ISSUES_LIST_SUCCESS,
+  }
+};
+
+const updatePhaseIssuesListFailure = (error) => {
+  return {
+    type: UPDATE_PHASE_ISSUES_LIST_FAILURE,
+    error
+  }
+};
+
 export {
   createPhase,
   requestCreatePhase,
@@ -71,5 +109,10 @@ export {
   loadAllPhases,
   loadAllPhasesRequest,
   loadAllPhasesSuccess,
-  loadAllPhasesFailure
+  loadAllPhasesFailure,
+  updatePhaseIssuesList,
+  updatePhaseIssuesListRequest,
+  updatePhaseIssuesListSuccess,
+  updatePhaseIssuesListFailure,
+  resetPhase
 }
