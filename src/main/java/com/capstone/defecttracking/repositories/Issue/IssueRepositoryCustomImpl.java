@@ -1,10 +1,7 @@
 package com.capstone.defecttracking.repositories.Issue;
 
 import com.capstone.defecttracking.enums.Roles;
-import com.capstone.defecttracking.models.Issue.Issue;
-import com.capstone.defecttracking.models.Issue.IssueDetailsResponse;
-import com.capstone.defecttracking.models.Issue.IssueResponse;
-import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
+import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
@@ -47,7 +44,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getCreatedAt(),
             issue.getUpdatedAt(),
             new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
-            issue.getLabel(),
+            issue.getCategory(),
             issue.getAttachments()
         );
     }
@@ -178,6 +175,13 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getPriority()
             ))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssuePhaseResponse> loadAllIssuesInPhase(ArrayList<String> issueIds) {
+        Query query = new Query(Criteria.where("_id").in(issueIds));
+
+        return mongoTemplate.find(query, IssuePhaseResponse.class);
     }
 
     private Update configUpdate(ArrayList<?> list, String type, String value) {

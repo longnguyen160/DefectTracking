@@ -7,6 +7,10 @@ import {
   LOAD_ALL_PHASES_REQUEST,
   LOAD_ALL_PHASES_SUCCESS,
   LOAD_ALL_PHASES_FAILURE,
+  LOAD_ACTIVE_PHASE,
+  LOAD_ACTIVE_PHASE_REQUEST,
+  LOAD_ACTIVE_PHASE_SUCCESS,
+  LOAD_ACTIVE_PHASE_FAILURE,
   UPDATE_PHASE_ISSUES_LIST,
   UPDATE_PHASE_ISSUES_LIST_REQUEST,
   UPDATE_PHASE_ISSUES_LIST_SUCCESS,
@@ -68,6 +72,33 @@ const loadAllPhasesFailure = (error) => {
   }
 };
 
+const loadActivePhase = (projectId) => {
+  return {
+    type: LOAD_ACTIVE_PHASE,
+    projectId
+  }
+};
+
+const loadActivePhaseRequest = () => {
+  return {
+    type: LOAD_ACTIVE_PHASE_REQUEST
+  }
+};
+
+const loadActivePhaseSuccess = (phase) => {
+  return {
+    type: LOAD_ACTIVE_PHASE_SUCCESS,
+    phase
+  }
+};
+
+const loadActivePhaseFailure = (error) => {
+  return {
+    type: LOAD_ACTIVE_PHASE_FAILURE,
+    error
+  }
+};
+
 const resetPhase = () => {
   return {
     type: RESET_PHASE
@@ -110,6 +141,10 @@ export {
   loadAllPhasesRequest,
   loadAllPhasesSuccess,
   loadAllPhasesFailure,
+  loadActivePhase,
+  loadActivePhaseRequest,
+  loadActivePhaseSuccess,
+  loadActivePhaseFailure,
   updatePhaseIssuesList,
   updatePhaseIssuesListRequest,
   updatePhaseIssuesListSuccess,

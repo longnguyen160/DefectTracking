@@ -1,7 +1,12 @@
 package com.capstone.defecttracking.repositories.Phase;
 
+import com.capstone.defecttracking.models.Issue.Issue;
+import com.capstone.defecttracking.models.Issue.IssuePhaseResponse;
 import com.capstone.defecttracking.models.Phase.Phase;
+import com.capstone.defecttracking.models.Phase.PhaseIssueResponse;
 import com.capstone.defecttracking.models.Phase.PhaseResponse;
+import com.capstone.defecttracking.models.User.User;
+import com.capstone.defecttracking.models.User.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -55,6 +60,45 @@ public class PhaseRepositoryCustomImpl implements PhaseRepositoryCustom {
                 phase.getIssueList()
             ))
             .collect(Collectors.toList());
+    }
+
+    private UserResponse getUserResponse(String userId) {
+        Query query = new Query(Criteria.where("_id").is(userId));
+        User user = mongoTemplate.findOne(query, User.class);
+
+        if (user.getProfile() == null) {
+            return new UserResponse(user.getId(), user.getUsername());
+        }
+
+        return new UserResponse(user.getId(), user.getUsername(), user.getProfile().getAvatarURL());
+    }
+
+    @Override
+    public PhaseIssueResponse loadActivePhase(String projectId) {
+        Criteria criteria = new Criteria();
+
+        criteria.andOperator(
+            Criteria.where("projectId").is(projectId),
+            Criteria.where("starting").is(true)
+        );
+
+        Query query = new Query(criteria);
+        Phase phase = mongoTemplate.findOne(query, Phase.class);
+
+        query = new Query(Criteria.where("_id").in(phase.getIssueList()));
+        ArrayList<IssuePhaseResponse> issueList = mongoTemplate
+            .find(query, Issue.class)
+            .stream()
+            .map(issue -> new IssuePhaseResponse(
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                getUserResponse(issue.getAssignee()),
+                issue.getPriority(),
+                issue.getStatus()
+            )).collect(Collectors.toCollection(ArrayList::new));
+
+        return new PhaseIssueResponse(phase.getId(), phase.getName(), phase.getStartDate(), phase.getEndDate(), phase.getStarting(), issueList);
     }
 
     @Override

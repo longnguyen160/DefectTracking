@@ -1,29 +1,102 @@
 import React from 'react';
 import Select from 'react-select';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { DragDropContext } from 'react-beautiful-dnd';
+import SockJsClient from "react-stomp";
 import {
-  DescriptionElementStyled,
   ElementHeaderStyled,
-  ElementStyled,
   FormGroupStyled,
-  Image,
-  LabelStyled,
   PageBoardItemStyled,
-  PageBoardStyled, TableBlockStyled,
+  PageBoardStyled,
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
   ListTableBodyContainerStyled,
-  ListTableBodyItemStyled,
-  ListTableBodyStyled,
   ListTableHeaderItemsStyled,
   ListTableHeaderStyled
 } from '../../../stylesheets/Table';
-import Icon from '../../../components/icon/Icon';
-import { ICONS } from '../../../utils/enums';
+import { ISSUE_STATUS_ARRAY } from '../../../utils/enums';
+import PropTypes from 'prop-types';
+import { openModal } from '../../layout/actions/layout';
+import { loadActivePhase, resetPhase } from '../actions/phase';
+import { reorderMap } from '../../../utils/ultis';
+import PhaseDetails from './PhaseDetails';
 
 class Phase extends React.Component {
+  state = {
+    issueList: [],
+    list: {}
+  };
+
+  componentWillMount() {
+    const { loadActivePhase, selectedProject } = this.props;
+    let { list } = this.state;
+
+    if (selectedProject) {
+      loadActivePhase(selectedProject.id);
+    }
+
+    ISSUE_STATUS_ARRAY.map(status => {
+      list = Object.assign({}, list, {
+        [status.value]: []
+      });
+
+      return null;
+    });
+
+    this.setState({ list });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { phase, selectedProject, loadActivePhase } = nextProps;
+    let { list } = this.state;
+
+    if (selectedProject && !this.props.selectedProject) {
+      loadActivePhase(selectedProject.id);
+    }
+    if (JSON.stringify(phase) !== JSON.stringify(this.props.phase)) {
+      const issueStatuses = [...new Set(phase.issueList.map(issue => issue.status))];
+
+      issueStatuses.map(status => {
+
+        list = Object.assign({}, list, {
+          [status]: phase.issueList.filter(issue => issue.status === status)
+        });
+
+        this.setState({ list });
+      });
+      this.setState({ issueList: phase.issueList });
+    }
+  }
+
+  componentWillUnmount() {
+    const { resetPhase } = this.props;
+
+    resetPhase();
+  }
+
+  onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const { list } = this.state;
+    const updatedList = reorderMap(
+      list,
+      result.source,
+      result.destination
+    );
+
+    this.setState({
+      list: updatedList,
+    });
+  };
 
   render() {
+    const { list } = this.state;
+    console.log(list);
     return (
       <PageBoardStyled backlog>
         <ElementHeaderStyled padding={'10px 20px'}>
@@ -35,197 +108,48 @@ class Phase extends React.Component {
           <Select placeholder={'Quick Filter'}/>
           <Select placeholder={'Assignee'} />
         </FormGroupStyled>
-        <PageBoardStyled noPadding>
-          <PageBoardItemStyled>
-            <ListTableHeaderStyled>
-              <ListTableHeaderItemsStyled>To Do</ListTableHeaderItemsStyled>
-            </ListTableHeaderStyled>
-            <ListTableBodyContainerStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-1</TitleElementStyled>
-                  <DescriptionElementStyled noPadding>
-                    As a product owner, I'd like to include bugs, tasks and other issue types in my backlog >> Bugs like this one will also appear in your backlog but they are not normally estimated
-                  </DescriptionElementStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-2</TitleElementStyled>
-                  <DescriptionElementStyled noPadding>
-                    This is a sample task. Tasks are used to break down the steps to implement a user story
-                  </DescriptionElementStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName>
-                  ISSUE-3
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-            </ListTableBodyContainerStyled>
-          </PageBoardItemStyled>
-          <PageBoardItemStyled>
-            <ListTableHeaderStyled>
-              <ListTableHeaderItemsStyled>In Progress</ListTableHeaderItemsStyled>
-            </ListTableHeaderStyled>
-            <ListTableBodyContainerStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-1</TitleElementStyled>
-                  <DescriptionElementStyled noPadding>
-                    As a product owner, I'd like to include bugs, tasks and other issue types in my backlog >> Bugs like this one will also appear in your backlog but they are not normally estimated
-                  </DescriptionElementStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-2</TitleElementStyled>
-                  <DescriptionElementStyled noPadding>
-                    This is a sample task. Tasks are used to break down the steps to implement a user story
-                  </DescriptionElementStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName>
-                  ISSUE-3
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-            </ListTableBodyContainerStyled>
-          </PageBoardItemStyled>
-          <PageBoardItemStyled>
-            <ListTableHeaderStyled>
-              <ListTableHeaderItemsStyled>Testing</ListTableHeaderItemsStyled>
-            </ListTableHeaderStyled>
-            <ListTableBodyContainerStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-1</TitleElementStyled>
-                  <DescriptionElementStyled noPadding>
-                    As a product owner, I'd like to include bugs, tasks and other issue types in my backlog >> Bugs like this one will also appear in your backlog but they are not normally estimated
-                  </DescriptionElementStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-2</TitleElementStyled>
-                  <DescriptionElementStyled noPadding>
-                    This is a sample task. Tasks are used to break down the steps to implement a user story
-                  </DescriptionElementStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName>
-                  ISSUE-3
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-            </ListTableBodyContainerStyled>
-          </PageBoardItemStyled>
-          <PageBoardItemStyled>
-            <ListTableHeaderStyled>
-              <ListTableHeaderItemsStyled>Done</ListTableHeaderItemsStyled>
-            </ListTableHeaderStyled>
-            <ListTableBodyContainerStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName container>
-                  <TitleElementStyled noPadding fontSize={'14px'}>ISSUE-5</TitleElementStyled>
-                  <TableBlockStyled alignLeft>
-                    <LabelStyled fontSize={'10px'}>
-                      Front end
-                    </LabelStyled>
-                    <LabelStyled fontSize={'10px'} color={'#f83f06'} textColor={'#fff'}>
-                      Back end
-                    </LabelStyled>
-                  </TableBlockStyled>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName>
-                  ISSUE-2
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-              <ListTableBodyStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Icon icon={ICONS.ARROW} color={'#f83f06'} width={15} height={15} rotated rotate={'rotateZ(90deg)'}/>
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled issueName>
-                  ISSUE-3
-                </ListTableBodyItemStyled>
-                <ListTableBodyItemStyled flex={'0 0 35px'}>
-                  <Image dynamic={'25px'} src={'/images/default_avatar.jpg'} />
-                </ListTableBodyItemStyled>
-              </ListTableBodyStyled>
-            </ListTableBodyContainerStyled>
-          </PageBoardItemStyled>
-        </PageBoardStyled>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <PageBoardStyled noPadding>
+            {
+              ISSUE_STATUS_ARRAY.map(status => (
+                <PageBoardItemStyled key={status.value}>
+                  <ListTableHeaderStyled>
+                    <ListTableHeaderItemsStyled>{status.value}</ListTableHeaderItemsStyled>
+                  </ListTableHeaderStyled>
+                  <ListTableBodyContainerStyled>
+                    <PhaseDetails
+                      data={list[status.value]}
+                      listId={status.value}
+                      listType={'card'}
+                    />
+                  </ListTableBodyContainerStyled>
+                </PageBoardItemStyled>
+              ))
+            }
+          </PageBoardStyled>
+        </DragDropContext>
       </PageBoardStyled>
     );
   }
 }
 
-export default Phase;
+Phase.propTypes = {
+  openModal: PropTypes.func.isRequired,
+  loadActivePhase: PropTypes.func.isRequired,
+  resetPhase: PropTypes.func.isRequired,
+  selectedProject: PropTypes.object,
+  phase: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+  phase: state.phase.activePhase,
+  selectedProject: state.layout.selectedProject
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  openModal: openModal,
+  loadActivePhase: loadActivePhase,
+  resetPhase: resetPhase
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Phase);
