@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface IssueRepositoryCustom {
     IssueDetailsResponse loadIssueDetails(String issueId);
+    IssueShortcutResponse loadIssueShortcut(String issueId);
     Boolean didIssueExisted(String issueName);
     List<Issue> loadAllIssuesInProject(String projectId);
     String generateIssueKey();

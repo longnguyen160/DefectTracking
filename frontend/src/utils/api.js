@@ -53,6 +53,10 @@ const addUserToProject = (requestData) => {
 const loadProjectDetails = (projectId) => {
   return axios.get(`user/loadProjectDetails?projectId=${projectId}`);
 };
+
+const updateBacklog = (projectId, backlog) => {
+  return axios.post('project/updateBacklog', { projectId, backlog });
+};
 // Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
@@ -64,6 +68,10 @@ const loadAllIssues = () => {
 
 const loadAllIssuesShortcut = (userId) => {
   return axios.get(`user/loadAllIssuesShortcut?userId=${userId}`);
+};
+
+const loadIssueShortcut = (issueId) => {
+  return axios.get(`user/loadIssueShortcut?issueId=${issueId}`);
 };
 
 const loadIssueDetails = (issueId) => {
@@ -104,6 +112,10 @@ const loadAllPhases = (projectId) => {
   return axios.get(`user/loadAllPhases?projectId=${projectId}`);
 };
 
+const updatePhaseIssuesList = (phaseId, issueList) => {
+  return axios.post('user/updatePhaseIssueList', { phaseId, issueList });
+};
+
 const API = {
   login,
   signUp,
@@ -126,7 +138,10 @@ const API = {
   loadIssueDetails,
   updateIssue,
   createPhase,
-  loadAllPhases
+  loadAllPhases,
+  loadIssueShortcut,
+  updateBacklog,
+  updatePhaseIssuesList
 };
 
 export default API;

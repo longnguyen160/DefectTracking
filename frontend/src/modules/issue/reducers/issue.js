@@ -10,12 +10,16 @@ import {
   LOAD_ISSUE_DETAILS_REQUEST,
   LOAD_ISSUE_DETAILS_SUCCESS,
   LOAD_ISSUE_DETAILS_FAILURE,
+  LOAD_ISSUE_SHORTCUT_REQUEST,
+  LOAD_ISSUE_SHORTCUT_SUCCESS,
+  LOAD_ISSUE_SHORTCUT_FAILURE,
   RESET_ISSUE_DETAILS
 } from '../actions/types';
 
 const initialState = {
   issues: [],
   issue: null,
+  issueShortcut: null,
   isLoading: false,
   error: null
 };
@@ -83,6 +87,25 @@ export default function issue(state = initialState, action) {
       });
 
     case LOAD_ISSUE_DETAILS_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_ISSUE_SHORTCUT_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case LOAD_ISSUE_SHORTCUT_SUCCESS:
+      return Object.assign({}, state, {
+        issueShortcut: action.data,
+        isLoading: false,
+        error: null
+      });
+
+    case LOAD_ISSUE_SHORTCUT_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error

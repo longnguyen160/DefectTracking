@@ -53,6 +53,19 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
+    public IssueShortcutResponse loadIssueShortcut(String issueId) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+        return new IssueShortcutResponse(
+            issue.getId(),
+            issue.getIssueKey(),
+            issue.getIssueName(),
+            issue.getPriority()
+        );
+    }
+
+    @Override
     public Boolean didIssueExisted(String issueName) {
         Query query = new Query(Criteria.where("name").is(issueName));
         Issue issue = mongoTemplate.findOne(query, Issue.class);

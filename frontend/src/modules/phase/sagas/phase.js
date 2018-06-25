@@ -1,12 +1,15 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { CREATE_PHASE, LOAD_ALL_PHASES } from '../actions/types';
+import { all, call, put, takeLatest, takeEvery } from 'redux-saga/effects';
+import { CREATE_PHASE, LOAD_ALL_PHASES, UPDATE_PHASE_ISSUES_LIST } from '../actions/types';
 import {
   requestCreatePhase,
   createPhaseSuccess,
   createPhaseFailure,
   loadAllPhasesRequest,
   loadAllPhasesSuccess,
-  loadAllPhasesFailure
+  loadAllPhasesFailure,
+  updatePhaseIssuesListRequest,
+  updatePhaseIssuesListSuccess,
+  updatePhaseIssuesListFailure
 } from '../actions/phase';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
@@ -48,9 +51,26 @@ function* watchLoadAllPhases() {
   yield takeLatest(LOAD_ALL_PHASES, loadAllPhases);
 }
 
+function* updatePhaseIssuesList({ phaseId, issueList }) {
+  try {
+    yield put(updatePhaseIssuesListRequest());
+
+    const { data } = yield call(API.updatePhaseIssuesList, phaseId, issueList);
+
+    yield put(updatePhaseIssuesListSuccess());
+  } catch (error) {
+    yield put(updatePhaseIssuesListFailure(getError(error)))
+  }
+}
+
+function* watchUpdatePhaseIssuesList() {
+  yield takeEvery(UPDATE_PHASE_ISSUES_LIST, updatePhaseIssuesList);
+}
+
 export default function* phaseFlow() {
   yield all([
     watchCreatePhase(),
-    watchLoadAllPhases()
+    watchLoadAllPhases(),
+    watchUpdatePhaseIssuesList()
   ]);
 }

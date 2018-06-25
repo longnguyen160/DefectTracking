@@ -1,6 +1,7 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Phase.Phase;
+import com.capstone.defecttracking.models.Phase.PhaseIssueRequest;
 import com.capstone.defecttracking.models.Phase.PhaseResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.repositories.Phase.PhaseRepository;
@@ -40,7 +41,7 @@ public class PhaseController {
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
         phaseRepository.save(phase);
-        serverResponse = new ServerResponse(true, "Create issue successfully");
+        serverResponse = new ServerResponse(true, "Create phase successfully");
 
         template.convertAndSend("/topic/phase", serverResponse);
 
@@ -51,4 +52,17 @@ public class PhaseController {
     public List<PhaseResponse> loadAllPhases(@RequestParam(value = "projectId") String projectId) {
         return phaseRepositoryCustom.loadAllPhases(projectId);
     }
+
+    @PostMapping("/user/updatePhaseIssueList")
+    public ResponseEntity<?> updatePhaseIssueList(@RequestBody PhaseIssueRequest phaseIssueRequest) {
+        ServerResponse serverResponse;
+
+        phaseRepositoryCustom.updateIssueList(phaseIssueRequest.getPhaseId(), phaseIssueRequest.getIssueList());
+        serverResponse = new ServerResponse(true, "Update phase successfully");
+
+        template.convertAndSend("/topic/phase", serverResponse);
+
+        return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+    }
+
 }

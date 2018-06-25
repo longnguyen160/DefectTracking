@@ -1,6 +1,8 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Project.ProjectBacklogRequest;
+import com.capstone.defecttracking.models.Project.ProjectResponse;
 import com.capstone.defecttracking.models.Project.UserProjectRequest;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
@@ -15,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -52,7 +55,7 @@ public class ProjectController {
     }
 
     @GetMapping("/loadAllProjects")
-    public List<Project> loadAllProject() {
+    public List<ProjectResponse> loadAllProject() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
@@ -71,5 +74,17 @@ public class ProjectController {
         template.convertAndSend("/topic/usersInProject", responseEntity);
 
         return responseEntity;
+    }
+
+    @PostMapping("/project/updateBacklog")
+    public ResponseEntity<?> updateBacklog(@RequestBody ProjectBacklogRequest projectBacklog) {
+        ServerResponse serverResponse;
+
+        projectRepositoryCustom.updateBacklog(projectBacklog.getProjectId(), projectBacklog.getBacklog());
+        serverResponse = new ServerResponse(true, "Update backlog successfully");
+
+        template.convertAndSend("/topic/projects", serverResponse);
+
+        return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
 }

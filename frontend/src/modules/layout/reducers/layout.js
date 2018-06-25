@@ -4,7 +4,6 @@ import {
   LOAD_CURRENT_USER_FAILURE,
   OPEN_MODAL,
   CLOSE_MODAL,
-  SELECT_PROJECT,
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
@@ -51,11 +50,6 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         modalIsOpen: false,
         modalType: ''
-      });
-
-    case SELECT_PROJECT:
-      return Object.assign({}, state, {
-        selectedProject: action.project
       });
 
     case LOAD_PROJECT_DETAILS_REQUEST:

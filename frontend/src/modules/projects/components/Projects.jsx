@@ -13,7 +13,7 @@ import {
   PageBoardStyled,
   ElementHeaderStyled
 } from '../../../stylesheets/GeneralStyled';
-import { openModal, selectProject } from '../../layout/actions/layout';
+import { loadProjectDetails, openModal } from '../../layout/actions/layout';
 import { ICONS, MODAL_TYPE, PROJECT_STATUS, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjects } from '../actions/project';
 import Icon from '../../../components/icon/Icon';
@@ -26,11 +26,11 @@ class Projects extends React.Component {
     loadAllProjects();
   };
 
-  handleSelectProject = (project) => {
-    const { selectProject, history } = this.props;
+  handleSelectProject = (projectId) => {
+    const { loadProjectDetails, history } = this.props;
 
-    selectProject(project);
-    history.push(`/project/${project.id}/backlog`);
+    loadProjectDetails(projectId);
+    history.push(`/project/${projectId}/backlog`);
   };
 
   renderProjects = (projects, icon, title) => (
@@ -44,7 +44,7 @@ class Projects extends React.Component {
       <PageCustomStyled margin={'0'}>
         {
           projects.map(project => (
-            <ElementStyled key={project.id} onClick={() => this.handleSelectProject(project)}>
+            <ElementStyled key={project.id} onClick={() => this.handleSelectProject(project.id)}>
               <TitleElementStyled>
                 {project.name}
               </TitleElementStyled>
@@ -91,9 +91,8 @@ class Projects extends React.Component {
 
 Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
-  selectProject: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  loadAllProjects: PropTypes.func.isRequired,
   project: PropTypes.shape({
     projects: PropTypes.array.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -106,8 +105,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
-  selectProject: selectProject,
-  loadAllProjects: loadAllProjects,
+  loadProjectDetails: loadProjectDetails,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);

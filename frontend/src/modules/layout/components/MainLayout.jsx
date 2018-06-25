@@ -7,7 +7,7 @@ import Notifications from 'react-notification-system-redux';
 import SockJsClient from "react-stomp";
 import TopNavBar from './TopNavBar';
 import SideBar from './SideBar';
-import { loadCurrentUser, openModal, closeModal, resetProject, selectProject, loadProjectDetails } from '../actions/layout';
+import { loadCurrentUser, openModal, closeModal, resetProject, loadProjectDetails } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { loadAllProjects } from '../../projects/actions/project';
 import { notificationStyle } from '../../../stylesheets/Notifications';
@@ -89,7 +89,7 @@ class MainLayout extends React.Component {
       logOut,
       history,
       openModal,
-      selectProject
+      loadProjectDetails
     } = this.props;
 
     return (
@@ -103,7 +103,7 @@ class MainLayout extends React.Component {
           logOut={logOut}
           history={history}
           openModal={openModal}
-          selectProject={selectProject}
+          loadProjectDetails={loadProjectDetails}
         />
         <FormGroupStyled padding>
           <SideBar
@@ -134,7 +134,6 @@ MainLayout.propTypes = {
   logOut: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
-  selectProject: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
     user: PropTypes.object,
@@ -156,7 +155,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   closeModal: closeModal,
   resetProject: resetProject,
-  selectProject: selectProject,
   loadAllProjects: loadAllProjects,
   loadProjectDetails: loadProjectDetails
 }, dispatch);
