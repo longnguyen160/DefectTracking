@@ -33,6 +33,9 @@ const loadAllUsers = (input, projectId) => {
   return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
 };
 
+const removeUserFromProject = (projectId, userId) => {
+  return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
+};
 // Project
 const createProject = (project) => {
   return axios.post('admin/createProject', project);
@@ -126,7 +129,8 @@ const API = {
   loadIssueDetails,
   updateIssue,
   createPhase,
-  loadAllPhases
+  loadAllPhases,
+  removeUserFromProject
 };
 
 export default API;
