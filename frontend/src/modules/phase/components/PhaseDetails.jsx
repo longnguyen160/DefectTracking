@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { ListTableBodyContainerStyled, ListTableBodyItemStyled, ListTableBodyStyled } from '../../../stylesheets/Table';
-import { ICONS, ISSUE_PRIORITY_ARRAY } from '../../../utils/enums';
+import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE } from '../../../utils/enums';
 import {
   DescriptionElementStyled,
   Image, LabelStyled,
@@ -12,6 +12,13 @@ import {
 import Icon from '../../../components/icon/Icon';
 
 class PhaseDetails extends React.Component {
+
+  handleOpenModal = (issueId) => {
+    const { openModal, loadIssueDetails } = this.props;
+
+    loadIssueDetails(issueId);
+    openModal(MODAL_TYPE.ISSUE_DETAILS);
+  };
 
   renderItem = (parentProvided, data) => {
     return (
@@ -25,12 +32,12 @@ class PhaseDetails extends React.Component {
                 {
                   (provided, snapshot) => (
                     <ListTableBodyStyled
-                      showList
                       key={item.id}
                       isDragging={snapshot.isDragging}
                       innerRef={provided.innerRef}
                       {...provided.dragHandleProps}
                       {...provided.draggableProps}
+                      onClick={() => this.handleOpenModal(item.id)}
                     >
                       <ListTableBodyItemStyled flex={'0 0 35px'}>
                         <Icon
@@ -92,7 +99,9 @@ class PhaseDetails extends React.Component {
 PhaseDetails.propTypes = {
   data: PropTypes.array.isRequired,
   listId: PropTypes.string.isRequired,
-  listType: PropTypes.string.isRequired
+  listType: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
+  loadIssueDetails: PropTypes.func.isRequired
 };
 
 export default PhaseDetails;

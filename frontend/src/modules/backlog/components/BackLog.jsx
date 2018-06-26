@@ -49,7 +49,7 @@ class BackLog extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { loadAllPhases, selectedProject, phases } = nextProps;
 
-    if (selectedProject && !this.props.selectedProject) {
+    if (JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
         backlog: selectedProject.backlog
       };
@@ -109,7 +109,7 @@ class BackLog extends React.Component {
     const { loadAllPhases, selectedProject, loadProjectDetails } = this.props;
 
     switch (message.message) {
-      case 'Update backlog successfully':
+      case 'Update backlog successfully', 'Create issue successfully':
         loadProjectDetails(selectedProject.id);
         break;
 
@@ -202,7 +202,7 @@ class BackLog extends React.Component {
         </DragDropContext>
         <SockJsClient
           url={WEB_SOCKET_URL}
-          topics={['/topic/phase', '/topic/projects']}
+          topics={['/topic/phase', '/topic/projects', '/topic/issuesList']}
           onMessage={this.onMessageReceive}
           debug={true}
         />

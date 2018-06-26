@@ -22,6 +22,7 @@ import { openModal } from '../../layout/actions/layout';
 import { loadActivePhase, resetPhase } from '../actions/phase';
 import { reorderMap } from '../../../utils/ultis';
 import PhaseDetails from './PhaseDetails';
+import { loadIssueDetails } from '../../issue/actions/issue';
 
 class Phase extends React.Component {
   state = {
@@ -95,8 +96,9 @@ class Phase extends React.Component {
   };
 
   render() {
+    const { openModal, loadIssueDetails } = this.props;
     const { list } = this.state;
-    console.log(list);
+
     return (
       <PageBoardStyled backlog>
         <ElementHeaderStyled padding={'10px 20px'}>
@@ -118,6 +120,8 @@ class Phase extends React.Component {
                   </ListTableHeaderStyled>
                   <ListTableBodyContainerStyled>
                     <PhaseDetails
+                      openModal={openModal}
+                      loadIssueDetails={loadIssueDetails}
                       data={list[status.value]}
                       listId={status.value}
                       listType={'card'}
@@ -137,6 +141,7 @@ Phase.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadActivePhase: PropTypes.func.isRequired,
   resetPhase: PropTypes.func.isRequired,
+  loadIssueDetails: PropTypes.func.isRequired,
   selectedProject: PropTypes.object,
   phase: PropTypes.object
 };
@@ -149,7 +154,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadActivePhase: loadActivePhase,
-  resetPhase: resetPhase
+  resetPhase: resetPhase,
+  loadIssueDetails: loadIssueDetails
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Phase);
