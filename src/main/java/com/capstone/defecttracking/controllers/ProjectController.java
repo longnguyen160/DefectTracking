@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.List;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsCriteria;
 
 @RestController
 public class ProjectController {
@@ -71,5 +73,11 @@ public class ProjectController {
         template.convertAndSend("/topic/usersInProject", responseEntity);
 
         return responseEntity;
+    }
+    @DeleteMapping("/manager/removeUser/{projectId}/{userId}")
+    public ResponseEntity<?> removeUser(@PathVariable("projectId") String projectId,@PathVariable("userId") String userId) {
+       ResponseEntity<?> responseEntity =  projectRepositoryCustom.removeUserFromProject(projectId, userId);
+       template.convertAndSend("/topic/usersInProject",responseEntity);
+       return responseEntity;
     }
 }
