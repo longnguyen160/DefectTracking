@@ -23,6 +23,8 @@ import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsCriteria;
 
 @RestController
 @RequestMapping("/user")
@@ -126,4 +128,5 @@ public class UserController {
 
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
+
 }

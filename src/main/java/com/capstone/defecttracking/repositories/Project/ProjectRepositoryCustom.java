@@ -11,4 +11,5 @@ public interface ProjectRepositoryCustom {
     Boolean doesProjectExisted(String projectName);
     List<Project> loadAllProjectsForCurrentUser(String userId);
     ResponseEntity<?> addUserToProject(UserProjectRequest userProjectRequest);
+    ResponseEntity<?> removeUserFromProject(String projectID, String userID);
 }
