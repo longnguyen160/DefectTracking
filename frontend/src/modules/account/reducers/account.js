@@ -12,7 +12,11 @@ import {
   LOAD_ALL_USERS_FAILURE,
   UPDATE_PROFILE_REQUEST,
   UPDATE_PROFILE_SUCCESS,
-  UPDATE_PROFILE_FAILURE
+  UPDATE_PROFILE_FAILURE,
+  REMOVE_USER_REQUEST,
+  REMOVE_USER_SUCCESS,
+  REMOVE_USER_FAILURE
+
 } from '../actions/types';
 import { getUserIdFromToken, checkAuthentication } from '../../../utils/ultis';
 
@@ -106,6 +110,24 @@ export default function account(state = initialState, action) {
       });
 
     case UPDATE_PROFILE_FAILURE:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: action.error
+      });
+    
+    case REMOVE_USER_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true,
+        error: null
+      });
+
+    case REMOVE_USER_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: null
+      });
+      
+    case REMOVE_USER_FAILURE:
       return Object.assign({}, state, {
         isFetching: false,
         error: action.error
