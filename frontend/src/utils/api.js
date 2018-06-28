@@ -33,9 +33,6 @@ const loadAllUsers = (input, projectId) => {
   return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
 };
 
-const removeUserFromProject = (projectId, userId) => {
-  return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
-};
 // Project
 const createProject = (project) => {
   return axios.post('admin/createProject', project);
@@ -60,6 +57,10 @@ const loadProjectDetails = (projectId) => {
 const updateBacklog = (projectId, backlog) => {
   return axios.post('project/updateBacklog', { projectId, backlog });
 };
+
+const removeUserFromProject = (projectId, userId) => {
+  return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
+};
 // Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
@@ -83,6 +84,10 @@ const loadIssueDetails = (issueId) => {
 
 const updateIssue = (data) => {
   return axios.post('user/updateIssue', data);
+};
+
+const loadAllIssuesFromBacklog = (issueList) => {
+  return axios.get(`user/loadAllIssuesFromBacklog?issueIds=${issueList}`);
 };
 // Category
 const createCategory = (category) => {
@@ -130,6 +135,7 @@ const API = {
   removeUserFromProject,
   loadIssueShortcut,
   updateBacklog,
+  loadAllIssuesFromBacklog
 };
 
 export default API;

@@ -222,7 +222,7 @@ export const FormGroupStyled = styled.div`
   `};
   & > .Select {
     width: ${props => props.widthSelect ? props.widthSelect : '100%'};
-    padding: ${props => props.paddingSelect ? props.paddingSelect : '20px 5px'};
+    margin: ${props => props.marginSelect ? props.marginSelect : '20px 5px'};
   }
   @media(max-width: 700px) {
     ${props => props.input && css`

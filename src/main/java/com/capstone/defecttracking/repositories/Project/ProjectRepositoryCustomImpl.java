@@ -89,7 +89,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         query = new Query(Criteria.where("_id").is(userProjectRequest.getUserId()));
         User user = mongoTemplate.findOne(query, User.class);
 
-        if (result != null) {
+        if (result.getModifiedCount() != 0) {
             serverResponse = new ServerResponse(true, "Add " + user.getUsername() + " to project successfully");
 
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
@@ -105,28 +105,18 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     public ResponseEntity<?> removeUserFromProject(String projectID, String userID) {
         ServerResponse serverResponse;
         Query query = new Query(Criteria.where("_id").is(projectID));
-        Project project = mongoTemplate.findOne(query, Project.class);
         Update update = new Update();
 
-        ArrayList<UserRole> members = project.getMembers();
-        int index = -1;
-        for (int i = 0; i < members.size(); i++) {
-            UserRole u = members.get(i);
-            if (u.getUserId().equals(userID)) {
-                index = i;
-            }
-        }
-        if (index != -1) {
-            members.remove(index);
-            update.set("members", members);
-            UpdateResult result = mongoTemplate.updateFirst(query, update, Project.class);
-            if (result != null) {
-                serverResponse = new ServerResponse(true, "Remove user from project successfully");
+        update.pull("members", Query.query(Criteria.where("userId").is(userID)));
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Project.class);
 
-                return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
-            }
+        if (result.getModifiedCount() != 0) {
+            serverResponse = new ServerResponse(true, "Remove user from project successfully");
+
+            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+
         }
-        serverResponse = new ServerResponse(false, "Remove user from project failed");
+        serverResponse = new ServerResponse(true, "Remove user from project failed");
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }

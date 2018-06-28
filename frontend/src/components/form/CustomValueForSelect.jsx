@@ -36,7 +36,6 @@ class CustomValueForSelect extends React.Component {
 }
 
 CustomValueForSelect.propTypes = {
-  children: PropTypes.node.isRequired,
   name: PropTypes.string.isRequired,
   value: PropTypes.object.isRequired,
 };

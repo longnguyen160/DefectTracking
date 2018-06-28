@@ -92,6 +92,7 @@ class Projects extends React.Component {
 Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
+  loadAllProjects: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   project: PropTypes.shape({
     projects: PropTypes.array.isRequired,
@@ -106,6 +107,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadProjectDetails: loadProjectDetails,
+  loadAllProjects: loadAllProjects
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);

@@ -5,9 +5,8 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import { DragDropContext } from 'react-beautiful-dnd';
 import SockJsClient from "react-stomp";
-import moment from 'moment';
 import {
-  ElementHeaderStyled,
+  ElementHeaderStyled, FormGroupStyled,
   PageBoardItemStyled,
   PageBoardStyled,
   TitleElementStyled
@@ -20,9 +19,12 @@ import BacklogDetails from './BacklogDetails';
 import { reorderMap } from '../../../utils/ultis';
 import { Button } from '../../../stylesheets/Button';
 import { loadProjectDetails, openModal } from '../../layout/actions/layout';
-import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
-import { loadAllPhases, resetPhase, updatePhaseIssuesList } from '../../phase/actions/phase';
+import { ICONS, ISSUE_PRIORITY_ARRAY, ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { updateBacklog } from '../actions/backlog';
+import Icon from '../../../components/icon/Icon';
+import Column from './Column';
+import CustomOptionForSelect from '../../../components/form/CustomOptionForSelect';
+import CustomValueForSelect from '../../../components/form/CustomValueForSelect';
 
 class BackLog extends React.Component {
 
@@ -32,22 +34,15 @@ class BackLog extends React.Component {
     const { selectedProject } = props;
 
     this.state = {
+      view: 'list',
       list: {
         backlog: selectedProject ? selectedProject.backlog : []
       }
     };
   }
 
-  componentDidMount() {
-    const { loadAllPhases, selectedProject } = this.props;
-
-    if (selectedProject) {
-      loadAllPhases(selectedProject.id);
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
-    const { loadAllPhases, selectedProject, phases } = nextProps;
+    const { selectedProject } = nextProps;
 
     if (JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
@@ -55,27 +50,12 @@ class BackLog extends React.Component {
       };
 
       this.setState({ list });
-      loadAllPhases(selectedProject.id);
-    }
-    if (phases.length > 0 && JSON.stringify(phases) !== JSON.stringify(this.props.phases)) {
-      let { list } = this.state;
-
-      phases.map(phase => {
-        list = Object.assign({}, list, {
-          [phase.name]: phase.issueList
-        });
-
-        return null;
-      });
-      this.setState({ list });
     }
   }
 
-  componentWillUnmount() {
-    const { resetPhase } = this.props;
-
-    resetPhase();
-  }
+  handleChangeView = (type) => {
+    this.setState({ view: type });
+  };
 
   onDragEnd = (result) => {
     // dropped outside the list
@@ -84,7 +64,7 @@ class BackLog extends React.Component {
     }
 
     const { list } = this.state;
-    const { selectedProject, updateBacklog, phases, updatePhaseIssuesList } = this.props;
+    const { selectedProject, updateBacklog } = this.props;
     const updatedList = reorderMap(
       list,
       result.source,
@@ -98,59 +78,117 @@ class BackLog extends React.Component {
     if (JSON.stringify(updatedList.backlog) !== JSON.stringify(selectedProject.backlog)) {
       updateBacklog(selectedProject.id, updatedList.backlog);
     }
-    phases.map(phase => {
-      if (JSON.stringify(phase.issueList) !== JSON.stringify(updatedList[phase.name])) {
-        updatePhaseIssuesList(phase.id, updatedList[phase.name]);
-      }
-    });
   };
 
-  onMessageReceive = (message) => {
-    const { loadAllPhases, selectedProject, loadProjectDetails } = this.props;
+  optionComponent = () => {
+    return (props) => (
+      <CustomOptionForSelect
+        name={'priority'}
+        {...props}
+      />
+    );
+  };
 
-    switch (message.message) {
-      case 'Update backlog successfully', 'Create issue successfully':
-        loadProjectDetails(selectedProject.id);
-        break;
+  valueComponent = () => {
+    return (props) => (
+      <CustomValueForSelect
+        name={'priority'}
+        {...props}
+      />
+    );
+  };
 
-      default:
-        loadAllPhases(selectedProject.id);
-        break;
-    }
+  onMessageReceive = () => {
+    const { selectedProject, loadProjectDetails } = this.props;
+
+    loadProjectDetails(selectedProject.id);
   };
 
   render() {
-    const { list } = this.state;
-    const { openModal, phases } = this.props;
+    const { list, view } = this.state;
 
     return (
       <PageBoardStyled backlog>
-        <PageBoardItemStyled>
+        <ElementHeaderStyled padding={'0'}>
+          <TitleElementStyled noPadding fontSize={'20px'}>
+            Dashboard
+          </TitleElementStyled>
+          <TitleElementStyled noPadding flex={'0 0 60px'}>
+            <Icon
+              icon={ICONS.MENU}
+              color={view === 'list' ? '#d1d1d1' : '#1A1A1A'}
+              width={20}
+              height={20}
+              margin={'0 5px'}
+              onClick={() => this.handleChangeView('list')}
+            />
+            |
+            <Icon
+              icon={ICONS.COLUMN}
+              color={view === 'column' ? '#d1d1d1' : '#1A1A1A'}
+              width={15}
+              height={15}
+              margin={'0 5px'}
+              onClick={() => this.handleChangeView('column')}
+            />
+          </TitleElementStyled>
+        </ElementHeaderStyled>
+        <FormGroupStyled visible>
           <Select
             isSearchable={false}
-            placeholder={'Quick filter'}
+            placeholder={'Status'}
+            options={ISSUE_STATUS_ARRAY}
+            valueKey={'value'}
+            labelKey={'value'}
+            classNamePrefix="react-select"
+          />
+          <Select
+            isSearchable={false}
+            placeholder={'Priority'}
+            options={ISSUE_PRIORITY_ARRAY}
+            name={'priority'}
+            optionComponent={this.optionComponent()}
+            valueComponent={this.valueComponent()}
+            classNamePrefix="react-select"
+          />
+          <Select
+            isSearchable={false}
+            placeholder={'Assignee'}
             options={[
               { value: 'My Issue', label: 'One' },
               { value: 'All Issue', label: 'Two' }
             ]}
             classNamePrefix="react-select"
           />
-        </PageBoardItemStyled>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          {
-            phases.map(phase => (
-              <PageBoardItemStyled key={phase.id}>
-                <ElementHeaderStyled padding={'20px 0 0 0'}>
+          <Select
+            isSearchable={false}
+            placeholder={'Reporter'}
+            options={[
+              { value: 'My Issue', label: 'One' },
+              { value: 'All Issue', label: 'Two' }
+            ]}
+            classNamePrefix="react-select"
+          />
+          <Select
+            isSearchable={false}
+            placeholder={'Category'}
+            options={[
+              { value: 'My Issue', label: 'One' },
+              { value: 'All Issue', label: 'Two' }
+            ]}
+            classNamePrefix="react-select"
+          />
+        </FormGroupStyled>
+        {
+          view === 'list' ?
+            <DragDropContext onDragEnd={this.onDragEnd}>
+              <PageBoardItemStyled activity margin={'0'}>
+                <ElementHeaderStyled padding={'20px 5px'}>
                   <TitleElementStyled noPadding flex={'0 0 85px'}>
-                    {phase.name}
+                    Issues
                   </TitleElementStyled>
-                  <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'} flex={1}>
-                    {phase.issueList.length} Issues
-                  </TitleElementStyled>
-                </ElementHeaderStyled>
-                <ElementHeaderStyled padding={'0 0 20px 0'}>
-                  <TitleElementStyled noPadding fontWeight={400} fontSize={'13px'}>
-                    {moment(phase.startDate).format('LLL')} - {moment(phase.endDate).format('LLL')}
+                  <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
+                    {list.backlog.length} Issues
                   </TitleElementStyled>
                 </ElementHeaderStyled>
                 <div>
@@ -161,48 +199,20 @@ class BackLog extends React.Component {
                       <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
                     </ListTableHeaderStyled>
                     <BacklogDetails
-                      listId={phase.name}
+                      listId="backlog"
                       listType="card"
-                      data={list[phase.name]}
+                      data={list.backlog}
                     />
                   </div>
                 </div>
               </PageBoardItemStyled>
-            ))
-          }
-          <PageBoardItemStyled activity>
-            <ElementHeaderStyled padding={'20px 5px'}>
-              <TitleElementStyled noPadding flex={'0 0 85px'}>
-                New Issues
-              </TitleElementStyled>
-              <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
-                {list.backlog.length} Issues
-              </TitleElementStyled>
-              <TitleElementStyled noPadding flex={'0'}>
-                <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_PHASE)}>
-                  Create Phase
-                </Button>
-              </TitleElementStyled>
-            </ElementHeaderStyled>
-            <div>
-              <div>
-                <ListTableHeaderStyled>
-                  <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
-                  <ListTableHeaderItemsStyled issueName>Name</ListTableHeaderItemsStyled>
-                  <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
-                </ListTableHeaderStyled>
-                <BacklogDetails
-                  listId="backlog"
-                  listType="card"
-                  data={list.backlog}
-                />
-              </div>
-            </div>
-          </PageBoardItemStyled>
-        </DragDropContext>
+            </DragDropContext>
+          :
+            <Column />
+        }
         <SockJsClient
           url={WEB_SOCKET_URL}
-          topics={['/topic/phase', '/topic/projects', '/topic/issuesList']}
+          topics={['/topic/issuesList']}
           onMessage={this.onMessageReceive}
           debug={true}
         />
@@ -212,28 +222,18 @@ class BackLog extends React.Component {
 }
 
 BackLog.propTypes = {
-  openModal: PropTypes.func.isRequired,
-  loadAllPhases: PropTypes.func.isRequired,
-  resetPhase: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
   updateBacklog: PropTypes.func.isRequired,
-  updatePhaseIssuesList: PropTypes.func.isRequired,
-  phases: PropTypes.array.isRequired,
   selectedProject: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  phases: state.phase.phases,
   selectedProject: state.layout.selectedProject
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  openModal: openModal,
-  loadAllPhases: loadAllPhases,
-  resetPhase: resetPhase,
   loadProjectDetails: loadProjectDetails,
   updateBacklog: updateBacklog,
-  updatePhaseIssuesList: updatePhaseIssuesList
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackLog);

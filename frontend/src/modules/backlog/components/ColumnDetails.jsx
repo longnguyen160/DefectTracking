@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import LinesEllipsis from 'react-lines-ellipsis';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { ListTableBodyContainerStyled, ListTableBodyItemStyled, ListTableBodyStyled } from '../../../stylesheets/Table';
 import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE } from '../../../utils/enums';
@@ -11,7 +12,7 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
 
-class PhaseDetails extends React.Component {
+class ColumnDetails extends React.Component {
 
   handleOpenModal = (issueId) => {
     const { openModal, loadIssueDetails } = this.props;
@@ -52,7 +53,13 @@ class PhaseDetails extends React.Component {
                       <ListTableBodyItemStyled issueName container>
                         <TitleElementStyled noPadding fontSize={'14px'}>{item.issueKey}</TitleElementStyled>
                         <DescriptionElementStyled noPadding>
-                          {item.summary}
+                          <LinesEllipsis
+                            text={item.summary}
+                            maxLine='3'
+                            ellipsis='...'
+                            trimRight
+                            basedOn='letters'
+                          />
                         </DescriptionElementStyled>
                         <TableBlockStyled alignLeft>
                           <LabelStyled fontSize={'10px'}>
@@ -96,7 +103,7 @@ class PhaseDetails extends React.Component {
   }
 }
 
-PhaseDetails.propTypes = {
+ColumnDetails.propTypes = {
   data: PropTypes.array.isRequired,
   listId: PropTypes.string.isRequired,
   listType: PropTypes.string.isRequired,
@@ -104,4 +111,4 @@ PhaseDetails.propTypes = {
   loadIssueDetails: PropTypes.func.isRequired
 };
 
-export default PhaseDetails;
+export default ColumnDetails;

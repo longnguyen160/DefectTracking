@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Repository
@@ -178,10 +177,23 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
-    public List<IssuePhaseResponse> loadAllIssuesInPhase(ArrayList<String> issueIds) {
-        Query query = new Query(Criteria.where("_id").in(issueIds));
+    public List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds) {
+        return issueIds
+            .stream()
+            .map(issueId -> {
+                Query query = new Query(Criteria.where("_id").is(issueId));
+                Issue issue = mongoTemplate.findOne(query, Issue.class);
 
-        return mongoTemplate.find(query, IssuePhaseResponse.class);
+                return new IssueBacklogResponse(
+                    issue.getId(),
+                    issue.getIssueKey(),
+                    issue.getIssueName(),
+                    getUserResponse(issue.getAssignee()),
+                    issue.getPriority(),
+                    issue.getStatus()
+                );
+            })
+            .collect(Collectors.toList());
     }
 
     private Update configUpdate(ArrayList<?> list, String type, String value) {

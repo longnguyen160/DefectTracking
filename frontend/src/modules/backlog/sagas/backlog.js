@@ -1,6 +1,13 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { UPDATE_BACKLOG } from '../actions/types';
-import { updateBacklogRequest, updateBacklogSuccess, updateBacklogFailure } from '../actions/backlog';
+import { UPDATE_BACKLOG, LOAD_ALL_ISSUES_FROM_BACKLOG } from '../actions/types';
+import {
+  updateBacklogRequest,
+  updateBacklogSuccess,
+  updateBacklogFailure,
+  loadAllIssuesFromBacklogRequest,
+  loadAllIssuesFromBacklogSuccess,
+  loadAllIssuesFromBacklogFailure
+} from '../actions/backlog';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 
@@ -20,8 +27,26 @@ function* watchUpdateBacklog() {
   yield takeLatest(UPDATE_BACKLOG, updateBacklog);
 }
 
+function* loadAllIssuesFromBacklog({ issueList }) {
+  try {
+    yield put(loadAllIssuesFromBacklogRequest());
+
+    const { data } = yield call(API.loadAllIssuesFromBacklog, issueList);
+
+    yield put(loadAllIssuesFromBacklogSuccess(data));
+  } catch (error) {
+    yield put(loadAllIssuesFromBacklogFailure(getError(error)))
+  }
+}
+
+function* watchLoadAllIssuesFromBacklog() {
+  yield takeLatest(LOAD_ALL_ISSUES_FROM_BACKLOG, loadAllIssuesFromBacklog)
+}
+
+
 export default function* backlogFlow() {
   yield all([
-    watchUpdateBacklog()
+    watchUpdateBacklog(),
+    watchLoadAllIssuesFromBacklog()
   ])
 }

@@ -2,7 +2,7 @@ package com.capstone.defecttracking.models.Issue;
 
 import com.capstone.defecttracking.models.User.UserResponse;
 
-public class IssuePhaseResponse {
+public class IssueBacklogResponse {
     private String id;
     private String issueKey;
     private String summary;
@@ -10,10 +10,10 @@ public class IssuePhaseResponse {
     private String priority;
     private String status;
 
-    public IssuePhaseResponse() {
+    public IssueBacklogResponse() {
     }
 
-    public IssuePhaseResponse(String id, String issueKey, String summary, UserResponse assignee, String priority, String status) {
+    public IssueBacklogResponse(String id, String issueKey, String summary, UserResponse assignee, String priority, String status) {
         this.id = id;
         this.issueKey = issueKey;
         this.summary = summary;

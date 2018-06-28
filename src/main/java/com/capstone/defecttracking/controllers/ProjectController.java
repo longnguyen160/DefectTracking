@@ -78,7 +78,7 @@ public class ProjectController {
         return responseEntity;
     }
 
-    @DeleteMapping("/manager/removeUser/{projectId}/{userId}")
+    @DeleteMapping("/manager/removeUserFromProject/{projectId}/{userId}")
     public ResponseEntity<?> removeUser(@PathVariable("projectId") String projectId,@PathVariable("userId") String userId) {
         ResponseEntity<?> responseEntity = projectRepositoryCustom.removeUserFromProject(projectId, userId);
 

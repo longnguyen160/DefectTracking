@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -89,9 +90,9 @@ public class IssueController {
         return issueRepositoryCustom.loadAllIssuesShortcut(userId);
     }
 
-    @GetMapping("user/loadAllIssuesInPhase")
-    public List<IssuePhaseResponse> loadAllIssuesInPhase(@RequestParam(value = "issueIds") IssueListRequest issueIds) {
-        return issueRepositoryCustom.loadAllIssuesInPhase(issueIds.getIssueList());
+    @GetMapping("user/loadAllIssuesFromBacklog")
+    public List<IssueBacklogResponse> loadAllIssuesInPhase(@RequestParam(value = "issueIds") ArrayList<String> issueList) {
+        return issueRepositoryCustom.loadAllIssuesInPhase(issueList);
     }
 
     @GetMapping("user/loadIssueDetails")
