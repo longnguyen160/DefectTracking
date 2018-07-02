@@ -5,7 +5,7 @@
  */
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.categories.Category;
+import com.capstone.defecttracking.models.categories.Category;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.repositories.Category.CategoryRepository;
 import com.capstone.defecttracking.repositories.Category.CategoryRepositoryCustom;

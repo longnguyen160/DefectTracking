@@ -5,7 +5,7 @@
  */
 package com.capstone.defecttracking.repositories.Category;
 
-import com.capstone.defecttracking.categories.Category;
+import com.capstone.defecttracking.models.categories.Category;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
