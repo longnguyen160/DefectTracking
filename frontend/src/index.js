@@ -20,6 +20,7 @@ import CategoriesManagement from './modules/management/components/CategoriesMana
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
 import './index.css';
+import StatusManagement from './modules/management/components/StatusManagement';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -72,6 +73,7 @@ ReactDOM.render(
             <PrivateRoute exact path="/manage/projects" component={ProjectsManagement} />
             <PrivateRoute exact path="/manage/users" component={UsersManagement} />
             <PrivateRoute exact path="/manage/categories" component={CategoriesManagement} />
+            <PrivateRoute exact path="/manage/status" component={StatusManagement} />
           </Switch>
         </MainLayout>
       </Switch>
