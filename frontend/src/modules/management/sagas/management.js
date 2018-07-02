@@ -27,11 +27,11 @@ import {
 } from '../actions/status';
 import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS} from '../actions/types';
 //update status 
-function* updateStatus(status) {
+function* updateStatus({status}) {
   try {
     yield put(requestUpdateStatus(status));
 
-    const { data } = yield call(API.updateStatus,status);
+    const { data } = yield call(API.updateStatus, status);
 
     yield put(updateStatusSuccess(data));
   } catch (error) {
@@ -43,11 +43,11 @@ function* watchUpdateStatus() {
   yield takeLatest(UPDATE_STATUS, updateStatus);
 }
 //removeStatus
-function* removeStatus(statusId) {
+function* removeStatus({statusId}) {
   try {
     yield put(requestRemoveStatus(statusId));
 
-    const { data } = yield call(API.removeStatus,statusId);
+    const { data } = yield call(API.removeStatus, statusId);
 
     yield put(removeStatusSuccess(data));
   } catch (error) {
@@ -81,7 +81,7 @@ function* createStatus({status}){
   try {
     yield put(requestCreateStatus());
 
-    const { data } =yield call(API.createStatus,status);
+    const { data } =yield call(API.createStatus, status);
     yield put(createStatusSuccess());
     showSuccessNotification(data.message);
   } catch (error) {
