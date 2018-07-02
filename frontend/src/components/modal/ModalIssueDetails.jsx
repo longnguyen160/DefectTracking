@@ -16,16 +16,21 @@ import {
   ModalBodyStyled
 } from '../../stylesheets/Modal';
 import {
-  DescriptionElementStyled,
   ElementHeaderStyled,
-  FilterBoxWrapperStyled,
   Image,
   LineFormStyled,
-  Input,
   IssueStatusStyled,
-  DropZoneStyled
+  DropZoneStyled,
 } from '../../stylesheets/GeneralStyled';
-import { ICONS, INPUT_TEXT, ISSUE_PRIORITY_ARRAY, TEXT_AREA, WEB_SOCKET_URL } from '../../utils/enums';
+import {
+  ICONS,
+  INPUT_TEXT, ISSUE_DETAILS,
+  ISSUE_PRIORITY_ARRAY,
+  MESSAGE,
+  MESSAGE_TYPE,
+  TEXT_AREA,
+  WEB_SOCKET_URL
+} from '../../utils/enums';
 import Icon from '../icon/Icon';
 import { deleteFile, uploadFile } from '../../modules/file/actions/file';
 import Attachment from '../attachment/Attachment';
@@ -33,6 +38,8 @@ import { loadIssueDetails, resetIssueDetails, updateIssue } from '../../modules/
 import CustomInput from '../editable/CustomInput';
 import CustomSelect from '../editable/CustomSelect';
 import CustomSelectStatus from '../editable/CustomSelectStatus';
+import Message from '../../modules/message/components/Message';
+import { createMessage } from '../../modules/message/actions/message';
 
 class ModalIssueDetails extends React.Component {
 
@@ -45,6 +52,20 @@ class ModalIssueDetails extends React.Component {
 
     resetIssueDetails();
   }
+
+  handleCreateMessage = (message) => {
+    const { createMessage, issue, user } = this.props;
+
+    createMessage({
+      issueId: issue.id,
+      message: message,
+      type: MESSAGE_TYPE.LOGS,
+      sender: user.id,
+      attachments: [],
+      createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+      updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+    });
+  };
 
   updateIssue = (type, value) => {
     const { updateIssue, issue } = this.props;
@@ -71,6 +92,7 @@ class ModalIssueDetails extends React.Component {
       fileIds.map(fileId =>
         this.updateIssue('attachments', fileId)
       );
+      this.handleCreateMessage(MESSAGE(fileIds.length).UPLOAD_ATTACHMENT);
     });
   };
 
@@ -79,20 +101,31 @@ class ModalIssueDetails extends React.Component {
 
     deleteFile(fileId);
     this.updateIssue('attachments', fileId);
+    this.handleCreateMessage(MESSAGE().DELETE_ATTACHMENT);
   };
 
   handleSubmit = (e) => {
     let value = null;
+    let message = '';
 
     switch (e.props.name) {
       case 'priority':
         value = e.value.value;
+        message = MESSAGE(ISSUE_PRIORITY_ARRAY.find(element => element.value === e.value.value).label).UPDATE_PRIORITY;
         break;
 
       default:
         value = e.value.id ? e.value.id : e.value;
+        if (e.props.name === 'issueName' || e.props.name === 'description') {
+          message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
+        } else if (e.props.name === 'status') {
+          message = MESSAGE(e.value).CHANGE_STATUS;
+        } else if (e.props.name === 'assignee') {
+          message = MESSAGE(e.value.username).CHANGE_ASSIGNEE;
+        }
     }
     this.updateIssue(e.props.name, value);
+    this.handleCreateMessage(message);
   };
 
   handleWatchingIssue = () => {
@@ -115,18 +148,18 @@ class ModalIssueDetails extends React.Component {
 
     return (
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'750px'} isHidden={true} fullHeight={true}>
-        <ModalHeaderStyled noMargin padding={'0 0 10px 0'}>
+        <ModalHeaderStyled noMargin padding={'0'}>
           <ModalHeaderTitleStyled>
             <span>{issue && issue.issueKey}</span>
           </ModalHeaderTitleStyled>
-          <Icon
-            icon={isWatching ? ICONS.EYE : ICONS.EYE_CROSS}
-            width={20}
-            height={20}
-            color={'#626262'}
-            hoverPointer
-            onClick={() => this.handleWatchingIssue()}
-          />
+          {/*<Icon*/}
+            {/*icon={isWatching ? ICONS.EYE : ICONS.EYE_CROSS}*/}
+            {/*width={20}*/}
+            {/*height={20}*/}
+            {/*color={'#626262'}*/}
+            {/*hoverPointer*/}
+            {/*onClick={() => this.handleWatchingIssue()}*/}
+          {/*/>*/}
         </ModalHeaderStyled>
         <ModalBodyStyled padding={'10px 0'}>
           <ModalContentStyled flex={'0 0 540px'} padding={'0 10px'}>
@@ -233,32 +266,20 @@ class ModalIssueDetails extends React.Component {
                 <LineFormStyled>
                   {
                     issue && issue.attachments && issue.attachments.map(fileId => (
-                      <Attachment key={fileId} fileId={fileId} handleDeleteAttachment={() => this.handleDeleteAttachment(fileId)}/>
+                      <Attachment
+                        key={fileId}
+                        fileId={fileId}
+                        height={'125px'}
+                        width={'156px'}
+                        handleDeleteAttachment={() => this.handleDeleteAttachment(fileId)}
+                      />
                     ))
                   }
                 </LineFormStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineTitleStyled alignLeft>
-                <ModalLineTitleStyled>Comments</ModalLineTitleStyled>
-                <LineFormStyled>
-                  <FilterBoxWrapperStyled>
-                    <Image topNav src={'/images/default_avatar.jpg'} />
-                    <DescriptionElementStyled>
-                      <ElementHeaderStyled padding={'0'}>
-                        <span>bim beo</span>
-                        <span>2 hour ago</span>
-                      </ElementHeaderStyled>
-                      <span>Hello</span>
-                    </DescriptionElementStyled>
-                  </FilterBoxWrapperStyled>
-                </LineFormStyled>
-                <ElementHeaderStyled padding={'0'}>
-                  <Image topNav src={user.profile.avatarURL} margin={'0 5px'} />
-                  <Input placeholder={'Comment...'} />
-                </ElementHeaderStyled>
-              </ModalLineTitleStyled>
+              <Message />
             </ModalLineStyled>
           </ModalContentStyled>
           <ModalContentStyled padding={'0 10px'} fullWidth>
@@ -325,21 +346,21 @@ class ModalIssueDetails extends React.Component {
                 />
               </ModalLineContentStyled>
             </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Watchers</ModalLineTitleStyled>
-                <LineFormStyled hasTitle>
-                  {
-                    issue && issue.watchers.map(watcher => (
-                      <ElementHeaderStyled padding={'0'} key={watcher.id}>
-                        <Image topNav src={watcher.avatarURL ? watcher.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
-                        <span>{watcher.username}</span>
-                      </ElementHeaderStyled>
-                    ))
-                  }
-                </LineFormStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
+            {/*<ModalLineStyled noMargin padding={'0 0 10px 0'}>*/}
+              {/*<ModalLineContentStyled alignLeft>*/}
+                {/*<ModalLineTitleStyled>Watchers</ModalLineTitleStyled>*/}
+                {/*<LineFormStyled hasTitle>*/}
+                  {/*{*/}
+                    {/*issue && issue.watchers.map(watcher => (*/}
+                      {/*<ElementHeaderStyled padding={'0'} key={watcher.id}>*/}
+                        {/*<Image topNav src={watcher.avatarURL ? watcher.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />*/}
+                        {/*<span>{watcher.username}</span>*/}
+                      {/*</ElementHeaderStyled>*/}
+                    {/*))*/}
+                  {/*}*/}
+                {/*</LineFormStyled>*/}
+              {/*</ModalLineContentStyled>*/}
+            {/*</ModalLineStyled>*/}
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Created At</ModalLineTitleStyled>
@@ -377,12 +398,14 @@ ModalIssueDetails.propTypes = {
   resetIssueDetails: PropTypes.func.isRequired,
   updateIssue: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
+  createMessage: PropTypes.func.isRequired,
   issue: PropTypes.object,
   user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   issue: state.issue.issue,
+  messages: state.message.messages,
   user: state.layout.user
 });
 
@@ -391,7 +414,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   deleteFile: deleteFile,
   updateIssue: updateIssue,
   loadIssueDetails: loadIssueDetails,
-  resetIssueDetails: resetIssueDetails
+  resetIssueDetails: resetIssueDetails,
+  createMessage: createMessage,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalIssueDetails);

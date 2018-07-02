@@ -253,6 +253,27 @@ const USER_ROLE_IN_PROJECT = [
   { value: 'manager', label: 'Manager' }
 ];
 
+const MESSAGE_TYPE = {
+  COMMENTS: 'comments',
+  LOGS: 'logs',
+  ALL: 'all'
+};
+
+const MESSAGE = (value) => ({
+  UPLOAD_ATTACHMENT: `uploaded ${value} ${value > 1 ? 'attachments' : 'attachment'}`,
+  DELETE_ATTACHMENT: `deleted an attachment`,
+  UPDATE_PRIORITY: `changed priority to ${value}`,
+  UPDATE_ISSUE: `changed ${value}`,
+  CHANGE_STATUS: `changed status to ${value}`,
+  DELETE_COMMENT: `delete a comment`,
+  CHANGE_ASSIGNEE: `changed assignee to ${value}`
+});
+
+const ISSUE_DETAILS = {
+  issueName: 'Summary',
+  description: 'Description',
+};
+
 export {
   INPUT_TEXT,
   INPUT_PASSWORD,
@@ -273,4 +294,7 @@ export {
   ISSUE_PRIORITY_ARRAY,
   USER_ROLE_IN_PROJECT,
   FILE_BASE_URL,
+  MESSAGE_TYPE,
+  MESSAGE,
+  ISSUE_DETAILS
 }

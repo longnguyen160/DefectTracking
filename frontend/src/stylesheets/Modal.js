@@ -226,8 +226,8 @@ export const ModalLineContentStyled = styled.div`
   }
   
   img{
-    max-width: 75px;
-    margin: 0 5px;
+    max-width: ${props => props.maxImage ? '100%' : '75px'};
+    margin: 5px;
   }
   ${props => props.messageError && css`
     color: #ff3000;

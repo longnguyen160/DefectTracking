@@ -111,6 +111,19 @@ const deleteFile = (fileId) => {
   return axios.delete(`files/delete/${fileId}`);
 };
 
+// Message
+const createMessage = (message) => {
+  return axios.post('user/createMessage', message);
+};
+
+const loadAllMessages = (issueId, messageType) => {
+  return axios.get(`user/getAllMessages?issueId=${issueId}&type=${messageType}`);
+};
+
+const editMessage = (message) => {
+  return axios.post('user/editMessage', message);
+};
+
 const API = {
   login,
   signUp,
@@ -135,7 +148,10 @@ const API = {
   removeUserFromProject,
   loadIssueShortcut,
   updateBacklog,
-  loadAllIssuesFromBacklog
+  loadAllIssuesFromBacklog,
+  createMessage,
+  loadAllMessages,
+  editMessage
 };
 
 export default API;

@@ -5,6 +5,7 @@ import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Issue.IssueRepository;
 import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
+import com.capstone.defecttracking.repositories.Message.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

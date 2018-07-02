@@ -6,7 +6,8 @@ import Select from 'react-select';
 import { DragDropContext } from 'react-beautiful-dnd';
 import SockJsClient from "react-stomp";
 import {
-  ElementHeaderStyled, FormGroupStyled,
+  ElementHeaderStyled,
+  FormGroupStyled,
   PageBoardItemStyled,
   PageBoardStyled,
   TitleElementStyled
