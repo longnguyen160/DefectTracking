@@ -19,26 +19,26 @@ import {
 
 const createStatus = (status) => {
     return {
-        type:CREATE_STATUS,
+        type: CREATE_STATUS,
         status
     }
 };
 
 const requestCreateStatus = () => {
     return {
-        type:REQUEST_CREATE_STATUS
+        type: REQUEST_CREATE_STATUS
     }
 };
 
 const createStatusSuccess = () => {
     return {
-        type:CREATE_STATUS_SUCCESS
+        type: CREATE_STATUS_SUCCESS
     }
 };
 
 const createStatusFailure = (error) => {
     return {
-        type:CREATE_STATUS_FAILURE,
+        type: CREATE_STATUS_FAILURE,
         error
     }
 };
@@ -69,10 +69,10 @@ const loadAllStatusFailure = (error) => {
     }
 };
 
-const removeStatus = (status) => {
+const removeStatus = (statusId) => {
     return {
         types: REMOVE_STATUS,
-        status 
+        statusId 
     }
 };
 

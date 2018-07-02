@@ -43,11 +43,11 @@ function* watchUpdateStatus() {
   yield takeLatest(UPDATE_STATUS, updateStatus);
 }
 //removeStatus
-function* removeStatus(status) {
+function* removeStatus(statusId) {
   try {
-    yield put(requestRemoveStatus(status));
+    yield put(requestRemoveStatus(statusId));
 
-    const { data } = yield call(API.removeStatus,status);
+    const { data } = yield call(API.removeStatus,statusId);
 
     yield put(removeStatusSuccess(data));
   } catch (error) {
@@ -76,7 +76,7 @@ function* loadAllStatus() {
 function* watchLoadAllStatus() {
   yield takeLatest(LOAD_ALL_STATUS, loadAllStatus);
 }
-// status  
+// create status  
 function* createStatus({status}){
   try {
     yield put(requestCreateStatus());

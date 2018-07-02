@@ -29,6 +29,7 @@ import {
 } from '../actions/types';
 
 const initialState = {
+  statusList: [],
   categories: [],
   isLoading: false,
   error: null
@@ -89,65 +90,68 @@ export default function management(state = initialState, action) {
     
 //new 
     case REQUEST_CREATE_STATUS:
-      return Object.assign({},state, {
+      return Object.assign({}, state, {
         isLoading:true
       });  
 
     case CREATE_STATUS_FAILURE:
-      return Object.assign({},state, {
+      return Object.assign({}, state, {
         isLoading:false,
         error: action.error
       });  
 
     case CREATE_STATUS_SUCCESS:
-      return Object.assign({},state, {
+      return Object.assign({}, state, {
         isLoading:false
       });  
     
     case LOAD_ALL_STATUS_REQUEST:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: true
       });
 
     case LOAD_ALL_STATUS_SUCCESS:
-      return object.assign({},state, {
-        isLoading: false
+      return object.assign({}, state, {
+        isLoading: false,
+        statusList: action.statusList,
+        error: null
+
       });
 
     case LOAD_ALL_STATUS_FAILURE:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: false,
         error: action.error
       });
 
     case REQUEST_REMOVE_STATUS:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: true
       });
 
     case REMOVE_STATUS_SUCCESS:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: false
       });
 
     case REMOVE_STATUS_FAILURE:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: false,
         error: action.error
       });  
 
     case REQUEST_UPDATE_STATUS:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: true
       });
 
     case UPDATE_STATUS_SUCCESS:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: false
       });
 
     case UPDATE_STATUS_FAILURE:
-      return object.assign({},state, {
+      return object.assign({}, state, {
         isLoading: false,
         error: action.error
       });  
