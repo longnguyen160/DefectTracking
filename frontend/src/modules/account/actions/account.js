@@ -1,4 +1,4 @@
-import { LOAD_ALL_USERS, LOAD_ALL_USERS_SUCCESS, LOAD_ALL_USERS_FAILURE ,REMOVE_USER, REMOVE_USER_SUCCESS, REMOVE_USER_FAILURE, REMOVE_USER_REQUEST} from './types';
+import { LOAD_ALL_USERS, LOAD_ALL_USERS_SUCCESS, LOAD_ALL_USERS_FAILURE ,REMOVE_USER, REMOVE_USER_SUCCESS, REMOVE_USER_FAILURE, REMOVE_USER_REQUEST } from './types';
 
 const loadAllUsers = (input, projectId) => {
   return {
@@ -22,35 +22,36 @@ const loadAllUsersFailure = (error) => {
   }
 };
 
-const removeUser = (projectId, userId)=> {
-  return{
-    type:REMOVE_USER,
+const removeUser = (projectId, userId) => {
+  return {
+    type: REMOVE_USER,
     projectId,
     userId
   }
 };
 
-const removeUserSuccess= () => {
-  return{
+const removeUserRequest = () => {
+  return {
+    type: REMOVE_USER_REQUEST
+  }
+};
+
+const removeUserSuccess = () => {
+  return {
     type: REMOVE_USER_SUCCESS
   }
 };
+
 const removeUserFailure = () => {
   return {
     type: REMOVE_USER_FAILURE
   }
 };
- const removeUserRequest = () => {
-   return {
-     type: REMOVE_USER_REQUEST
-   }
- };
 
 export {
   loadAllUsers,
   loadAllUsersSuccess,
   loadAllUsersFailure,
-
   removeUser,
   removeUserRequest,
   removeUserSuccess,

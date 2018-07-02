@@ -5,6 +5,7 @@ import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Issue.IssueRepository;
 import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
+import com.capstone.defecttracking.repositories.Message.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -58,7 +60,7 @@ public class IssueController {
                 issue.getCreatedAt(),
                 issue.getUpdatedAt(),
                 issue.getWatchers(),
-                issue.getLabel(),
+                issue.getCategory(),
                 issue.getAttachments()
             )
         ).getId();
@@ -89,9 +91,19 @@ public class IssueController {
         return issueRepositoryCustom.loadAllIssuesShortcut(userId);
     }
 
+    @GetMapping("user/loadAllIssuesFromBacklog")
+    public List<IssueBacklogResponse> loadAllIssuesInPhase(@RequestParam(value = "issueIds") ArrayList<String> issueList) {
+        return issueRepositoryCustom.loadAllIssuesInPhase(issueList);
+    }
+
     @GetMapping("user/loadIssueDetails")
     public IssueDetailsResponse loadIssueDetails(@RequestParam(value = "issueId") String issueId) {
         return issueRepositoryCustom.loadIssueDetails(issueId);
+    }
+
+    @GetMapping("user/loadIssueShortcut")
+    public IssueShortcutResponse loadIssueShortcut(@RequestParam(value = "issueId") String issueId) {
+        return issueRepositoryCustom.loadIssueShortcut(issueId);
     }
 
     @PostMapping("user/updateIssue")

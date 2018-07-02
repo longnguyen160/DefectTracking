@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { ListTableBodyContainerStyled, ListTableBodyItemStyled, ListTableBodyStyled } from '../../../stylesheets/Table';
+import { ListTableBodyContainerStyled } from '../../../stylesheets/Table';
+import BacklogIssueDetails from './BacklogIssueDetails';
 
 class BacklogDetails extends React.Component {
 
@@ -10,27 +11,18 @@ class BacklogDetails extends React.Component {
       <ListTableBodyContainerStyled innerRef={parentProvided.innerRef} dynamicHeight>
         {
           data.map((item, index) => (
-            <Draggable key={item.id} draggableId={item.id} index={index}>
+            <Draggable key={item} draggableId={item} index={index}>
               {
                 (provided, snapshot) => (
-                  <ListTableBodyStyled
+                  <BacklogIssueDetails
                     showList
-                    key={item.id}
+                    issueId={item}
+                    key={item}
                     isDragging={snapshot.isDragging}
                     innerRef={provided.innerRef}
                     {...provided.dragHandleProps}
                     {...provided.draggableProps}
-                  >
-                    <ListTableBodyItemStyled itemId>
-                      {item.id}
-                    </ListTableBodyItemStyled>
-                    <ListTableBodyItemStyled issueName>
-                      {item.name}
-                    </ListTableBodyItemStyled>
-                    <ListTableBodyItemStyled priority>
-                      {item.priority}
-                    </ListTableBodyItemStyled>
-                  </ListTableBodyStyled>
+                  />
                 )
               }
             </Draggable>

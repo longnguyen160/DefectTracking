@@ -8,9 +8,6 @@ import { ElementHeaderStyled, PageBoardStyled, TitleElementStyled } from '../../
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
 
-
-
-
 class UsersManagement extends React.Component {
   render() {
     const { openModal } = this.props;
@@ -36,7 +33,7 @@ class UsersManagement extends React.Component {
         accessRole: 'admin'
       },
       {
-        
+
         userID: '3',
         username: 'nhanhtse61580@gmail.com',
         password: '123456',
@@ -101,17 +98,17 @@ class UsersManagement extends React.Component {
       {
         Header: 'Action',
         ...styleColumn,
-        
+
         Cell: row => (
           <div>
           <Button hasBorder remove>
             Ban account
           </Button>
-           
+
         </div>
         ),
       },
-      
+
     ];
 
 
@@ -119,7 +116,7 @@ class UsersManagement extends React.Component {
       <PageBoardStyled backlog>
         <ElementHeaderStyled padding={'0'}>
           <TitleElementStyled noPadding fontSize={'20px'}>
-            Usermanagement 
+            Usermanagement
           </TitleElementStyled>
           <Button autoWidth hasBorder right onClick={() => openModal(MODAL_TYPE.ADD_CATEGORY)}>
             Add New User

@@ -48,15 +48,18 @@ public class CategoryController {
 
         return new ResponseEntity<>(serverrespone, HttpStatus.ACCEPTED);
     }
+
     @PostMapping("/admin/deleteCategory")
     public ResponseEntity<?> deleteCategory(@RequestBody String categoryId) {
         ServerResponse serverrespone;
-        
+
         caterepository.deleteById(categoryId);
         serverrespone = new ServerResponse(Boolean.TRUE, "Delete category successfully");
+
         messTemplate.convertAndSend("/topic/categories",serverrespone);
         return new ResponseEntity<>(serverrespone, HttpStatus.ACCEPTED);
     }
+
     @GetMapping("/admin/loadAllCategories")
     public List<Category> getAllCate() {
         return caterepositorycustom.loadAllCate();

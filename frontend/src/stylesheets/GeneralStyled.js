@@ -123,6 +123,11 @@ export const DescriptionElementStyled = styled.div`
   color: #626262;
   line-height: 20px;
   width: 100%;
+  &:hover {
+    ${props => props.notPointer && css`
+      cursor: default;
+  ` }
+  }
   ${props => props.noPadding && css`
     padding: 0;
   `}
@@ -163,10 +168,15 @@ export const ElementHeaderStyled = styled.div`
   width: 100%;  
   padding: ${props => props.padding ? props.padding : '5px'};
   align-items: center;
-  
+  ${props => props.top && css`
+    align-items: flex-start;
+  `}
+  ${props => props.margin && css`
+    margin: ${props.margin}
+  `}
   input {
     background: #fff;
-    border: 1px solid #d1d1d1;
+    //border: 1px solid #d1d1d1;
     padding: 5px 8px;
     color: #626262;
     font-style: italic;
@@ -175,7 +185,7 @@ export const ElementHeaderStyled = styled.div`
     width: 100%;
     
     &:focus{
-      border-color: #036a95;
+      //border-color: #036a95;
       outline: 0;
     }
   }  
@@ -222,7 +232,7 @@ export const FormGroupStyled = styled.div`
   `};
   & > .Select {
     width: ${props => props.widthSelect ? props.widthSelect : '100%'};
-    padding: ${props => props.paddingSelect ? props.paddingSelect : '20px 5px'};
+    margin: ${props => props.marginSelect ? props.marginSelect : '20px 5px'};
   }
   @media(max-width: 700px) {
     ${props => props.input && css`
@@ -260,17 +270,6 @@ export const LineFormStyled = styled.div`
       outline: 0;
     }
   }
-  span[name="calendar"]{
-    font-size: 12px;
-    padding: 3px 10px;
-    position: absolute;
-    top: -14px;
-    left: -36px;
-    display: flex;
-    height: 28px;
-    border-radius: 0px 2px 2px 0px;
-    align-items: center;
-  }
   ${props => props.alignCenter && css`
     justify-content: center;
   `}
@@ -286,10 +285,7 @@ export const LineFormStyled = styled.div`
       border: 1px solid #626262;
       font-style: normal;
       padding: 8px;
-    }
-    i {
-      margin-right: 5px;
-    }
+    }    
   `}
   ${props => props.right && css`
     align-items: flex-end;
@@ -342,30 +338,29 @@ export const LineFormStyled = styled.div`
 `;
 
 export const TitleFormStyled = styled.span`
-  margin-bottom: 5px;
-  font-weight: 600;
-  ${props => props.question && css`
-    font-size: 17px;
-    color: #026a95;
+  margin-bottom: 5px  
+  ${props => props.username && css`
+    font-size: 14px;
+    margin: 0 5px;
+    font-weight: 600;
   `}
-  ${props => props.nameService && css`
-    font-size: 23px;
+  ${props => props.time && css`
+    font-size: 12px;
+    color: #aeaeae;
+    font-weight: 600;
+    margin: 0 5px;
   `}
-  ${props => props.description && css`
-    font-size: 20px;
-    font-weight: 300;
+  ${props => props.detail && css`
+    font-size: 14px;
+    color: #aeaeae;
+    margin: 5px;
+    &:hover {
+      cursor: pointer;
+      color: #026a95;      
+    }
   `}
-  ${props => props.price && css`
-    font-size: 20px;
-    color: #026a95;    
-  `}
-  ${props => props.duration && css`
-    font-size: 20px;
-    color: #fe8f00;    
-  `}
-  ${props => props.divide && css`
-    font-size: 20px;
-    margin: 0 5px;    
+  ${props => props.message && css`
+    margin: 0 5px;
   `}
 `;
 
@@ -436,6 +431,9 @@ export const Input = styled.input`
   ${props => props.fullWidth && css`
     width: 100%;
   `}
+  ${props => props.hidden && css`
+    display: none;
+  `}
 `;
 
 export const TextArea = styled.textarea`
@@ -447,8 +445,9 @@ export const TextArea = styled.textarea`
   border-radius: 3px;
   width: 100%;  
   transition: all 0.3s ease;
-  height: 80px;
+  height: ${props => props.height || '80px'};
   resize: none;
+  line-height: 20px;
   &:hover {
     border: 1px solid #026a95;
   }
@@ -536,6 +535,12 @@ export const FilterBoxWrapperStyled = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
+  ${props => props.top && css`
+    align-items: flex-start;
+  `}
+  ${props => props.fullWidth && css`
+    width: 100%;
+  `}
 `;
 
 export const InputSearchStyled = styled.div`
@@ -546,6 +551,29 @@ export const InputSearchStyled = styled.div`
   border-radius: 5px 0 0 5px;
   font-family: 'Proxima Nova Regular';
   input {
+    &:hover {
+      border: none;
+    }
+    &:focus {
+      border: none;
+    }
+  }
+`;
+
+export const InputCommentStyled = styled.div`
+  width: 100%;
+  display: block;  
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #d1d1d1;
+  font-family: 'Proxima Nova Regular';
+
+  &:hover {
+    border-color: #036a95;
+  }
+
+  input, textarea {
+    border: none;
     &:hover {
       border: none;
     }
@@ -631,9 +659,9 @@ export const IssueStatusStyled = styled.div`
   }} 
 `;
 
-export const AttachmentWrapperStyled = styled.div`
-  height: 125px;
-  width: 156px;
+export const AttachmentWrapperStyled = styled.div`  
+  height: ${props => props.height};
+  width: ${props => props.width};
   padding: 5px;
 `;
 
@@ -708,7 +736,9 @@ export const AttachmentDetailsBodyStyled = styled.div`
   height: 16px;
   color: ${props => props.color};
   font-size: 11px;
-  
+  ${props => props.right && css`
+    justify-content: flex-end;
+  `}
   &:hover {
     opacity: 1;
     transform: translateY(0px);
@@ -729,7 +759,7 @@ export const AttachmentDetailsStyled = styled.div`
   top: 0;
   left: 0;  
   justify-content: space-between;
-  padding: 16px;
+  padding: ${props => props.padding || '6px'};
   
   &:hover {
     background-color: rgba(9, 30, 66, 0.5);
@@ -777,4 +807,7 @@ export const DropZoneStyled = styled(Dropzone)`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
+  ${props => props.hidden && css`
+    visibility: hidden;
+  `}
 `;

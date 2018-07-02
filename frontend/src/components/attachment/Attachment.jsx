@@ -45,13 +45,36 @@ class Attachment extends React.Component {
     resetState();
   }
 
+  renderForType = () => {
+    const { handleDeleteAttachment } = this.props;
+
+    return (
+      <AttachmentDetailsStyled padding={'0'}>
+        <AttachmentDetailsBodyStyled color={'#fff'} right>
+          <AttachmentDetailsBodyDeleteStyled onClick={handleDeleteAttachment}>
+            <Icon
+              icon={ICONS.DELETE}
+              color={'#fff'}
+              width={10}
+              height={10}
+              hoverPointer
+            />
+          </AttachmentDetailsBodyDeleteStyled>
+        </AttachmentDetailsBodyStyled>
+      </AttachmentDetailsStyled>
+    )
+  };
+
   render() {
-    const { handleDeleteAttachment, fileId } = this.props;
+    const { handleDeleteAttachment, fileId, height, width, type } = this.props;
     const { attachment } = this.state;
     const isImage = attachment && attachment.contentType.includes('image');
 
     return (
-      <AttachmentWrapperStyled>
+      <AttachmentWrapperStyled
+        height={height}
+        width={width}
+      >
         <AttachmentContainerStyled>
           <AttachmentContentStyled>
             <AttachmentImageStyled>
@@ -64,31 +87,36 @@ class Attachment extends React.Component {
                 }
               </AttachmentImageContentStyled>
             </AttachmentImageStyled>
-            <AttachmentDetailsStyled>
-              <AttachmentDetailsHeaderStyled color={'#fff'}>
-                {attachment && attachment.name}
-              </AttachmentDetailsHeaderStyled>
-              <AttachmentDetailsBodyStyled color={'#fff'}>
-                <AttachmentDetailsBodySizeStyled>
-                  {
-                    isImage ?
-                      <Icon icon={ICONS.IMAGE} color={'#fff'} width={15} height={15} />
-                    :
-                      <Icon icon={ICONS.ATTACHMENT} color={'#fff'} width={15} height={15} />
-                  }
-                  {attachment && formatBytes(attachment.size, 3)}
-                </AttachmentDetailsBodySizeStyled>
-                <AttachmentDetailsBodyDeleteStyled onClick={handleDeleteAttachment}>
-                  <Icon
-                    icon={ICONS.DELETE}
-                    color={'#fff'}
-                    width={10}
-                    height={10}
-                    hoverPointer
-                  />
-                </AttachmentDetailsBodyDeleteStyled>
-              </AttachmentDetailsBodyStyled>
-            </AttachmentDetailsStyled>
+            {
+              type === 'comment' ?
+                this.renderForType()
+              :
+                <AttachmentDetailsStyled>
+                  <AttachmentDetailsHeaderStyled color={'#fff'}>
+                    {attachment && attachment.name}
+                  </AttachmentDetailsHeaderStyled>
+                  <AttachmentDetailsBodyStyled color={'#fff'}>
+                    <AttachmentDetailsBodySizeStyled>
+                      {
+                        isImage ?
+                          <Icon icon={ICONS.IMAGE} color={'#fff'} width={15} height={15}/>
+                          :
+                          <Icon icon={ICONS.ATTACHMENT} color={'#fff'} width={15} height={15}/>
+                      }
+                      {attachment && formatBytes(attachment.size, 3)}
+                    </AttachmentDetailsBodySizeStyled>
+                    <AttachmentDetailsBodyDeleteStyled onClick={handleDeleteAttachment}>
+                      <Icon
+                        icon={ICONS.DELETE}
+                        color={'#fff'}
+                        width={10}
+                        height={10}
+                        hoverPointer
+                      />
+                    </AttachmentDetailsBodyDeleteStyled>
+                  </AttachmentDetailsBodyStyled>
+                </AttachmentDetailsStyled>
+            }
           </AttachmentContentStyled>
         </AttachmentContainerStyled>
       </AttachmentWrapperStyled>
@@ -101,7 +129,10 @@ Attachment.propTypes = {
   loadFile: PropTypes.func.isRequired,
   resetState: PropTypes.func.isRequired,
   attachment: PropTypes.object,
-  fileId: PropTypes.string.isRequired
+  fileId: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
+  width: PropTypes.string.isRequired,
+  type: PropTypes.string
 };
 
 const mapStateToProps = state => ({

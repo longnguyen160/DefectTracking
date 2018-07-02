@@ -19,13 +19,13 @@ public class IssueDetailsResponse {
     private Date createdAt;
     private Date updatedAt;
     private ArrayList<UserResponse> watchers = new ArrayList<UserResponse>();
-    private ArrayList<String> label = new ArrayList<String>();
+    private ArrayList<String> category = new ArrayList<String>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
     public IssueDetailsResponse() {
     }
 
-    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<String> label, ArrayList<String> attachments) {
+    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<String> category, ArrayList<String> attachments) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
@@ -39,7 +39,7 @@ public class IssueDetailsResponse {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.watchers = watchers;
-        this.label = label;
+        this.category = category;
         this.attachments = attachments;
     }
 
@@ -139,12 +139,12 @@ public class IssueDetailsResponse {
         this.updatedAt = updatedAt;
     }
 
-    public ArrayList<String> getLabel() {
-        return label;
+    public ArrayList<String> getCategory() {
+        return category;
     }
 
-    public void setLabel(ArrayList<String> label) {
-        this.label = label;
+    public void setCategory(ArrayList<String> category) {
+        this.category = category;
     }
 
     public ArrayList<String> getAttachments() {

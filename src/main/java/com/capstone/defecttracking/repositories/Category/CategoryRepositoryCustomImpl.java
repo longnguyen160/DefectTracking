@@ -34,10 +34,8 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     public boolean doesCateExited(String name) {
         Query query = new Query(Criteria.where("name").is(name));
         Category cate = mongoTemplate.findOne(query, Category.class);
-        if (cate != null) {
-            return true;
-        }
-        return false;
+
+        return cate != null;
     }
 
     @Override

@@ -13,7 +13,6 @@ import Home from './modules/home/components/Home';
 import BackLog from './modules/backlog/components/BackLog';
 import UsersList from './modules/account/components/UsersList';
 import IssueList from './modules/issue/components/IssueList';
-import Phase from './modules/phase/components/Phase';
 import ProjectsManagement from './modules/management/components/ProjectsManagement';
 import UsersManagement from './modules/management/components/UsersManagement';
 import CategoriesManagement from './modules/management/components/CategoriesManagement';
@@ -68,7 +67,6 @@ ReactDOM.render(
             <PrivateRoute exact path="/projects" component={Projects} />
             <PrivateRoute exact path="/project/:projectId?/backlog" component={BackLog} />
             <PrivateRoute exact path="/project/:projectId?/members" component={UsersList} />
-            <PrivateRoute exact path="/project/:projectId?/activePhase" component={Phase} />
             <PrivateRoute exact path="/issues" component={IssueList} />
             <PrivateRoute exact path="/manage/issues" component={IssueList} />
             <PrivateRoute exact path="/manage/projects" component={ProjectsManagement} />

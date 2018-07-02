@@ -15,6 +15,7 @@ import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
 import {MODAL_TYPE, WEB_SOCKET_URL} from '../../../utils/enums';
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
+import { removeUser } from '../actions/account';
 
 class UsersList extends React.Component {
 
@@ -35,7 +36,7 @@ class UsersList extends React.Component {
   };
 
   render() {
-    const { users, openModal } = this.props;
+    const { users, openModal, selectedProject, removeUser } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -53,7 +54,7 @@ class UsersList extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled>
-            <Image topNav src={row.row.avatarURL || '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.row._original.avatarURL || '/images/default_avatar.jpg'}/>
             {row.value}
           </TableBlockStyled>
         )
@@ -77,7 +78,12 @@ class UsersList extends React.Component {
         Header: '',
         ...styleColumn,
         Cell: row => (
-          <Button hasBorder remove>
+          <Button
+            small
+            hasBorder
+            remove
+            onClick={() => removeUser(selectedProject.id, row.row._original.id)}
+          >
             Remove
           </Button>
         )
@@ -114,6 +120,7 @@ class UsersList extends React.Component {
 UsersList.propTypes = {
   users: PropTypes.array.isRequired,
   loadAllUsersInProject: PropTypes.func.isRequired,
+  removeUser: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   selectedProject: PropTypes.object
 };
@@ -125,7 +132,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   loadAllUsersInProject: loadAllUsersInProject,
-  openModal: openModal
+  openModal: openModal,
+  removeUser: removeUser
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersList);

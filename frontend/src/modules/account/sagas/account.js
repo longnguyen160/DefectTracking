@@ -1,14 +1,21 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 
-import { LOGIN_USER, SIGN_UP_USER, LOG_OUT, LOAD_ALL_USERS, UPDATE_PROFILE ,REMOVE_USER} from '../actions/types';
+import {
+  LOGIN_USER,
+  SIGN_UP_USER,
+  LOG_OUT,
+  LOAD_ALL_USERS,
+  UPDATE_PROFILE,
+  REMOVE_USER
+} from '../actions/types';
 import { requestLogin, loginSuccess, loginError } from '../actions/login';
 import { requestSignUp, signUpSuccess, signUpError } from '../actions/signUp';
 import { requestLogOut, logOutSuccess, logOutFailure } from '../actions/logout';
-import { loadAllUsersSuccess, loadAllUsersFailure,removeUserRequest,removeUserSuccess,removeUserFailure } from '../actions/account';
+import { loadAllUsersSuccess, loadAllUsersFailure, removeUserRequest, removeUserSuccess, removeUserFailure } from '../actions/account';
 import { updateProfileRequest, updateProfileSuccess, updateProfileFailure } from '../actions/update';
-import API from '../../../utils/api';
 import { setAccessToken, setExpiryDate, removeAccessToken, getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
+import API from '../../../utils/api';
 
 // Login
 function* login({ user, goToDashboard }) {
@@ -114,16 +121,16 @@ function* watchUpdateProfile() {
   yield takeLatest(UPDATE_PROFILE, updateProfile);
 }
 //remove User
-function* removeUser({ projectId, userId }){
+function* removeUser({ projectId, userId }) {
   try {
     yield put(removeUserRequest());
-    const {date} =yield call(API.removeUserFromProject, projectId, userId);
+    const { data } =yield call(API.removeUserFromProject, projectId, userId);
 
     yield put(removeUserSuccess());
     showSuccessNotification(data.message);
-    } catch (error) {
-      yield put(removeUserFailure(getError(error)));
-    }
+  } catch (error) {
+    yield put(removeUserFailure(getError(error)));
+  }
 }
 
 function* watchRemoveUser() {
@@ -132,11 +139,11 @@ function* watchRemoveUser() {
 
 export default function* accountFlow() {
   yield all([
-    watchRemoveUser(),
     watchLogin(),
     watchSignUp(),
     watchLogOut(),
     watchLoadAllUsers(),
-    watchUpdateProfile()    
+    watchUpdateProfile(),
+    watchRemoveUser()
   ]);
 }

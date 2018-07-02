@@ -6,7 +6,8 @@ import moment from 'moment';
 import { bindActionCreators } from 'redux';
 import Select from 'react-select';
 import {
-  ElementHeaderStyled, FormGroupStyled,
+  ElementHeaderStyled,
+  FormGroupStyled,
   Image,
   PageBoardStyled,
   TableBlockStyled,

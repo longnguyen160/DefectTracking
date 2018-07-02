@@ -33,9 +33,6 @@ const loadAllUsers = (input, projectId) => {
   return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
 };
 
-const removeUserFromProject = (projectId, userId) => {
-  return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
-};
 // Project
 const createProject = (project) => {
   return axios.post('admin/createProject', project);
@@ -56,6 +53,14 @@ const addUserToProject = (requestData) => {
 const loadProjectDetails = (projectId) => {
   return axios.get(`user/loadProjectDetails?projectId=${projectId}`);
 };
+
+const updateBacklog = (projectId, backlog) => {
+  return axios.post('project/updateBacklog', { projectId, backlog });
+};
+
+const removeUserFromProject = (projectId, userId) => {
+  return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
+};
 // Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
@@ -69,12 +74,20 @@ const loadAllIssuesShortcut = (userId) => {
   return axios.get(`user/loadAllIssuesShortcut?userId=${userId}`);
 };
 
+const loadIssueShortcut = (issueId) => {
+  return axios.get(`user/loadIssueShortcut?issueId=${issueId}`);
+};
+
 const loadIssueDetails = (issueId) => {
   return axios.get(`user/loadIssueDetails?issueId=${issueId}`);
 };
 
 const updateIssue = (data) => {
   return axios.post('user/updateIssue', data);
+};
+
+const loadAllIssuesFromBacklog = (issueList) => {
+  return axios.get(`user/loadAllIssuesFromBacklog?issueIds=${issueList}`);
 };
 // Category
 const createCategory = (category) => {
@@ -98,13 +111,17 @@ const deleteFile = (fileId) => {
   return axios.delete(`files/delete/${fileId}`);
 };
 
-//Phase
-const createPhase = (phase) => {
-  return axios.post('user/createPhase', phase);
+// Message
+const createMessage = (message) => {
+  return axios.post('user/createMessage', message);
 };
 
-const loadAllPhases = (projectId) => {
-  return axios.get(`user/loadAllPhases?projectId=${projectId}`);
+const loadAllMessages = (issueId, messageType) => {
+  return axios.get(`user/getAllMessages?issueId=${issueId}&type=${messageType}`);
+};
+
+const editMessage = (message) => {
+  return axios.post('user/editMessage', message);
 };
 
 const API = {
@@ -128,9 +145,13 @@ const API = {
   loadAllIssuesShortcut,
   loadIssueDetails,
   updateIssue,
-  createPhase,
-  loadAllPhases,
-  removeUserFromProject
+  removeUserFromProject,
+  loadIssueShortcut,
+  updateBacklog,
+  loadAllIssuesFromBacklog,
+  createMessage,
+  loadAllMessages,
+  editMessage
 };
 
 export default API;

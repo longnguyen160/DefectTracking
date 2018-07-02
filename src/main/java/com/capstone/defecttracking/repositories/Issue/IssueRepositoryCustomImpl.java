@@ -1,10 +1,7 @@
 package com.capstone.defecttracking.repositories.Issue;
 
 import com.capstone.defecttracking.enums.Roles;
-import com.capstone.defecttracking.models.Issue.Issue;
-import com.capstone.defecttracking.models.Issue.IssueDetailsResponse;
-import com.capstone.defecttracking.models.Issue.IssueResponse;
-import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
+import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Repository
@@ -47,8 +43,21 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getCreatedAt(),
             issue.getUpdatedAt(),
             new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
-            issue.getLabel(),
+            issue.getCategory(),
             issue.getAttachments()
+        );
+    }
+
+    @Override
+    public IssueShortcutResponse loadIssueShortcut(String issueId) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+        return new IssueShortcutResponse(
+            issue.getId(),
+            issue.getIssueKey(),
+            issue.getIssueName(),
+            issue.getPriority()
         );
     }
 
@@ -164,6 +173,26 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueName(),
                 issue.getPriority()
             ))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds) {
+        return issueIds
+            .stream()
+            .map(issueId -> {
+                Query query = new Query(Criteria.where("_id").is(issueId));
+                Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+                return new IssueBacklogResponse(
+                    issue.getId(),
+                    issue.getIssueKey(),
+                    issue.getIssueName(),
+                    getUserResponse(issue.getAssignee()),
+                    issue.getPriority(),
+                    issue.getStatus()
+                );
+            })
             .collect(Collectors.toList());
     }
 

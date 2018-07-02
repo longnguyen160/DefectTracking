@@ -5,7 +5,6 @@ import {
   LOAD_CURRENT_USER_FAILURE,
   OPEN_MODAL,
   CLOSE_MODAL,
-  SELECT_PROJECT,
   LOAD_PROJECT_DETAILS,
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
@@ -38,11 +37,6 @@ const openModal = modalType => ({
 
 const closeModal = () => ({
   type: CLOSE_MODAL
-});
-
-const selectProject = project => ({
-  type: SELECT_PROJECT,
-  project
 });
 
 const loadProjectDetails = (projectId) => {
@@ -83,7 +77,6 @@ export {
   loadCurrentUserFailure,
   openModal,
   closeModal,
-  selectProject,
   loadProjectDetails,
   loadProjectDetailsRequest,
   loadProjectDetailsSuccess,
