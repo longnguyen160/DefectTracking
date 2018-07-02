@@ -10,7 +10,89 @@ import {
   loadAllCategoriesSuccess,
   loadAllCategoriesFailure
 } from '../actions/category';
-import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY } from '../actions/types';
+import {
+    requestCreateStatus,
+    createStatusSuccess,
+    createStatusFailure,
+    loadAllStatusRequest,
+    loadAllStatusSuccess,
+    loadAllStatusFailure,
+    requestRemoveStatus,
+    removeStatusSuccess,
+    removeStatusFailure,
+    requestUpdateStatus,
+    updateStatusSuccess,
+    updateStatusFailure,
+    
+} from '../actions/status';
+import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS} from '../actions/types';
+//update status 
+function* updateStatus(status) {
+  try {
+    yield put(requestUpdateStatus(status));
+
+    const { data } = yield call(API.updateStatus,status);
+
+    yield put(updateStatusSuccess(data));
+  } catch (error) {
+    yield put(updateStatusFailure(getError(error)));
+  }
+}
+
+function* watchUpdateStatus() {
+  yield takeLatest(UPDATE_STATUS, updateStatus);
+}
+//removeStatus
+function* removeStatus(status) {
+  try {
+    yield put(requestRemoveStatus(status));
+
+    const { data } = yield call(API.removeStatus,status);
+
+    yield put(removeStatusSuccess(data));
+  } catch (error) {
+    yield put(removeStatusFailure(getError(error)));
+  }
+}
+
+function* watchRemoveStatus() {
+  yield takeLatest(REMOVE_STATUS, removeStatus);
+}
+
+//load all status 
+
+function* loadAllStatus() {
+  try {
+    yield put(loadAllStatusRequest());
+
+    const { data } = yield call(API.loadAllStatus);
+
+    yield put(loadAllStatusSuccess(data));
+  } catch (error) {
+    yield put(loadAllStatusFailure(getError(error)));
+  }
+}
+
+function* watchLoadAllStatus() {
+  yield takeLatest(LOAD_ALL_STATUS, loadAllStatus);
+}
+// status  
+function* createStatus({status}){
+  try {
+    yield put(requestCreateStatus());
+
+    const { data } =yield call(API.createStatus,status);
+    yield put(createStatusSuccess());
+    showSuccessNotification(data.message);
+  } catch (error) {
+    yield put(createStatusFailure(getError(error)))
+  }
+}
+
+function* watchCreateStatus() {
+  yield takeLatest(CREATE_STATUS, createStatus);
+}
+
 
 function* createCategory({ category, closeModal }) {
   try {
@@ -53,5 +135,11 @@ export default function* managementFlow() {
   yield all([
     watchCreateCategory(),
     watchLoadAllCategories(),
+    
+    watchCreateStatus(),
+    watchLoadAllStatus(),
+    watchRemoveStatus(),
+    watchUpdateStatus(),
+
   ]);
 }
