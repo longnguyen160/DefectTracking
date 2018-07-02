@@ -65,8 +65,7 @@ public class StatusController {
     @DeleteMapping("/admin/removeStatus/{statusId}")
     public ResponseEntity<?> removeStatus(@PathVariable("statusId") String statusId) {
         ServerResponse serverResponse;
-        boolean result = statusRepository.existsById(statusId);
-        if (result) {
+        if (statusRepository.existsById(statusId)) {
             statusRepository.deleteById(statusId);
             serverResponse = new ServerResponse(true, "Remove Status successfully");
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
