@@ -14,7 +14,7 @@ import java.util.List;
  * @author doanb
  */
 public interface StatusRepositoryCustom {
-    List<StatusResponse> loadAllStatus();
+    List<Status> loadAllStatus();
     Boolean didStatusExisted(String name);
     Boolean removeStatus(String id);
     Boolean UpdateStatus(Status status);

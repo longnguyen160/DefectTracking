@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author doanb
  */
-@Document(collection = "statuss")
+@Document(collection = "status")
 public class Status {
 
     @Id
@@ -34,11 +34,13 @@ public class Status {
         this.handlers = handlers;
     }
 
-    public Status(String name, String color, List<String> handlers) {
+    public Status(String id, String name, String color, List<String> handlers) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.handlers = handlers;
     }
+
 
     public String getId() {
         return id;

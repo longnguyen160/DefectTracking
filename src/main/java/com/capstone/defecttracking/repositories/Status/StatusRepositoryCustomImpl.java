@@ -16,25 +16,22 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author doanb
  */
+@Repository
 public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
 
     @Autowired
     MongoTemplate mongoTemplate;
 
     @Override
-    public List<StatusResponse> loadAllStatus() {
-        List<StatusResponse> result = new ArrayList<>();
-        List<Status> Statuss = mongoTemplate.findAll(Status.class);
-        for (int i = 0; i < Statuss.size(); i++) {
-            Status s = Statuss.get(i);
-            result.add(new StatusResponse(s.getId(), s.getName(), s.getColor(), s.getHandlers()));
-        }
-        return result;
+    public List<Status> loadAllStatus() {
+        return mongoTemplate.findAll(Status.class);
+        
     }
 
     @Override
