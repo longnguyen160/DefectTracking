@@ -54,7 +54,7 @@ class Message extends Component {
   onMessageReceive = () => {
     const { loadAllMessages, issue } = this.props;
 
-    loadAllMessages(issue.id);
+    loadAllMessages(issue.id, 'all');
   };
 
   renderLog = (message) => {
