@@ -1,4 +1,5 @@
 import {
+ 
   UPDATE_BACKLOG,
   UPDATE_BACKLOG_REQUEST,
   UPDATE_BACKLOG_SUCCESS,
@@ -10,6 +11,9 @@ import {
   RESET_ISSUE_LIST
 } from './types';
 
+
+
+//update backlog
 const updateBacklog = (projectId, backlog) => {
   return {
     type: UPDATE_BACKLOG,
@@ -71,6 +75,7 @@ const resetIssueList = () => {
 };
 
 export {
+  
   updateBacklog,
   updateBacklogRequest,
   updateBacklogSuccess,

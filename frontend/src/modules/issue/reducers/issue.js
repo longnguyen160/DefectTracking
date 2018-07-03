@@ -1,4 +1,7 @@
 import {
+  UPDATE_FILTER_REQUEST,
+  UPDATE_FILTER_SUCCESS,
+  UPDATE_FILTER_FAILURE,
   CREATE_ISSUE_REQUEST,
   CREATE_ISSUE_SUCCESS,
   CREATE_ISSUE_FAILURE,
@@ -114,6 +117,25 @@ export default function issue(state = initialState, action) {
     case RESET_ISSUE_DETAILS:
       return Object.assign({}, state, {
         issue: null
+      });
+    //update filter
+    case UPDATE_FILTER_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case UPDATE_FILTER_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        issues: action.issueList,
+        error: null
+      });
+
+    case UPDATE_FILTER_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
       });
 
     default:
