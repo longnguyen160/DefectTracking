@@ -18,4 +18,5 @@ public interface StatusRepositoryCustom {
     Boolean didStatusExisted(String name);
     Boolean removeStatus(String id);
     Boolean UpdateStatus(Status status);
+    Boolean UpdateStatusDefault(String statusId);
 }
