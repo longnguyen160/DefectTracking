@@ -48,8 +48,6 @@ const updateStatusDefaultFailure = (error) => {
   }
 };
 
-
-
 //status
 const createStatus = (status, closeModal) => {
   return {

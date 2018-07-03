@@ -23,32 +23,32 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class StatusController {
-    
+
     @Autowired
     StatusRepository statusRepository;
     @Autowired
     StatusRepositoryCustom statusRepositoryCustom;
     private SimpMessagingTemplate messageTemplate;
-    
+
     @Inject
     public StatusController(SimpMessagingTemplate template) {
         this.messageTemplate = template;
     }
-    
+
     @PostMapping("/admin/createStatus")
     public ResponseEntity<?> createStatus(@RequestBody Status status) {
         ServerResponse serverResponse;
-        
+
         if (statusRepositoryCustom.didStatusExisted(status.getName())) {
             serverResponse = new ServerResponse(false, "A Status with that name already exists");
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
-        
+
         statusRepository.save(status);
         serverResponse = new ServerResponse(true, "Create status successfully");
-        
+
         messageTemplate.convertAndSend("/topic/status", serverResponse);
-        
+
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
 
@@ -56,7 +56,7 @@ public class StatusController {
     public List<Status> loadAllStatus() {
         return statusRepositoryCustom.loadAllStatus();
     }
-    
+
     @DeleteMapping("/admin/removeStatus/{statusId}")
     public ResponseEntity<?> removeStatus(@PathVariable("statusId") String statusId) {
         ServerResponse serverResponse;
@@ -72,12 +72,12 @@ public class StatusController {
         serverResponse = new ServerResponse(true, "Remove Status fail");
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
-    
+
     @PostMapping("/admin/updateStatus")
     public ResponseEntity<?> updateStatus(@RequestBody Status status) {
         ServerResponse serverResponse;
-        
-        if (statusRepositoryCustom.UpdateStatus(status)) {
+
+        if (statusRepositoryCustom.updateStatus(status)) {
             serverResponse = new ServerResponse(true, "Update Status successfully");
 
             messageTemplate.convertAndSend("/topic/status", serverResponse);
@@ -89,16 +89,19 @@ public class StatusController {
     }
 
     @PostMapping("/admin/changeDefaultStatus")
-    public ResponseEntity<?> updateBacklog(@RequestBody String statusId) {
+    public ResponseEntity<?> changeDefaultStatus(@RequestBody String statusId) {
         ServerResponse serverResponse;
-        
-        if (statusRepositoryCustom.UpdateStatusDefault(statusId)) {
+        String newStatusId = statusId.substring(0, statusId.length() - 1);
+
+        if (statusRepositoryCustom.updateStatusDefault(newStatusId)) {
             serverResponse = new ServerResponse(true, "Update Status successfully");
+
+            messageTemplate.convertAndSend("/topic/status", serverResponse);
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
         }
+
         serverResponse = new ServerResponse(true, "Update Status fail");
-        messageTemplate.convertAndSend("/topic/status", serverResponse);
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
-    
+
 }

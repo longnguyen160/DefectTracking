@@ -17,7 +17,7 @@ import {
 import { Button } from '../../../stylesheets/Button';
 import { ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT } from '../../../utils/enums';
 import { openModal } from '../../layout/actions/layout';
-import { loadAllStatus, removeStatus, updateStatus } from '../actions/status';
+import { loadAllStatus, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
 
 class StatusManagement extends Component {
 
@@ -47,12 +47,9 @@ class StatusManagement extends Component {
   };
 
   handleRadioButton = (row) => {
-    const { updateStatus } = this.props;
-    const status = Object.assign({}, row, {
-      default: true
-    });
+    const { updateStatusDefault } = this.props;
 
-    updateStatus(status);
+    updateStatusDefault(row.id);
   };
 
   onMessageReceive = () => {
@@ -83,7 +80,10 @@ class StatusManagement extends Component {
           const status = ISSUE_STATUS_ARRAY.find(element => element.background === row.original.color);
 
           return (
-            <TableBlockStyled alignLeft>
+            <TableBlockStyled
+              alignLeft
+              onClick={() => openModal(MODAL_TYPE.ADD_STATUS)}
+            >
               <IssueStatusStyled status={status}>
                 {row.value}
               </IssueStatusStyled>
@@ -118,7 +118,7 @@ class StatusManagement extends Component {
       },
       {
         Header: 'Default status when user create',
-        accessor: 'default',
+        accessor: 'isDefault',
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
@@ -181,6 +181,7 @@ StatusManagement.propTypes = {
   loadAllStatus: PropTypes.func.isRequired,
   updateStatus: PropTypes.func.isRequired,
   removeStatus: PropTypes.func.isRequired,
+  updateStatusDefault: PropTypes.func.isRequired,
   statusList: PropTypes.array.isRequired
 };
 
@@ -192,6 +193,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadAllStatus: loadAllStatus,
   updateStatus: updateStatus,
+  updateStatusDefault: updateStatusDefault,
   removeStatus: removeStatus
 }, dispatch);
 

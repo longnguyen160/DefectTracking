@@ -44,14 +44,15 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     }
 
     @Override
-    public Boolean UpdateStatus(Status status) {
+    public Boolean updateStatus(Status status) {
         Query query = new Query(Criteria.where("_id").is(status.getId()));
         Update update = new Update();
         update.set("name", status.getName());
         update.set("color", status.getColor());
         update.set("handlers", status.getHandlers());
         UpdateResult result = mongoTemplate.updateFirst(query, update, Status.class);
-        return result != null;
+
+        return result.getModifiedCount() != 0;
     }
 
     @Override
@@ -62,17 +63,18 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     }
 
     @Override
-    public Boolean UpdateStatusDefault(String statusId) {
-        // xoa trang thai default status hien tai
+    public Boolean updateStatusDefault(String statusId) {
         Query query = new Query(Criteria.where("isDefault").is(true));
+        Status status = mongoTemplate.findOne(query, Status.class);
         Update update = new Update();
+
         update.set("isDefault", false);
-        if (mongoTemplate.updateFirst(query, update, Status.class) != null) {
+        if (mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0 || status == null) {
             // update trang thai default qua cho status moi
-            Query query2 = new Query(Criteria.where("_id").is(statusId));
-            Update update2 = new Update();
-            update2.set("isDefault", true);
-            return mongoTemplate.updateFirst(query2, update2, Status.class) != null;
+            query = new Query(Criteria.where("_id").is(statusId));
+            update.set("isDefault", true);
+
+            return mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0;
         }
         return false;
     }

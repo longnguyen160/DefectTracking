@@ -141,6 +141,10 @@ const updateStatus = (status) => {
   return axios.post('admin/updateStatus', status);
 };
 
+const updateStatusDefault = (statusId) => {
+  return axios.post('admin/changeDefaultStatus', statusId);
+};
+
 const API = {
   login,
   signUp,
@@ -172,7 +176,8 @@ const API = {
   createStatus,
   loadAllStatus,
   removeStatus,
-  updateStatus
+  updateStatus,
+  updateStatusDefault
 };
 
 export default API;

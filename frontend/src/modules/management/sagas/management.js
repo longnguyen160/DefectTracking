@@ -26,19 +26,20 @@ import {
   requestUpdateStatus,
   updateStatusSuccess,
   updateStatusFailure
-  
-} from '../actions/status';
-import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS,UPDATE_STATUS_DEFAULT} 
-from '../actions/types';
-//update status default
 
-function* updateStatusDefault({statusId}) {
+} from '../actions/status';
+import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS,UPDATE_STATUS_DEFAULT}
+from '../actions/types';
+
+//update status default
+function* updateStatusDefault({ statusId }) {
   try {
     yield put(requestUpdateStatusDefault(statusId));
-    
-    const {data} = yield call(API.updateStatusDefault,statusId);
+
+    const {data} = yield call(API.updateStatusDefault, statusId);
 
     yield put(updateStatusDefaultSuccess(data));
+    showSuccessNotification(data.message);
   } catch (error) {
     yield put(updateStatusDefaultFailure(getError(error)));
   }
