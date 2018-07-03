@@ -2,6 +2,7 @@ import {
   REQUEST_LOAD_CURRENT_USER,
   LOAD_CURRENT_USER_SUCCESS,
   LOAD_CURRENT_USER_FAILURE,
+  UPDATE_CURRENT_USER_ROLE,
   OPEN_MODAL,
   CLOSE_MODAL,
   LOAD_PROJECT_DETAILS_REQUEST,
@@ -38,6 +39,14 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
+      });
+
+    case UPDATE_CURRENT_USER_ROLE:
+      return Object.assign({}, state, {
+        user: {
+          ...state.user,
+          role: state.user.role.concat(action.role)
+        }
       });
 
     case OPEN_MODAL:

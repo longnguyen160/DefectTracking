@@ -252,6 +252,9 @@ export const LineFormStyled = styled.div`
   & > .Select {
     max-width: 240px;
     width: 100%;
+    ${props => props.fullWidthSelect && css`
+      max-width: 100%;
+    `}
   } 
   textarea, input, select {
     background: #fff;
@@ -430,6 +433,9 @@ export const Input = styled.input`
   }
   ${props => props.fullWidth && css`
     width: 100%;
+  `}
+  ${props => props.autoWidth && css`
+    width: auto;
   `}
   ${props => props.hidden && css`
     display: none;
@@ -627,6 +633,10 @@ export const IssueStatusStyled = styled.div`
   border-radius: 3px;
   font-family: 'Proxima Nova Bold';
   
+  ${props => props.status && css`
+    background: ${props.status.background};
+    color: ${props.status.color};
+  `}
   ${props => {
     if (props.status) {
       switch (props.status) {
@@ -810,4 +820,69 @@ export const DropZoneStyled = styled(Dropzone)`
   ${props => props.hidden && css`
     visibility: hidden;
   `}
+`;
+
+export const CheckBoxWrapper = styled.span`
+  display: inline-block;
+  margin: 0 15px;
+`;
+
+export const InputCheckboxStyled = styled.input`
+  position: absolute; 
+  opacity: 0;
+
+  & + label {
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 0px;
+    padding: 0;
+    transition: .3s ease;
+  }
+
+  & + label:after {
+    transition: .3s ease;
+  }
+
+  & + label:before {
+    content: '';
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 15px;
+    height: 15px;
+    background: white;
+    border: 1px solid #ccc;
+  }
+  
+  &:disabled + label {
+    color: #b8b8b8;
+    cursor: auto;
+  }
+
+  &:disabled + label:before {
+    box-shadow: none;
+    background: #ddd;
+  }
+
+  &:hover + label:before {
+    /* border-color: #036a95; */
+  }
+
+  &:checked + label:after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 7px;
+    background: #056a95;
+    width: 3px;
+    height: 3px;
+    box-shadow: 
+      2px 0 0 #056a95,
+      4px 0 0 #056a95,
+      4px -2px 0 #056a95,
+      4px -4px 0 #056a95,
+      4px -6px 0 #056a95,
+      4px -8px 0 #056a95;
+    transform: rotate(45deg);
+  }
 `;

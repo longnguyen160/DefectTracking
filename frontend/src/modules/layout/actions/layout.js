@@ -3,6 +3,7 @@ import {
   REQUEST_LOAD_CURRENT_USER,
   LOAD_CURRENT_USER_SUCCESS,
   LOAD_CURRENT_USER_FAILURE,
+  UPDATE_CURRENT_USER_ROLE,
   OPEN_MODAL,
   CLOSE_MODAL,
   LOAD_PROJECT_DETAILS,
@@ -15,6 +16,11 @@ import {
 const loadCurrentUser = goToLoginPage => ({
   type: LOAD_CURRENT_USER,
   goToLoginPage
+});
+
+const updateCurrentUserRole = (role) => ({
+  type: UPDATE_CURRENT_USER_ROLE,
+  role
 });
 
 const requestLoadCurrentUser = () => ({
@@ -75,6 +81,7 @@ export {
   requestLoadCurrentUser,
   loadCurrentUserSuccess,
   loadCurrentUserFailure,
+  updateCurrentUserRole,
   openModal,
   closeModal,
   loadProjectDetails,

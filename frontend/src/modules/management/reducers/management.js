@@ -1,4 +1,7 @@
 import {
+  REQUEST_UPDATE_STATUS_DEFAULT,
+  UPDATE_STATUS_DEFAULT_FAILURE,
+  UPDATE_STATUS_DEFAULT_SUCCESS,
   REQUEST_CREATE_CATEGORY,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
@@ -8,24 +11,18 @@ import {
   REQUEST_BAN_USER,
   BAN_USER_SUCCESS,
   BAN_USER_FAILURE,
-  
   REQUEST_CREATE_STATUS,
   CREATE_STATUS_FAILURE,
   CREATE_STATUS_SUCCESS,
-  
   LOAD_ALL_STATUS_REQUEST,
   LOAD_ALL_STATUS_SUCCESS,
   LOAD_ALL_STATUS_FAILURE,
-
   REQUEST_REMOVE_STATUS,
   REMOVE_STATUS_SUCCESS,
-  REMOVE_STATUS_FAILURE, 
-
+  REMOVE_STATUS_FAILURE,
   REQUEST_UPDATE_STATUS,
   UPDATE_STATUS_SUCCESS,
   UPDATE_STATUS_FAILURE
-
-
 } from '../actions/types';
 
 const initialState = {
@@ -87,31 +84,31 @@ export default function management(state = initialState, action) {
         isLoading: false,
         error: action.error
       });
-    
-//new 
+
+//new
     case REQUEST_CREATE_STATUS:
       return Object.assign({}, state, {
         isLoading:true
-      });  
+      });
 
     case CREATE_STATUS_FAILURE:
       return Object.assign({}, state, {
-        isLoading:false,
+        isLoading: false,
         error: action.error
-      });  
+      });
 
     case CREATE_STATUS_SUCCESS:
       return Object.assign({}, state, {
-        isLoading:false
-      });  
-    
+        isLoading: false
+      });
+
     case LOAD_ALL_STATUS_REQUEST:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: true
       });
 
     case LOAD_ALL_STATUS_SUCCESS:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: false,
         statusList: action.statusList,
         error: null
@@ -119,45 +116,58 @@ export default function management(state = initialState, action) {
       });
 
     case LOAD_ALL_STATUS_FAILURE:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: false,
         error: action.error
       });
 
     case REQUEST_REMOVE_STATUS:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: true
       });
 
     case REMOVE_STATUS_SUCCESS:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: false
       });
 
     case REMOVE_STATUS_FAILURE:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: false,
         error: action.error
-      });  
+      });
 
     case REQUEST_UPDATE_STATUS:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: true
       });
 
     case UPDATE_STATUS_SUCCESS:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: false
       });
 
     case UPDATE_STATUS_FAILURE:
-      return object.assign({}, state, {
+      return Object.assign({}, state, {
         isLoading: false,
         error: action.error
-      });  
+      });
+    //update status default
+    case REQUEST_UPDATE_STATUS_DEFAULT:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
 
+    case UPDATE_STATUS_DEFAULT_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false
+      });
 
-
+    case UPDATE_STATUS_DEFAULT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
     default:
       return state;
   }

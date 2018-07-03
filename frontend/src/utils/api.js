@@ -124,6 +124,27 @@ const editMessage = (message) => {
   return axios.post('user/editMessage', message);
 };
 
+// Status
+const createStatus = (status) => {
+  return axios.post('admin/createStatus', status);
+};
+
+const loadAllStatus = () => {
+  return axios.get('admin/loadAllStatus');
+};
+
+const removeStatus = (statusId) => {
+  return axios.delete(`admin/removeStatus/${statusId}`);
+};
+
+const updateStatus = (status) => {
+  return axios.post('admin/updateStatus', status);
+};
+
+const updateStatusDefault = (statusId) => {
+  return axios.post('admin/changeDefaultStatus', statusId);
+};
+
 const API = {
   login,
   signUp,
@@ -151,7 +172,12 @@ const API = {
   loadAllIssuesFromBacklog,
   createMessage,
   loadAllMessages,
-  editMessage
+  editMessage,
+  createStatus,
+  loadAllStatus,
+  removeStatus,
+  updateStatus,
+  updateStatusDefault
 };
 
 export default API;

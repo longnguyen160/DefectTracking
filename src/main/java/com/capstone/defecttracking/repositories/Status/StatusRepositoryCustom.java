@@ -6,7 +6,7 @@
 package com.capstone.defecttracking.repositories.Status;
 
 import com.capstone.defecttracking.models.Status.Status;
-import com.capstone.defecttracking.models.Status.StatusResponse;
+
 import java.util.List;
 
 /**
@@ -17,5 +17,6 @@ public interface StatusRepositoryCustom {
     List<Status> loadAllStatus();
     Boolean didStatusExisted(String name);
     Boolean removeStatus(String id);
-    Boolean UpdateStatus(Status status);
+    Boolean updateStatus(Status status);
+    Boolean updateStatusDefault(String statusId);
 }

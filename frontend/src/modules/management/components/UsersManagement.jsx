@@ -116,7 +116,7 @@ class UsersManagement extends React.Component {
       <PageBoardStyled backlog>
         <ElementHeaderStyled padding={'0'}>
           <TitleElementStyled noPadding fontSize={'20px'}>
-            Usermanagement
+            Users
           </TitleElementStyled>
           <Button autoWidth hasBorder right onClick={() => openModal(MODAL_TYPE.ADD_CATEGORY)}>
             Add New User
