@@ -11,23 +11,22 @@ import {
   loadAllCategoriesFailure
 } from '../actions/category';
 import {
-    requestCreateStatus,
-    createStatusSuccess,
-    createStatusFailure,
-    loadAllStatusRequest,
-    loadAllStatusSuccess,
-    loadAllStatusFailure,
-    requestRemoveStatus,
-    removeStatusSuccess,
-    removeStatusFailure,
-    requestUpdateStatus,
-    updateStatusSuccess,
-    updateStatusFailure,
-    
+  requestCreateStatus,
+  createStatusSuccess,
+  createStatusFailure,
+  loadAllStatusRequest,
+  loadAllStatusSuccess,
+  loadAllStatusFailure,
+  requestRemoveStatus,
+  removeStatusSuccess,
+  removeStatusFailure,
+  requestUpdateStatus,
+  updateStatusSuccess,
+  updateStatusFailure,
 } from '../actions/status';
 import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS} from '../actions/types';
-//update status 
-function* updateStatus({status}) {
+//update status
+function* updateStatus({ status }) {
   try {
     yield put(requestUpdateStatus(status));
 
@@ -43,13 +42,13 @@ function* watchUpdateStatus() {
   yield takeLatest(UPDATE_STATUS, updateStatus);
 }
 //removeStatus
-function* removeStatus({statusId}) {
+function* removeStatus({ statusId }) {
   try {
     yield put(requestRemoveStatus(statusId));
-
     const { data } = yield call(API.removeStatus, statusId);
 
-    yield put(removeStatusSuccess(data));
+    yield put(removeStatusSuccess());
+    showSuccessNotification(data.message);
   } catch (error) {
     yield put(removeStatusFailure(getError(error)));
   }
@@ -59,7 +58,7 @@ function* watchRemoveStatus() {
   yield takeLatest(REMOVE_STATUS, removeStatus);
 }
 
-//load all status 
+//load all status
 
 function* loadAllStatus() {
   try {
@@ -76,14 +75,18 @@ function* loadAllStatus() {
 function* watchLoadAllStatus() {
   yield takeLatest(LOAD_ALL_STATUS, loadAllStatus);
 }
-// create status  
-function* createStatus({status}){
+// create status
+function* createStatus({ status, closeModal }){
   try {
     yield put(requestCreateStatus());
 
-    const { data } =yield call(API.createStatus, status);
+    const { data } = yield call(API.createStatus, status);
     yield put(createStatusSuccess());
     showSuccessNotification(data.message);
+
+    if (closeModal && typeof (closeModal) === 'function') {
+      closeModal();
+    }
   } catch (error) {
     yield put(createStatusFailure(getError(error)))
   }
@@ -92,7 +95,6 @@ function* createStatus({status}){
 function* watchCreateStatus() {
   yield takeLatest(CREATE_STATUS, createStatus);
 }
-
 
 function* createCategory({ category, closeModal }) {
   try {
@@ -135,11 +137,9 @@ export default function* managementFlow() {
   yield all([
     watchCreateCategory(),
     watchLoadAllCategories(),
-    
     watchCreateStatus(),
     watchLoadAllStatus(),
     watchRemoveStatus(),
     watchUpdateStatus(),
-
   ]);
 }

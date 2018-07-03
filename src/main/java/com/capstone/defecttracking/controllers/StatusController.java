@@ -17,16 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
  * @author doanb
  */
+@RestController
 public class StatusController {
 
     @Autowired
@@ -57,7 +54,7 @@ public class StatusController {
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/loadAllStatus")
+    @GetMapping("/admin/loadAllStatus")
     public List<Status> loadAllStatus() {
         return statusRepositoryCustom.loadAllStatus();
     }
@@ -65,26 +62,31 @@ public class StatusController {
     @DeleteMapping("/admin/removeStatus/{statusId}")
     public ResponseEntity<?> removeStatus(@PathVariable("statusId") String statusId) {
         ServerResponse serverResponse;
+
         if (statusRepository.existsById(statusId)) {
             statusRepository.deleteById(statusId);
             serverResponse = new ServerResponse(true, "Remove Status successfully");
+
+            messageTemplate.convertAndSend("/topic/status", serverResponse);
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
         }
+
         serverResponse = new ServerResponse(true, "Remove Status fail");
-        messageTemplate.convertAndSend("/topic/status", serverResponse);
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/admin/updateStatus")
-    public ResponseEntity<?> updateBacklog(@RequestBody Status status) {
+    public ResponseEntity<?> updateStatus(@RequestBody Status status) {
         ServerResponse serverResponse;
 
         if (statusRepositoryCustom.UpdateStatus(status)) {
             serverResponse = new ServerResponse(true, "Update Status successfully");
+
+            messageTemplate.convertAndSend("/topic/status", serverResponse);
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
         }
+
         serverResponse = new ServerResponse(true, "Update Status fail");
-        messageTemplate.convertAndSend("/topic/status", serverResponse);
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
 }

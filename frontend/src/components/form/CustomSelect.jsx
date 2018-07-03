@@ -4,7 +4,6 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import CustomOptionForSelect from './CustomOptionForSelect';
 import CustomValueForSelect from './CustomValueForSelect';
-import {Image} from '../../stylesheets/GeneralStyled';
 
 class CustomSelect extends Component {
 

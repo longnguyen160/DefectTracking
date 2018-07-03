@@ -20,6 +20,7 @@ import ModalProfile from '../../../components/modal/ModalProfile';
 import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddUser';
 import ModalAddCategory from '../../../components/modal/ModalAddCategory';
+import ModalAddStatus from '../../../components/modal/ModalAddStatus';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
@@ -29,6 +30,7 @@ const LIST_MODAL = {
   [MODAL_TYPE.ISSUE_DETAILS]: ModalIssueDetails,
   [MODAL_TYPE.ADD_USER]: ModalAddUser,
   [MODAL_TYPE.ADD_CATEGORY]: ModalAddCategory,
+  [MODAL_TYPE.ADD_STATUS]: ModalAddStatus
 };
 
 const getParams = pathname => {

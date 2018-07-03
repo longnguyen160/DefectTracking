@@ -14,10 +14,10 @@ import {
 } from '../../stylesheets/Modal';
 import { LineFormStyled, TextErrorStyled } from '../../stylesheets/GeneralStyled';
 import { Button } from '../../stylesheets/Button';
-import {INPUT_TEXT} from '../../utils/enums';
+import { INPUT_TEXT } from '../../utils/enums';
 import InputField from '../form/InputField';
-import {createCategory} from '../../modules/management/actions/category';
-import {validateForm} from '../../utils/ultis';
+import { createCategory } from '../../modules/management/actions/category';
+import { validateForm } from '../../utils/ultis';
 
 
 class ModalAddCategory extends React.Component {
