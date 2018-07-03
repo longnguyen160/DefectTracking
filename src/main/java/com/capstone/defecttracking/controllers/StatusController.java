@@ -5,10 +5,8 @@
  */
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Status.Status;
-import com.capstone.defecttracking.models.Status.StatusResponse;
 import com.capstone.defecttracking.repositories.Status.StatusRepository;
 import com.capstone.defecttracking.repositories.Status.StatusRepositoryCustom;
 import java.util.List;

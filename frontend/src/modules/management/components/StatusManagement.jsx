@@ -46,8 +46,13 @@ class StatusManagement extends Component {
     updateStatus(status);
   };
 
-  handleRadioButton = (e) => {
-    console.log(e);
+  handleRadioButton = (row) => {
+    const { updateStatus } = this.props;
+    const status = Object.assign({}, row, {
+      default: true
+    });
+
+    updateStatus(status);
   };
 
   onMessageReceive = () => {
@@ -123,7 +128,7 @@ class StatusManagement extends Component {
               name={'default'}
               value={row.original.name}
               checked={row.value}
-              onChange={this.handleRadioButton}
+              onChange={() => this.handleRadioButton(row.original)}
             />
           </TableBlockStyled>
         )

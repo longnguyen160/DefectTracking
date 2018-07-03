@@ -6,7 +6,7 @@
 package com.capstone.defecttracking.repositories.Status;
 
 import com.capstone.defecttracking.models.Status.Status;
-import com.capstone.defecttracking.models.Status.StatusResponse;
+
 import java.util.List;
 
 /**

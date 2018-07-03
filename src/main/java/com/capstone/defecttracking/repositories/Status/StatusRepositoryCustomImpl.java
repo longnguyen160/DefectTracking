@@ -5,11 +5,9 @@
  */
 package com.capstone.defecttracking.repositories.Status;
 
-import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Status.Status;
-import com.capstone.defecttracking.models.Status.StatusResponse;
 import com.mongodb.client.result.UpdateResult;
-import java.util.ArrayList;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -31,7 +29,7 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     @Override
     public List<Status> loadAllStatus() {
         return mongoTemplate.findAll(Status.class);
-        
+
     }
 
     @Override
