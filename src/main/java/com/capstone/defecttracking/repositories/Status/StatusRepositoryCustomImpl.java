@@ -7,8 +7,8 @@ package com.capstone.defecttracking.repositories.Status;
 
 import com.capstone.defecttracking.models.Status.Status;
 import com.mongodb.client.result.UpdateResult;
-
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -59,6 +59,22 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
         Query query = new Query(Criteria.where("name").is(name));
         Status status = mongoTemplate.findOne(query, Status.class);
         return status != null;
+    }
+
+    @Override
+    public Boolean UpdateStatusDefault(String statusId) {
+        // xoa trang thai default status hien tai
+        Query query = new Query(Criteria.where("isDefault").is(true));
+        Update update = new Update();
+        update.set("isDefault", false);
+        if (mongoTemplate.updateFirst(query, update, Status.class) != null) {
+            // update trang thai default qua cho status moi
+            Query query2 = new Query(Criteria.where("_id").is(statusId));
+            Update update2 = new Update();
+            update2.set("isDefault", true);
+            return mongoTemplate.updateFirst(query2, update2, Status.class) != null;
+        }
+        return false;
     }
 
 }
