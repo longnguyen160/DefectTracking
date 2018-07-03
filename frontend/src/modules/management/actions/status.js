@@ -1,4 +1,8 @@
 import {
+  UPDATE_STATUS_DEFAULT,
+  REQUEST_UPDATE_STATUS_DEFAULT,
+  UPDATE_STATUS_DEFAULT_FAILURE,
+  UPDATE_STATUS_DEFAULT_SUCCESS,
   CREATE_STATUS,
   REQUEST_CREATE_STATUS,
   CREATE_STATUS_FAILURE,
@@ -16,7 +20,37 @@ import {
   UPDATE_STATUS_FAILURE,
   UPDATE_STATUS_SUCCESS
 } from './types';
+//status default
 
+const updateStatusDefault = (statusId) => {
+  return {
+    type: UPDATE_STATUS_DEFAULT,
+    statusId
+  }
+};
+
+const requestUpdateStatusDefault = () => {
+  return {
+    type: REQUEST_UPDATE_STATUS_DEFAULT,
+  }
+};
+
+const updateStatusDefaultSuccess = () => {
+  return {
+    type: UPDATE_STATUS_DEFAULT_SUCCESS
+  }
+};
+
+const updateStatusDefaultFailure = (error) => {
+  return {
+    type: UPDATE_STATUS_DEFAULT_FAILURE,
+    error
+  }
+};
+
+
+
+//status
 const createStatus = (status, closeModal) => {
   return {
     type: CREATE_STATUS,
@@ -123,6 +157,10 @@ const updateStatusFailure = (error) => {
 };
 
 export{
+  updateStatusDefault,
+  requestUpdateStatusDefault,
+  updateStatusDefaultSuccess,
+  updateStatusDefaultFailure,
   createStatus,
   requestCreateStatus,
   createStatusSuccess,

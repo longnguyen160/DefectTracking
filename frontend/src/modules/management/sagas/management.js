@@ -11,6 +11,9 @@ import {
   loadAllCategoriesFailure
 } from '../actions/category';
 import {
+  requestUpdateStatusDefault,
+  updateStatusDefaultSuccess,
+  updateStatusDefaultFailure,
   requestCreateStatus,
   createStatusSuccess,
   createStatusFailure,
@@ -22,9 +25,29 @@ import {
   removeStatusFailure,
   requestUpdateStatus,
   updateStatusSuccess,
-  updateStatusFailure,
+  updateStatusFailure
+  
 } from '../actions/status';
-import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS} from '../actions/types';
+import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS,UPDATE_STATUS_DEFAULT} 
+from '../actions/types';
+//update status default
+
+function* updateStatusDefault({statusId}) {
+  try {
+    yield put(requestUpdateStatusDefault(statusId));
+    
+    const {data} = yield call(API.updateStatusDefault,statusId);
+
+    yield put(updateStatusDefaultSuccess(data));
+  } catch (error) {
+    yield put(updateStatusDefaultFailure(getError(error)));
+  }
+}
+
+function* watchUpdateStatusDefault() {
+  yield takeLatest(UPDATE_STATUS_DEFAULT, updateStatusDefault);
+}
+
 //update status
 function* updateStatus({ status }) {
   try {
@@ -141,5 +164,6 @@ export default function* managementFlow() {
     watchLoadAllStatus(),
     watchRemoveStatus(),
     watchUpdateStatus(),
+    watchUpdateStatusDefault(),
   ]);
 }

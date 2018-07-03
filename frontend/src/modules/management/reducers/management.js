@@ -1,4 +1,7 @@
 import {
+  REQUEST_UPDATE_STATUS_DEFAULT,
+  UPDATE_STATUS_DEFAULT_FAILURE,
+  UPDATE_STATUS_DEFAULT_SUCCESS,
   REQUEST_CREATE_CATEGORY,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
@@ -149,7 +152,22 @@ export default function management(state = initialState, action) {
         isLoading: false,
         error: action.error
       });
+    //update status default
+    case REQUEST_UPDATE_STATUS_DEFAULT:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
 
+    case UPDATE_STATUS_DEFAULT_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false
+      });
+
+    case UPDATE_STATUS_DEFAULT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
     default:
       return state;
   }
