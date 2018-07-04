@@ -5,7 +5,7 @@
  */
 package com.capstone.defecttracking.repositories.Category;
 
-import com.capstone.defecttracking.models.categories.Category;
+import com.capstone.defecttracking.models.Category.Category;
 import java.util.List;
 
 /**
