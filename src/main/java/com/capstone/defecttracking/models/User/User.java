@@ -15,10 +15,20 @@ public class User {
     private String email;
     private ArrayList<String> roles = new ArrayList<String>();
     private UserProfile profile;
-
+    private boolean isactive;
+    
     public User() {
     }
 
+    public User(String id, String username, String password, String email, ArrayList<String> roles, UserProfile profile, boolean isactive) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+        this.profile = profile;
+        this.isactive = isactive;
+    }
     public User(String id, String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
         this.id = id;
         this.username = username;
@@ -28,19 +38,37 @@ public class User {
         this.profile = profile;
     }
 
-    public User(String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
+    public User(String id, String username, String password, String email, UserProfile profile) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.profile = profile;
+    }
+
+    public User(String username, String password, String email, ArrayList<String> roles, UserProfile profile, boolean isactive) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.roles = roles;
         this.profile = profile;
+        this.isactive = isactive;
     }
 
-    public User(String id, String username, String email, ArrayList<String> roles) {
+    public User(String id, String username, String email, ArrayList<String> roles, boolean isactive) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.roles = roles;
+        this.isactive = isactive;
+    }
+
+    public boolean isIsactive() {
+        return isactive;
+    }
+
+    public void setIsactive(boolean isactive) {
+        this.isactive = isactive;
     }
 
 

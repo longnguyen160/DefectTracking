@@ -59,18 +59,25 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody User user) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getEmail(),
-                        user.getPassword()
-                )
-        );
+        ServerResponse serverResponse;
+        if (user.isIsactive()) {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getEmail(),
+                            user.getPassword()
+                    )
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        JwtAuthentication jwt = tokenProvider.generateToken(authentication);
+            JwtAuthentication jwt = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        }
+                   serverResponse = new ServerResponse(false, "Your account has been locked!!!");
+
+        return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+
     }
 
     @PostMapping("/signup")
@@ -89,6 +96,7 @@ public class UserController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(String.valueOf(Roles.USER));
+        user.setIsactive(true);
         String userId = userRepository.save(user).getId();
         filterrepository.save(new Filter(userId));
 
@@ -133,6 +141,17 @@ public class UserController {
         template.convertAndSend("/topic/currentUser", serverResponse);
 
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("admin/activeUser")
+    public ResponseEntity<?> activeUser(@RequestBody String userId, boolean isActive) {
+        ServerResponse serverResponse;
+        if (userRepositoryCustom.activeOrBanUser(userId, isActive)) {
+            serverResponse = new ServerResponse(true, "change permission successfully");
+            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+        }
+        serverResponse = new ServerResponse(true, "change permission fail");
+        return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

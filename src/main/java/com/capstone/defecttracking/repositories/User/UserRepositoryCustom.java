@@ -13,4 +13,5 @@ public interface UserRepositoryCustom {
     List<User> getAllUsers(String input, String projectId);
     Boolean updateUserProfile(String userId, UserProfile profile, String email);
     List<UserProjectResponse> getAllUsersInProject(String projectId);
+    Boolean activeOrBanUser(String userId,boolean isActive);
 }
