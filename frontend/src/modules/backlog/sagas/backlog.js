@@ -1,6 +1,7 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { UPDATE_BACKLOG, LOAD_ALL_ISSUES_FROM_BACKLOG } from '../actions/types';
 import {
+  
   updateBacklogRequest,
   updateBacklogSuccess,
   updateBacklogFailure,
@@ -11,6 +12,9 @@ import {
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 
+
+
+//update back log
 function* updateBacklog({ projectId, backlog }) {
   try {
     yield put(updateBacklogRequest());
