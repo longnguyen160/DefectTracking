@@ -1,4 +1,5 @@
 import {
+
   UPDATE_BACKLOG_REQUEST,
   UPDATE_BACKLOG_SUCCESS,
   UPDATE_BACKLOG_FAILURE,
@@ -40,7 +41,7 @@ export default function backlog(state = initialState, action) {
         isLoading: true,
         error: null
       });
-
+      //load issues
     case LOAD_ALL_ISSUES_FROM_BACKLOG_SUCCESS:
       return Object.assign({}, state, {
         issueList: action.data,

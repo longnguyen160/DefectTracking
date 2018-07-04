@@ -1,4 +1,8 @@
 import {
+  UPDATE_FILTER,
+  UPDATE_FILTER_REQUEST,
+  UPDATE_FILTER_SUCCESS,
+  UPDATE_FILTER_FAILURE,
   CREATE_ISSUE,
   CREATE_ISSUE_REQUEST,
   CREATE_ISSUE_SUCCESS,
@@ -24,6 +28,34 @@ import {
   LOAD_ISSUE_SHORTCUT_FAILURE,
   RESET_ISSUE_DETAILS
 } from './types';
+
+//update filter
+const updateFilter = (filter) => {
+  return {
+    type: UPDATE_FILTER,
+    filter
+  }
+};
+
+const updateFilterRequest = () => {
+  return {
+    type: UPDATE_FILTER_REQUEST
+  }
+};
+
+const updateFilterSuccess = (issueList) => {
+  return {
+    type: UPDATE_FILTER_SUCCESS,
+    issueList
+  }
+};
+
+const updateFilterFailure = (error) => {
+  return {
+    type: UPDATE_FILTER_FAILURE,
+    error
+  }
+};
 
 const createIssue = (issue, closeModal) => {
   return {
@@ -186,6 +218,10 @@ const resetIssueDetails = () => {
 };
 
 export {
+  updateFilter,
+  updateFilterRequest,
+  updateFilterSuccess,
+  updateFilterFailure,
   createIssue,
   createIssueRequest,
   createIssueSuccess,

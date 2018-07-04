@@ -5,9 +5,13 @@ import {
   LOAD_ALL_ISSUES_SHORTCUT,
   LOAD_ISSUE_DETAILS,
   UPDATE_ISSUE,
-  LOAD_ISSUE_SHORTCUT
+  LOAD_ISSUE_SHORTCUT,
+  UPDATE_FILTER
 } from '../actions/types';
 import {
+  updateFilterRequest,
+  updateFilterSuccess,
+  updateFilterFailure,
   createIssueRequest,
   createIssueSuccess,
   createIssueFailure,
@@ -29,6 +33,24 @@ import {
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
+
+//update filter
+function* updateFilter({ filter }) {
+  try {
+    yield put(updateFilterRequest());
+
+    const { data } = yield call(API.updateFilter, filter);
+
+    yield put(updateFilterSuccess(data));
+  } catch (error) {
+    yield put(updateFilterFailure(getError(error)))
+  }
+}
+
+function* watchUpdateFilter() {
+  yield takeLatest(UPDATE_FILTER,updateFilter);
+}
+
 
 function* createIssue({ issue, closeModal }) {
   try {
@@ -137,6 +159,7 @@ export default function* issueFlow() {
     watchLoadAllIssuesShortcut(),
     watchLoadIssueShortcut(),
     watchLoadIssueDetails(),
-    watchUpdateIssue()
+    watchUpdateIssue(),
+    watchUpdateFilter()
   ])
 }
