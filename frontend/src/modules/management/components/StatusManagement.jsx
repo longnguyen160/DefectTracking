@@ -15,7 +15,7 @@ import {
   Input
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT } from '../../../utils/enums';
+import { ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES } from '../../../utils/enums';
 import { openModal } from '../../layout/actions/layout';
 import { loadAllStatus, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
 
@@ -24,7 +24,7 @@ class StatusManagement extends Component {
   componentWillMount() {
     const { loadAllStatus } = this.props;
 
-    loadAllStatus();
+    loadAllStatus(ROLES.ADMIN);
   }
 
   handleCheckbox = (event, role, row) => {
@@ -55,7 +55,7 @@ class StatusManagement extends Component {
   onMessageReceive = () => {
     const { loadAllStatus } = this.props;
 
-    loadAllStatus();
+    loadAllStatus(ROLES.ADMIN);
   };
 
   render() {
@@ -76,20 +76,16 @@ class StatusManagement extends Component {
         accessor: 'name',
         ...styleColumn,
         width: 200,
-        Cell: row => {
-          const status = ISSUE_STATUS_ARRAY.find(element => element.background === row.original.color);
-
-          return (
-            <TableBlockStyled
-              alignLeft
-              onClick={() => openModal(MODAL_TYPE.ADD_STATUS)}
-            >
-              <IssueStatusStyled status={status}>
-                {row.value}
-              </IssueStatusStyled>
-            </TableBlockStyled>
-          )
-        }
+        Cell: row => (
+          <TableBlockStyled
+            alignLeft
+            onClick={() => openModal(MODAL_TYPE.ADD_STATUS)}
+          >
+            <IssueStatusStyled status={row.original}>
+              {row.value}
+            </IssueStatusStyled>
+          </TableBlockStyled>
+        )
       },
       {
         Header: 'Allow role',
@@ -118,7 +114,7 @@ class StatusManagement extends Component {
       },
       {
         Header: 'Default status when user create',
-        accessor: 'isDefault',
+        accessor: 'default',
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>

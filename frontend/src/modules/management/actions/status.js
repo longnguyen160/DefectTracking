@@ -76,9 +76,10 @@ const createStatusFailure = (error) => {
   }
 };
 
-const loadAllStatus = () => {
+const loadAllStatus = (role) => {
   return {
-    type: LOAD_ALL_STATUS
+    type: LOAD_ALL_STATUS,
+    role
   }
 };
 

@@ -45,10 +45,11 @@ const closeModal = () => ({
   type: CLOSE_MODAL
 });
 
-const loadProjectDetails = (projectId) => {
+const loadProjectDetails = (projectId, handleProjectDetails) => {
   return {
     type: LOAD_PROJECT_DETAILS,
-    projectId
+    projectId,
+    handleProjectDetails
   }
 };
 

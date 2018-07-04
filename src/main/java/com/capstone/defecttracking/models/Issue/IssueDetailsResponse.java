@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.models.Issue;
 
+import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.UserResponse;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class IssueDetailsResponse {
     private String description;
     private UserResponse reporter;
     private UserResponse assignee;
-    private String status;
+    private Status status;
     private String priority;
     private Date dueDate;
     private Date createdAt;
@@ -25,7 +26,7 @@ public class IssueDetailsResponse {
     public IssueDetailsResponse() {
     }
 
-    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<String> category, ArrayList<String> attachments) {
+    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, Status status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<String> category, ArrayList<String> attachments) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
@@ -99,11 +100,11 @@ public class IssueDetailsResponse {
         this.assignee = assignee;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

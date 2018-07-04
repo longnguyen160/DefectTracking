@@ -53,8 +53,8 @@ public class StatusController {
     }
 
     @GetMapping("/admin/loadAllStatus")
-    public List<Status> loadAllStatus() {
-        return statusRepositoryCustom.loadAllStatus();
+    public List<Status> loadAllStatus(@RequestParam String role) {
+        return statusRepositoryCustom.loadAllStatus(role);
     }
 
     @DeleteMapping("/admin/removeStatus/{statusId}")

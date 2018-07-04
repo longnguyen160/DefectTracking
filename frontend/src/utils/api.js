@@ -129,8 +129,8 @@ const createStatus = (status) => {
   return axios.post('admin/createStatus', status);
 };
 
-const loadAllStatus = () => {
-  return axios.get('admin/loadAllStatus');
+const loadAllStatus = (role) => {
+  return axios.get(`admin/loadAllStatus?role=${role}`);
 };
 
 const removeStatus = (statusId) => {

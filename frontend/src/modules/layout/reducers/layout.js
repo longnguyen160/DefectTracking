@@ -45,7 +45,7 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         user: {
           ...state.user,
-          role: state.user.role.concat(action.role)
+          roles: state.user.roles.concat(action.role)
         }
       });
 

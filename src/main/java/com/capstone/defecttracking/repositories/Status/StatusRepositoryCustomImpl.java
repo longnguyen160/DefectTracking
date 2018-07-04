@@ -5,6 +5,7 @@
  */
 package com.capstone.defecttracking.repositories.Status;
 
+import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Status.Status;
 import com.mongodb.client.result.UpdateResult;
 import java.util.List;
@@ -27,20 +28,16 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public List<Status> loadAllStatus() {
-        return mongoTemplate.findAll(Status.class);
+    public List<Status> loadAllStatus(String role) {
+        switch (role) {
+            case "ADMIN":
+                return mongoTemplate.findAll(Status.class);
 
-    }
+            default:
+                Query query = new Query(Criteria.where("handlers").is(role));
 
-    @Override
-    public Boolean removeStatus(String id) {
-        Query query = new Query(Criteria.where("_id").is(id));
-        Status status = mongoTemplate.findOne(query, Status.class);
-        if (status != null) {
-            mongoTemplate.remove(status);
-            return true;
+                return mongoTemplate.find(query, Status.class);
         }
-        return false;
     }
 
     @Override
@@ -48,6 +45,7 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
         Query query = new Query(Criteria.where("_id").is(status.getId()));
         Update update = new Update();
         update.set("name", status.getName());
+        update.set("background", status.getBackground());
         update.set("color", status.getColor());
         update.set("handlers", status.getHandlers());
         UpdateResult result = mongoTemplate.updateFirst(query, update, Status.class);

@@ -27,7 +27,7 @@ import {
   INPUT_TEXT, ISSUE_DETAILS,
   ISSUE_PRIORITY_ARRAY,
   MESSAGE,
-  MESSAGE_TYPE,
+  MESSAGE_TYPE, ROLES,
   TEXT_AREA,
   WEB_SOCKET_URL
 } from '../../utils/enums';
@@ -40,12 +40,27 @@ import CustomSelect from '../editable/CustomSelect';
 import CustomSelectStatus from '../editable/CustomSelectStatus';
 import Message from '../../modules/message/components/Message';
 import { createMessage } from '../../modules/message/actions/message';
+import { loadProjectDetails, resetProject } from '../../modules/layout/actions/layout';
 
 class ModalIssueDetails extends React.Component {
 
   state = {
-    uploadedFile: []
+    uploadedFile: [],
+    userRole: this.props.user.roles.find(role => role !== ROLES.USER)
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { issue } = nextProps;
+    const { loadProjectDetails, user, selectedProject } = this.props;
+
+    if (issue && !this.props.issue && !selectedProject) {
+      loadProjectDetails(issue.projectId, (project) => {
+        const userRole = project.members.find(member => member.userId === user.id).role;
+
+        this.setState({ userRole });
+      });
+    }
+  }
 
   componentWillUnmount() {
     const { resetIssueDetails } = this.props;
@@ -114,12 +129,15 @@ class ModalIssueDetails extends React.Component {
         message = MESSAGE(ISSUE_PRIORITY_ARRAY.find(element => element.value === e.value.value).label).UPDATE_PRIORITY;
         break;
 
+      case 'status':
+        value = e.value.id;
+        message = MESSAGE(e.value.name).CHANGE_STATUS;
+        break;
+
       default:
         value = e.value.id ? e.value.id : e.value;
         if (e.props.name === 'issueName' || e.props.name === 'description') {
           message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
-        } else if (e.props.name === 'status') {
-          message = MESSAGE(e.value).CHANGE_STATUS;
         } else if (e.props.name === 'assignee') {
           message = MESSAGE(e.value.username).CHANGE_ASSIGNEE;
         }
@@ -142,6 +160,7 @@ class ModalIssueDetails extends React.Component {
 
   render() {
     const { onClose, isOpen, issue, user } = this.props;
+    const { userRole } = this.state;
     const projectId = issue && issue.projectId;
     const priority = issue && ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
     const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
@@ -286,25 +305,33 @@ class ModalIssueDetails extends React.Component {
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Status</ModalLineTitleStyled>
-                <Editable
-                  name={'status'}
-                  dataType={'custom'}
-                  mode={'inline'}
-                  value={issue && issue.status}
-                  showButtons={true}
-                  display={(value) => (
-                    <LineFormStyled hover>
-                      <IssueStatusStyled status={value}>{value}</IssueStatusStyled>
-                    </LineFormStyled>
-                  )}
-                  customComponent={(props, state) => (
-                    <CustomSelectStatus
-                      {...props}
-                      {...state}
+                {
+                  issue && issue.status.handlers.includes(userRole) ?
+                    <Editable
+                      name={'status'}
+                      dataType={'custom'}
+                      mode={'inline'}
+                      value={issue && issue.status}
+                      showButtons={true}
+                      display={(value) => (
+                        <LineFormStyled hover>
+                          <IssueStatusStyled status={value}>{value.name}</IssueStatusStyled>
+                        </LineFormStyled>
+                      )}
+                      customComponent={(props, state) => (
+                        <CustomSelectStatus
+                          userRole={userRole}
+                          {...props}
+                          {...state}
+                        />
+                      )}
+                      handleSubmit={this.handleSubmit}
                     />
-                  )}
-                  handleSubmit={this.handleSubmit}
-                />
+                  :
+                    <LineFormStyled hover>
+                      <IssueStatusStyled status={issue && issue.status}>{issue && issue.status.name}</IssueStatusStyled>
+                    </LineFormStyled>
+                }
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
@@ -399,14 +426,17 @@ ModalIssueDetails.propTypes = {
   updateIssue: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
   createMessage: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
   issue: PropTypes.object,
+  selectedProject: PropTypes.object,
   user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   issue: state.issue.issue,
   messages: state.message.messages,
-  user: state.layout.user
+  user: state.layout.user,
+  selectedProject: state.layout.selectedProject
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -416,6 +446,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   loadIssueDetails: loadIssueDetails,
   resetIssueDetails: resetIssueDetails,
   createMessage: createMessage,
+  loadProjectDetails: loadProjectDetails
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalIssueDetails);
