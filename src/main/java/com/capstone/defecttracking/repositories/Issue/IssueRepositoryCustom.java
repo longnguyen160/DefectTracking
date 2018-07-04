@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.repositories.Issue;
 
+import com.capstone.defecttracking.models.Filter.Filter;
 import com.capstone.defecttracking.models.Issue.*;
 
 import java.util.ArrayList;
@@ -12,9 +13,10 @@ public interface IssueRepositoryCustom {
     List<Issue> loadAllIssuesInProject(String projectId);
     String generateIssueKey();
     List<IssueResponse> loadAllIssues(String userId);
-    List<IssueResponse>loadAllIssuesBasedOnFilter(String value, String filter);
+    List<IssueResponse>loadAllIssuesBasedOnFilter(Filter filter);
     List<IssueShortcutResponse> loadAllIssuesShortcut(String userId);
     List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds);
     Boolean updateIssue(String issueId, String type, String value);
     void addIssueToBacklog(String issueId, String projectId);
+    
 }

@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.capstone.defecttracking.repositories.Category;
+package com.capstone.defecttracking.repositories.Filter;
 
-import com.capstone.defecttracking.models.Category.Category;
+import com.capstone.defecttracking.models.Filter.Filter;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author doanb
  */
-public interface CategoryRepository extends MongoRepository<Category, String>{
-    
-}
+public interface FilterRepository extends MongoRepository<Filter, String>{}

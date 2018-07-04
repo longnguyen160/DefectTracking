@@ -1,10 +1,12 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.enums.Roles;
+import com.capstone.defecttracking.models.Filter.Filter;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Token.JwtAuthentication;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
 import com.capstone.defecttracking.models.User.*;
+import com.capstone.defecttracking.repositories.Filter.FilterRepository;
 import com.capstone.defecttracking.security.CurrentUser;
 import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,9 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    FilterRepository filterrepository;
+
     private SimpMessagingTemplate template;
 
     @Inject
@@ -55,10 +60,10 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                user.getEmail(),
-                user.getPassword()
-            )
+                new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        user.getPassword()
+                )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -84,7 +89,8 @@ public class UserController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(String.valueOf(Roles.USER));
-        userRepository.save(user);
+        String userId = userRepository.save(user).getId();
+        filterrepository.save(new Filter(userId));
 
         serverResponse = new ServerResponse(true, "User registered successfully");
 
@@ -115,7 +121,7 @@ public class UserController {
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         if ((profileRequest.getEmail() == null && profileRequest.getProfile() == null)
-            || !userRepositoryCustom.updateUserProfile(userDetailsSecurity.getId(), profileRequest.getProfile(), profileRequest.getEmail())) {
+                || !userRepositoryCustom.updateUserProfile(userDetailsSecurity.getId(), profileRequest.getProfile(), profileRequest.getEmail())) {
             serverResponse = new ServerResponse(false, "Update failed!!!");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);

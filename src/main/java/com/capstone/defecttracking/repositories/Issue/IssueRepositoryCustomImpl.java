@@ -1,6 +1,7 @@
 package com.capstone.defecttracking.repositories.Issue;
 
 import com.capstone.defecttracking.enums.Roles;
+import com.capstone.defecttracking.models.Filter.Filter;
 import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
@@ -30,21 +31,21 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         Issue issue = mongoTemplate.findOne(query, Issue.class);
 
         return new IssueDetailsResponse(
-            issue.getId(),
-            issue.getIssueKey(),
-            issue.getIssueName(),
-            issue.getProjectId(),
-            issue.getDescription(),
-            getUserResponse(issue.getReporter()),
-            getUserResponse(issue.getAssignee()),
-            issue.getStatus(),
-            issue.getPriority(),
-            issue.getDueDate(),
-            issue.getCreatedAt(),
-            issue.getUpdatedAt(),
-            new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
-            issue.getCategory(),
-            issue.getAttachments()
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getProjectId(),
+                issue.getDescription(),
+                getUserResponse(issue.getReporter()),
+                getUserResponse(issue.getAssignee()),
+                issue.getStatus(),
+                issue.getPriority(),
+                issue.getDueDate(),
+                issue.getCreatedAt(),
+                issue.getUpdatedAt(),
+                new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
+                issue.getCategory(),
+                issue.getAttachments()
         );
     }
 
@@ -54,10 +55,10 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         Issue issue = mongoTemplate.findOne(query, Issue.class);
 
         return new IssueShortcutResponse(
-            issue.getId(),
-            issue.getIssueKey(),
-            issue.getIssueName(),
-            issue.getPriority()
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getPriority()
         );
     }
 
@@ -114,12 +115,12 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             query = new Query(Criteria.where("projectId").in(projectIds));
             issueList = mongoTemplate.find(query, Issue.class);
         } else {
-            issueList =  mongoTemplate.findAll(Issue.class);
+            issueList = mongoTemplate.findAll(Issue.class);
         }
 
         return issueList
-            .stream()
-            .map(issue -> new IssueResponse(
+                .stream()
+                .map(issue -> new IssueResponse(
                 issue.getId(),
                 issue.getIssueKey(),
                 issue.getIssueName(),
@@ -132,18 +133,29 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getDueDate(),
                 issue.getCreatedAt(),
                 issue.getUpdatedAt()
-            ))
-            .collect(Collectors.toList());
+        ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<IssueResponse> loadAllIssuesBasedOnFilter(String value, String filter) {
-        Query query = new Query(Criteria.where(filter).is(value));
-        List<Issue> issueList = mongoTemplate.find(query, Issue.class);
-
-        return issueList
-            .stream()
-            .map(issue -> new IssueResponse(
+    public List<IssueResponse> loadAllIssuesBasedOnFilter(Filter filter) {
+       Criteria criteria = new Criteria();
+        Query query;
+        //int a = b = c ? 1 : 2;
+        String cri = "";
+        criteria.andOperator(
+                Criteria.where("status").is(filter.getStatus()),
+                Criteria.where("priority").is(filter.getPriority()), 
+                Criteria.where("assignee").is(filter.getAssignee()), 
+                Criteria.where("reporter").is(filter.getReporter()), 
+                Criteria.where("projectId").is(filter.getProjectId()), 
+                Criteria.where("category").is(filter.getCategories())
+        );
+        query = new Query(criteria);
+        return
+        mongoTemplate.find(query, Issue.class)
+                .stream()
+                .map(issue -> new IssueResponse(
                 issue.getId(),
                 issue.getIssueKey(),
                 issue.getIssueName(),
@@ -156,8 +168,9 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getDueDate(),
                 issue.getCreatedAt(),
                 issue.getUpdatedAt()
-            ))
-            .collect(Collectors.toList());
+        ))
+                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -166,34 +179,34 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         List<Issue> issueList = mongoTemplate.find(query, Issue.class);
 
         return issueList
-            .stream()
-            .map(issue -> new IssueShortcutResponse(
+                .stream()
+                .map(issue -> new IssueShortcutResponse(
                 issue.getId(),
                 issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getPriority()
-            ))
-            .collect(Collectors.toList());
+        ))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds) {
         return issueIds
-            .stream()
-            .map(issueId -> {
-                Query query = new Query(Criteria.where("_id").is(issueId));
-                Issue issue = mongoTemplate.findOne(query, Issue.class);
+                .stream()
+                .map(issueId -> {
+                    Query query = new Query(Criteria.where("_id").is(issueId));
+                    Issue issue = mongoTemplate.findOne(query, Issue.class);
 
-                return new IssueBacklogResponse(
-                    issue.getId(),
-                    issue.getIssueKey(),
-                    issue.getIssueName(),
-                    getUserResponse(issue.getAssignee()),
-                    issue.getPriority(),
-                    issue.getStatus()
-                );
-            })
-            .collect(Collectors.toList());
+                    return new IssueBacklogResponse(
+                            issue.getId(),
+                            issue.getIssueKey(),
+                            issue.getIssueName(),
+                            getUserResponse(issue.getAssignee()),
+                            issue.getPriority(),
+                            issue.getStatus()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     private Update configUpdate(ArrayList<?> list, String type, String value) {
@@ -203,6 +216,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             return new Update().push(type, value);
         }
     }
+
     @Override
     public Boolean updateIssue(String issueId, String type, String value) {
         Query query = new Query(Criteria.where("_id").is(issueId));
@@ -235,4 +249,5 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         update.push("backlog", issueId);
         mongoTemplate.updateFirst(query, update, Project.class);
     }
+
 }

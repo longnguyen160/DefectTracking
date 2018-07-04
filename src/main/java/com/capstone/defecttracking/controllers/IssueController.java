@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.controllers;
 
+import com.capstone.defecttracking.models.Filter.Filter;
 import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
@@ -46,23 +47,23 @@ public class IssueController {
 
         String issueKey = issueRepositoryCustom.generateIssueKey();
         String issueId = issueRepository.save(
-            new Issue(
-                issue.getId(),
-                issue.getIssueName(),
-                issueKey,
-                issue.getProjectId(),
-                issue.getDescription(),
-                issue.getReporter(),
-                issue.getAssignee(),
-                issue.getStatus(),
-                issue.getPriority(),
-                issue.getDueDate(),
-                issue.getCreatedAt(),
-                issue.getUpdatedAt(),
-                issue.getWatchers(),
-                issue.getCategory(),
-                issue.getAttachments()
-            )
+                new Issue(
+                        issue.getId(),
+                        issue.getIssueName(),
+                        issueKey,
+                        issue.getProjectId(),
+                        issue.getDescription(),
+                        issue.getReporter(),
+                        issue.getAssignee(),
+                        issue.getStatus(),
+                        issue.getPriority(),
+                        issue.getDueDate(),
+                        issue.getCreatedAt(),
+                        issue.getUpdatedAt(),
+                        issue.getWatchers(),
+                        issue.getCategory(),
+                        issue.getAttachments()
+                )
         ).getId();
 
         issueRepositoryCustom.addIssueToBacklog(issueId, issue.getProjectId());
@@ -82,8 +83,8 @@ public class IssueController {
     }
 
     @GetMapping("user/loadAllIssuesBasedOnFilter")
-    public List<IssueResponse> loadAllIssuesBasedOnFilter(@RequestParam(value = "value") String value, @RequestParam(value = "filter") String filter) {
-        return issueRepositoryCustom.loadAllIssuesBasedOnFilter(value, filter);
+    public List<IssueResponse> loadAllIssuesBasedOnFilter(@RequestBody Filter filter) {
+        return issueRepositoryCustom.loadAllIssuesBasedOnFilter(filter);
     }
 
     @GetMapping("user/loadAllIssuesShortcut")
