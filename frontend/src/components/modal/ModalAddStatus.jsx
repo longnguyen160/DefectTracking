@@ -76,7 +76,8 @@ class ModalAddStatus extends Component {
 
     createStatus({
       name: this.input.value,
-      color: field.background,
+      background: field.background,
+      color: field.color,
       isDefault: false,
       handlers: selectedRole.map(role => role.value)
     }, () => onClose());

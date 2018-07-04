@@ -19,7 +19,7 @@ import {
 import BacklogDetails from './BacklogDetails';
 import { reorderMap } from '../../../utils/ultis';
 import { Button } from '../../../stylesheets/Button';
-import { loadProjectDetails, openModal } from '../../layout/actions/layout';
+import { loadProjectDetails, openModal, updateCurrentUserRole } from '../../layout/actions/layout';
 import { ICONS, ISSUE_PRIORITY_ARRAY, ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { updateBacklog } from '../actions/backlog';
 import Icon from '../../../components/icon/Icon';
@@ -43,13 +43,15 @@ class BackLog extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { selectedProject } = nextProps;
+    const { selectedProject, user } = nextProps;
+    const { updateCurrentUserRole } = this.props;
 
-    if (JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
+    if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
         backlog: selectedProject.backlog
       };
 
+      updateCurrentUserRole(selectedProject.members.find(member => member.userId === user.id).role);
       this.setState({ list });
     }
   }
@@ -225,16 +227,20 @@ class BackLog extends React.Component {
 BackLog.propTypes = {
   loadProjectDetails: PropTypes.func.isRequired,
   updateBacklog: PropTypes.func.isRequired,
-  selectedProject: PropTypes.object
+  updateCurrentUserRole: PropTypes.func.isRequired,
+  selectedProject: PropTypes.object,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  selectedProject: state.layout.selectedProject
+  selectedProject: state.layout.selectedProject,
+  user: state.layout.user
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   loadProjectDetails: loadProjectDetails,
   updateBacklog: updateBacklog,
+  updateCurrentUserRole: updateCurrentUserRole
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackLog);

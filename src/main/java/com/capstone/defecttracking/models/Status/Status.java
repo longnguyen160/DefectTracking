@@ -20,9 +20,30 @@ public class Status {
     @Id
     private String id;
     private String name;
+    private String background;
     private String color;
-    boolean isDefault;
+    private boolean isDefault;
     private List<String> handlers;
+
+    public Status() {
+    }
+
+    public Status(String id, String name, String background, String color, boolean isDefault, List<String> handlers) {
+        this.id = id;
+        this.name = name;
+        this.background = background;
+        this.color = color;
+        this.isDefault = isDefault;
+        this.handlers = handlers;
+    }
+
+    public Status(String name, String background, String color, boolean isDefault, List<String> handlers) {
+        this.name = name;
+        this.background = background;
+        this.color = color;
+        this.isDefault = isDefault;
+        this.handlers = handlers;
+    }
 
     public String getId() {
         return id;
@@ -40,6 +61,14 @@ public class Status {
         this.name = name;
     }
 
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
     public String getColor() {
         return color;
     }
@@ -48,11 +77,11 @@ public class Status {
         this.color = color;
     }
 
-    public boolean isIsDefault() {
+    public boolean isDefault() {
         return isDefault;
     }
 
-    public void setIsDefault(boolean isDefault) {
+    public void setDefault(boolean isDefault) {
         this.isDefault = isDefault;
     }
 
@@ -63,23 +92,4 @@ public class Status {
     public void setHandlers(List<String> handlers) {
         this.handlers = handlers;
     }
-
-    public Status(String id, String name, String color, boolean isDefault, List<String> handlers) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.isDefault = isDefault;
-        this.handlers = handlers;
-    }
-
-    public Status(String name, String color, boolean isDefault, List<String> handlers) {
-        this.name = name;
-        this.color = color;
-        this.isDefault = isDefault;
-        this.handlers = handlers;
-    }
-
-    public Status() {
-    }
-
 }

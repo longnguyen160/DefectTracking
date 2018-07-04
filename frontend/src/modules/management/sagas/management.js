@@ -84,11 +84,11 @@ function* watchRemoveStatus() {
 
 //load all status
 
-function* loadAllStatus() {
+function* loadAllStatus({ role }) {
   try {
     yield put(loadAllStatusRequest());
 
-    const { data } = yield call(API.loadAllStatus);
+    const { data } = yield call(API.loadAllStatus, role);
 
     yield put(loadAllStatusSuccess(data));
   } catch (error) {

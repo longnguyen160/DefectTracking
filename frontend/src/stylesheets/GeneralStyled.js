@@ -637,36 +637,6 @@ export const IssueStatusStyled = styled.div`
     background: ${props.status.background};
     color: ${props.status.color};
   `}
-  ${props => {
-    if (props.status) {
-      switch (props.status) {
-        case 'To Do':
-          return css`
-            border: 1px solid #d1d1d1;
-            background-color: #d1d1d1;
-            color: #1a1a1a;   
-          `;
-        case 'In Progress':
-          return css`
-            border: 1px solid #026a95;
-            background-color: #026a95;
-            color: #fff;
-          `;
-        case 'Testing':
-          return css`
-            border: 1px solid #fe8f00;
-            background-color: #fe8f00;
-            color: #fff;
-          `;
-        case 'Done':
-          return css`
-            border: 1px solid #00c056;
-            background-color: #00c056;
-            color: #fff;
-          `;
-      } 
-    }
-  }} 
 `;
 
 export const AttachmentWrapperStyled = styled.div`  

@@ -212,22 +212,18 @@ const PROJECT_STATUS = {
 
 const ISSUE_STATUS_ARRAY = [
   {
-    value: 'To Do',
     background: '#d1d1d1',
     color: '#1a1a1a'
   },
   {
-    value: 'In Progress',
     background: '#026a95',
     color: '#fff'
   },
   {
-    value: 'Testing',
     background: '#fe8f00',
     color: '#fff'
   },
   {
-    value: 'Done',
     background: '#00c056',
     color: '#fff'
   },
@@ -290,6 +286,11 @@ const USER_ROLE_IN_PROJECT = [
   { value: 'manager', label: 'Manager' }
 ];
 
+const ROLES = {
+  ADMIN: 'ADMIN',
+  USER: 'USER'
+};
+
 const MESSAGE_TYPE = {
   COMMENTS: 'comments',
   LOGS: 'logs',
@@ -333,5 +334,6 @@ export {
   FILE_BASE_URL,
   MESSAGE_TYPE,
   MESSAGE,
-  ISSUE_DETAILS
+  ISSUE_DETAILS,
+  ROLES
 }

@@ -4,6 +4,7 @@ import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Filter.Filter;
 import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.mongodb.client.result.UpdateResult;
@@ -31,21 +32,21 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         Issue issue = mongoTemplate.findOne(query, Issue.class);
 
         return new IssueDetailsResponse(
-                issue.getId(),
-                issue.getIssueKey(),
-                issue.getIssueName(),
-                issue.getProjectId(),
-                issue.getDescription(),
-                getUserResponse(issue.getReporter()),
-                getUserResponse(issue.getAssignee()),
-                issue.getStatus(),
-                issue.getPriority(),
-                issue.getDueDate(),
-                issue.getCreatedAt(),
-                issue.getUpdatedAt(),
-                new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
-                issue.getCategory(),
-                issue.getAttachments()
+            issue.getId(),
+            issue.getIssueKey(),
+            issue.getIssueName(),
+            issue.getProjectId(),
+            issue.getDescription(),
+            getUserResponse(issue.getReporter()),
+            getUserResponse(issue.getAssignee()),
+            getIssueStatusResponse(issue.getStatus()),
+            issue.getPriority(),
+            issue.getDueDate(),
+            issue.getCreatedAt(),
+            issue.getUpdatedAt(),
+            new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
+            issue.getCategory(),
+            issue.getAttachments()
         );
     }
 
@@ -60,6 +61,12 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueName(),
                 issue.getPriority()
         );
+    }
+
+    private Status getIssueStatusResponse(String statusId) {
+        Query query = new Query(Criteria.where("_id").is(statusId));
+
+        return mongoTemplate.findOne(query, Status.class);
     }
 
     @Override
@@ -145,10 +152,10 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         String cri = "";
         criteria.andOperator(
                 Criteria.where("status").is(filter.getStatus()),
-                Criteria.where("priority").is(filter.getPriority()), 
-                Criteria.where("assignee").is(filter.getAssignee()), 
-                Criteria.where("reporter").is(filter.getReporter()), 
-                Criteria.where("projectId").is(filter.getProjectId()), 
+                Criteria.where("priority").is(filter.getPriority()),
+                Criteria.where("assignee").is(filter.getAssignee()),
+                Criteria.where("reporter").is(filter.getReporter()),
+                Criteria.where("projectId").is(filter.getProjectId()),
                 Criteria.where("category").is(filter.getCategories())
         );
         query = new Query(criteria);
