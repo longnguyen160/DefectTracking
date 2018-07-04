@@ -45,7 +45,7 @@ public class FilterController {
         this.messTemplate = template;
     }
 
-    @GetMapping("user/changeFilter")
+    @GetMapping("user/updateFilter")
     public List<IssueResponse> updateFilter(@RequestBody Filter filter) {
         ServerResponse serverResponse;
         if (filterrepositorycustom.updateFilter(filter)) {
@@ -53,5 +53,6 @@ public class FilterController {
         }
         return null;
     }
+    
 
 }
