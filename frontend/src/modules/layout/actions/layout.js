@@ -10,6 +10,7 @@ import {
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
+  SELECT_PROJECT,
   RESET_PROJECT
 } from './types';
 
@@ -45,11 +46,11 @@ const closeModal = () => ({
   type: CLOSE_MODAL
 });
 
-const loadProjectDetails = (projectId, handleProjectDetails) => {
+const loadProjectDetails = (projectId, selectProject) => {
   return {
     type: LOAD_PROJECT_DETAILS,
     projectId,
-    handleProjectDetails
+    selectProject
   }
 };
 
@@ -73,6 +74,13 @@ const loadProjectDetailsFailure = (error) => {
   }
 };
 
+const selectProject = (project) => {
+  return {
+    type: SELECT_PROJECT,
+    project
+  }
+};
+
 const resetProject = () => ({
   type: RESET_PROJECT
 });
@@ -89,5 +97,6 @@ export {
   loadProjectDetailsRequest,
   loadProjectDetailsSuccess,
   loadProjectDetailsFailure,
+  selectProject,
   resetProject
 }

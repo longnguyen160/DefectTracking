@@ -1,16 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import SockJsClient from "react-stomp";
 import ReactTable from "react-table";
 import {
-  ElementHeaderStyled, Image,
+  ElementHeaderStyled,
+  Image,
   PageBoardStyled,
   TableBlockStyled,
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
-import moment from 'moment/moment';
 import { Button } from '../../../stylesheets/Button';
+import { loadProjectDetails, openModal } from '../../layout/actions/layout';
+import { loadAllProjects } from '../../projects/actions/project';
+import { WEB_SOCKET_URL } from '../../../utils/enums';
 
 class ProjectsManagement extends React.Component {
+
+  componentWillMount() {
+    const { loadAllProjects } = this.props;
+
+    loadAllProjects();
+  }
+
+  onMessageReceive = () => {
+    const { loadAllProjects } = this.props;
+
+    loadAllProjects();
+  };
+
   render() {
     const styleColumn = {
       style: {
@@ -49,25 +68,14 @@ class ProjectsManagement extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Button hasBorder>
-              Delete
+            <Button small hasBorder remove>
+              Close
             </Button>
           </TableBlockStyled>
         )
       },
     ];
-    const projects = [
-      {
-        name: 'ABC',
-        manager: 'Bim beo',
-        category: 'FPT'
-      },
-      {
-        name: 'DEF',
-        manager: 'Bim bim',
-        category: 'FPT'
-      }
-    ];
+    const { projects } = this.props;
 
     return (
       <PageBoardStyled backlog>
@@ -82,9 +90,32 @@ class ProjectsManagement extends React.Component {
           defaultPageSize={10}
           className="-striped -highlight"
         />
+        <SockJsClient
+          url={WEB_SOCKET_URL}
+          topics={['/topic/projects']}
+          onMessage={this.onMessageReceive}
+          debug={true}
+        />
       </PageBoardStyled>
     );
   }
 }
 
-export default ProjectsManagement;
+ProjectsManagement.propTypes = {
+  openModal: PropTypes.func.isRequired,
+  loadAllProjects: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
+  projects: PropTypes.array.isRequired
+};
+
+const mapStateToProps = state => ({
+  projects: state.project.projects
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  openModal: openModal,
+  loadProjectDetails: loadProjectDetails,
+  loadAllProjects: loadAllProjects
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsManagement);

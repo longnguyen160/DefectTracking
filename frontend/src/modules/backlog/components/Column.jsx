@@ -11,7 +11,7 @@ import {
   ListTableHeaderItemsStyled,
   ListTableHeaderStyled
 } from '../../../stylesheets/Table';
-import { ISSUE_STATUS_ARRAY } from '../../../utils/enums';
+import { COLOR_ARRAY } from '../../../utils/enums';
 import PropTypes from 'prop-types';
 import { openModal } from '../../layout/actions/layout';
 import { reorderMap } from '../../../utils/ultis';
@@ -33,7 +33,7 @@ class Column extends React.Component {
       loadAllIssuesFromBacklog(selectedProject.backlog);
     }
 
-    ISSUE_STATUS_ARRAY.map(status => {
+    COLOR_ARRAY.map(status => {
       list = Object.assign({}, list, {
         [status.value]: []
       });
@@ -102,12 +102,12 @@ class Column extends React.Component {
         <DragDropContext onDragEnd={this.onDragEnd}>
           <PageBoardStyled noPadding>
             {
-              ISSUE_STATUS_ARRAY.map((status, index) => {
+              COLOR_ARRAY.map((status, index) => {
                 let margin = '0 10px';
 
                 if (index === 0) {
                   margin = '0 10px 0 0';
-                } else if (index === ISSUE_STATUS_ARRAY.length) {
+                } else if (index === COLOR_ARRAY.length) {
                   margin = '0 0 0 10px';
                 }
 

@@ -8,6 +8,11 @@ package com.capstone.defecttracking.repositories.Category;
 import com.capstone.defecttracking.models.Category.Category;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.capstone.defecttracking.models.Category.CategoryManagementResponse;
+import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Project.ProjectCategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -21,31 +26,36 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public Category findbyId(String Cateid) {
-        Query query = new Query(Criteria.where("_id").is(Cateid));
-        Category cate = mongoTemplate.findOne(query, Category.class);
-        if (cate != null) {
-            return cate;
-        }
-        return null;
-    }
-
-    @Override
     public boolean doesCateExited(String name) {
         Query query = new Query(Criteria.where("name").is(name));
-        Category cate = mongoTemplate.findOne(query, Category.class);
 
+        Category cate = mongoTemplate.findOne(query, Category.class);
         return cate != null;
     }
 
     @Override
-    public List<Category> loadAllCate() {
-        List<Category> result = mongoTemplate.findAll(Category.class);
-        if (result.isEmpty()) {
-            return null;
-        }
-        return result;
-
+    public List<CategoryManagementResponse> loadAllCategory() {
+        return mongoTemplate
+            .findAll(Category.class)
+            .stream()
+            .map(category -> new CategoryManagementResponse(
+                category.getId(),
+                category.getName(),
+                category.getColor(),
+                category.getBackground(),
+                new ArrayList<ProjectCategoryResponse>(category
+                    .getProjects()
+                    .stream()
+                    .map(this::getProjectCategoryResponse)
+                    .collect(Collectors.toList()))
+            ))
+            .collect(Collectors.toList());
     }
 
+    private ProjectCategoryResponse getProjectCategoryResponse(String projectId) {
+        Query query = new Query(Criteria.where("_id").is(projectId));
+        Project project = mongoTemplate.findOne(query, Project.class);
+
+        return new ProjectCategoryResponse(projectId, project.getName());
+    }
 }

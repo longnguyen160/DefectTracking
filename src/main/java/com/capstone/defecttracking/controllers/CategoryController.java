@@ -6,6 +6,7 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Category.Category;
+import com.capstone.defecttracking.models.Category.CategoryManagementResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.repositories.Category.CategoryRepository;
 import com.capstone.defecttracking.repositories.Category.CategoryRepositoryCustom;
@@ -25,10 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
     @Autowired
-    CategoryRepository caterepository;
+    CategoryRepository categoryRepository;
     @Autowired
-    CategoryRepositoryCustom caterepositorycustom;
-    SimpMessagingTemplate messTemplate;
+    CategoryRepositoryCustom categoryRepositoryCustom;
+
+    private SimpMessagingTemplate messTemplate;
 
     @Inject
     public CategoryController(SimpMessagingTemplate template) {
@@ -36,33 +38,35 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/createCategory")
-    public ResponseEntity<?> createCate(@RequestBody Category cate) {
-        ServerResponse serverrespone;
-        if (caterepositorycustom.doesCateExited(cate.getName())) {
-            serverrespone = new ServerResponse(Boolean.FALSE, "This Category have been create already");
-            return new ResponseEntity(serverrespone, HttpStatus.BAD_REQUEST);
-        }
-        caterepository.save(cate);
-        serverrespone = new ServerResponse(Boolean.TRUE, "Create category successfull");
-        messTemplate.convertAndSend("/topic/categories", serverrespone);
+    public ResponseEntity<?> createCategory(@RequestBody Category cate) {
+        ServerResponse serverResponse;
 
-        return new ResponseEntity<>(serverrespone, HttpStatus.ACCEPTED);
+        if (categoryRepositoryCustom.doesCateExited(cate.getName())) {
+            serverResponse = new ServerResponse(Boolean.FALSE, "This Category have been create already");
+
+            return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+        }
+        categoryRepository.save(cate);
+        serverResponse = new ServerResponse(Boolean.TRUE, "Create category successfull");
+        messTemplate.convertAndSend("/topic/categories", serverResponse);
+
+        return new ResponseEntity<>(serverResponse, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/admin/deleteCategory")
     public ResponseEntity<?> deleteCategory(@RequestBody String categoryId) {
-        ServerResponse serverrespone;
+        ServerResponse serverResponse;
 
-        caterepository.deleteById(categoryId);
-        serverrespone = new ServerResponse(Boolean.TRUE, "Delete category successfully");
+        categoryRepository.deleteById(categoryId);
+        serverResponse = new ServerResponse(Boolean.TRUE, "Delete category successfully");
 
-        messTemplate.convertAndSend("/topic/categories",serverrespone);
-        return new ResponseEntity<>(serverrespone, HttpStatus.ACCEPTED);
+        messTemplate.convertAndSend("/topic/categories",serverResponse);
+        return new ResponseEntity<>(serverResponse, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/admin/loadAllCategories")
-    public List<Category> getAllCate() {
-        return caterepositorycustom.loadAllCate();
+    public List<CategoryManagementResponse> getAllCategory() {
+        return categoryRepositoryCustom.loadAllCategory();
     }
 
 }

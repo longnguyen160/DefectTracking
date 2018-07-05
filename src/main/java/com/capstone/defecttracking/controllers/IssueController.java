@@ -45,7 +45,7 @@ public class IssueController {
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
 
-        String issueKey = issueRepositoryCustom.generateIssueKey();
+        String issueKey = issueRepositoryCustom.generateIssueKey(issue.getProjectId());
         String issueId = issueRepository.save(
                 new Issue(
                         issue.getId(),

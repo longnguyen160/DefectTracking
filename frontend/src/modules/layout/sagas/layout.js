@@ -32,14 +32,14 @@ function* watchLoadCurrentUser() {
   yield takeLatest(LOAD_CURRENT_USER, loadCurrentUser);
 }
 
-function* loadProjectDetails({ projectId, handleProjectDetails }) {
+function* loadProjectDetails({ projectId, selectProject }) {
   try {
     yield put(loadProjectDetailsRequest());
 
     const { data } = yield call(API.loadProjectDetails, projectId);
 
-    if (handleProjectDetails && typeof (handleProjectDetails) === 'function') {
-      handleProjectDetails(data);
+    if (selectProject && typeof (selectProject) === 'function') {
+      selectProject(data);
     } else {
       yield put(loadProjectDetailsSuccess(data));
     }

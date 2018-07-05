@@ -50,15 +50,16 @@ class ModalIssueDetails extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { issue } = nextProps;
+    const { issue, project } = nextProps;
     const { loadProjectDetails, user, selectedProject } = this.props;
 
     if (issue && !this.props.issue && !selectedProject) {
-      loadProjectDetails(issue.projectId, (project) => {
-        const userRole = project.members.find(member => member.userId === user.id).role;
+      loadProjectDetails(issue.projectId);
+    }
+    if (JSON.stringify(project) !== JSON.stringify(this.props.project)) {
+      const userRole = project.members.find(member => member.userId === user.id).role;
 
-        this.setState({ userRole });
-      });
+      this.setState({ userRole });
     }
   }
 
@@ -429,6 +430,7 @@ ModalIssueDetails.propTypes = {
   loadProjectDetails: PropTypes.func.isRequired,
   issue: PropTypes.object,
   selectedProject: PropTypes.object,
+  project: PropTypes.object,
   user: PropTypes.object.isRequired
 };
 
@@ -436,7 +438,8 @@ const mapStateToProps = state => ({
   issue: state.issue.issue,
   messages: state.message.messages,
   user: state.layout.user,
-  selectedProject: state.layout.selectedProject
+  selectedProject: state.layout.selectedProject,
+  project: state.layout.project
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

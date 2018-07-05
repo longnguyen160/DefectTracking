@@ -15,7 +15,7 @@ import {
   Input
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES } from '../../../utils/enums';
+import { COLOR_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES } from '../../../utils/enums';
 import { openModal } from '../../layout/actions/layout';
 import { loadAllStatus, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
 

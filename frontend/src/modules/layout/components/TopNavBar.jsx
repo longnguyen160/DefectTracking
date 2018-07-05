@@ -27,9 +27,9 @@ class TopNavBar extends Component {
   };
 
   handleSelectProject = (projectId) => {
-    const { loadProjectDetails, history } = this.props;
+    const { loadProjectDetails, history, selectProject } = this.props;
 
-    loadProjectDetails(projectId);
+    loadProjectDetails(projectId, (project) => selectProject(project));
     history.push(`/project/${projectId}/backlog`);
   };
 
@@ -120,6 +120,7 @@ TopNavBar.propTypes = {
   projects: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
   loadProjectDetails: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

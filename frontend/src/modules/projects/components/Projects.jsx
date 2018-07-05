@@ -13,7 +13,7 @@ import {
   PageBoardStyled,
   ElementHeaderStyled
 } from '../../../stylesheets/GeneralStyled';
-import { loadProjectDetails, openModal } from '../../layout/actions/layout';
+import { loadProjectDetails, openModal, selectProject } from '../../layout/actions/layout';
 import { ICONS, MODAL_TYPE, PROJECT_STATUS, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjects } from '../actions/project';
 import Icon from '../../../components/icon/Icon';
@@ -27,9 +27,9 @@ class Projects extends React.Component {
   };
 
   handleSelectProject = (projectId) => {
-    const { loadProjectDetails, history } = this.props;
+    const { loadProjectDetails, history, selectProject } = this.props;
 
-    loadProjectDetails(projectId);
+    loadProjectDetails(projectId, (project) => selectProject(project));
     history.push(`/project/${projectId}/backlog`);
   };
 
@@ -93,6 +93,7 @@ Projects.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
   loadAllProjects: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   project: PropTypes.shape({
     projects: PropTypes.array.isRequired,
@@ -107,6 +108,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadProjectDetails: loadProjectDetails,
+  selectProject: selectProject,
   loadAllProjects: loadAllProjects
 }, dispatch);
 

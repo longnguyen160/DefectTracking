@@ -42,6 +42,10 @@ const loadAllProjects = () => {
   return axios.get('loadAllProjects');
 };
 
+const loadAllProjectsForManagement = () => {
+  return axios.get('admin/loadAllProjectsForManagement');
+};
+
 const loadALlUsersInProject = (projectId) => {
   return axios.get(`user/loadAllUsersInProject?projectId=${projectId}`);
 };
@@ -88,6 +92,14 @@ const updateIssue = (data) => {
 
 const loadAllIssuesFromBacklog = (issueList) => {
   return axios.get(`user/loadAllIssuesFromBacklog?issueIds=${issueList}`);
+};
+
+const updateFilter = (data) => {
+  return axios.get('user/updateFilter', { params: { filter: data } });
+};
+
+const getFilter = (userId) => {
+  return axios.get(`user/getFilter?userId=${userId}`);
 };
 // Category
 const createCategory = (category) => {
@@ -177,7 +189,10 @@ const API = {
   loadAllStatus,
   removeStatus,
   updateStatus,
-  updateStatusDefault
+  updateStatusDefault,
+  updateFilter,
+  getFilter,
+  loadAllProjectsForManagement
 };
 
 export default API;

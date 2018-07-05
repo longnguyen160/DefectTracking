@@ -5,7 +5,12 @@ import { bindActionCreators } from 'redux';
 import ReactTable from "react-table";
 import SockJsClient from "react-stomp";
 import {MODAL_TYPE, WEB_SOCKET_URL} from '../../../utils/enums';
-import { ElementHeaderStyled, PageBoardStyled, TitleElementStyled } from '../../../stylesheets/GeneralStyled';
+import {
+  ElementHeaderStyled, IssueStatusStyled,
+  PageBoardStyled,
+  TableBlockStyled,
+  TitleElementStyled
+} from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
 import { loadAllCategories } from '../actions/category';
@@ -40,17 +45,29 @@ class CategoriesManagement extends React.Component {
       {
         Header: 'Name',
         accessor: 'name',
-        ...styleColumn
-      },
-      {
-        Header: 'Description',
-        accessor: 'description',
-        ...styleColumn
+        ...styleColumn,
+        Cell: row => (
+          <TableBlockStyled
+            alignLeft
+            onClick={() => openModal(MODAL_TYPE.ADD_CATEGORY)}
+          >
+            <IssueStatusStyled status={row.original}>
+              {row.value}
+            </IssueStatusStyled>
+          </TableBlockStyled>
+        )
       },
       {
         Header: 'Project',
-        accessor: 'project',
-        ...styleColumn
+        accessor: 'projects',
+        ...styleColumn,
+        Cell: row => (
+          <TableBlockStyled alignLeft>
+            <IssueStatusStyled>
+              {row.value}
+            </IssueStatusStyled>
+          </TableBlockStyled>
+        )
       },
       {
         Header: 'Action',

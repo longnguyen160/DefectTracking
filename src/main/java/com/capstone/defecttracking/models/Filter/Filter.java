@@ -18,14 +18,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Filter {
 
     @Id
-    String id;
-    String status;
-    String priority;
-    String assignee;
-    String reporter;
-    String projectId;
-    String userId;
-    List<String> categories;
+    private String id;
+    private String status;
+    private String priority;
+    private String assignee;
+    private String reporter;
+    private String projectId;
+    private String userId;
+    private List<String> categories;
 
     public Filter() {
     }
@@ -52,8 +52,8 @@ public class Filter {
     public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
-    
-    
+
+
 
     public String getId() {
         return id;
@@ -95,7 +95,7 @@ public class Filter {
         this.reporter = reporter;
     }
 
-   
+
 
     public String getUserId() {
         return userId;

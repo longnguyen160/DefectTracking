@@ -1,9 +1,6 @@
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.models.Project.Project;
-import com.capstone.defecttracking.models.Project.ProjectBacklogRequest;
-import com.capstone.defecttracking.models.Project.ProjectResponse;
-import com.capstone.defecttracking.models.Project.UserProjectRequest;
+import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Project.ProjectRepository;
@@ -57,11 +54,16 @@ public class ProjectController {
     }
 
     @GetMapping("/loadAllProjects")
-    public List<ProjectResponse> loadAllProject() {
+    public List<ProjectResponse> loadAllProjects() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         return projectRepositoryCustom.loadAllProjectsForCurrentUser(userDetailsSecurity.getId());
+    }
+
+    @GetMapping("/admin/loadAllProjectsForManagement")
+    public List<ProjectManagementResponse> loadAllProjectsForManagement() {
+        return projectRepositoryCustom.loadAllProjectsForManagement();
     }
 
     @GetMapping("user/loadProjectDetails")

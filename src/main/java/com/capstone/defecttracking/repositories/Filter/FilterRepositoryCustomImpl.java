@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author doanb
@@ -26,18 +28,31 @@ public class FilterRepositoryCustomImpl implements FilterRepositoryCustom {
 
     @Override
     public Boolean updateFilter(Filter filter) {
-        Query query = new Query(Criteria.where("_id").is(filter.getId()));
-        Update update = new Update();
-        update.set("status", filter.getStatus());
-        update.set("priority", filter.getPriority());
-        update.set("assignee", filter.getAssignee());
-        update.set("reporter", filter.getReporter());
-        update.set("project", filter.getProjectId());
-        update.set("categories", filter.getCategories());
-        if (mongoTemplate.updateFirst(query, update, Filter.class) != null) {            
+        Query query = new Query(Criteria.where("userId").is(filter.getUserId()));
+        Filter userFilter = mongoTemplate.findOne(query, Filter.class);
+
+        if (userFilter == null) {
+            mongoTemplate.save(filter);
             return true;
+        } else {
+            Update update = new Update();
+
+            update.set("status", filter.getStatus() == null ? "" : filter.getStatus());
+            update.set("priority", filter.getPriority() == null ? "" : filter.getPriority());
+            update.set("assignee", filter.getAssignee() == null ? "" : filter.getAssignee());
+            update.set("reporter", filter.getReporter() == null ? "" : filter.getReporter());
+            update.set("project", filter.getProjectId() == null ? "" : filter.getProjectId());
+            update.set("categories", filter.getCategories() == null ? new ArrayList<>() : filter.getCategories());
+
+            return mongoTemplate.updateFirst(query, update, Filter.class).getModifiedCount() != 0;
         }
-        return false;
+    }
+
+    @Override
+    public Filter getFilter(String userId) {
+        Query query = new Query(Criteria.where("userId").is(userId));
+
+        return mongoTemplate.findOne(query, Filter.class);
     }
 
 }

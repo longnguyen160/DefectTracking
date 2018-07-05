@@ -210,7 +210,7 @@ const PROJECT_STATUS = {
   PRIVATE: 'private'
 };
 
-const ISSUE_STATUS_ARRAY = [
+const COLOR_ARRAY = [
   {
     background: '#d1d1d1',
     color: '#1a1a1a'
@@ -328,7 +328,7 @@ export {
   MODAL_TYPE,
   WEB_SOCKET_URL,
   PROJECT_STATUS,
-  ISSUE_STATUS_ARRAY,
+  COLOR_ARRAY,
   ISSUE_PRIORITY_ARRAY,
   USER_ROLE_IN_PROJECT,
   FILE_BASE_URL,

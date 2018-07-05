@@ -8,6 +8,7 @@ import {
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
+  SELECT_PROJECT,
   RESET_PROJECT
 } from '../actions/types';
 
@@ -17,6 +18,7 @@ const initialState = {
   error: null,
   modalIsOpen: false,
   selectedProject: null,
+  project: null,
   modalType: ''
 };
 
@@ -69,7 +71,7 @@ export default function account(state = initialState, action) {
     case LOAD_PROJECT_DETAILS_SUCCESS:
       return Object.assign({}, state, {
         isLoading: false,
-        selectedProject: action.data,
+        project: action.data,
         error: null
       });
 
@@ -77,6 +79,11 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
+      });
+
+    case SELECT_PROJECT:
+      return Object.assign({}, state, {
+        selectedProject: action.project,
       });
 
     case RESET_PROJECT:

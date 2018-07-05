@@ -18,7 +18,7 @@ import CustomOptionForSelect from '../form/CustomOptionForSelect';
 import CustomValueForSelect from '../form/CustomValueForSelect';
 import { addUserToProject } from '../../modules/projects/actions/usersInProject';
 
-class ModalAddUser extends React.Component {
+class ModalAddingUser extends React.Component {
 
   state = {
     selectedUser: null,
@@ -144,7 +144,7 @@ class ModalAddUser extends React.Component {
   }
 }
 
-ModalAddUser.propTypes = {
+ModalAddingUser.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   loadAllUsers: PropTypes.func.isRequired,
@@ -172,4 +172,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   addUserToProject: addUserToProject
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalAddUser);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalAddingUser);
