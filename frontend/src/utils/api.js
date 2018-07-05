@@ -110,6 +110,10 @@ const loadAllCategories = () => {
   return axios.get('admin/loadAllCategories');
 };
 
+const loadAllCategoriesInProject = (projectId) => {
+  return axios.get(`user/loadAllCategoriesInProject?projectId=${projectId}`);
+}
+
 // File
 const uploadFile = (file) => {
   return axios.post('files/uploadFile', file);
@@ -192,7 +196,8 @@ const API = {
   updateStatusDefault,
   updateFilter,
   getFilter,
-  loadAllProjectsForManagement
+  loadAllProjectsForManagement,
+  loadAllCategoriesInProject
 };
 
 export default API;

@@ -64,9 +64,10 @@ class ModalCreatingIssue extends React.Component {
   }
 
   componentWillUnmount() {
-    const { resetState } = this.props;
+    const { resetState, resetCategory } = this.props;
 
     resetState();
+    resetCategory();
   }
 
   onDrop = (files) => {
@@ -299,7 +300,7 @@ class ModalCreatingIssue extends React.Component {
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Labels</ModalLineTitleStyled>
+                <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled reactSelect>
                     <InputField
@@ -349,6 +350,7 @@ ModalCreatingIssue.propTypes = {
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   loadAllUsersInProject: PropTypes.func.isRequired,
+  resetCategory: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   usersInProject: PropTypes.array.isRequired,
   selectedProject: PropTypes.object.isRequired,
@@ -380,6 +382,7 @@ const mapStateToProps = state => ({
     label: user.username,
     ...user
   })),
+  categories: state.layout.categories,
   user: state.layout.user,
   selectedProject: state.layout.selectedProject,
   issue: state.issue,

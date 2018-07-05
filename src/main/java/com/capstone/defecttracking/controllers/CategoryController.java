@@ -7,6 +7,7 @@ package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Category.Category;
 import com.capstone.defecttracking.models.Category.CategoryManagementResponse;
+import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.repositories.Category.CategoryRepository;
 import com.capstone.defecttracking.repositories.Category.CategoryRepositoryCustom;
@@ -16,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 
@@ -65,8 +63,12 @@ public class CategoryController {
     }
 
     @GetMapping("/admin/loadAllCategories")
-    public List<CategoryManagementResponse> getAllCategory() {
-        return categoryRepositoryCustom.loadAllCategory();
+    public List<CategoryManagementResponse> getAllCategories() {
+        return categoryRepositoryCustom.loadAllCategories();
     }
 
+    @GetMapping("/user/loadAllCategoriesInProject")
+    public List<CategoryProjectResponse> loadAllCategoriesInProject(@RequestParam(value = "projectId") String projectId) {
+        return categoryRepositoryCustom.loadAllCategoriesInProject(projectId);
+    }
 }

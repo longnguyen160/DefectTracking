@@ -17,7 +17,7 @@ import {
   ListTableBodyContainerStyled,
   ListTableStyled
 } from '../../../stylesheets/Table';
-import { openModal, resetProject } from '../../layout/actions/layout';
+import { openModal, resetSelectedProject } from '../../layout/actions/layout';
 import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllIssuesShortcut, loadIssueDetails } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
@@ -25,9 +25,9 @@ import Icon from '../../../components/icon/Icon';
 class Home extends React.Component {
 
   componentWillMount() {
-    const { resetProject, loadAllIssuesShortcut, user } = this.props;
+    const { resetSelectedProject, loadAllIssuesShortcut, user } = this.props;
 
-    resetProject();
+    resetSelectedProject();
 
     if (user) {
       loadAllIssuesShortcut(user.id);
@@ -224,7 +224,7 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  resetProject: PropTypes.func.isRequired,
+  resetSelectedProject: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   loadAllIssuesShortcut: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
@@ -238,7 +238,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  resetProject: resetProject,
+  resetSelectedProject: resetSelectedProject,
   openModal: openModal,
   loadAllIssuesShortcut: loadAllIssuesShortcut,
   loadIssueDetails: loadIssueDetails

@@ -11,7 +11,7 @@ import {
   loadCurrentUser,
   openModal,
   closeModal,
-  resetProject,
+  resetSelectedProject,
   loadProjectDetails,
   selectProject
 } from '../actions/layout';
@@ -164,7 +164,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   logOut: logOut,
   openModal: openModal,
   closeModal: closeModal,
-  resetProject: resetProject,
+  resetSelectedProject: resetSelectedProject,
   selectProject: selectProject,
   loadAllProjects: loadAllProjects,
   loadProjectDetails: loadProjectDetails

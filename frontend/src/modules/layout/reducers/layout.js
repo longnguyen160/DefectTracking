@@ -9,7 +9,8 @@ import {
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
   SELECT_PROJECT,
-  RESET_PROJECT
+  RESET_PROJECT,
+  RESET_SELECTED_PROJECT
 } from '../actions/types';
 
 const initialState = {
@@ -87,6 +88,11 @@ export default function account(state = initialState, action) {
       });
 
     case RESET_PROJECT:
+      return Object.assign({}, state, {
+        project: null
+      });
+
+    case RESET_SELECTED_PROJECT:
       return Object.assign({}, state, {
         selectedProject: null
       });

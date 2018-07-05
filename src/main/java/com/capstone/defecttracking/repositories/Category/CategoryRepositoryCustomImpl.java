@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.capstone.defecttracking.models.Category.CategoryManagementResponse;
+import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Project.ProjectCategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     }
 
     @Override
-    public List<CategoryManagementResponse> loadAllCategory() {
+    public List<CategoryManagementResponse> loadAllCategories() {
         return mongoTemplate
             .findAll(Category.class)
             .stream()
@@ -48,6 +49,22 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                     .stream()
                     .map(this::getProjectCategoryResponse)
                     .collect(Collectors.toList()))
+            ))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryProjectResponse> loadAllCategoriesInProject(String projectId) {
+        Query query = new Query(Criteria.where("projects").is(projectId));
+
+        return mongoTemplate
+            .find(query, Category.class)
+            .stream()
+            .map(category -> new CategoryProjectResponse(
+                category.getId(),
+                category.getName(),
+                category.getColor(),
+                category.getBackground()
             ))
             .collect(Collectors.toList());
     }

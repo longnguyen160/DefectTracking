@@ -11,7 +11,8 @@ import {
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
   SELECT_PROJECT,
-  RESET_PROJECT
+  RESET_PROJECT,
+  RESET_SELECTED_PROJECT
 } from './types';
 
 const loadCurrentUser = goToLoginPage => ({
@@ -81,6 +82,10 @@ const selectProject = (project) => {
   }
 };
 
+const resetSelectedProject = () => ({
+  type: RESET_SELECTED_PROJECT
+});
+
 const resetProject = () => ({
   type: RESET_PROJECT
 });
@@ -98,5 +103,6 @@ export {
   loadProjectDetailsSuccess,
   loadProjectDetailsFailure,
   selectProject,
-  resetProject
+  resetProject,
+  resetSelectedProject
 }

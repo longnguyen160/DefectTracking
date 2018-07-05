@@ -49,12 +49,12 @@ class ProjectsManagement extends React.Component {
       },
       {
         Header: 'Project Manager',
-        accessor: 'manager',
+        accessor: 'managers',
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
-            {row.value.username}
+            <Image topNav src={row.value && row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
+            {row.value && row.value.username}
           </TableBlockStyled>
         )
       },
