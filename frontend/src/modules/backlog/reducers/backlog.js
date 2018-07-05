@@ -1,5 +1,7 @@
 import {
-
+  GET_FILTER_REQUEST,
+  GET_FILTER_SUCCESS,
+  GET_FILTER_FAILURE,
   UPDATE_BACKLOG_REQUEST,
   UPDATE_BACKLOG_SUCCESS,
   UPDATE_BACKLOG_FAILURE,
@@ -10,6 +12,7 @@ import {
 } from '../actions/types';
 
 const initialState = {
+  filter: null,
   issueList: [],
   isLoading: false,
   error: null
@@ -17,7 +20,27 @@ const initialState = {
 
 export default function backlog(state = initialState, action) {
   switch (action.type) {
+    //get filter by userId
+    case GET_FILTER_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+    
+    case GET_FILTER_SUCCESS: 
+      return Object.assign({}, state, {
+        isLoading: false,
+        filter: action.filter,
+        error: null
+      });
+    
+    case GET_FILTER_FAILURE: 
+      return object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
 
+    //update backlog 
     case UPDATE_BACKLOG_REQUEST:
       return Object.assign({}, state, {
         isLoading: true,

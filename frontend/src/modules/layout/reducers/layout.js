@@ -1,4 +1,7 @@
 import {
+  LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
   REQUEST_LOAD_CURRENT_USER,
   LOAD_CURRENT_USER_SUCCESS,
   LOAD_CURRENT_USER_FAILURE,
@@ -12,8 +15,10 @@ import {
   RESET_PROJECT,
   RESET_SELECTED_PROJECT
 } from '../actions/types';
+import { loadAllCategoriesInProjectRequest } from '../actions/layout';
 
 const initialState = {
+  categories:[],
   user: null,
   isLoading: false,
   error: null,
@@ -25,6 +30,26 @@ const initialState = {
 
 export default function account(state = initialState, action) {
   switch (action.type) {
+    //load all categories in project
+    case LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+    
+    case LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS:
+      return Object.assign({}, state, {
+        categories: action.categories,
+        isLoading: false,
+        error: null
+      });
+
+    case LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+    //load current user 
     case REQUEST_LOAD_CURRENT_USER:
       return Object.assign({}, state, {
         isLoading: true,

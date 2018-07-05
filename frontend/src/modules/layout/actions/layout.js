@@ -1,4 +1,8 @@
 import {
+  LOAD_ALL_CATEGORIES_IN_PROJECT,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
   LOAD_CURRENT_USER,
   REQUEST_LOAD_CURRENT_USER,
   LOAD_CURRENT_USER_SUCCESS,
@@ -14,7 +18,27 @@ import {
   RESET_PROJECT,
   RESET_SELECTED_PROJECT
 } from './types';
+//LOAD ALL CATEGORIES IN PROJECT
+const loadAllCategoriesInProject = (projectId) => ({
+  types: LOAD_ALL_CATEGORIES_IN_PROJECT,
+  projectId
+});
 
+const loadAllCategoriesInProjectRequest = () => ({
+  types: LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST
+}) ;
+
+const loadAllCategoriesInProjectSuccess = (categories) => ({
+  types: LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  categories
+});
+
+const loadAllCategoriesInProjectFailure = (error) => ({
+  types: LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
+  error
+});
+
+//LOAD CURRENT USER 
 const loadCurrentUser = goToLoginPage => ({
   type: LOAD_CURRENT_USER,
   goToLoginPage
@@ -91,6 +115,10 @@ const resetProject = () => ({
 });
 
 export {
+  loadAllCategoriesInProject,
+  loadAllCategoriesInProjectRequest,
+  loadAllCategoriesInProjectSuccess,
+  loadAllCategoriesInProjectFailure,
   loadCurrentUser,
   requestLoadCurrentUser,
   loadCurrentUserSuccess,

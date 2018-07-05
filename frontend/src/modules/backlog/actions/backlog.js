@@ -1,5 +1,8 @@
 import {
- 
+  GET_FILTER,  
+  GET_FILTER_REQUEST,
+  GET_FILTER_SUCCESS,
+  GET_FILTER_FAILURE,
   UPDATE_BACKLOG,
   UPDATE_BACKLOG_REQUEST,
   UPDATE_BACKLOG_SUCCESS,
@@ -10,8 +13,33 @@ import {
   LOAD_ALL_ISSUES_FROM_BACKLOG_FAILURE,
   RESET_ISSUE_LIST
 } from './types';
+// GET FILTER 
+const getFilter = (userId) => {
+  return {
+    types: GET_FILTER,
+    userId
+  }
+};
 
+const getFilterRequest = () => {
+  return {
+    types: GET_FILTER_REQUEST
+  }
+};
 
+const getFilterSuccess = (filter) => {
+  return {
+    types: GET_FILTER_SUCCESS,
+    filter
+  }
+};
+
+const getFilterFailure = (error) => {
+  return {
+    types: GET_FILTER_FAILURE,
+    error
+  }
+};
 
 //update backlog
 const updateBacklog = (projectId, backlog) => {
@@ -75,7 +103,10 @@ const resetIssueList = () => {
 };
 
 export {
-  
+  getFilter,
+  getFilterRequest,
+  getFilterSuccess,
+  getFilterFailure,
   updateBacklog,
   updateBacklogRequest,
   updateBacklogSuccess,
