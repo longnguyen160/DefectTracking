@@ -3,6 +3,7 @@ package com.capstone.defecttracking.controllers;
 import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
+import com.capstone.defecttracking.repositories.Category.CategoryRepositoryCustom;
 import com.capstone.defecttracking.repositories.Project.ProjectRepository;
 import com.capstone.defecttracking.repositories.Project.ProjectRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ProjectController {
     @Autowired
     ProjectRepositoryCustom projectRepositoryCustom;
 
+    @Autowired
+    CategoryRepositoryCustom categoryRepositoryCustom;
+
     private SimpMessagingTemplate template;
 
     @Inject
@@ -36,16 +40,20 @@ public class ProjectController {
     }
 
     @PostMapping("/admin/createProject")
-    public ResponseEntity<?> createProject(@RequestBody Project project) {
+    public ResponseEntity<?> createProject(@RequestBody ProjectCategoryRequest projectCategory) {
         ServerResponse serverResponse;
 
-        if (projectRepositoryCustom.doesProjectExisted(project.getName())) {
+        if (projectRepositoryCustom.doesProjectExisted(projectCategory.getProject().getName())) {
             serverResponse = new ServerResponse(false, "A project with that name already exists");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
 
-        projectRepository.save(project);
+        String projectId = projectRepository.save(projectCategory.getProject()).getId();
+
+        if (projectCategory.getCategories().size() > 0) {
+            categoryRepositoryCustom.addProject(projectId, projectCategory.getCategories());
+        }
         serverResponse = new ServerResponse(true, "Create project successfully");
 
         template.convertAndSend("/topic/projects", serverResponse);
@@ -67,7 +75,7 @@ public class ProjectController {
     }
 
     @GetMapping("user/loadProjectDetails")
-    public Project loadProjectDetails(@RequestParam(value = "projectId") String projectId) {
+    public ProjectDetailsResponse loadProjectDetails(@RequestParam(value = "projectId") String projectId) {
         return projectRepositoryCustom.loadProjectDetails(projectId);
     }
 

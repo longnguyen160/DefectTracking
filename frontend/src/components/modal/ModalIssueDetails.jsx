@@ -51,13 +51,10 @@ class ModalIssueDetails extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { issue, project } = nextProps;
-    const { loadProjectDetails, user, selectedProject, loadAllCategoriesInProject } = this.props;
+    const { loadProjectDetails, user, selectedProject } = this.props;
 
     if (issue && !this.props.issue && !selectedProject) {
       loadProjectDetails(issue.projectId);
-      loadAllCategoriesInProject(issue.projectId);
-    } else if (selectedProject) {
-      loadAllCategoriesInProject(selectedProject.id);
     }
     if (JSON.stringify(project) !== JSON.stringify(this.props.project)) {
       const userRole = project.members.find(member => member.userId === user.id).role;
@@ -432,7 +429,6 @@ ModalIssueDetails.propTypes = {
   loadIssueDetails: PropTypes.func.isRequired,
   createMessage: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
-  loadAllCategoriesInProject: PropTypes.func.isRequired,
   resetProject: PropTypes.func.isRequired,
   issue: PropTypes.object,
   selectedProject: PropTypes.object,

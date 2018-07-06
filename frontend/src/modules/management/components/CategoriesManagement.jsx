@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTable from "react-table";
 import SockJsClient from "react-stomp";
-import {MODAL_TYPE, WEB_SOCKET_URL} from '../../../utils/enums';
+import { ICONS, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import {
   ElementHeaderStyled, IssueStatusStyled,
   PageBoardStyled,
@@ -14,6 +14,7 @@ import {
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
 import { loadAllCategories } from '../actions/category';
+import Icon from '../../../components/icon/Icon';
 
 class CategoriesManagement extends React.Component {
 
@@ -62,20 +63,30 @@ class CategoriesManagement extends React.Component {
         accessor: 'projects',
         ...styleColumn,
         Cell: row => (
-          <TableBlockStyled alignLeft>
-            <IssueStatusStyled>
-              {row.value}
-            </IssueStatusStyled>
-          </TableBlockStyled>
+          row.value.map(project => (
+            <TableBlockStyled alignLeft key={project.id}>
+              <IssueStatusStyled>
+                {project.name}
+              </IssueStatusStyled>
+            </TableBlockStyled>
+          ))
         )
       },
       {
-        Header: 'Action',
-        ...styleColumn,
+        Header: '',
+        style: {
+          ...styleColumn.style,
+          justifyContent: 'flex-end'
+        },
+        ...styleColumn.headerStyle,
         Cell: row => (
-          <Button hasBorder remove>
-            Delete
-          </Button>
+          <Icon
+            icon={ICONS.TRASH}
+            color={'#ff3000'}
+            width={15}
+            height={15}
+            margin={'0'}
+          />
         )
       },
     ];

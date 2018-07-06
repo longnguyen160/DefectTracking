@@ -148,35 +148,23 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     public List<IssueResponse> loadAllIssuesBasedOnFilter(Filter filter) {
         Criteria criteria = new Criteria();
 
-        if (filter.getStatus() != null) {
-            criteria.andOperator(
-                Criteria.where("status").is(filter.getStatus())
-            );
+        if (filter.getStatus() != null && filter.getStatus().length() > 0) {
+            criteria.and("status").is(filter.getStatus());
         }
-        if (filter.getAssignee() != null) {
-            criteria.andOperator(
-                Criteria.where("status").is(filter.getAssignee())
-            );
+        if (filter.getAssignee() != null && filter.getAssignee().length() > 0) {
+            criteria.and("assignee").is(filter.getAssignee());
         }
-        if (filter.getReporter() != null) {
-            criteria.andOperator(
-                Criteria.where("reporter").is(filter.getReporter())
-            );
+        if (filter.getReporter() != null && filter.getReporter().length() > 0) {
+            criteria.and("reporter").is(filter.getReporter());
         }
-        if (filter.getCategories() != null) {
-            criteria.andOperator(
-                Criteria.where("categories").is(filter.getCategories())
-            );
+        if (filter.getCategories() != null && filter.getCategories().size() > 0) {
+            criteria.and("categories").is(filter.getCategories());
         }
-        if (filter.getProjectId() != null) {
-            criteria.andOperator(
-                Criteria.where("projectId").is(filter.getProjectId())
-            );
+        if (filter.getProjectId() != null && filter.getProjectId().length() > 0) {
+            criteria.and("projectId").is(filter.getProjectId());
         }
-        if (filter.getPriority() != null) {
-            criteria.andOperator(
-                Criteria.where("priority").is(filter.getPriority())
-            );
+        if (filter.getPriority() != null && filter.getPriority().length() > 0) {
+            criteria.and("priority").is(filter.getPriority());
         }
         Query query = new Query(criteria);
         return mongoTemplate

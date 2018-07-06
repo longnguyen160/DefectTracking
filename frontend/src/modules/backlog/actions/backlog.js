@@ -1,5 +1,5 @@
 import {
-  GET_FILTER,  
+  GET_FILTER,
   GET_FILTER_REQUEST,
   GET_FILTER_SUCCESS,
   GET_FILTER_FAILURE,
@@ -13,30 +13,30 @@ import {
   LOAD_ALL_ISSUES_FROM_BACKLOG_FAILURE,
   RESET_ISSUE_LIST
 } from './types';
-// GET FILTER 
+// GET FILTER
 const getFilter = (userId) => {
   return {
-    types: GET_FILTER,
+    type: GET_FILTER,
     userId
   }
 };
 
 const getFilterRequest = () => {
   return {
-    types: GET_FILTER_REQUEST
+    type: GET_FILTER_REQUEST
   }
 };
 
 const getFilterSuccess = (filter) => {
   return {
-    types: GET_FILTER_SUCCESS,
+    type: GET_FILTER_SUCCESS,
     filter
   }
 };
 
 const getFilterFailure = (error) => {
   return {
-    types: GET_FILTER_FAILURE,
+    type: GET_FILTER_FAILURE,
     error
   }
 };

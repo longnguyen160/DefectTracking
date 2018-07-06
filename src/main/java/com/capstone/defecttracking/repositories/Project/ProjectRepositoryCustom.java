@@ -1,16 +1,13 @@
 package com.capstone.defecttracking.repositories.Project;
 
-import com.capstone.defecttracking.models.Project.Project;
-import com.capstone.defecttracking.models.Project.ProjectManagementResponse;
-import com.capstone.defecttracking.models.Project.ProjectResponse;
-import com.capstone.defecttracking.models.Project.UserProjectRequest;
+import com.capstone.defecttracking.models.Project.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface ProjectRepositoryCustom {
-    Project loadProjectDetails(String projectId);
+    ProjectDetailsResponse loadProjectDetails(String projectId);
     Boolean doesProjectExisted(String projectName);
     List<ProjectResponse> loadAllProjectsForCurrentUser(String userId);
     List<ProjectManagementResponse> loadAllProjectsForManagement();

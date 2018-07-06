@@ -15,9 +15,11 @@ import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,11 +53,11 @@ public class FilterController {
     }
 
     @GetMapping("user/updateFilter")
-    public List<IssueResponse> updateFilter(@RequestParam(name = "filter") String filterRequest) {
+    public List<IssueResponse> updateFilter(@RequestParam Map<String, List<String>> filterRequest) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            Filter filter = objectMapper.readValue(filterRequest, Filter.class);
+            Filter filter = objectMapper.readValue(new Gson().toJson(filterRequest), Filter.class);
             filterRepositoryCustom.updateFilter(filter);
 
             return issueRepositoryCustom.loadAllIssuesBasedOnFilter(filter);

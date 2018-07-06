@@ -8,10 +8,10 @@ import {
   LOAD_ALL_PROJECTS_FAILURE
 } from './types';
 
-const createProject = (project, closeModal) => {
+const createProject = (projectCategory, closeModal) => {
   return {
     type: CREATE_PROJECT,
-    project,
+    projectCategory,
     closeModal
   }
 };

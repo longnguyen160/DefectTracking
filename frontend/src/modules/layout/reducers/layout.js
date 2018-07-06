@@ -18,7 +18,7 @@ import {
 import { loadAllCategoriesInProjectRequest } from '../actions/layout';
 
 const initialState = {
-  categories:[],
+  categories: [],
   user: null,
   isLoading: false,
   error: null,
@@ -36,7 +36,7 @@ export default function account(state = initialState, action) {
         isLoading: true,
         error: null
       });
-    
+
     case LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS:
       return Object.assign({}, state, {
         categories: action.categories,
@@ -49,7 +49,7 @@ export default function account(state = initialState, action) {
         isLoading: false,
         error: action.error
       });
-    //load current user 
+    //load current user
     case REQUEST_LOAD_CURRENT_USER:
       return Object.assign({}, state, {
         isLoading: true,

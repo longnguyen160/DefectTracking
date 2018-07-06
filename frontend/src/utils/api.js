@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getAccessToken } from './ultis';
+import qs from 'qs';
 
 const BASE_URL = 'http://localhost:8080/';
 
@@ -34,8 +35,8 @@ const loadAllUsers = (input, projectId) => {
 };
 
 // Project
-const createProject = (project) => {
-  return axios.post('admin/createProject', project);
+const createProject = (projectCategory) => {
+  return axios.post('admin/createProject', projectCategory);
 };
 
 const loadAllProjects = () => {
@@ -95,7 +96,7 @@ const loadAllIssuesFromBacklog = (issueList) => {
 };
 
 const updateFilter = (data) => {
-  return axios.get('user/updateFilter', { params: { filter: data } });
+  return axios.get('user/updateFilter', { params: { ...data },  paramsSerializer: qs.stringify });
 };
 
 const getFilter = (userId) => {

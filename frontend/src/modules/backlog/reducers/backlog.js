@@ -26,21 +26,21 @@ export default function backlog(state = initialState, action) {
         isLoading: true,
         error: null
       });
-    
-    case GET_FILTER_SUCCESS: 
+
+    case GET_FILTER_SUCCESS:
       return Object.assign({}, state, {
         isLoading: false,
         filter: action.filter,
         error: null
       });
-    
-    case GET_FILTER_FAILURE: 
-      return object.assign({}, state, {
+
+    case GET_FILTER_FAILURE:
+      return Object.assign({}, state, {
         isLoading: false,
         error: action.error
       });
 
-    //update backlog 
+    //update backlog
     case UPDATE_BACKLOG_REQUEST:
       return Object.assign({}, state, {
         isLoading: true,

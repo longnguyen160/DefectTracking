@@ -1,25 +1,29 @@
 package com.capstone.defecttracking.models.Project;
 
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
-import com.capstone.defecttracking.models.User.UserResponse;
+import com.capstone.defecttracking.models.User.UserRole;
 
 import java.util.ArrayList;
 
-public class ProjectManagementResponse {
+public class ProjectDetailsResponse {
     private String id;
     private String name;
     private String description;
-    private ArrayList<UserResponse> managers;
+    private String status;
+    private ArrayList<UserRole> members = new ArrayList<UserRole>();
+    private ArrayList<String> backlog = new ArrayList<>();
     private ArrayList<CategoryProjectResponse> categories = new ArrayList<>();
 
-    public ProjectManagementResponse() {
+    public ProjectDetailsResponse() {
     }
 
-    public ProjectManagementResponse(String id, String name, String description, ArrayList<UserResponse> managers, ArrayList<CategoryProjectResponse> categories) {
+    public ProjectDetailsResponse(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog, ArrayList<CategoryProjectResponse> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.managers = managers;
+        this.status = status;
+        this.members = members;
+        this.backlog = backlog;
         this.categories = categories;
     }
 
@@ -47,12 +51,28 @@ public class ProjectManagementResponse {
         this.description = description;
     }
 
-    public ArrayList<UserResponse> getManagers() {
-        return managers;
+    public String getStatus() {
+        return status;
     }
 
-    public void setManagers(ArrayList<UserResponse> managers) {
-        this.managers = managers;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public ArrayList<UserRole> getMembers() {
+        return members;
+    }
+
+    public void setMembers(ArrayList<UserRole> members) {
+        this.members = members;
+    }
+
+    public ArrayList<String> getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(ArrayList<String> backlog) {
+        this.backlog = backlog;
     }
 
     public ArrayList<CategoryProjectResponse> getCategories() {

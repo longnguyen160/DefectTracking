@@ -1,7 +1,6 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { UPDATE_BACKLOG, LOAD_ALL_ISSUES_FROM_BACKLOG,GET_FILTER } from '../actions/types';
 import {
-  
   getFilterRequest,
   getFilterSuccess,
   getFilterFailure,
@@ -11,17 +10,19 @@ import {
   loadAllIssuesFromBacklogRequest,
   loadAllIssuesFromBacklogSuccess,
   loadAllIssuesFromBacklogFailure,
-  getFilter
 } from '../actions/backlog';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
+
 //get filter by userId
 function* getFilter({ userId }) {
   try {
     yield put(getFilterRequest());
     const { data } = yield call(API.getFilter, userId);
-    yield put(getFilterSuccess(data));
 
+    if (data && typeof (data) === 'object') {
+      yield put(getFilterSuccess(data));
+    }
   } catch (error) {
     yield put(getFilterFailure(getError(error)))
   }
@@ -35,7 +36,6 @@ function* watchGetFilter(){
 function* updateBacklog({ projectId, backlog }) {
   try {
     yield put(updateBacklogRequest());
-
     const { data } = yield call(API.updateBacklog, projectId, backlog);
 
     yield put(updateBacklogSuccess());
@@ -51,7 +51,6 @@ function* watchUpdateBacklog() {
 function* loadAllIssuesFromBacklog({ issueList }) {
   try {
     yield put(loadAllIssuesFromBacklogRequest());
-
     const { data } = yield call(API.loadAllIssuesFromBacklog, issueList);
 
     yield put(loadAllIssuesFromBacklogSuccess(data));
@@ -63,7 +62,6 @@ function* loadAllIssuesFromBacklog({ issueList }) {
 function* watchLoadAllIssuesFromBacklog() {
   yield takeLatest(LOAD_ALL_ISSUES_FROM_BACKLOG, loadAllIssuesFromBacklog)
 }
-
 
 export default function* backlogFlow() {
   yield all([

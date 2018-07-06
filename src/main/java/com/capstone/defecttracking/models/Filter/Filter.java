@@ -5,6 +5,7 @@
  */
 package com.capstone.defecttracking.models.Filter;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,16 +26,12 @@ public class Filter {
     private String reporter;
     private String projectId;
     private String userId;
-    private List<String> categories;
+    private ArrayList<String> categories = new ArrayList<>();
 
     public Filter() {
     }
 
-    public Filter(String userId) {
-        this.userId = userId;
-    }
-
-    public Filter(String id, String status, String priority, String assignee, String reporter, String projectId, String userId, List<String> categories) {
+    public Filter(String id, String status, String priority, String assignee, String reporter, String projectId, String userId, ArrayList<String> categories) {
         this.id = id;
         this.status = status;
         this.priority = priority;
@@ -52,8 +49,6 @@ public class Filter {
     public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
-
-
 
     public String getId() {
         return id;
@@ -95,8 +90,6 @@ public class Filter {
         this.reporter = reporter;
     }
 
-
-
     public String getUserId() {
         return userId;
     }
@@ -105,12 +98,11 @@ public class Filter {
         this.userId = userId;
     }
 
-    public List<String> getCategories() {
+    public ArrayList<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<String> categories) {
+    public void setCategories(ArrayList<String> categories) {
         this.categories = categories;
     }
-
 }

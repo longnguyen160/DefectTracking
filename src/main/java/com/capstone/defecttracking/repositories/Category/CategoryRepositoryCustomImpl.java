@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -27,11 +28,19 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public boolean doesCateExited(String name) {
+    public boolean doesCategoryExited(String name) {
         Query query = new Query(Criteria.where("name").is(name));
 
-        Category cate = mongoTemplate.findOne(query, Category.class);
-        return cate != null;
+        return mongoTemplate.findOne(query, Category.class) != null;
+    }
+
+    @Override
+    public void addProject(String projectId, ArrayList<String> categories) {
+        Query query = new Query(Criteria.where("_id").in(categories));
+        Update update = new Update();
+
+        update.push("projects", projectId);
+        mongoTemplate.updateMulti(query, update, Category.class);
     }
 
     @Override

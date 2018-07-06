@@ -18,27 +18,28 @@ import {
   RESET_PROJECT,
   RESET_SELECTED_PROJECT
 } from './types';
+
 //LOAD ALL CATEGORIES IN PROJECT
 const loadAllCategoriesInProject = (projectId) => ({
-  types: LOAD_ALL_CATEGORIES_IN_PROJECT,
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT,
   projectId
 });
 
 const loadAllCategoriesInProjectRequest = () => ({
-  types: LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST
 }) ;
 
 const loadAllCategoriesInProjectSuccess = (categories) => ({
-  types: LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
   categories
 });
 
 const loadAllCategoriesInProjectFailure = (error) => ({
-  types: LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
   error
 });
 
-//LOAD CURRENT USER 
+//LOAD CURRENT USER
 const loadCurrentUser = goToLoginPage => ({
   type: LOAD_CURRENT_USER,
   goToLoginPage

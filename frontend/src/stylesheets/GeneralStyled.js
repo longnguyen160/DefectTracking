@@ -624,6 +624,9 @@ export const TableBlockStyled = styled.div`
   ${props => props.alignLeft && css`
     justify-content: flex-start;
   `}
+  ${props => props.alignRight && css`
+    justify-content: flex-end;
+  `}
 `;
 
 export const IssueStatusStyled = styled.div`
@@ -770,9 +773,9 @@ export const LabelStyled = styled.div`
   padding: ${props => props.padding ? props.padding : '3px'};
   font-size: ${props => props.fontSize ? props.fontSize : '13'};
   border-radius: 3px;
-  border: 1px solid ${props => props.color ? props.color : '#d1d1d1'};
-  background-color: ${props => props.color ? props.color : '#d1d1d1'};
-  color: ${props => props.textColor ? props.textColor : '#000'};
+  border: 1px solid ${props => props.background ? props.background : '#d1d1d1'};
+  background-color: ${props => props.background ? props.background : '#d1d1d1'};
+  color: ${props => props.color ? props.color : '#000'};
   text-align: center;
   margin: 0 3px;
 `;

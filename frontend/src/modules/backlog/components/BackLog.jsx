@@ -28,7 +28,7 @@ import {
   ROLES,
   WEB_SOCKET_URL
 } from '../../../utils/enums';
-import { updateBacklog } from '../actions/backlog';
+import { getFilter, updateBacklog } from '../actions/backlog';
 import Icon from '../../../components/icon/Icon';
 import Column from './Column';
 import CustomOptionForSelect from '../../../components/form/CustomOptionForSelect';
@@ -42,11 +42,12 @@ class BackLog extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedProject, user } = props;
+    const { selectedProject, filter, user } = props;
 
     this.state = {
       view: 'list',
-      filter: {
+      filter: filter || {
+        projectId: selectedProject && selectedProject.id,
         userId: user && user.id
       },
       list: {
@@ -56,27 +57,42 @@ class BackLog extends React.Component {
   }
 
   componentWillMount() {
-    const { loadAllStatus } = this.props;
+    const { loadAllStatus, user, getFilter } = this.props;
 
     loadAllStatus(ROLES.ADMIN);
+    if (user) {
+      getFilter(user.id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { selectedProject, user, issues } = nextProps;
-    const { updateCurrentUserRole, loadAllUsersInProject } = this.props;
+    const { selectedProject, user, issues, filter } = nextProps;
+    const { updateCurrentUserRole, loadAllUsersInProject, getFilter } = this.props;
 
     if (JSON.stringify(user) !== JSON.stringify(this.props.user)) {
-      const filter = {
-        userId: user.id
-      };
+      const filterState = this.state.filter;
 
+      this.setState({
+        filter: Object.assign(filterState, {
+          userId: user.id
+        })
+      });
+      getFilter(user.id);
+    }
+    if (JSON.stringify(filter) !== JSON.stringify(this.props.filter)) {
       this.setState({ filter });
     }
     if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
         backlog: selectedProject.backlog
       };
+      const filterState = this.state.filter;
 
+      this.setState({
+        filter: Object.assign(filterState, {
+          projectId: selectedProject.id
+        })
+      });
       loadAllUsersInProject(selectedProject.id);
       updateCurrentUserRole(selectedProject.members.find(member => member.userId === user.id).role);
       this.setState({ list });
@@ -153,7 +169,7 @@ class BackLog extends React.Component {
   };
 
   render() {
-    const { list, view } = this.state;
+    const { list, view, filter } = this.state;
     const { usersInProject, statusList } = this.props;
 
     return (
@@ -189,6 +205,7 @@ class BackLog extends React.Component {
             options={statusList}
             valueKey={'id'}
             labelKey={'name'}
+            value={filter['status']}
             onChange={(e) => this.handleChangeSelect('status', e.id)}
             classNamePrefix="react-select"
           />
@@ -197,6 +214,7 @@ class BackLog extends React.Component {
             placeholder={'Priority'}
             options={ISSUE_PRIORITY_ARRAY}
             name={'priority'}
+            value={filter['priority']}
             optionComponent={this.optionComponent('priority')}
             valueComponent={this.valueComponent('priority')}
             classNamePrefix="react-select"
@@ -206,6 +224,7 @@ class BackLog extends React.Component {
             isSearchable={false}
             placeholder={'Assignee'}
             options={usersInProject}
+            value={filter['assignee']}
             classNamePrefix="react-select"
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
@@ -215,6 +234,7 @@ class BackLog extends React.Component {
             isSearchable={false}
             placeholder={'Reporter'}
             options={usersInProject}
+            value={filter['reporter']}
             classNamePrefix="react-select"
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
@@ -228,6 +248,8 @@ class BackLog extends React.Component {
               { value: 'All Issue', label: 'Two' }
             ]}
             classNamePrefix="react-select"
+            multi
+            onChange={(e) => this.handleChangeSelect('categories', e)}
           />
         </FormGroupStyled>
         {
@@ -285,11 +307,13 @@ BackLog.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadAllStatus: PropTypes.func.isRequired,
   updateFilter: PropTypes.func.isRequired,
+  getFilter: PropTypes.func.isRequired,
   usersInProject: PropTypes.array.isRequired,
   statusList: PropTypes.array.isRequired,
   issues: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
-  user: PropTypes.object
+  user: PropTypes.object,
+  filter: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
@@ -297,6 +321,7 @@ const mapStateToProps = state => ({
   user: state.layout.user,
   statusList: state.management.statusList,
   issues: state.issue.issues,
+  filter: state.backlog.filter,
   usersInProject: state.project.usersInProject.map(user => ({
     value: user.id,
     label: user.username,
@@ -311,7 +336,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadAllUsersInProject: loadAllUsersInProject,
   loadAllStatus: loadAllStatus,
-  updateFilter: updateFilter
+  updateFilter: updateFilter,
+  getFilter: getFilter
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackLog);

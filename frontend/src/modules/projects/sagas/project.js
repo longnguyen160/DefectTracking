@@ -19,11 +19,11 @@ import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
 
-function* createProject({ project, closeModal }) {
+function* createProject({ projectCategory, closeModal }) {
   try {
     yield put(requestCreateProject());
 
-    const { data } = yield call(API.createProject, project);
+    const { data } = yield call(API.createProject, projectCategory);
 
     yield put(createProjectSuccess());
     showSuccessNotification(data.message);

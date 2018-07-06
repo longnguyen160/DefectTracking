@@ -39,7 +39,7 @@ public class CategoryController {
     public ResponseEntity<?> createCategory(@RequestBody Category cate) {
         ServerResponse serverResponse;
 
-        if (categoryRepositoryCustom.doesCateExited(cate.getName())) {
+        if (categoryRepositoryCustom.doesCategoryExited(cate.getName())) {
             serverResponse = new ServerResponse(Boolean.FALSE, "This Category have been create already");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);

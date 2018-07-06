@@ -38,6 +38,7 @@ import { validateForm } from '../../utils/ultis';
 import { createIssue } from '../../modules/issue/actions/issue';
 import { deleteFile, resetState, uploadFile } from '../../modules/file/actions/file';
 import { loadAllUsersInProject } from '../../modules/projects/actions/usersInProject';
+import { loadAllCategoriesInProject } from '../../modules/layout/actions/layout';
 
 class ModalCreatingIssue extends React.Component {
 
@@ -51,16 +52,14 @@ class ModalCreatingIssue extends React.Component {
   }
 
   componentDidMount() {
-    const { selectedProject, change, user, loadAllUsersInProject } = this.props;
+    const { selectedProject, change, user, loadAllUsersInProject, loadAllCategoriesInProject } = this.props;
 
     if (selectedProject) {
       change('projectId', selectedProject.id);
+      loadAllUsersInProject(selectedProject.id);
+      loadAllCategoriesInProject(selectedProject.id);
     }
     change('reporter', user.id);
-
-    if (selectedProject) {
-      loadAllUsersInProject(selectedProject.id);
-    }
   }
 
   componentWillUnmount() {
@@ -141,7 +140,8 @@ class ModalCreatingIssue extends React.Component {
       submitFailed,
       submitSucceeded,
       fileIds,
-      usersInProject
+      usersInProject,
+      categories
     } = this.props;
     const { uploadedFile } = this.state;
 
@@ -351,6 +351,7 @@ ModalCreatingIssue.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   loadAllUsersInProject: PropTypes.func.isRequired,
   resetCategory: PropTypes.func.isRequired,
+  loadAllCategoriesInProject: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   usersInProject: PropTypes.array.isRequired,
   selectedProject: PropTypes.object.isRequired,
@@ -365,6 +366,7 @@ ModalCreatingIssue.propTypes = {
   submitFailed: PropTypes.bool.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
   fileIds: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   issue: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
@@ -394,7 +396,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   uploadFile: uploadFile,
   resetState: resetState,
   loadAllUsersInProject: loadAllUsersInProject,
-  deleteFile: deleteFile
+  deleteFile: deleteFile,
+  loadAllCategoriesInProject: loadAllCategoriesInProject
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({

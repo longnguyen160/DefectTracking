@@ -3,10 +3,7 @@ package com.capstone.defecttracking.repositories.Project;
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Category.Category;
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
-import com.capstone.defecttracking.models.Project.Project;
-import com.capstone.defecttracking.models.Project.ProjectManagementResponse;
-import com.capstone.defecttracking.models.Project.ProjectResponse;
-import com.capstone.defecttracking.models.Project.UserProjectRequest;
+import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
@@ -33,10 +30,31 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public Project loadProjectDetails(String projectId) {
+    public ProjectDetailsResponse loadProjectDetails(String projectId) {
         Query query = new Query(Criteria.where("_id").is(projectId));
+        Project project = mongoTemplate.findOne(query, Project.class);
+        query = new Query(Criteria.where("projects").is(projectId));
 
-        return mongoTemplate.findOne(query, Project.class);
+        ArrayList<CategoryProjectResponse> categories = mongoTemplate
+            .find(query, Category.class)
+            .stream()
+            .map(category -> new CategoryProjectResponse(
+                category.getId(),
+                category.getName(),
+                category.getColor(),
+                category.getBackground()
+            ))
+            .collect(Collectors.toCollection(ArrayList::new));
+
+        return new ProjectDetailsResponse(
+            projectId,
+            project.getName(),
+            project.getDescription(),
+            project.getStatus(),
+            project.getMembers(),
+            project.getBacklog(),
+            categories
+        );
     }
 
     @Override
