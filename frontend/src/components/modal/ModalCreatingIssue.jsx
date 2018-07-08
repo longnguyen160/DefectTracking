@@ -84,7 +84,7 @@ class ModalCreatingIssue extends React.Component {
   };
 
   handleCreateIssue = (values) => {
-    const { createIssue, onClose, fileIds } = this.props;
+    const { createIssue, onClose, fileIds, user } = this.props;
 
     if (validateForm.required(values.projectId)) {
       throw new SubmissionError({ _error: 'Project is required' });
@@ -106,6 +106,7 @@ class ModalCreatingIssue extends React.Component {
       {
         ...values,
         attachments: fileIds,
+        reporter: user.id,
         watchers,
         dueDate: moment(values.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
         createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
@@ -214,25 +215,25 @@ class ModalCreatingIssue extends React.Component {
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={SELECT}
-                      name={'reporter'}
-                      placeholder={'Reporter...'}
-                      options={[
-                        { value: user.id, label: user.username, avatarURL: user.profile.avatarURL }
-                      ]}
-                      renderCustom
-                      disabled={true}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
+            {/*<ModalLineStyled>*/}
+              {/*<ModalLineContentStyled alignLeft>*/}
+                {/*<ModalLineTitleStyled>Reporter</ModalLineTitleStyled>*/}
+                {/*<ModalLineTitleStyled fullInput>*/}
+                  {/*<LineFormStyled>*/}
+                    {/*<InputField*/}
+                      {/*type={SELECT}*/}
+                      {/*name={'reporter'}*/}
+                      {/*placeholder={'Reporter...'}*/}
+                      {/*options={[*/}
+                        {/*{ value: user.id, label: user.username, avatarURL: user.profile.avatarURL }*/}
+                      {/*]}*/}
+                      {/*renderCustom*/}
+                      {/*disabled={true}*/}
+                    {/*/>*/}
+                  {/*</LineFormStyled>*/}
+                {/*</ModalLineTitleStyled>*/}
+              {/*</ModalLineContentStyled>*/}
+            {/*</ModalLineStyled>*/}
             <ModalLineStyled>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Attachment</ModalLineTitleStyled>
