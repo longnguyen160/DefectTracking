@@ -99,10 +99,10 @@ export default function backlog(state = initialState, action) {
         error: action.error
       });
 
-    case RESET_ISSUE_LIST:
-      return Object.assign({}, state, {
-        issueList: []
-      });
+    // case RESET_ISSUE_LIST:
+    //   return Object.assign({}, state, {
+    //     issueList: []
+    //   });
 
     default:
       return state;

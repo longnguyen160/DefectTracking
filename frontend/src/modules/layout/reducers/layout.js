@@ -14,7 +14,8 @@ import {
   SELECT_PROJECT,
   RESET_PROJECT,
   RESET_SELECTED_PROJECT,
-  RESET_ALL_CATEGORIES
+  RESET_ALL_CATEGORIES,
+  RESET_USER
 } from '../actions/types';
 
 const initialState = {
@@ -125,6 +126,11 @@ export default function account(state = initialState, action) {
     case RESET_ALL_CATEGORIES:
       return Object.assign({}, state, {
         categories: []
+      });
+
+    case RESET_USER:
+      return Object.assign({}, state, {
+        user: null
       });
 
     default:

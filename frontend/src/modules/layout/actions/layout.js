@@ -17,7 +17,8 @@ import {
   SELECT_PROJECT,
   RESET_PROJECT,
   RESET_SELECTED_PROJECT,
-  RESET_ALL_CATEGORIES
+  RESET_ALL_CATEGORIES,
+  RESET_USER
 } from './types';
 
 //LOAD ALL CATEGORIES IN PROJECT
@@ -120,6 +121,10 @@ const resetAllCategories = () => ({
   type: RESET_ALL_CATEGORIES
 });
 
+const resetUser = () => ({
+  type: RESET_USER
+});
+
 export {
   loadAllCategoriesInProject,
   loadAllCategoriesInProjectRequest,
@@ -139,5 +144,6 @@ export {
   selectProject,
   resetProject,
   resetSelectedProject,
-  resetAllCategories
+  resetAllCategories,
+  resetUser
 }

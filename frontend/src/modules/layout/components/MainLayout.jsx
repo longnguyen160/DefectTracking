@@ -13,7 +13,7 @@ import {
   closeModal,
   resetSelectedProject,
   loadProjectDetails,
-  selectProject
+  selectProject, resetUser
 } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { loadAllProjects } from '../../projects/actions/project';
@@ -64,6 +64,12 @@ class MainLayout extends React.Component {
 
       loadProjectDetails(currentParams.projectId, (project) => selectProject(project));
     }
+  }
+
+  componentWillUnmount() {
+    const { resetUser } = this.props;
+
+    resetUser();
   }
 
   handleOpenModal = () => {
@@ -117,6 +123,7 @@ class MainLayout extends React.Component {
         <FormGroupStyled padding>
           <SideBar
             history={history}
+            user={user}
             selectedProject={selectedProject}
           />
           {children}
@@ -144,6 +151,7 @@ MainLayout.propTypes = {
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
+  resetUser: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
     user: PropTypes.object,
@@ -167,7 +175,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   resetSelectedProject: resetSelectedProject,
   selectProject: selectProject,
   loadAllProjects: loadAllProjects,
-  loadProjectDetails: loadProjectDetails
+  loadProjectDetails: loadProjectDetails,
+  resetUser: resetUser
 }, dispatch);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainLayout));
