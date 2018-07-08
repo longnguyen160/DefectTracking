@@ -191,6 +191,10 @@ export const ModalLineTitleStyled = styled.div`
   margin-bottom: 3px;
   color: #7f7f7f;
   font-weight: 600;
+  
+  ${props => props.margin && css`
+    margin: ${props.margin};
+  `}
   ${props => props.fullInput && css`
     width: 100%;
     margin-top: 8px;

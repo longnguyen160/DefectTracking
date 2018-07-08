@@ -61,7 +61,7 @@ class Message extends Component {
     return (
       <LineFormStyled hasTitle key={message.id}>
         <FilterBoxWrapperStyled top fullWidth>
-          <Image topNav src={message.sender.avatarURL} />
+          <Image topNav src={message.sender.avatarURL || '/images/default_avatar.jpg'} />
           <DescriptionElementStyled noPadding>
             <ElementHeaderStyled padding={'0'}>
               <TitleFormStyled username>{message.sender.username}</TitleFormStyled>
@@ -78,7 +78,7 @@ class Message extends Component {
     return (
       <LineFormStyled hasTitle key={message.id}>
         <FilterBoxWrapperStyled top fullWidth>
-          <Image topNav src={message.sender.avatarURL} />
+          <Image topNav src={message.sender.avatarURL || '/images/default_avatar.jpg'} />
           <DescriptionElementStyled noPadding notPointer>
             <Editable
               name={'message'}
@@ -135,7 +135,17 @@ class Message extends Component {
 
     return (
       <ModalLineContentStyled alignLeft maxImage>
-        <ModalLineTitleStyled>Comments</ModalLineTitleStyled>
+        <LineFormStyled>
+          <ModalLineTitleStyled>
+            All
+          </ModalLineTitleStyled>
+          <ModalLineTitleStyled>
+            Logs
+          </ModalLineTitleStyled>
+          <ModalLineTitleStyled>
+            Comments
+          </ModalLineTitleStyled>
+        </LineFormStyled>
         <CommentBox />
         {
           messages.map(message => (
