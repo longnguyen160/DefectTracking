@@ -61,12 +61,11 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     public Boolean doesProjectExisted(Project project) {
         Query query = new Query(Criteria.where("name").is(project.getName()));
         Project existedProject = mongoTemplate.findOne(query, Project.class);
-        if (existedProject != null) {
-            if (existedProject.getId().equals(project.getId())) {
-                return true;
-            }
+
+        if (existedProject != null && existedProject.getId().equals(project.getId())) {
+            return false;
         }
-        return false;
+        return existedProject != null;
     }
 
     @Override
