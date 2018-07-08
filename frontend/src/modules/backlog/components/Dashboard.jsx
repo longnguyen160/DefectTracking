@@ -186,7 +186,7 @@ class Dashboard extends Component {
 
   render() {
     const { view, filter } = this.state;
-    const { usersInProject, statusList, categories, issues } = this.props;
+    const { usersInProject, statusList, categories, issues, openModal } = this.props;
 
     return (
       <PageBoardStyled backlog>

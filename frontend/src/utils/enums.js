@@ -139,11 +139,6 @@ const SIDE_BAR_BEFORE_SELECT_PROJECT = [
     url: '/projects'
   },
   {
-    name: 'Issues',
-    icon: ICONS.ISSUES,
-    url: '/issues'
-  },
-  {
     name: 'Management',
     icon: ICONS.MANAGEMENT
   }

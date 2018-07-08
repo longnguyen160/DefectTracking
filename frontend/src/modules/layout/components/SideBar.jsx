@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SideBarMainStyled, SideBarMainBlockStyled } from '../../../stylesheets/SideBar';
-import { SIDE_BAR_BEFORE_SELECT_PROJECT, SIDE_BAR_AFTER_SELECT_PROJECT, MANAGEMENT_SIDE_BAR } from '../../../utils/enums';
+import {
+  SIDE_BAR_BEFORE_SELECT_PROJECT,
+  SIDE_BAR_AFTER_SELECT_PROJECT,
+  MANAGEMENT_SIDE_BAR,
+  ROLES
+} from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
 
 
@@ -9,8 +14,8 @@ class SideBar extends React.Component {
   constructor(props) {
     super(props);
 
-    const { history, selectedProject } = props;
-    let sideBar = SIDE_BAR_BEFORE_SELECT_PROJECT;
+    const { history, selectedProject, user } = props;
+    let sideBar = user && user.roles.includes(ROLES.ADMIN) ? SIDE_BAR_BEFORE_SELECT_PROJECT : SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.name !== 'Management');
 
     if (selectedProject) {
       sideBar = SIDE_BAR_AFTER_SELECT_PROJECT
@@ -26,6 +31,7 @@ class SideBar extends React.Component {
   componentWillReceiveProps(nextProps) {
     let { sideBar } = this.state;
     const { history } = this.props;
+    const { user } = nextProps;
 
     if (nextProps.selectedProject) {
       sideBar = SIDE_BAR_AFTER_SELECT_PROJECT;
@@ -33,7 +39,7 @@ class SideBar extends React.Component {
       sideBar = MANAGEMENT_SIDE_BAR;
       this.setState({ managementSideBar: true });
     } else {
-      sideBar = SIDE_BAR_BEFORE_SELECT_PROJECT;
+      sideBar = user && user.roles.includes(ROLES.ADMIN) ? SIDE_BAR_BEFORE_SELECT_PROJECT : SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.name !== 'Management');
     }
 
     this.setState({
@@ -89,7 +95,8 @@ class SideBar extends React.Component {
 
 SideBar.propTypes = {
   selectedProject: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default SideBar;
