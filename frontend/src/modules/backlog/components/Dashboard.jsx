@@ -96,8 +96,17 @@ class Dashboard extends Component {
       getFilter(user.id);
     }
     if (JSON.stringify(filter) !== JSON.stringify(this.props.filter)) {
-      loadAllIssuesBasedOnFilter(filter);
-      this.setState({ filter });
+      if (!filter.projectId) {
+        const newFilter = Object.assign(filter, {
+          projectId: selectedProject.id
+        });
+
+        this.setState({ filter: newFilter });
+        loadAllIssuesBasedOnFilter(newFilter);
+      } else {
+        this.setState({ filter });
+        loadAllIssuesBasedOnFilter(filter);
+      }
     }
     if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
@@ -110,9 +119,14 @@ class Dashboard extends Component {
           projectId: selectedProject.id
         })
       });
+      const existedMember = selectedProject.members.find(member => member.userId === user.id);
+
       loadAllUsersInProject(selectedProject.id);
-      updateCurrentUserRole(selectedProject.members.find(member => member.userId === user.id).role);
       loadAllCategoriesInProject(selectedProject.id);
+
+      if (existedMember) {
+        updateCurrentUserRole(existedMember.role);
+      }
       this.setState({ list });
     }
     if (JSON.stringify(issues) !== JSON.stringify(this.props.issues)) {
