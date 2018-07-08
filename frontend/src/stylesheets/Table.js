@@ -75,6 +75,9 @@ export const ListTableBodyStyled = styled.div`
   width: 100%;  
   min-height: 51px;
 
+  ${props => props.color && css`
+    border-left-color: ${props.color};
+  `}
   &:hover{
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
     transition: all 250ms ease-in;

@@ -38,7 +38,7 @@ import { validateForm } from '../../utils/ultis';
 import { createIssue } from '../../modules/issue/actions/issue';
 import { deleteFile, resetState, uploadFile } from '../../modules/file/actions/file';
 import { loadAllUsersInProject } from '../../modules/projects/actions/usersInProject';
-import { loadAllCategoriesInProject } from '../../modules/layout/actions/layout';
+import { loadAllCategoriesInProject, resetAllCategories } from '../../modules/layout/actions/layout';
 
 class ModalCreatingIssue extends React.Component {
 
@@ -63,10 +63,10 @@ class ModalCreatingIssue extends React.Component {
   }
 
   componentWillUnmount() {
-    const { resetState, resetCategory } = this.props;
+    const { resetState, resetAllCategories } = this.props;
 
     resetState();
-    resetCategory();
+    resetAllCategories();
   }
 
   onDrop = (files) => {
@@ -92,8 +92,8 @@ class ModalCreatingIssue extends React.Component {
     if (validateForm.required(values.issueName)) {
       throw new SubmissionError({ _error: 'Summary is required' });
     }
-    if (validateForm.required(values.priority)) {
-      throw new SubmissionError({ _error: 'Assignee is required' });
+    if (moment(values.dueDate).isBefore(moment(new Date()))) {
+      throw new SubmissionError({ _error: 'Due date is invalid' });
     }
 
     let watchers = [values.reporter];
@@ -106,7 +106,6 @@ class ModalCreatingIssue extends React.Component {
       {
         ...values,
         attachments: fileIds,
-        status: 'To Do',
         watchers,
         dueDate: moment(values.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
         createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
@@ -203,6 +202,20 @@ class ModalCreatingIssue extends React.Component {
             </ModalLineStyled>
             <ModalLineStyled>
               <ModalLineContentStyled alignLeft>
+                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
+                <ModalLineTitleStyled fullInput>
+                  <LineFormStyled>
+                    <InputField
+                      type={TEXT_AREA}
+                      name={'description'}
+                      renderType={'textarea'}
+                    />
+                  </LineFormStyled>
+                </ModalLineTitleStyled>
+              </ModalLineContentStyled>
+            </ModalLineStyled>
+            <ModalLineStyled>
+              <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
@@ -271,20 +284,6 @@ class ModalCreatingIssue extends React.Component {
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={TEXT_AREA}
-                      name={'description'}
-                      renderType={'textarea'}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
             <ModalLineStyled hasRows>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
@@ -304,9 +303,9 @@ class ModalCreatingIssue extends React.Component {
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled reactSelect>
                     <InputField
-                      name={'label'}
+                      name={'categories'}
                       type={CREATABLE}
-                      options={[]}
+                      options={categories}
                       multi={true}
                     />
                   </LineFormStyled>
@@ -350,7 +349,7 @@ ModalCreatingIssue.propTypes = {
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   loadAllUsersInProject: PropTypes.func.isRequired,
-  resetCategory: PropTypes.func.isRequired,
+  resetAllCategories: PropTypes.func.isRequired,
   loadAllCategoriesInProject: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   usersInProject: PropTypes.array.isRequired,
@@ -384,7 +383,11 @@ const mapStateToProps = state => ({
     label: user.username,
     ...user
   })),
-  categories: state.layout.categories,
+  categories: state.layout.categories.map(category => ({
+    value: category.id,
+    label: category.name,
+    ...category
+  })),
   user: state.layout.user,
   selectedProject: state.layout.selectedProject,
   issue: state.issue,
@@ -397,7 +400,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   resetState: resetState,
   loadAllUsersInProject: loadAllUsersInProject,
   deleteFile: deleteFile,
-  loadAllCategoriesInProject: loadAllCategoriesInProject
+  loadAllCategoriesInProject: loadAllCategoriesInProject,
+  resetAllCategories: resetAllCategories
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({

@@ -14,7 +14,6 @@ import {
 import { FilterBoxWrapperStyled , Image} from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
 import { ICONS, MODAL_TYPE } from '../../../utils/enums';
-import { loadProjectDetails } from '../actions/layout';
 
 class TopNavBar extends Component {
 
@@ -30,7 +29,7 @@ class TopNavBar extends Component {
     const { loadProjectDetails, history, selectProject } = this.props;
 
     loadProjectDetails(projectId, (project) => selectProject(project));
-    history.push(`/project/${projectId}/backlog`);
+    history.push(`/project/${projectId}/dashboard`);
   };
 
   render() {

@@ -153,7 +153,7 @@ const SIDE_BAR_AFTER_SELECT_PROJECT = [
   {
     name: 'Dashboard',
     icon: ICONS.BACKLOG,
-    url: '/backlog'
+    url: '/dashboard'
   },
   {
     name: 'Summary',
@@ -310,7 +310,8 @@ const MESSAGE = (value) => ({
   UPDATE_ISSUE: `changed ${value}`,
   CHANGE_STATUS: `changed status to ${value}`,
   DELETE_COMMENT: `delete a comment`,
-  CHANGE_ASSIGNEE: `changed assignee to ${value}`
+  CHANGE_ASSIGNEE: `changed assignee to ${value}`,
+  UPDATE_CATEGORIES: 'updated categories'
 });
 
 const ISSUE_DETAILS = {

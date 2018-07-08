@@ -5,7 +5,11 @@ import {
   CREATE_PROJECT_FAILURE,
   LOAD_ALL_PROJECTS,
   LOAD_ALL_PROJECTS_SUCCESS,
-  LOAD_ALL_PROJECTS_FAILURE
+  LOAD_ALL_PROJECTS_FAILURE,
+  UPDATE_PROJECT,
+  UPDATE_PROJECT_REQUEST,
+  UPDATE_PROJECT_SUCCESS,
+  UPDATE_PROJECT_FAILURE
 } from './types';
 
 const createProject = (projectCategory, closeModal) => {
@@ -55,6 +59,33 @@ const loadAllProjectsFailure = (error) => {
   }
 };
 
+const updateProject = (projectRequest, closeModal) => {
+  return {
+    type: UPDATE_PROJECT,
+    projectRequest,
+    closeModal
+  }
+};
+
+const updateProjectRequest = () => {
+  return {
+    type: UPDATE_PROJECT_REQUEST
+  }
+};
+
+const updateProjectSuccess = () => {
+  return {
+    type: UPDATE_PROJECT_SUCCESS
+  }
+};
+
+const updateProjectFailure = (error) => {
+  return {
+    type: UPDATE_PROJECT_FAILURE,
+    error
+  }
+};
+
 export {
   createProject,
   requestCreateProject,
@@ -62,5 +93,9 @@ export {
   createProjectFailure,
   loadAllProjects,
   loadAllProjectsSuccess,
-  loadAllProjectsFailure
+  loadAllProjectsFailure,
+  updateProject,
+  updateProjectRequest,
+  updateProjectSuccess,
+  updateProjectFailure
 }

@@ -13,9 +13,9 @@ import {
   LOAD_PROJECT_DETAILS_FAILURE,
   SELECT_PROJECT,
   RESET_PROJECT,
-  RESET_SELECTED_PROJECT
+  RESET_SELECTED_PROJECT,
+  RESET_ALL_CATEGORIES
 } from '../actions/types';
-import { loadAllCategoriesInProjectRequest } from '../actions/layout';
 
 const initialState = {
   categories: [],
@@ -120,6 +120,11 @@ export default function account(state = initialState, action) {
     case RESET_SELECTED_PROJECT:
       return Object.assign({}, state, {
         selectedProject: null
+      });
+
+    case RESET_ALL_CATEGORIES:
+      return Object.assign({}, state, {
+        categories: []
       });
 
     default:

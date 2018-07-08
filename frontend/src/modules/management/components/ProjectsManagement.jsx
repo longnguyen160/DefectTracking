@@ -10,7 +10,8 @@ import {
   PageBoardStyled,
   TableBlockStyled,
   LabelStyled,
-  TitleElementStyled
+  TitleElementStyled,
+  PageCustomStyled
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { loadProjectDetails, openModal } from '../../layout/actions/layout';
@@ -65,6 +66,11 @@ class ProjectsManagement extends React.Component {
         )
       },
       {
+        Header: 'Status',
+        accessor: 'status',
+        ...styleColumn
+      },
+      {
         Header: 'Project Managers',
         accessor: 'managers',
         ...styleColumn,
@@ -82,20 +88,24 @@ class ProjectsManagement extends React.Component {
         accessor: 'categories',
         ...styleColumn,
         Cell: row => (
-          row.value.map(category => (
-            <TableBlockStyled alignLeft key={category.id}>
-              <LabelStyled
-                background={category.background}
-                color={category.color}
-              >
-                {category.name}
-              </LabelStyled>
-            </TableBlockStyled>
-          ))
+          <PageCustomStyled margin={'0'}>
+            {
+              row.value.map(category => (
+                <TableBlockStyled alignLeft key={category.id}>
+                  <LabelStyled
+                    background={category.background}
+                    color={category.color}
+                  >
+                    {category.name}
+                  </LabelStyled>
+                </TableBlockStyled>
+              ))
+            }
+          </PageCustomStyled>
         )
       },
       {
-        Header: 'Action',
+        Header: '',
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>

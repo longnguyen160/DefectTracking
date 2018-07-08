@@ -52,20 +52,9 @@ public class FilterController {
         this.messTemplate = template;
     }
 
-    @GetMapping("user/updateFilter")
-    public List<IssueResponse> updateFilter(@RequestParam Map<String, List<String>> filterRequest) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            Filter filter = objectMapper.readValue(new Gson().toJson(filterRequest), Filter.class);
-            filterRepositoryCustom.updateFilter(filter);
-
-            return issueRepositoryCustom.loadAllIssuesBasedOnFilter(filter);
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            return null;
-        }
+    @PostMapping("user/updateFilter")
+    public void updateFilter(@RequestBody Filter filter) {
+        filterRepositoryCustom.updateFilter(filter);
     }
 
     @GetMapping("user/getFilter")

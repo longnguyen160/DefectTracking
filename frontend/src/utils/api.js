@@ -66,6 +66,10 @@ const updateBacklog = (projectId, backlog) => {
 const removeUserFromProject = (projectId, userId) => {
   return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
 };
+
+const updateProject = (projectRequest) => {
+  return axios.post('admin/updateProject', projectRequest);
+};
 // Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
@@ -77,6 +81,10 @@ const loadAllIssues = () => {
 
 const loadAllIssuesShortcut = (userId) => {
   return axios.get(`user/loadAllIssuesShortcut?userId=${userId}`);
+};
+
+const loadAllIssuesBasedOnFilter = (filter) => {
+  return axios.get(`user/loadAllIssuesBasedOnFilter?filter=${encodeURI(JSON.stringify(filter))}`);
 };
 
 const loadIssueShortcut = (issueId) => {
@@ -91,12 +99,16 @@ const updateIssue = (data) => {
   return axios.post('user/updateIssue', data);
 };
 
+const updateIssueCategories = (data) => {
+  return axios.post('user/updateIssueCategories', data);
+};
+
 const loadAllIssuesFromBacklog = (issueList) => {
   return axios.get(`user/loadAllIssuesFromBacklog?issueIds=${issueList}`);
 };
 
-const updateFilter = (data) => {
-  return axios.get('user/updateFilter', { params: { ...data },  paramsSerializer: qs.stringify });
+const updateFilter = (filter) => {
+  return axios.post('user/updateFilter', filter);
 };
 
 const getFilter = (userId) => {
@@ -183,6 +195,7 @@ const API = {
   loadAllIssuesShortcut,
   loadIssueDetails,
   updateIssue,
+  updateIssueCategories,
   removeUserFromProject,
   loadIssueShortcut,
   updateBacklog,
@@ -198,7 +211,9 @@ const API = {
   updateFilter,
   getFilter,
   loadAllProjectsForManagement,
-  loadAllCategoriesInProject
+  loadAllCategoriesInProject,
+  updateProject,
+  loadAllIssuesBasedOnFilter
 };
 
 export default API;

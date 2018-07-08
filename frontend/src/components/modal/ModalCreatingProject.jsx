@@ -17,7 +17,7 @@ import { Input, LineFormStyled, TextErrorStyled } from '../../stylesheets/Genera
 import { INPUT_TEXT, TEXT_AREA } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import { validateForm } from '../../utils/ultis';
-import { createProject } from '../../modules/projects/actions/project';
+import { createProject, updateProject } from '../../modules/projects/actions/project';
 import InputField from '../form/InputField';
 import { loadAllCategories } from '../../modules/management/actions/category';
 import { resetProject } from '../../modules/layout/actions/layout';
@@ -72,7 +72,8 @@ class ModalCreatingProject extends React.Component {
   handleCreateProject = (values) => {
     const { name, description, status } = values;
     const { categories } = this.state;
-    const { createProject, onClose } = this.props;
+    const { createProject, onClose, updateProject, loadedProject } = this.props;
+    const handleFunction = loadedProject ? updateProject : createProject;
 
     if (validateForm.required(name)) {
       throw new SubmissionError({ _error: 'Name is required' });
@@ -84,7 +85,13 @@ class ModalCreatingProject extends React.Component {
       throw new SubmissionError({ _error: 'Status is required' });
     }
 
-    createProject({ project: values, categories }, () => {
+    handleFunction({
+      project: {
+        ...loadedProject,
+        ...values
+      },
+      categories
+    }, () => {
       onClose();
     });
   };
@@ -232,6 +239,7 @@ ModalCreatingProject.propTypes = {
   categories: PropTypes.array.isRequired,
   loadAllCategories: PropTypes.func.isRequired,
   resetProject: PropTypes.func.isRequired,
+  updateProject: PropTypes.func.isRequired,
   loadedProject: PropTypes.object,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   project: PropTypes.shape({
@@ -249,7 +257,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   createProject: createProject,
   loadAllCategories: loadAllCategories,
-  resetProject: resetProject
+  resetProject: resetProject,
+  updateProject: updateProject
 }, dispatch);
 
 export default reduxForm({

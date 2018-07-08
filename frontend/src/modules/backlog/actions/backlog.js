@@ -11,6 +11,10 @@ import {
   LOAD_ALL_ISSUES_FROM_BACKLOG_REQUEST,
   LOAD_ALL_ISSUES_FROM_BACKLOG_SUCCESS,
   LOAD_ALL_ISSUES_FROM_BACKLOG_FAILURE,
+  UPDATE_FILTER,
+  UPDATE_FILTER_FAILURE,
+  UPDATE_FILTER_REQUEST,
+  UPDATE_FILTER_SUCCESS,
   RESET_ISSUE_LIST
 } from './types';
 // GET FILTER
@@ -96,6 +100,33 @@ const loadAllIssuesFromBacklogFailure = (error) => {
   }
 };
 
+const updateFilter = (filter) => {
+  return {
+    type: UPDATE_FILTER,
+    filter
+  }
+};
+
+const updateFilterRequest = () => {
+  return {
+    type: UPDATE_FILTER_REQUEST
+  }
+};
+
+const updateFilterSuccess = () => {
+  return {
+    type: UPDATE_FILTER_SUCCESS
+  }
+};
+
+const updateFilterFailure = (error) => {
+  return {
+    type: UPDATE_FILTER_FAILURE,
+    error
+  }
+};
+
+
 const resetIssueList = () => {
   return {
     type: RESET_ISSUE_LIST
@@ -115,5 +146,9 @@ export {
   loadAllIssuesFromBacklogRequest,
   loadAllIssuesFromBacklogSuccess,
   loadAllIssuesFromBacklogFailure,
+  updateFilter,
+  updateFilterRequest,
+  updateFilterSuccess,
+  updateFilterFailure,
   resetIssueList
 }

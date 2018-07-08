@@ -9,16 +9,18 @@ public class ProjectManagementResponse {
     private String id;
     private String name;
     private String description;
+    private String status;
     private ArrayList<UserResponse> managers;
     private ArrayList<CategoryProjectResponse> categories = new ArrayList<>();
 
     public ProjectManagementResponse() {
     }
 
-    public ProjectManagementResponse(String id, String name, String description, ArrayList<UserResponse> managers, ArrayList<CategoryProjectResponse> categories) {
+    public ProjectManagementResponse(String id, String name, String description, String status, ArrayList<UserResponse> managers, ArrayList<CategoryProjectResponse> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.status = status;
         this.managers = managers;
         this.categories = categories;
     }
@@ -45,6 +47,14 @@ public class ProjectManagementResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public ArrayList<UserResponse> getManagers() {

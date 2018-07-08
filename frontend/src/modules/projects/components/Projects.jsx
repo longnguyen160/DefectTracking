@@ -30,7 +30,7 @@ class Projects extends React.Component {
     const { loadProjectDetails, history, selectProject } = this.props;
 
     loadProjectDetails(projectId, (project) => selectProject(project));
-    history.push(`/project/${projectId}/backlog`);
+    history.push(`/project/${projectId}/dashboard`);
   };
 
   renderProjects = (projects, icon, title) => (

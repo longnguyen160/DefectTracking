@@ -58,10 +58,13 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public Boolean doesProjectExisted(String projectName) {
-        Query query = new Query(Criteria.where("name").is(projectName));
-        Project project = mongoTemplate.findOne(query, Project.class);
+    public Boolean doesProjectExisted(Project project) {
+        Query query = new Query(Criteria.where("name").is(project.getName()));
+        Project existedProject = mongoTemplate.findOne(query, Project.class);
 
+        if (existedProject.getId().equals(project.getId())) {
+            return false;
+        }
         return project != null;
     }
 
@@ -125,6 +128,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
                     project.getId(),
                     project.getName(),
                     project.getDescription(),
+                    project.getStatus(),
                     managers,
                     categories
                 );
@@ -136,13 +140,11 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     public ResponseEntity<?> addUserToProject(UserProjectRequest userProjectRequest) {
         ServerResponse serverResponse;
         Query query = new Query(Criteria.where("_id").is(userProjectRequest.getProjectId()));
-        Project project = mongoTemplate.findOne(query, Project.class);
         Update update = new Update();
 
-        project.setMembers(new UserRole(userProjectRequest.getUserId(), userProjectRequest.getRole()));
-        update.set("members", project.getMembers());
-
+        update.push("members", new UserRole(userProjectRequest.getUserId(), userProjectRequest.getRole()));
         UpdateResult result = mongoTemplate.updateFirst(query, update, Project.class);
+
         query = new Query(Criteria.where("_id").is(userProjectRequest.getUserId()));
         User user = mongoTemplate.findOne(query, User.class);
 
@@ -176,6 +178,29 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         serverResponse = new ServerResponse(true, "Remove user from project failed");
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public void updateProject(ProjectCategoryRequest projectRequest) {
+        Project project = projectRequest.getProject();
+        Query query = new Query(Criteria.where("_id").is(project.getId()));
+        Update update = new Update();
+
+        update.set("name", project.getName());
+        update.set("description", project.getDescription());
+        update.set("members", project.getMembers());
+        update.set("status", project.getStatus());
+        mongoTemplate.updateFirst(query, update, Project.class);
+
+        update = new Update();
+        query = new Query(Criteria.where("projects").is(project.getId()));
+        update.pull("projects", project.getId());
+        mongoTemplate.updateMulti(query, update, Category.class);
+
+        update = new Update();
+        query = new Query(Criteria.where("_id").in(projectRequest.getCategories()));
+        update.push("projects", project.getId());
+        mongoTemplate.updateMulti(query, update, Category.class);
     }
 
     private UserResponse getUserResponse(String userId) {

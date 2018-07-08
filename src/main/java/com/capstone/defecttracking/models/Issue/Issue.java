@@ -27,10 +27,10 @@ public class Issue {
     @LastModifiedDate
     private Date updatedAt;
     private ArrayList<String> watchers = new ArrayList<String>();
-    private ArrayList<String> category = new ArrayList<String>();
+    private ArrayList<String> categories = new ArrayList<String>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
-    public Issue(String id, String issueName, String issueKey, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> watchers, ArrayList<String> category, ArrayList<String> attachments) {
+    public Issue(String id, String issueName, String issueKey, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> watchers, ArrayList<String> categories, ArrayList<String> attachments) {
         this.id = id;
         this.issueName = issueName;
         this.issueKey = issueKey;
@@ -44,7 +44,7 @@ public class Issue {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.watchers = watchers;
-        this.category = category;
+        this.categories = categories;
         this.attachments = attachments;
     }
 
@@ -115,12 +115,12 @@ public class Issue {
         this.dueDate = dueDate;
     }
 
-    public ArrayList<String> getCategory() {
-        return category;
+    public ArrayList<String> getCategories() {
+        return categories;
     }
 
-    public void setCategory(ArrayList<String> category) {
-        this.category = category;
+    public void setCategories(ArrayList<String> categories) {
+        this.categories = categories;
     }
 
     public ArrayList<String> getAttachments() {

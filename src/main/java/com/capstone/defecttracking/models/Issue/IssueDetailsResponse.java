@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.models.Issue;
 
+import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.UserResponse;
 
@@ -20,13 +21,13 @@ public class IssueDetailsResponse {
     private Date createdAt;
     private Date updatedAt;
     private ArrayList<UserResponse> watchers = new ArrayList<UserResponse>();
-    private ArrayList<String> category = new ArrayList<String>();
+    private ArrayList<CategoryProjectResponse> categories = new ArrayList<>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
     public IssueDetailsResponse() {
     }
 
-    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, Status status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<String> category, ArrayList<String> attachments) {
+    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, Status status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<CategoryProjectResponse> categories, ArrayList<String> attachments) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
@@ -40,7 +41,7 @@ public class IssueDetailsResponse {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.watchers = watchers;
-        this.category = category;
+        this.categories = categories;
         this.attachments = attachments;
     }
 
@@ -140,12 +141,12 @@ public class IssueDetailsResponse {
         this.updatedAt = updatedAt;
     }
 
-    public ArrayList<String> getCategory() {
-        return category;
+    public ArrayList<CategoryProjectResponse> getCategories() {
+        return categories;
     }
 
-    public void setCategory(ArrayList<String> category) {
-        this.category = category;
+    public void setCategories(ArrayList<CategoryProjectResponse> categories) {
+        this.categories = categories;
     }
 
     public ArrayList<String> getAttachments() {

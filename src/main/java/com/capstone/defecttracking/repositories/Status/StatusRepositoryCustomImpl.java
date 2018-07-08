@@ -41,6 +41,13 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     }
 
     @Override
+    public String getDefaultStatus() {
+        Query query = new Query(Criteria.where("isDefault").is(true));
+
+        return mongoTemplate.findOne(query, Status.class).getId();
+    }
+
+    @Override
     public Boolean updateStatus(Status status) {
         Query query = new Query(Criteria.where("_id").is(status.getId()));
         Update update = new Update();

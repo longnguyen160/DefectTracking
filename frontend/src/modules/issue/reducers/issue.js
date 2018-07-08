@@ -1,7 +1,4 @@
 import {
-  UPDATE_FILTER_REQUEST,
-  UPDATE_FILTER_SUCCESS,
-  UPDATE_FILTER_FAILURE,
   CREATE_ISSUE_REQUEST,
   CREATE_ISSUE_SUCCESS,
   CREATE_ISSUE_FAILURE,
@@ -16,7 +13,11 @@ import {
   LOAD_ISSUE_SHORTCUT_REQUEST,
   LOAD_ISSUE_SHORTCUT_SUCCESS,
   LOAD_ISSUE_SHORTCUT_FAILURE,
-  RESET_ISSUE_DETAILS
+  LOAD_ALL_ISSUES_BASED_ON_FILTER_REQUEST,
+  LOAD_ALL_ISSUES_BASED_ON_FILTER_SUCCESS,
+  LOAD_ALL_ISSUES_BASED_ON_FILTER_FAILURE,
+  RESET_ISSUE_DETAILS,
+  RESET_ISSUE_LIST
 } from '../actions/types';
 
 const initialState = {
@@ -76,6 +77,25 @@ export default function issue(state = initialState, action) {
         error: action.error
       });
 
+    case LOAD_ALL_ISSUES_BASED_ON_FILTER_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case LOAD_ALL_ISSUES_BASED_ON_FILTER_SUCCESS:
+      return Object.assign({}, state, {
+        issues: action.data,
+        isLoading: false,
+        error: null
+      });
+
+    case LOAD_ALL_ISSUES_BASED_ON_FILTER_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
     case LOAD_ISSUE_DETAILS_REQUEST:
       return Object.assign({}, state, {
         isLoading: true,
@@ -118,24 +138,10 @@ export default function issue(state = initialState, action) {
       return Object.assign({}, state, {
         issue: null
       });
-    //update filter
-    case UPDATE_FILTER_REQUEST:
-      return Object.assign({}, state, {
-        isLoading: true,
-        error: null
-      });
 
-    case UPDATE_FILTER_SUCCESS:
+    case RESET_ISSUE_LIST:
       return Object.assign({}, state, {
-        isLoading: false,
-        issues: action.issueList,
-        error: null
-      });
-
-    case UPDATE_FILTER_FAILURE:
-      return Object.assign({}, state, {
-        isLoading: false,
-        error: action.error
+        issues: []
       });
 
     default:

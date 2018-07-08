@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import { DragDropContext } from 'react-beautiful-dnd';
 import SockJsClient from "react-stomp";
 import {
   ElementHeaderStyled,
@@ -13,11 +12,13 @@ import {
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
+  ListTableBodyContainerStyled,
+  ListTableBodyItemStyled,
+  ListTableBodyStyled,
   ListTableHeaderItemsStyled,
-  ListTableHeaderStyled
+  ListTableHeaderStyled,
+  ListTableStyled
 } from '../../../stylesheets/Table';
-import BacklogDetails from './BacklogDetails';
-import { reorderMap } from '../../../utils/ultis';
 import { Button } from '../../../stylesheets/Button';
 import {
   loadAllCategoriesInProject,
@@ -39,8 +40,9 @@ import CustomOptionForSelect from '../../../components/form/CustomOptionForSelec
 import CustomValueForSelect from '../../../components/form/CustomValueForSelect';
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { loadAllStatus } from '../../management/actions/status';
+import { loadAllIssuesBasedOnFilter, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 
-class BackLog extends React.Component {
+class Dashboard extends Component {
 
   constructor(props) {
     super(props);
@@ -52,19 +54,27 @@ class BackLog extends React.Component {
       filter: filter || {
         projectId: selectedProject && selectedProject.id,
         userId: user && user.id
-      },
-      list: {
-        backlog: selectedProject ? selectedProject.backlog : []
       }
     };
   }
 
   componentWillMount() {
-    const { loadAllStatus, user, getFilter, loadAllCategoriesInProject, selectedProject } = this.props;
+    const {
+      loadAllStatus,
+      user,
+      getFilter,
+      loadAllCategoriesInProject,
+      selectedProject,
+      filter,
+      loadAllIssuesBasedOnFilter
+    } = this.props;
 
     loadAllStatus(ROLES.ADMIN);
-    if (user) {
+    if (user && !filter) {
       getFilter(user.id);
+    } else if (filter) {
+      loadAllIssuesBasedOnFilter(filter);
+      this.setState({ filter });
     }
     if (selectedProject) {
       loadAllCategoriesInProject(selectedProject.id);
@@ -73,7 +83,7 @@ class BackLog extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { selectedProject, user, issues, filter } = nextProps;
-    const { updateCurrentUserRole, loadAllUsersInProject, getFilter, loadAllCategoriesInProject } = this.props;
+    const { updateCurrentUserRole, loadAllUsersInProject, getFilter, loadAllCategoriesInProject, loadAllIssuesBasedOnFilter } = this.props;
 
     if (JSON.stringify(user) !== JSON.stringify(this.props.user)) {
       const filterState = this.state.filter;
@@ -86,6 +96,7 @@ class BackLog extends React.Component {
       getFilter(user.id);
     }
     if (JSON.stringify(filter) !== JSON.stringify(this.props.filter)) {
+      loadAllIssuesBasedOnFilter(filter);
       this.setState({ filter });
     }
     if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
@@ -113,42 +124,33 @@ class BackLog extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const { resetIssueList } = this.props;
+
+    resetIssueList();
+  }
+
   handleChangeView = (type) => {
     this.setState({ view: type });
   };
 
   handleChangeSelect = (type, value) => {
     let { filter } = this.state;
-    const { updateFilter } = this.props;
+    const { updateFilter, loadAllIssuesBasedOnFilter } = this.props;
 
     filter = Object.assign(filter, {
       [type]: value
     });
     this.setState({ filter });
+    loadAllIssuesBasedOnFilter(filter);
     updateFilter(filter);
   };
 
-  onDragEnd = (result) => {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
+  handleOpenModal = (issueId) => {
+    const { openModal, loadIssueDetails } = this.props;
 
-    const { list } = this.state;
-    const { selectedProject, updateBacklog } = this.props;
-    const updatedList = reorderMap(
-      list,
-      result.source,
-      result.destination
-    );
-
-    this.setState({
-      list: updatedList,
-    });
-
-    if (JSON.stringify(updatedList.backlog) !== JSON.stringify(selectedProject.backlog)) {
-      updateBacklog(selectedProject.id, updatedList.backlog);
-    }
+    loadIssueDetails(issueId);
+    openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
 
   optionComponent = (name) => {
@@ -170,14 +172,15 @@ class BackLog extends React.Component {
   };
 
   onMessageReceive = () => {
-    const { selectedProject, loadProjectDetails } = this.props;
+    const { loadAllIssuesBasedOnFilter } = this.props;
+    const { filter } = this.state;
 
-    loadProjectDetails(selectedProject.id);
+    loadAllIssuesBasedOnFilter(filter);
   };
 
   render() {
-    const { list, view, filter } = this.state;
-    const { usersInProject, statusList, categories } = this.props;
+    const { view, filter } = this.state;
+    const { usersInProject, statusList, categories, issues } = this.props;
 
     return (
       <PageBoardStyled backlog>
@@ -213,7 +216,7 @@ class BackLog extends React.Component {
             valueKey={'id'}
             labelKey={'name'}
             value={filter['status']}
-            onChange={(e) => this.handleChangeSelect('status', e.id)}
+            onChange={(e) => this.handleChangeSelect('status', e ? e.id : null)}
             classNamePrefix="react-select"
           />
           <Select
@@ -225,7 +228,7 @@ class BackLog extends React.Component {
             optionComponent={this.optionComponent('priority')}
             valueComponent={this.valueComponent('priority')}
             classNamePrefix="react-select"
-            onChange={(e) => this.handleChangeSelect('priority', e.value)}
+            onChange={(e) => this.handleChangeSelect('priority', e ? e.value : null)}
           />
           <Select
             isSearchable={false}
@@ -235,7 +238,7 @@ class BackLog extends React.Component {
             classNamePrefix="react-select"
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
-            onChange={(e) => this.handleChangeSelect('assignee', e.id)}
+            onChange={(e) => this.handleChangeSelect('assignee', e ? e.id : null)}
           />
           <Select
             isSearchable={false}
@@ -245,7 +248,7 @@ class BackLog extends React.Component {
             classNamePrefix="react-select"
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
-            onChange={(e) => this.handleChangeSelect('reporter', e.id)}
+            onChange={(e) => this.handleChangeSelect('reporter', e ? e.id : null)}
           />
           <Select
             isSearchable={false}
@@ -254,43 +257,75 @@ class BackLog extends React.Component {
             valueKey={'id'}
             labelKey={'name'}
             classNamePrefix="react-select"
+            value={filter['categories']}
             multi
-            onChange={(e) => this.handleChangeSelect('categories', e)}
+            onChange={(e) => this.handleChangeSelect('categories', e ? e.map(category => category.id) : [])}
           />
         </FormGroupStyled>
         {
           view === 'list' ?
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              <PageBoardItemStyled activity margin={'0'}>
-                <ElementHeaderStyled padding={'20px 5px'}>
-                  <TitleElementStyled noPadding flex={'0 0 85px'}>
-                    Issues
-                  </TitleElementStyled>
-                  <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
-                    {list.backlog.length} Issues
-                  </TitleElementStyled>
-                  <TitleElementStyled noPadding flex={'0'}>
-                    <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
-                      Create Issue
-                    </Button>
-                  </TitleElementStyled>
-                </ElementHeaderStyled>
+            <PageBoardItemStyled activity margin={'0'}>
+              <ElementHeaderStyled padding={'20px 5px'}>
+                <TitleElementStyled noPadding flex={'0 0 85px'}>
+                  Issues
+                </TitleElementStyled>
+                <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
+                  {issues.length} Issues
+                </TitleElementStyled>
+                <TitleElementStyled noPadding flex={'0'}>
+                  <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
+                    Create Issue
+                  </Button>
+                </TitleElementStyled>
+              </ElementHeaderStyled>
+              <div>
                 <div>
-                  <div>
-                    <ListTableHeaderStyled>
-                      <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
-                      <ListTableHeaderItemsStyled issueName>Name</ListTableHeaderItemsStyled>
-                      <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
-                    </ListTableHeaderStyled>
-                    <BacklogDetails
-                      listId="backlog"
-                      listType="card"
-                      data={list.backlog}
-                    />
-                  </div>
+                  <ListTableHeaderStyled>
+                    <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
+                    <ListTableHeaderItemsStyled issueName>Name</ListTableHeaderItemsStyled>
+                    <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
+                  </ListTableHeaderStyled>
+                  <ListTableBodyContainerStyled willChange>
+                    {
+                      issues.map((issue, index) => {
+                        const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
+
+                        return (
+                          <ListTableStyled
+                            onClick={() => this.handleOpenModal(issue.id)}
+                            key={issue.id}
+                            odd={index % 2 === 0}
+                          >
+                            <ListTableBodyStyled
+                              showList
+                              noBackground
+                              fixed
+                              color={issue.status}
+                            >
+                              <ListTableBodyItemStyled itemId>
+                                {issue.issueKey}
+                              </ListTableBodyItemStyled>
+                              <ListTableBodyItemStyled issueName>
+                                {issue.summary}
+                              </ListTableBodyItemStyled>
+                              <ListTableBodyItemStyled priority>
+                                <Icon
+                                  icon={ICONS.ARROW}
+                                  color={priority && priority.color}
+                                  width={15}
+                                  height={15}
+                                  rotated rotate={'rotateZ(90deg)'}
+                                />
+                              </ListTableBodyItemStyled>
+                            </ListTableBodyStyled>
+                          </ListTableStyled>
+                        );
+                      })
+                    }
+                  </ListTableBodyContainerStyled>
                 </div>
-              </PageBoardItemStyled>
-            </DragDropContext>
+              </div>
+            </PageBoardItemStyled>
           :
             <Column />
         }
@@ -305,7 +340,7 @@ class BackLog extends React.Component {
   }
 }
 
-BackLog.propTypes = {
+Dashboard.propTypes = {
   loadProjectDetails: PropTypes.func.isRequired,
   updateBacklog: PropTypes.func.isRequired,
   updateCurrentUserRole: PropTypes.func.isRequired,
@@ -315,6 +350,9 @@ BackLog.propTypes = {
   updateFilter: PropTypes.func.isRequired,
   getFilter: PropTypes.func.isRequired,
   loadAllCategoriesInProject: PropTypes.func.isRequired,
+  loadIssueDetails: PropTypes.func.isRequired,
+  loadAllIssuesBasedOnFilter: PropTypes.func.isRequired,
+  resetIssueList: PropTypes.func.isRequired,
   usersInProject: PropTypes.array.isRequired,
   statusList: PropTypes.array.isRequired,
   issues: PropTypes.array.isRequired,
@@ -347,7 +385,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   loadAllStatus: loadAllStatus,
   updateFilter: updateFilter,
   getFilter: getFilter,
-  loadAllCategoriesInProject: loadAllCategoriesInProject
+  loadAllCategoriesInProject: loadAllCategoriesInProject,
+  loadIssueDetails: loadIssueDetails,
+  loadAllIssuesBasedOnFilter: loadAllIssuesBasedOnFilter,
+  resetIssueList: resetIssueList
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(BackLog);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

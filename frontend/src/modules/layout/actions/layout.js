@@ -16,7 +16,8 @@ import {
   LOAD_PROJECT_DETAILS_FAILURE,
   SELECT_PROJECT,
   RESET_PROJECT,
-  RESET_SELECTED_PROJECT
+  RESET_SELECTED_PROJECT,
+  RESET_ALL_CATEGORIES
 } from './types';
 
 //LOAD ALL CATEGORIES IN PROJECT
@@ -115,6 +116,10 @@ const resetProject = () => ({
   type: RESET_PROJECT
 });
 
+const resetAllCategories = () => ({
+  type: RESET_ALL_CATEGORIES
+});
+
 export {
   loadAllCategoriesInProject,
   loadAllCategoriesInProjectRequest,
@@ -133,5 +138,6 @@ export {
   loadProjectDetailsFailure,
   selectProject,
   resetProject,
-  resetSelectedProject
+  resetSelectedProject,
+  resetAllCategories
 }

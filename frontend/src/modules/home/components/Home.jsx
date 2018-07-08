@@ -19,7 +19,7 @@ import {
 } from '../../../stylesheets/Table';
 import { openModal, resetSelectedProject } from '../../layout/actions/layout';
 import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
-import { loadAllIssuesShortcut, loadIssueDetails } from '../../issue/actions/issue';
+import { loadAllIssuesShortcut, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
 
 class Home extends React.Component {
@@ -40,6 +40,12 @@ class Home extends React.Component {
     if (user && !this.props.user) {
       loadAllIssuesShortcut(user.id);
     }
+  }
+
+  componentWillUnmount() {
+    const { resetIssueList } = this.props;
+
+    resetIssueList();
   }
 
   handleOpenModal = (issueId) => {
@@ -86,7 +92,12 @@ class Home extends React.Component {
                         key={issue.id}
                         odd={index % 2 === 0}
                       >
-                        <ListTableBodyStyled showList noBackground fixed>
+                        <ListTableBodyStyled
+                          showList
+                          noBackground
+                          fixed
+                          color={issue.status}
+                        >
                           <ListTableBodyItemStyled itemId>
                             {issue.issueKey}
                           </ListTableBodyItemStyled>
@@ -228,6 +239,7 @@ Home.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadAllIssuesShortcut: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
+  resetIssueList: PropTypes.func.isRequired,
   issues: PropTypes.array.isRequired,
   user: PropTypes.object
 };
@@ -241,7 +253,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   resetSelectedProject: resetSelectedProject,
   openModal: openModal,
   loadAllIssuesShortcut: loadAllIssuesShortcut,
-  loadIssueDetails: loadIssueDetails
+  loadIssueDetails: loadIssueDetails,
+  resetIssueList: resetIssueList
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

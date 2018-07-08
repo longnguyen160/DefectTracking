@@ -6,12 +6,9 @@ import {
   LOAD_ISSUE_DETAILS,
   UPDATE_ISSUE,
   LOAD_ISSUE_SHORTCUT,
-  UPDATE_FILTER
+  LOAD_ALL_ISSUES_BASED_ON_FILTER
 } from '../actions/types';
 import {
-  updateFilterRequest,
-  updateFilterSuccess,
-  updateFilterFailure,
   createIssueRequest,
   createIssueSuccess,
   createIssueFailure,
@@ -28,29 +25,14 @@ import {
   updateIssueFailure,
   loadIssueShortcutRequest,
   loadIssueShortcutSuccess,
-  loadIssueShortcutFailure
+  loadIssueShortcutFailure,
+  loadAllIssuesBasedOnFilterRequest,
+  loadAllIssuesBasedOnFilterSuccess,
+  loadAllIssuesBasedOnFilterFailure
 } from '../actions/issue';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
-
-//update filter
-function* updateFilter({ filter }) {
-  try {
-    yield put(updateFilterRequest());
-
-    const { data } = yield call(API.updateFilter, filter);
-
-    yield put(updateFilterSuccess(data));
-  } catch (error) {
-    yield put(updateFilterFailure(getError(error)))
-  }
-}
-
-function* watchUpdateFilter() {
-  yield takeLatest(UPDATE_FILTER,updateFilter);
-}
-
 
 function* createIssue({ issue, closeModal }) {
   try {
@@ -138,8 +120,12 @@ function* watchLoadIssueShortcut() {
 function* updateIssue({ issueData }) {
   try {
     yield put(updateIssueRequest());
+    let api = API.updateIssue;
 
-    const { data } = yield call(API.updateIssue, issueData);
+    if (issueData.type === 'categories') {
+      api = API.updateIssueCategories;
+    }
+    const { data } = yield call(api, issueData);
 
     yield put(updateIssueSuccess());
     showSuccessNotification(data.message);
@@ -152,6 +138,21 @@ function* watchUpdateIssue() {
   yield takeLatest(UPDATE_ISSUE, updateIssue);
 }
 
+function* loadAllIssuesBasedOnFilter({ filter }) {
+  try {
+    yield put(loadAllIssuesBasedOnFilterRequest());
+    const { data } = yield call(API.loadAllIssuesBasedOnFilter, filter);
+
+    yield put(loadAllIssuesBasedOnFilterSuccess(data));
+  } catch (error) {
+    yield put(loadAllIssuesBasedOnFilterFailure(getError(error)));
+  }
+}
+
+function* watchLoadAllIssuesBasedOnFilter() {
+  yield takeLatest(LOAD_ALL_ISSUES_BASED_ON_FILTER, loadAllIssuesBasedOnFilter);
+}
+
 export default function* issueFlow() {
   yield all([
     watchCreateIssue(),
@@ -160,6 +161,6 @@ export default function* issueFlow() {
     watchLoadIssueShortcut(),
     watchLoadIssueDetails(),
     watchUpdateIssue(),
-    watchUpdateFilter()
+    watchLoadAllIssuesBasedOnFilter()
   ])
 }

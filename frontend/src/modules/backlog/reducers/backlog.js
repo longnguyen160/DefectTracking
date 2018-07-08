@@ -8,6 +8,9 @@ import {
   LOAD_ALL_ISSUES_FROM_BACKLOG_REQUEST,
   LOAD_ALL_ISSUES_FROM_BACKLOG_SUCCESS,
   LOAD_ALL_ISSUES_FROM_BACKLOG_FAILURE,
+  UPDATE_FILTER_REQUEST,
+  UPDATE_FILTER_SUCCESS,
+  UPDATE_FILTER_FAILURE,
   RESET_ISSUE_LIST
 } from '../actions/types';
 
@@ -73,6 +76,24 @@ export default function backlog(state = initialState, action) {
       });
 
     case LOAD_ALL_ISSUES_FROM_BACKLOG_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case UPDATE_FILTER_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case UPDATE_FILTER_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: null
+      });
+
+    case UPDATE_FILTER_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error

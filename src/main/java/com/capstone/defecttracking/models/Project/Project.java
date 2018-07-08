@@ -14,7 +14,7 @@ public class Project {
     private String name;
     private String description;
     private String status;
-    private ArrayList<UserRole> members = new ArrayList<UserRole>();
+    private ArrayList<UserRole> members = new ArrayList<>();
     private ArrayList<String> backlog = new ArrayList<>();
 
     public Project() {
@@ -65,8 +65,8 @@ public class Project {
         return members;
     }
 
-    public void setMembers(UserRole members) {
-        this.members.add(members);
+    public void setMembers(ArrayList<UserRole> members) {
+        this.members = members;
     }
 
     public ArrayList<String> getBacklog() {

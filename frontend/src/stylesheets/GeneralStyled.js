@@ -338,6 +338,9 @@ export const LineFormStyled = styled.div`
       }
     }  
   `}
+  ${props => props.wrap && css`
+    flex-wrap: wrap;
+  `}
 `;
 
 export const TitleFormStyled = styled.span`
@@ -777,7 +780,7 @@ export const LabelStyled = styled.div`
   background-color: ${props => props.background ? props.background : '#d1d1d1'};
   color: ${props => props.color ? props.color : '#000'};
   text-align: center;
-  margin: 0 3px;
+  margin: 3px;
 `;
 
 export const DropZoneStyled = styled(Dropzone)`

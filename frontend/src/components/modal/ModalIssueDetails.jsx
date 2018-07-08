@@ -21,6 +21,7 @@ import {
   LineFormStyled,
   IssueStatusStyled,
   DropZoneStyled,
+  LabelStyled,
 } from '../../stylesheets/GeneralStyled';
 import {
   ICONS,
@@ -136,6 +137,11 @@ class ModalIssueDetails extends React.Component {
         message = MESSAGE(e.value.name).CHANGE_STATUS;
         break;
 
+      case 'categories':
+        value = e.value.map(category => category.id);
+        message = MESSAGE().UPDATE_CATEGORIES;
+        break;
+
       default:
         value = e.value.id ? e.value.id : e.value;
         if (e.props.name === 'issueName' || e.props.name === 'description') {
@@ -165,6 +171,15 @@ class ModalIssueDetails extends React.Component {
     const { userRole } = this.state;
     const projectId = issue && issue.projectId;
     const priority = issue && ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
+    const categories = issue && issue.categories.map(category => ({
+      ...category,
+      value: category.id,
+      label: category.name
+    }));
+    const assignee = issue && Object.assign(issue.assignee, {
+      value: issue.assignee.id,
+      label: issue.assignee.username
+    });
     const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
@@ -211,11 +226,40 @@ class ModalIssueDetails extends React.Component {
             <ModalLineStyled hasRows noMargin padding={'0 0 10px 0'} noPadding>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
-                <LineFormStyled>
-                  <span>aospdj</span>
-                  <span>ddcds</span>
-                  <span>scnskl</span>
-                </LineFormStyled>
+                <Editable
+                  name={'categories'}
+                  dataType={'custom'}
+                  mode={'inline'}
+                  value={issue && { categories, projectId }}
+                  showButtons={true}
+                  display={(value) => (
+                    <LineFormStyled hover wrap>
+                      {
+                        value.categories && value.categories.length > 0 ?
+                          value.categories.map(category => (
+                            <LabelStyled
+                              background={category.background}
+                              color={category.color}
+                              key={category.id}
+                            >
+                              {category.name}
+                            </LabelStyled>
+                          ))
+                        :
+                          <LabelStyled>
+                          </LabelStyled>
+                      }
+                    </LineFormStyled>
+                  )}
+                  customComponent={(props, state) => (
+                    <CustomSelect
+                      multi={true}
+                      {...props}
+                      {...state}
+                    />
+                  )}
+                  handleSubmit={this.handleSubmit}
+                />
               </ModalLineContentStyled>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
@@ -354,7 +398,7 @@ class ModalIssueDetails extends React.Component {
                   name={'assignee'}
                   dataType={'custom'}
                   mode={'inline'}
-                  value={issue && { ...issue.assignee, projectId }}
+                  value={issue && { ...assignee, projectId }}
                   showButtons={true}
                   display={(value) => (
                     <LineFormStyled hover>
@@ -434,7 +478,6 @@ ModalIssueDetails.propTypes = {
   selectedProject: PropTypes.object,
   project: PropTypes.object,
   user: PropTypes.object.isRequired,
-  categories: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({

@@ -6,10 +6,12 @@ import ReactTable from "react-table";
 import SockJsClient from "react-stomp";
 import { ICONS, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import {
-  ElementHeaderStyled, IssueStatusStyled,
+  ElementHeaderStyled,
+  IssueStatusStyled,
   PageBoardStyled,
   TableBlockStyled,
-  TitleElementStyled
+  TitleElementStyled,
+  PageCustomStyled
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
@@ -63,13 +65,15 @@ class CategoriesManagement extends React.Component {
         accessor: 'projects',
         ...styleColumn,
         Cell: row => (
-          row.value.map(project => (
-            <TableBlockStyled alignLeft key={project.id}>
-              <IssueStatusStyled>
-                {project.name}
-              </IssueStatusStyled>
-            </TableBlockStyled>
-          ))
+          <PageCustomStyled margin={'0'}>
+            {
+              row.value.map(project => (
+                <TableBlockStyled alignLeft key={project.id}>
+                  {project.name}
+                </TableBlockStyled>
+              ))
+            }
+          </PageCustomStyled>
         )
       },
       {
