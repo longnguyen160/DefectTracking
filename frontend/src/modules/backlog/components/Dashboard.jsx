@@ -96,31 +96,23 @@ class Dashboard extends Component {
       getFilter(user.id);
     }
     if (JSON.stringify(filter) !== JSON.stringify(this.props.filter)) {
-      if (!filter.projectId) {
-        const newFilter = Object.assign(filter, {
-          projectId: selectedProject.id
-        });
-
-        this.setState({ filter: newFilter });
-        loadAllIssuesBasedOnFilter(newFilter);
-      } else {
-        this.setState({ filter });
-        loadAllIssuesBasedOnFilter(filter);
-      }
+      this.setState({ filter });
+      loadAllIssuesBasedOnFilter(filter);
     }
     if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
         backlog: selectedProject.backlog
       };
-      const filterState = this.state.filter;
+      const newFilter = Object.assign(this.state.filter, {
+        projectId: selectedProject.id
+      });
 
       this.setState({
-        filter: Object.assign(filterState, {
-          projectId: selectedProject.id
-        })
+        filter: newFilter
       });
       const existedMember = selectedProject.members.find(member => member.userId === user.id);
 
+      loadAllIssuesBasedOnFilter(newFilter);
       loadAllUsersInProject(selectedProject.id);
       loadAllCategoriesInProject(selectedProject.id);
 
