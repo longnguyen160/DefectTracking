@@ -36,24 +36,24 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         query = new Query(Criteria.where("projects").is(projectId));
 
         ArrayList<CategoryProjectResponse> categories = mongoTemplate
-            .find(query, Category.class)
-            .stream()
-            .map(category -> new CategoryProjectResponse(
+                .find(query, Category.class)
+                .stream()
+                .map(category -> new CategoryProjectResponse(
                 category.getId(),
                 category.getName(),
                 category.getColor(),
                 category.getBackground()
-            ))
-            .collect(Collectors.toCollection(ArrayList::new));
+        ))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         return new ProjectDetailsResponse(
-            projectId,
-            project.getName(),
-            project.getDescription(),
-            project.getStatus(),
-            project.getMembers(),
-            project.getBacklog(),
-            categories
+                projectId,
+                project.getName(),
+                project.getDescription(),
+                project.getStatus(),
+                project.getMembers(),
+                project.getBacklog(),
+                categories
         );
     }
 
@@ -61,11 +61,12 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     public Boolean doesProjectExisted(Project project) {
         Query query = new Query(Criteria.where("name").is(project.getName()));
         Project existedProject = mongoTemplate.findOne(query, Project.class);
-
-        if (existedProject.getId().equals(project.getId())) {
-            return false;
+        if (existedProject != null) {
+            if (existedProject.getId().equals(project.getId())) {
+                return true;
+            }
         }
-        return project != null;
+        return false;
     }
 
     @Override
@@ -77,63 +78,63 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
             query = new Query(Criteria.where("members.userId").is(userId));
 
             return mongoTemplate
-                .find(query, Project.class)
-                .stream()
-                .map(project -> new ProjectResponse(
+                    .find(query, Project.class)
+                    .stream()
+                    .map(project -> new ProjectResponse(
                     project.getId(),
                     project.getName(),
                     project.getDescription(),
                     project.getStatus()
-                ))
-                .collect(Collectors.toList());
+            ))
+                    .collect(Collectors.toList());
         } else {
             return mongoTemplate
-                .findAll(Project.class)
-                .stream()
-                .map(project -> new ProjectResponse(
+                    .findAll(Project.class)
+                    .stream()
+                    .map(project -> new ProjectResponse(
                     project.getId(),
                     project.getName(),
                     project.getDescription(),
                     project.getStatus()
-                ))
-                .collect(Collectors.toList());
+            ))
+                    .collect(Collectors.toList());
         }
     }
 
     @Override
     public List<ProjectManagementResponse> loadAllProjectsForManagement() {
         return mongoTemplate
-            .findAll(Project.class)
-            .stream()
-            .map(project -> {
-                Query query = new Query(Criteria.where("projects").is(project.getId()));
-                ArrayList<CategoryProjectResponse> categories = mongoTemplate
-                    .find(query, Category.class)
-                    .stream()
-                    .map(category -> new CategoryProjectResponse(
-                        category.getId(),
-                        category.getName(),
-                        category.getColor(),
-                        category.getBackground()
+                .findAll(Project.class)
+                .stream()
+                .map(project -> {
+                    Query query = new Query(Criteria.where("projects").is(project.getId()));
+                    ArrayList<CategoryProjectResponse> categories = mongoTemplate
+                            .find(query, Category.class)
+                            .stream()
+                            .map(category -> new CategoryProjectResponse(
+                            category.getId(),
+                            category.getName(),
+                            category.getColor(),
+                            category.getBackground()
                     ))
-                    .collect(Collectors.toCollection(ArrayList::new));
-                ArrayList<UserResponse> managers = project
-                    .getMembers()
-                    .stream()
-                    .filter(member -> member.getRole().equals("manager"))
-                    .map(member -> getUserResponse(member.getUserId()))
-                    .collect(Collectors.toCollection(ArrayList::new));
+                            .collect(Collectors.toCollection(ArrayList::new));
+                    ArrayList<UserResponse> managers = project
+                            .getMembers()
+                            .stream()
+                            .filter(member -> member.getRole().equals("manager"))
+                            .map(member -> getUserResponse(member.getUserId()))
+                            .collect(Collectors.toCollection(ArrayList::new));
 
-                return new ProjectManagementResponse(
-                    project.getId(),
-                    project.getName(),
-                    project.getDescription(),
-                    project.getStatus(),
-                    managers,
-                    categories
-                );
-            })
-            .collect(Collectors.toList());
+                    return new ProjectManagementResponse(
+                            project.getId(),
+                            project.getName(),
+                            project.getDescription(),
+                            project.getStatus(),
+                            managers,
+                            categories
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -142,7 +143,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         Query query = new Query(Criteria.where("_id").is(userProjectRequest.getProjectId()));
         Update update = new Update();
 
-        update.push("members", new UserRole(userProjectRequest.getUserId(), userProjectRequest.getRole()));
+        update.push("members", new UserRole(userProjectRequest.getRole(), userProjectRequest.getUserId()));
         UpdateResult result = mongoTemplate.updateFirst(query, update, Project.class);
 
         query = new Query(Criteria.where("_id").is(userProjectRequest.getUserId()));
