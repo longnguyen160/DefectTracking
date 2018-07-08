@@ -289,7 +289,7 @@ class ModalIssueDetails extends React.Component {
                   customComponent={(props, state) => (
                     <CustomSelect
                       renderCustom={true}
-                      clearable={true}
+                      clearable={false}
                       {...props}
                       {...state}
                     />
