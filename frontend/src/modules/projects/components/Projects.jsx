@@ -14,7 +14,7 @@ import {
   ElementHeaderStyled
 } from '../../../stylesheets/GeneralStyled';
 import { loadProjectDetails, openModal, selectProject } from '../../layout/actions/layout';
-import { ICONS, MODAL_TYPE, PROJECT_STATUS, WEB_SOCKET_URL } from '../../../utils/enums';
+import { ICONS, MODAL_TYPE, PROJECT_STATUS, ROLES, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjects } from '../actions/project';
 import Icon from '../../../components/icon/Icon';
 
@@ -60,11 +60,14 @@ class Projects extends React.Component {
             </ElementStyled>
           ))
         }
-        <ElementStyled created onClick={() => this.props.openModal(MODAL_TYPE.CREATING_PROJECT)}>
-          <TitleElementStyled>
-            Create new project...
-          </TitleElementStyled>
-        </ElementStyled>
+        {
+          this.props.user && this.props.user.roles.includes(ROLES.ADMIN) &&
+            <ElementStyled created onClick={() => this.props.openModal(MODAL_TYPE.CREATING_PROJECT)}>
+              <TitleElementStyled>
+                Create new project...
+              </TitleElementStyled>
+            </ElementStyled>
+        }
       </PageCustomStyled>
     </PageBoardItemStyled>
   );
@@ -95,6 +98,7 @@ Projects.propTypes = {
   loadAllProjects: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  user: PropTypes.object,
   project: PropTypes.shape({
     projects: PropTypes.array.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -102,7 +106,8 @@ Projects.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  project: state.project
+  project: state.project,
+  user: state.layout.user
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
