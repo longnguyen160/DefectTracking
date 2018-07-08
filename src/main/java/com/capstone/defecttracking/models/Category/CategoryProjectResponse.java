@@ -1,33 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capstone.defecttracking.models.Category;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.ArrayList;
-
-@Document(collection = "categories")
-public class Category {
-    @Id
+public class CategoryProjectResponse {
     private String id;
     private String name;
     private String color;
     private String background;
-    private ArrayList<String> projects = new ArrayList<>();
 
-    public Category() {
+    public CategoryProjectResponse() {
     }
 
-    public Category(String id, String name, String color, String background, ArrayList<String> projects) {
+    public CategoryProjectResponse(String id, String name, String color, String background) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.background = background;
-        this.projects = projects;
     }
 
     public String getId() {
@@ -60,13 +46,5 @@ public class Category {
 
     public void setBackground(String background) {
         this.background = background;
-    }
-
-    public ArrayList<String> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(ArrayList<String> projects) {
-        this.projects = projects;
     }
 }

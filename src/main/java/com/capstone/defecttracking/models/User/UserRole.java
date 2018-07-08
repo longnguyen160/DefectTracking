@@ -1,15 +1,15 @@
 package com.capstone.defecttracking.models.User;
 
 public class UserRole {
-    private String userId;
     private String role;
+    private String userId;
 
     public UserRole() {
     }
 
-    public UserRole(String userId, String role) {
-        this.userId = userId;
+    public UserRole(String role, String userId) {
         this.role = role;
+        this.userId = userId;
     }
 
     public String getUserId() {

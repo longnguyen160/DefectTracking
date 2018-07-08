@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getAccessToken } from './ultis';
+import qs from 'qs';
 
 const BASE_URL = 'http://localhost:8080/';
 
@@ -34,12 +35,16 @@ const loadAllUsers = (input, projectId) => {
 };
 
 // Project
-const createProject = (project) => {
-  return axios.post('admin/createProject', project);
+const createProject = (projectCategory) => {
+  return axios.post('admin/createProject', projectCategory);
 };
 
 const loadAllProjects = () => {
   return axios.get('loadAllProjects');
+};
+
+const loadAllProjectsForManagement = () => {
+  return axios.get('admin/loadAllProjectsForManagement');
 };
 
 const loadALlUsersInProject = (projectId) => {
@@ -61,6 +66,10 @@ const updateBacklog = (projectId, backlog) => {
 const removeUserFromProject = (projectId, userId) => {
   return axios.delete(`manager/removeUserFromProject/${projectId}/${userId}`);
 };
+
+const updateProject = (projectRequest) => {
+  return axios.post('admin/updateProject', projectRequest);
+};
 // Issue
 const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
@@ -72,6 +81,10 @@ const loadAllIssues = () => {
 
 const loadAllIssuesShortcut = (userId) => {
   return axios.get(`user/loadAllIssuesShortcut?userId=${userId}`);
+};
+
+const loadAllIssuesBasedOnFilter = (filter) => {
+  return axios.get(`user/loadAllIssuesBasedOnFilter?filter=${encodeURI(JSON.stringify(filter))}`);
 };
 
 const loadIssueShortcut = (issueId) => {
@@ -86,8 +99,20 @@ const updateIssue = (data) => {
   return axios.post('user/updateIssue', data);
 };
 
+const updateIssueCategories = (data) => {
+  return axios.post('user/updateIssueCategories', data);
+};
+
 const loadAllIssuesFromBacklog = (issueList) => {
   return axios.get(`user/loadAllIssuesFromBacklog?issueIds=${issueList}`);
+};
+
+const updateFilter = (filter) => {
+  return axios.post('user/updateFilter', filter);
+};
+
+const getFilter = (userId) => {
+  return axios.get(`user/getFilter?userId=${userId}`);
 };
 // Category
 const createCategory = (category) => {
@@ -97,6 +122,10 @@ const createCategory = (category) => {
 const loadAllCategories = () => {
   return axios.get('admin/loadAllCategories');
 };
+
+const loadAllCategoriesInProject = (projectId) => {
+  return axios.get(`user/loadAllCategoriesInProject?projectId=${projectId}`);
+}
 
 // File
 const uploadFile = (file) => {
@@ -166,6 +195,7 @@ const API = {
   loadAllIssuesShortcut,
   loadIssueDetails,
   updateIssue,
+  updateIssueCategories,
   removeUserFromProject,
   loadIssueShortcut,
   updateBacklog,
@@ -177,7 +207,13 @@ const API = {
   loadAllStatus,
   removeStatus,
   updateStatus,
-  updateStatusDefault
+  updateStatusDefault,
+  updateFilter,
+  getFilter,
+  loadAllProjectsForManagement,
+  loadAllCategoriesInProject,
+  updateProject,
+  loadAllIssuesBasedOnFilter
 };
 
 export default API;

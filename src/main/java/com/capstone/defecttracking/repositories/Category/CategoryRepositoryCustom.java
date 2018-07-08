@@ -5,7 +5,10 @@
  */
 package com.capstone.defecttracking.repositories.Category;
 
-import com.capstone.defecttracking.models.Category.Category;
+import com.capstone.defecttracking.models.Category.CategoryManagementResponse;
+import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +16,8 @@ import java.util.List;
  * @author doanb
  */
 public interface CategoryRepositoryCustom {
-    Category findbyId(String id);
-    boolean doesCateExited(String name);
-    List<Category> loadAllCate();
+    boolean doesCategoryExited(String name);
+    void addProject(String projectId, ArrayList<String> categories);
+    List<CategoryManagementResponse> loadAllCategories();
+    List<CategoryProjectResponse> loadAllCategoriesInProject(String projectId);
 }

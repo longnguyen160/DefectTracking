@@ -1,4 +1,7 @@
 import {
+  LOAD_ALL_PROJECTS_FOR_MANAGEMENT_REQUEST,
+  LOAD_ALL_PROJECTS_FOR_MANAGEMENT_SUCCESS,
+  LOAD_ALL_PROJECTS_FOR_MANAGEMENT_FAILURE,
   REQUEST_UPDATE_STATUS_DEFAULT,
   UPDATE_STATUS_DEFAULT_FAILURE,
   UPDATE_STATUS_DEFAULT_SUCCESS,
@@ -26,6 +29,7 @@ import {
 } from '../actions/types';
 
 const initialState = {
+  projectList:[],
   statusList: [],
   categories: [],
   isLoading: false,
@@ -34,6 +38,25 @@ const initialState = {
 
 export default function management(state = initialState, action) {
   switch (action.type) {
+    // load all projects for management
+    case LOAD_ALL_PROJECTS_FOR_MANAGEMENT_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case LOAD_ALL_PROJECTS_FOR_MANAGEMENT_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        projectList: action.projectList,
+        error: null
+      });
+
+    case LOAD_ALL_PROJECTS_FOR_MANAGEMENT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: action.error
+      });
+    //create category
     case REQUEST_CREATE_CATEGORY:
       return Object.assign({}, state, {
         isLoading: true

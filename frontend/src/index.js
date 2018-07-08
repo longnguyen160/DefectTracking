@@ -16,11 +16,12 @@ import IssueList from './modules/issue/components/IssueList';
 import ProjectsManagement from './modules/management/components/ProjectsManagement';
 import UsersManagement from './modules/management/components/UsersManagement';
 import CategoriesManagement from './modules/management/components/CategoriesManagement';
+import StatusManagement from './modules/management/components/StatusManagement';
+import Dashboard from './modules/backlog/components/Dashboard';
 
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
 import './index.css';
-import StatusManagement from './modules/management/components/StatusManagement';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -66,7 +67,7 @@ ReactDOM.render(
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/projects" component={Projects} />
-            <PrivateRoute exact path="/project/:projectId?/backlog" component={BackLog} />
+            <PrivateRoute exact path="/project/:projectId?/dashboard" component={Dashboard} />
             <PrivateRoute exact path="/project/:projectId?/members" component={UsersList} />
             <PrivateRoute exact path="/issues" component={IssueList} />
             <PrivateRoute exact path="/manage/issues" component={IssueList} />

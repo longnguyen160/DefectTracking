@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import Modal from './Modal';
 import {
   ModalContentStyled,
@@ -12,26 +11,26 @@ import {
   ModalLineStyled,
   ModalLineTitleStyled
 } from '../../stylesheets/Modal';
-import { Input,
-  LineFormStyled,
-  TextErrorStyled,
+import {
   FilterBoxStyled,
-  FilterBoxTopStyled,
-  FilterBoxWrapperStyled
+  FilterBoxTopStyled, FilterBoxWrapperStyled,
+  Input,
+  LineFormStyled,
+  TextErrorStyled
 } from '../../stylesheets/GeneralStyled';
-import { SubSelectListStyled, SubSelectStyled } from '../../stylesheets/TopNavBar';
 import { Button } from '../../stylesheets/Button';
-import { ICONS, ISSUE_STATUS_ARRAY, USER_ROLE_IN_PROJECT } from '../../utils/enums';
+import { COLOR_ARRAY, ICONS } from '../../utils/enums';
+import { createCategory } from '../../modules/management/actions/category';
 import Icon from '../icon/Icon';
-import { createStatus } from '../../modules/management/actions/status';
+import { SubSelectListStyled, SubSelectStyled } from '../../stylesheets/TopNavBar';
 
-class ModalAddStatus extends Component {
+
+class ModalAddingCategory extends React.Component {
 
   state = {
-    showStatus: false,
-    field: ISSUE_STATUS_ARRAY[0],
-    name: 'Status',
-    selectedRole: [],
+    showFilter: false,
+    field: COLOR_ARRAY[0],
+    name: 'Category',
     error: null
   };
 
@@ -43,14 +42,10 @@ class ModalAddStatus extends Component {
     }
   }
 
-  handleSelectOnChange = (value) => {
-    this.setState({ selectedRole: value });
-  };
+  handleShowFilter = () => {
+    const { showFilter } = this.state;
 
-  handleShowStatus = () => {
-    const { showStatus } = this.state;
-
-    this.setState({ showStatus: !showStatus });
+    this.setState({ showFilter: !showFilter });
   };
 
   handleSelectField = (field) => {
@@ -59,40 +54,38 @@ class ModalAddStatus extends Component {
 
   handleChange = () => {
     if (this.input.value.length === 0) {
-      this.setState({ name: 'Status' });
+      this.setState({ name: 'Category' });
     } else {
       this.setState({ name: this.input.value });
     }
   };
 
-  handleCreateStatus = () => {
-    const { createStatus, onClose } = this.props;
-    const { field, selectedRole } = this.state;
+  handleCreateCategory = () => {
+    const { createCategory, onClose } = this.props;
+    const { field } = this.state;
 
     if (this.input.value.length === 0) {
       this.setState({ error: 'Name is required' });
       return;
     }
 
-    createStatus({
+    createCategory({
       name: this.input.value,
       background: field.background,
-      color: field.color,
-      isDefault: false,
-      handlers: selectedRole.map(role => role.value)
+      color: field.color
     }, () => onClose());
   };
 
   render() {
-    const { onClose, isOpen, isLoading } = this.props;
-    const { showStatus, field, name, selectedRole, error } = this.state;
-    const listStatus = ISSUE_STATUS_ARRAY.filter(fieldData => fieldData.background !== field.background);
+    const { onClose, isOpen, error, isLoading } = this.props;
+    const { showFilter, field, name } = this.state;
+    const colorList = COLOR_ARRAY.filter(fieldData => fieldData.background !== field.background);
 
     return (
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'500px'} isVisible={true}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
-            <span>Add Status</span>
+            <span>Add category</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
         <ModalContentStyled>
@@ -113,8 +106,8 @@ class ModalAddStatus extends Component {
               <ModalLineTitleStyled fullInput>
                 <LineFormStyled>
                   <FilterBoxStyled
-                    onClick={() => this.handleShowStatus()}
-                    showFilter={showStatus}
+                    onClick={() => this.handleShowFilter()}
+                    showFilter={showFilter}
                     background={field.background}
                     color={field.color}
                     fullWidth
@@ -126,11 +119,11 @@ class ModalAddStatus extends Component {
                       <FilterBoxWrapperStyled>
                         {name}
                       </FilterBoxWrapperStyled>
-                      <Icon icon={ICONS.ANGLE_DOWN} height={6} marginRight={'0'} rotated={showStatus} />
+                      <Icon icon={ICONS.ANGLE_DOWN} height={6} marginRight={'0'} rotated={showFilter} />
                     </FilterBoxTopStyled>
                     <SubSelectStyled>
                       {
-                        listStatus.map(fieldData => (
+                        colorList.map(fieldData => (
                           <SubSelectListStyled
                             key={fieldData.background}
                             onClick={() => this.handleSelectField(fieldData)}
@@ -145,22 +138,6 @@ class ModalAddStatus extends Component {
                       }
                     </SubSelectStyled>
                   </FilterBoxStyled>
-                </LineFormStyled>
-              </ModalLineTitleStyled>
-            </ModalLineContentStyled>
-          </ModalLineStyled>
-          <ModalLineStyled>
-            <ModalLineContentStyled alignLeft>
-              <ModalLineTitleStyled>Allow role</ModalLineTitleStyled>
-              <ModalLineTitleStyled fullInput>
-                <LineFormStyled reactSelect fullWidthSelect>
-                  <Select
-                    placeholder={'Role'}
-                    options={USER_ROLE_IN_PROJECT}
-                    value={selectedRole}
-                    multi
-                    onChange={this.handleSelectOnChange}
-                  />
                 </LineFormStyled>
               </ModalLineTitleStyled>
             </ModalLineContentStyled>
@@ -182,7 +159,7 @@ class ModalAddStatus extends Component {
                   <Button
                     btnModal
                     hasBorder
-                    onClick={() => this.handleCreateStatus()}
+                    onClick={() => this.handleCreateCategory()}
                   >
                     Create
                   </Button>
@@ -195,12 +172,12 @@ class ModalAddStatus extends Component {
   }
 }
 
-ModalAddStatus.propTypes = {
+ModalAddingCategory.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  createStatus: PropTypes.func.isRequired,
+  createCategory: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 const mapStateToProps = state => ({
@@ -209,8 +186,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createStatus: createStatus
+  createCategory: createCategory
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalAddStatus);
-
+export default connect(mapStateToProps, mapDispatchToProps)(ModalAddingCategory);

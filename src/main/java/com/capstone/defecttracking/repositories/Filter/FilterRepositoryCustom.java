@@ -14,4 +14,5 @@ import org.springframework.http.ResponseEntity;
  */
 public interface FilterRepositoryCustom {
     Boolean updateFilter(Filter filter);
+    Filter getFilter(String userId);
 }

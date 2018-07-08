@@ -1,6 +1,9 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { LOAD_CURRENT_USER, LOAD_PROJECT_DETAILS } from '../actions/types';
+import { LOAD_ALL_CATEGORIES_IN_PROJECT, LOAD_CURRENT_USER, LOAD_PROJECT_DETAILS } from '../actions/types';
 import {
+  loadAllCategoriesInProjectRequest,
+  loadAllCategoriesInProjectSuccess,
+  loadAllCategoriesInProjectFailure,
   requestLoadCurrentUser,
   loadCurrentUserSuccess,
   loadCurrentUserFailure,
@@ -10,7 +13,25 @@ import {
 } from '../actions/layout';
 import API from '../../../utils/api';
 import { getError, removeAccessToken } from '../../../utils/ultis';
+// load all categories in project 
+function* loadAllCategoriesInProject({ projectId }) {
+  try {
+    yield put(loadAllCategoriesInProjectRequest());
+    
+    const { data } = yield call(API.loadAllCategoriesInProject, projectId);
 
+    yield put(loadAllCategoriesInProjectSuccess(data));
+  } catch (error) {
+    yield put(loadAllCategoriesInProjectFailure(getError(error)));
+  }
+}
+
+function* watchLoadAllCategoriesInProject(){
+  yield takeLatest(LOAD_ALL_CATEGORIES_IN_PROJECT, loadAllCategoriesInProject);
+}
+
+
+// load current user
 function* loadCurrentUser({ goToLoginPage }) {
   try {
     yield put(requestLoadCurrentUser());
@@ -32,14 +53,14 @@ function* watchLoadCurrentUser() {
   yield takeLatest(LOAD_CURRENT_USER, loadCurrentUser);
 }
 
-function* loadProjectDetails({ projectId, handleProjectDetails }) {
+function* loadProjectDetails({ projectId, selectProject }) {
   try {
     yield put(loadProjectDetailsRequest());
 
     const { data } = yield call(API.loadProjectDetails, projectId);
 
-    if (handleProjectDetails && typeof (handleProjectDetails) === 'function') {
-      handleProjectDetails(data);
+    if (selectProject && typeof (selectProject) === 'function') {
+      selectProject(data);
     } else {
       yield put(loadProjectDetailsSuccess(data));
     }
@@ -54,6 +75,7 @@ function* watchLoadProjectDetails() {
 
 export default function* accountFlow() {
   yield all([
+    watchLoadAllCategoriesInProject(),
     watchLoadCurrentUser(),
     watchLoadProjectDetails()
   ]);

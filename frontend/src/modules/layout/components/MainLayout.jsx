@@ -7,7 +7,14 @@ import Notifications from 'react-notification-system-redux';
 import SockJsClient from "react-stomp";
 import TopNavBar from './TopNavBar';
 import SideBar from './SideBar';
-import { loadCurrentUser, openModal, closeModal, resetProject, loadProjectDetails } from '../actions/layout';
+import {
+  loadCurrentUser,
+  openModal,
+  closeModal,
+  resetSelectedProject,
+  loadProjectDetails,
+  selectProject
+} from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { loadAllProjects } from '../../projects/actions/project';
 import { notificationStyle } from '../../../stylesheets/Notifications';
@@ -18,9 +25,9 @@ import ModalCreatingAccount from '../../../components/modal/ModalCreatingAccount
 import ModalCreatingIssue from '../../../components/modal/ModalCreatingIssue';
 import ModalProfile from '../../../components/modal/ModalProfile';
 import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
-import ModalAddUser from '../../../components/modal/ModalAddUser';
-import ModalAddCategory from '../../../components/modal/ModalAddCategory';
-import ModalAddStatus from '../../../components/modal/ModalAddStatus';
+import ModalAddUser from '../../../components/modal/ModalAddingUser';
+import ModalAddCategory from '../../../components/modal/ModalAddingCategory';
+import ModalAddStatus from '../../../components/modal/ModalAddingStatus';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
@@ -43,7 +50,7 @@ const getParams = pathname => {
 class MainLayout extends React.Component {
 
   componentWillMount() {
-    const { loadCurrentUser, history, loadAllProjects } = this.props;
+    const { loadCurrentUser, history, loadAllProjects, selectProject } = this.props;
     const { pathname } = this.props.location;
     const currentParams = getParams(pathname);
 
@@ -55,7 +62,7 @@ class MainLayout extends React.Component {
     if (currentParams.projectId) {
       const { loadProjectDetails } = this.props;
 
-      loadProjectDetails(currentParams.projectId);
+      loadProjectDetails(currentParams.projectId, (project) => selectProject(project));
     }
   }
 
@@ -89,7 +96,8 @@ class MainLayout extends React.Component {
       logOut,
       history,
       openModal,
-      loadProjectDetails
+      loadProjectDetails,
+      selectProject
     } = this.props;
 
     return (
@@ -103,6 +111,7 @@ class MainLayout extends React.Component {
           logOut={logOut}
           history={history}
           openModal={openModal}
+          selectProject={selectProject}
           loadProjectDetails={loadProjectDetails}
         />
         <FormGroupStyled padding>
@@ -134,6 +143,7 @@ MainLayout.propTypes = {
   logOut: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
     user: PropTypes.object,
@@ -154,7 +164,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   logOut: logOut,
   openModal: openModal,
   closeModal: closeModal,
-  resetProject: resetProject,
+  resetSelectedProject: resetSelectedProject,
+  selectProject: selectProject,
   loadAllProjects: loadAllProjects,
   loadProjectDetails: loadProjectDetails
 }, dispatch);

@@ -11,12 +11,13 @@ public interface IssueRepositoryCustom {
     IssueShortcutResponse loadIssueShortcut(String issueId);
     Boolean didIssueExisted(String issueName);
     List<Issue> loadAllIssuesInProject(String projectId);
-    String generateIssueKey();
+    String generateIssueKey(String projectId);
     List<IssueResponse> loadAllIssues(String userId);
-    List<IssueResponse>loadAllIssuesBasedOnFilter(Filter filter);
+    List<IssueShortcutResponse>loadAllIssuesBasedOnFilter(Filter filter);
     List<IssueShortcutResponse> loadAllIssuesShortcut(String userId);
     List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds);
     Boolean updateIssue(String issueId, String type, String value);
+    Boolean updateIssueCategories(String issueId, String type, ArrayList<String> value);
     void addIssueToBacklog(String issueId, String projectId);
-    
+
 }

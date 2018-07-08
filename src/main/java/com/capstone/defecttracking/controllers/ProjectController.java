@@ -1,11 +1,10 @@
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.models.Project.Project;
-import com.capstone.defecttracking.models.Project.ProjectBacklogRequest;
-import com.capstone.defecttracking.models.Project.ProjectResponse;
-import com.capstone.defecttracking.models.Project.UserProjectRequest;
+import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
+import com.capstone.defecttracking.models.User.UserRole;
+import com.capstone.defecttracking.repositories.Category.CategoryRepositoryCustom;
 import com.capstone.defecttracking.repositories.Project.ProjectRepository;
 import com.capstone.defecttracking.repositories.Project.ProjectRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,9 @@ public class ProjectController {
     @Autowired
     ProjectRepositoryCustom projectRepositoryCustom;
 
+    @Autowired
+    CategoryRepositoryCustom categoryRepositoryCustom;
+
     private SimpMessagingTemplate template;
 
     @Inject
@@ -39,16 +41,20 @@ public class ProjectController {
     }
 
     @PostMapping("/admin/createProject")
-    public ResponseEntity<?> createProject(@RequestBody Project project) {
+    public ResponseEntity<?> createProject(@RequestBody ProjectCategoryRequest projectCategory) {
         ServerResponse serverResponse;
 
-        if (projectRepositoryCustom.doesProjectExisted(project.getName())) {
+        if (projectRepositoryCustom.doesProjectExisted(projectCategory.getProject())) {
             serverResponse = new ServerResponse(false, "A project with that name already exists");
 
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
 
-        projectRepository.save(project);
+        String projectId = projectRepository.save(projectCategory.getProject()).getId();
+
+        if (projectCategory.getCategories().size() > 0) {
+            categoryRepositoryCustom.addProject(projectId, projectCategory.getCategories());
+        }
         serverResponse = new ServerResponse(true, "Create project successfully");
 
         template.convertAndSend("/topic/projects", serverResponse);
@@ -57,15 +63,20 @@ public class ProjectController {
     }
 
     @GetMapping("/loadAllProjects")
-    public List<ProjectResponse> loadAllProject() {
+    public List<ProjectResponse> loadAllProjects() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         return projectRepositoryCustom.loadAllProjectsForCurrentUser(userDetailsSecurity.getId());
     }
 
+    @GetMapping("/admin/loadAllProjectsForManagement")
+    public List<ProjectManagementResponse> loadAllProjectsForManagement() {
+        return projectRepositoryCustom.loadAllProjectsForManagement();
+    }
+
     @GetMapping("user/loadProjectDetails")
-    public Project loadProjectDetails(@RequestParam(value = "projectId") String projectId) {
+    public ProjectDetailsResponse loadProjectDetails(@RequestParam(value = "projectId") String projectId) {
         return projectRepositoryCustom.loadProjectDetails(projectId);
     }
 
@@ -96,5 +107,24 @@ public class ProjectController {
         template.convertAndSend("/topic/projects", serverResponse);
 
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/admin/updateProject")
+    public ResponseEntity<?> updateProject(@RequestBody ProjectCategoryRequest projectRequest) {
+        ServerResponse serverResponse;
+
+        if (projectRepositoryCustom.doesProjectExisted(projectRequest.getProject())) {
+            serverResponse = new ServerResponse(false, "A project with that name already exists");
+
+            return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        projectRepositoryCustom.updateProject(projectRequest);
+        serverResponse = new ServerResponse(true, "Update project successfully");
+
+        template.convertAndSend("/topic/projects", serverResponse);
+
+        return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+
     }
 }

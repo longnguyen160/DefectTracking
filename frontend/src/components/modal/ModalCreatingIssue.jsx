@@ -38,6 +38,7 @@ import { validateForm } from '../../utils/ultis';
 import { createIssue } from '../../modules/issue/actions/issue';
 import { deleteFile, resetState, uploadFile } from '../../modules/file/actions/file';
 import { loadAllUsersInProject } from '../../modules/projects/actions/usersInProject';
+import { loadAllCategoriesInProject, resetAllCategories } from '../../modules/layout/actions/layout';
 
 class ModalCreatingIssue extends React.Component {
 
@@ -51,22 +52,21 @@ class ModalCreatingIssue extends React.Component {
   }
 
   componentDidMount() {
-    const { selectedProject, change, user, loadAllUsersInProject } = this.props;
+    const { selectedProject, change, user, loadAllUsersInProject, loadAllCategoriesInProject } = this.props;
 
     if (selectedProject) {
       change('projectId', selectedProject.id);
+      loadAllUsersInProject(selectedProject.id);
+      loadAllCategoriesInProject(selectedProject.id);
     }
     change('reporter', user.id);
-
-    if (selectedProject) {
-      loadAllUsersInProject(selectedProject.id);
-    }
   }
 
   componentWillUnmount() {
-    const { resetState } = this.props;
+    const { resetState, resetAllCategories } = this.props;
 
     resetState();
+    resetAllCategories();
   }
 
   onDrop = (files) => {
@@ -92,8 +92,8 @@ class ModalCreatingIssue extends React.Component {
     if (validateForm.required(values.issueName)) {
       throw new SubmissionError({ _error: 'Summary is required' });
     }
-    if (validateForm.required(values.priority)) {
-      throw new SubmissionError({ _error: 'Assignee is required' });
+    if (moment(values.dueDate).isBefore(moment(new Date()))) {
+      throw new SubmissionError({ _error: 'Due date is invalid' });
     }
 
     let watchers = [values.reporter];
@@ -106,7 +106,6 @@ class ModalCreatingIssue extends React.Component {
       {
         ...values,
         attachments: fileIds,
-        status: 'To Do',
         watchers,
         dueDate: moment(values.dueDate).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
         createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
@@ -140,7 +139,8 @@ class ModalCreatingIssue extends React.Component {
       submitFailed,
       submitSucceeded,
       fileIds,
-      usersInProject
+      usersInProject,
+      categories
     } = this.props;
     const { uploadedFile } = this.state;
 
@@ -195,6 +195,20 @@ class ModalCreatingIssue extends React.Component {
                       name={'issueName'}
                       placeholder={'Summary...'}
                       renderType={'input'}
+                    />
+                  </LineFormStyled>
+                </ModalLineTitleStyled>
+              </ModalLineContentStyled>
+            </ModalLineStyled>
+            <ModalLineStyled>
+              <ModalLineContentStyled alignLeft>
+                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
+                <ModalLineTitleStyled fullInput>
+                  <LineFormStyled>
+                    <InputField
+                      type={TEXT_AREA}
+                      name={'description'}
+                      renderType={'textarea'}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
@@ -270,20 +284,6 @@ class ModalCreatingIssue extends React.Component {
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
             </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={TEXT_AREA}
-                      name={'description'}
-                      renderType={'textarea'}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
             <ModalLineStyled hasRows>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
@@ -299,13 +299,13 @@ class ModalCreatingIssue extends React.Component {
                 </ModalLineTitleStyled>
               </ModalLineContentStyled>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Labels</ModalLineTitleStyled>
+                <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled reactSelect>
                     <InputField
-                      name={'label'}
+                      name={'categories'}
                       type={CREATABLE}
-                      options={[]}
+                      options={categories}
                       multi={true}
                     />
                   </LineFormStyled>
@@ -349,6 +349,8 @@ ModalCreatingIssue.propTypes = {
   onClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   loadAllUsersInProject: PropTypes.func.isRequired,
+  resetAllCategories: PropTypes.func.isRequired,
+  loadAllCategoriesInProject: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   usersInProject: PropTypes.array.isRequired,
   selectedProject: PropTypes.object.isRequired,
@@ -363,6 +365,7 @@ ModalCreatingIssue.propTypes = {
   submitFailed: PropTypes.bool.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
   fileIds: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired,
   error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   issue: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
@@ -380,6 +383,11 @@ const mapStateToProps = state => ({
     label: user.username,
     ...user
   })),
+  categories: state.layout.categories.map(category => ({
+    value: category.id,
+    label: category.name,
+    ...category
+  })),
   user: state.layout.user,
   selectedProject: state.layout.selectedProject,
   issue: state.issue,
@@ -391,7 +399,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   uploadFile: uploadFile,
   resetState: resetState,
   loadAllUsersInProject: loadAllUsersInProject,
-  deleteFile: deleteFile
+  deleteFile: deleteFile,
+  loadAllCategoriesInProject: loadAllCategoriesInProject,
+  resetAllCategories: resetAllCategories
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({

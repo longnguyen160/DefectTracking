@@ -1,4 +1,8 @@
 import {
+  LOAD_ALL_CATEGORIES_IN_PROJECT,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
   LOAD_CURRENT_USER,
   REQUEST_LOAD_CURRENT_USER,
   LOAD_CURRENT_USER_SUCCESS,
@@ -10,9 +14,33 @@ import {
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
-  RESET_PROJECT
+  SELECT_PROJECT,
+  RESET_PROJECT,
+  RESET_SELECTED_PROJECT,
+  RESET_ALL_CATEGORIES
 } from './types';
 
+//LOAD ALL CATEGORIES IN PROJECT
+const loadAllCategoriesInProject = (projectId) => ({
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT,
+  projectId
+});
+
+const loadAllCategoriesInProjectRequest = () => ({
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST
+}) ;
+
+const loadAllCategoriesInProjectSuccess = (categories) => ({
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  categories
+});
+
+const loadAllCategoriesInProjectFailure = (error) => ({
+  type: LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
+  error
+});
+
+//LOAD CURRENT USER
 const loadCurrentUser = goToLoginPage => ({
   type: LOAD_CURRENT_USER,
   goToLoginPage
@@ -45,11 +73,11 @@ const closeModal = () => ({
   type: CLOSE_MODAL
 });
 
-const loadProjectDetails = (projectId, handleProjectDetails) => {
+const loadProjectDetails = (projectId, selectProject) => {
   return {
     type: LOAD_PROJECT_DETAILS,
     projectId,
-    handleProjectDetails
+    selectProject
   }
 };
 
@@ -73,11 +101,30 @@ const loadProjectDetailsFailure = (error) => {
   }
 };
 
+const selectProject = (project) => {
+  return {
+    type: SELECT_PROJECT,
+    project
+  }
+};
+
+const resetSelectedProject = () => ({
+  type: RESET_SELECTED_PROJECT
+});
+
 const resetProject = () => ({
   type: RESET_PROJECT
 });
 
+const resetAllCategories = () => ({
+  type: RESET_ALL_CATEGORIES
+});
+
 export {
+  loadAllCategoriesInProject,
+  loadAllCategoriesInProjectRequest,
+  loadAllCategoriesInProjectSuccess,
+  loadAllCategoriesInProjectFailure,
   loadCurrentUser,
   requestLoadCurrentUser,
   loadCurrentUserSuccess,
@@ -89,5 +136,8 @@ export {
   loadProjectDetailsRequest,
   loadProjectDetailsSuccess,
   loadProjectDetailsFailure,
-  resetProject
+  selectProject,
+  resetProject,
+  resetSelectedProject,
+  resetAllCategories
 }

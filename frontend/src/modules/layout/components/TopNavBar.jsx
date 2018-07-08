@@ -14,7 +14,6 @@ import {
 import { FilterBoxWrapperStyled , Image} from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
 import { ICONS, MODAL_TYPE } from '../../../utils/enums';
-import { loadProjectDetails } from '../actions/layout';
 
 class TopNavBar extends Component {
 
@@ -27,10 +26,10 @@ class TopNavBar extends Component {
   };
 
   handleSelectProject = (projectId) => {
-    const { loadProjectDetails, history } = this.props;
+    const { loadProjectDetails, history, selectProject } = this.props;
 
-    loadProjectDetails(projectId);
-    history.push(`/project/${projectId}/backlog`);
+    loadProjectDetails(projectId, (project) => selectProject(project));
+    history.push(`/project/${projectId}/dashboard`);
   };
 
   render() {
@@ -120,6 +119,7 @@ TopNavBar.propTypes = {
   projects: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
   loadProjectDetails: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

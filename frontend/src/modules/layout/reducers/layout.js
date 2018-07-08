@@ -1,4 +1,7 @@
 import {
+  LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS,
+  LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE,
   REQUEST_LOAD_CURRENT_USER,
   LOAD_CURRENT_USER_SUCCESS,
   LOAD_CURRENT_USER_FAILURE,
@@ -8,20 +11,45 @@ import {
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
-  RESET_PROJECT
+  SELECT_PROJECT,
+  RESET_PROJECT,
+  RESET_SELECTED_PROJECT,
+  RESET_ALL_CATEGORIES
 } from '../actions/types';
 
 const initialState = {
+  categories: [],
   user: null,
   isLoading: false,
   error: null,
   modalIsOpen: false,
   selectedProject: null,
+  project: null,
   modalType: ''
 };
 
 export default function account(state = initialState, action) {
   switch (action.type) {
+    //load all categories in project
+    case LOAD_ALL_CATEGORIES_IN_PROJECT_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case LOAD_ALL_CATEGORIES_IN_PROJECT_SUCCESS:
+      return Object.assign({}, state, {
+        categories: action.categories,
+        isLoading: false,
+        error: null
+      });
+
+    case LOAD_ALL_CATEGORIES_IN_PROJECT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+    //load current user
     case REQUEST_LOAD_CURRENT_USER:
       return Object.assign({}, state, {
         isLoading: true,
@@ -69,7 +97,7 @@ export default function account(state = initialState, action) {
     case LOAD_PROJECT_DETAILS_SUCCESS:
       return Object.assign({}, state, {
         isLoading: false,
-        selectedProject: action.data,
+        project: action.data,
         error: null
       });
 
@@ -79,9 +107,24 @@ export default function account(state = initialState, action) {
         error: action.error
       });
 
+    case SELECT_PROJECT:
+      return Object.assign({}, state, {
+        selectedProject: action.project,
+      });
+
     case RESET_PROJECT:
       return Object.assign({}, state, {
+        project: null
+      });
+
+    case RESET_SELECTED_PROJECT:
+      return Object.assign({}, state, {
         selectedProject: null
+      });
+
+    case RESET_ALL_CATEGORIES:
+      return Object.assign({}, state, {
+        categories: []
       });
 
     default:

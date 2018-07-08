@@ -11,6 +11,11 @@ import {
   loadAllCategoriesFailure
 } from '../actions/category';
 import {
+  loadAllProjectsForManagementRequest,
+  loadAllProjectsForManagementSuccess,
+  loadAllProjectsForManagementFailure
+}from '../actions/project'
+import {
   requestUpdateStatusDefault,
   updateStatusDefaultSuccess,
   updateStatusDefaultFailure,
@@ -28,8 +33,27 @@ import {
   updateStatusFailure
 
 } from '../actions/status';
-import { LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS,UPDATE_STATUS_DEFAULT}
+import { LOAD_ALL_PROJECTS_FOR_MANAGEMENT, LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS,UPDATE_STATUS_DEFAULT}
 from '../actions/types';
+// load all projects for management
+
+function* loadAllProjectsForManagement() {
+  try {
+    yield put(loadAllProjectsForManagementRequest());
+
+    const { data } = yield call(API.loadAllProjectsForManagement);
+
+    yield put(loadAllProjectsForManagementSuccess(data));
+  } catch (error) {
+    yield put(loadAllProjectsForManagementFailure(getError(error)));
+  }
+}
+
+function* watchLoadAllProjectsForManagement() {
+  yield takeLatest(LOAD_ALL_PROJECTS_FOR_MANAGEMENT, loadAllProjectsForManagement);
+}
+
+
 
 //update status default
 function* updateStatusDefault({ statusId }) {
@@ -166,5 +190,6 @@ export default function* managementFlow() {
     watchRemoveStatus(),
     watchUpdateStatus(),
     watchUpdateStatusDefault(),
+    watchLoadAllProjectsForManagement(),
   ]);
 }

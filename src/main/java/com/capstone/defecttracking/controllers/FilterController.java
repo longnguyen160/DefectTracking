@@ -12,16 +12,19 @@ import com.capstone.defecttracking.repositories.Filter.FilterRepository;
 import com.capstone.defecttracking.repositories.Filter.FilterRepositoryCustom;
 import com.capstone.defecttracking.repositories.Issue.IssueRepository;
 import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -31,28 +34,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class FilterController {
 
     @Autowired
-    FilterRepository filterrepository;
+    FilterRepository filterRepository;
+
     @Autowired
-    FilterRepositoryCustom filterrepositorycustom;
+    FilterRepositoryCustom filterRepositoryCustom;
+
     SimpMessagingTemplate messTemplate;
+
     @Autowired
-    IssueRepository issuerepository;
+    IssueRepository issueRepository;
+
     @Autowired
-    IssueRepositoryCustom issuerepositorycustom;
+    IssueRepositoryCustom issueRepositoryCustom;
 
     @Inject
     public FilterController(SimpMessagingTemplate template) {
         this.messTemplate = template;
     }
 
-    @GetMapping("user/updateFilter")
-    public List<IssueResponse> updateFilter(@RequestBody Filter filter) {
-        ServerResponse serverResponse;
-        if (filterrepositorycustom.updateFilter(filter)) {
-            return issuerepositorycustom.loadAllIssuesBasedOnFilter(filter);
-        }
-        return null;
+    @PostMapping("user/updateFilter")
+    public void updateFilter(@RequestBody Filter filter) {
+        filterRepositoryCustom.updateFilter(filter);
     }
-    
 
+    @GetMapping("user/getFilter")
+    public Filter getFilter(@RequestParam(value = "userId") String userId) {
+        return filterRepositoryCustom.getFilter(userId);
+    }
 }

@@ -1,32 +1,30 @@
 package com.capstone.defecttracking.models.Project;
 
+import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.User.UserRole;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 
-@Document(collection = "projects")
-
-public class Project {
-    @Id
+public class ProjectDetailsResponse {
     private String id;
     private String name;
     private String description;
     private String status;
-    private ArrayList<UserRole> members = new ArrayList<>();
+    private ArrayList<UserRole> members = new ArrayList<UserRole>();
     private ArrayList<String> backlog = new ArrayList<>();
+    private ArrayList<CategoryProjectResponse> categories = new ArrayList<>();
 
-    public Project() {
+    public ProjectDetailsResponse() {
     }
 
-    public Project(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog) {
+    public ProjectDetailsResponse(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog, ArrayList<CategoryProjectResponse> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
         this.members = members;
         this.backlog = backlog;
+        this.categories = categories;
     }
 
     public String getId() {
@@ -75,5 +73,13 @@ public class Project {
 
     public void setBacklog(ArrayList<String> backlog) {
         this.backlog = backlog;
+    }
+
+    public ArrayList<CategoryProjectResponse> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(ArrayList<CategoryProjectResponse> categories) {
+        this.categories = categories;
     }
 }

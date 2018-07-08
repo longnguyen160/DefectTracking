@@ -1,8 +1,4 @@
 import {
-  UPDATE_FILTER,
-  UPDATE_FILTER_REQUEST,
-  UPDATE_FILTER_SUCCESS,
-  UPDATE_FILTER_FAILURE,
   CREATE_ISSUE,
   CREATE_ISSUE_REQUEST,
   CREATE_ISSUE_SUCCESS,
@@ -26,36 +22,13 @@ import {
   LOAD_ISSUE_SHORTCUT_REQUEST,
   LOAD_ISSUE_SHORTCUT_SUCCESS,
   LOAD_ISSUE_SHORTCUT_FAILURE,
-  RESET_ISSUE_DETAILS
+  LOAD_ALL_ISSUES_BASED_ON_FILTER,
+  LOAD_ALL_ISSUES_BASED_ON_FILTER_REQUEST,
+  LOAD_ALL_ISSUES_BASED_ON_FILTER_SUCCESS,
+  LOAD_ALL_ISSUES_BASED_ON_FILTER_FAILURE,
+  RESET_ISSUE_DETAILS,
+  RESET_ISSUE_LIST
 } from './types';
-
-//update filter
-const updateFilter = (filter) => {
-  return {
-    type: UPDATE_FILTER,
-    filter
-  }
-};
-
-const updateFilterRequest = () => {
-  return {
-    type: UPDATE_FILTER_REQUEST
-  }
-};
-
-const updateFilterSuccess = (issueList) => {
-  return {
-    type: UPDATE_FILTER_SUCCESS,
-    issueList
-  }
-};
-
-const updateFilterFailure = (error) => {
-  return {
-    type: UPDATE_FILTER_FAILURE,
-    error
-  }
-};
 
 const createIssue = (issue, closeModal) => {
   return {
@@ -127,6 +100,33 @@ const loadAllIssuesShortcutSuccess = (data) => {
 const loadAllIssuesShortcutFailure = (error) => {
   return {
     type: LOAD_ALL_ISSUES_SHORTCUT_FAILURE,
+    error
+  }
+};
+
+const loadAllIssuesBasedOnFilter = (filter) => {
+  return {
+    type: LOAD_ALL_ISSUES_BASED_ON_FILTER,
+    filter
+  }
+};
+
+const loadAllIssuesBasedOnFilterRequest = () => {
+  return {
+    type: LOAD_ALL_ISSUES_BASED_ON_FILTER_REQUEST
+  }
+};
+
+const loadAllIssuesBasedOnFilterSuccess = (data) => {
+  return {
+    type: LOAD_ALL_ISSUES_BASED_ON_FILTER_SUCCESS,
+    data
+  }
+};
+
+const loadAllIssuesBasedOnFilterFailure = (error) => {
+  return {
+    type: LOAD_ALL_ISSUES_BASED_ON_FILTER_FAILURE,
     error
   }
 };
@@ -217,11 +217,13 @@ const resetIssueDetails = () => {
   }
 };
 
+const resetIssueList = () => {
+  return {
+    type: RESET_ISSUE_LIST
+  }
+};
+
 export {
-  updateFilter,
-  updateFilterRequest,
-  updateFilterSuccess,
-  updateFilterFailure,
   createIssue,
   createIssueRequest,
   createIssueSuccess,
@@ -245,5 +247,10 @@ export {
   loadIssueShortcutRequest,
   loadIssueShortcutSuccess,
   loadIssueShortcutFailure,
-  resetIssueDetails
+  loadAllIssuesBasedOnFilter,
+  loadAllIssuesBasedOnFilterRequest,
+  loadAllIssuesBasedOnFilterSuccess,
+  loadAllIssuesBasedOnFilterFailure,
+  resetIssueDetails,
+  resetIssueList
 }

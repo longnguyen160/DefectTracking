@@ -47,9 +47,6 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    FilterRepository filterrepository;
-
     private SimpMessagingTemplate template;
 
     @Inject
@@ -89,8 +86,7 @@ public class UserController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(String.valueOf(Roles.USER));
-        String userId = userRepository.save(user).getId();
-        filterrepository.save(new Filter(userId));
+        userRepository.save(user).getId();
 
         serverResponse = new ServerResponse(true, "User registered successfully");
 

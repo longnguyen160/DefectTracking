@@ -1,11 +1,12 @@
 package com.capstone.defecttracking.repositories.Project;
 
 import com.capstone.defecttracking.enums.Roles;
-import com.capstone.defecttracking.models.Project.Project;
-import com.capstone.defecttracking.models.Project.ProjectResponse;
-import com.capstone.defecttracking.models.Project.UserProjectRequest;
+import com.capstone.defecttracking.models.Category.Category;
+import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
+import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
+import com.capstone.defecttracking.models.User.UserResponse;
 import com.capstone.defecttracking.models.User.UserRole;
 import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
@@ -29,17 +30,41 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public Project loadProjectDetails(String projectId) {
+    public ProjectDetailsResponse loadProjectDetails(String projectId) {
         Query query = new Query(Criteria.where("_id").is(projectId));
+        Project project = mongoTemplate.findOne(query, Project.class);
+        query = new Query(Criteria.where("projects").is(projectId));
 
-        return mongoTemplate.findOne(query, Project.class);
+        ArrayList<CategoryProjectResponse> categories = mongoTemplate
+            .find(query, Category.class)
+            .stream()
+            .map(category -> new CategoryProjectResponse(
+                category.getId(),
+                category.getName(),
+                category.getColor(),
+                category.getBackground()
+            ))
+            .collect(Collectors.toCollection(ArrayList::new));
+
+        return new ProjectDetailsResponse(
+            projectId,
+            project.getName(),
+            project.getDescription(),
+            project.getStatus(),
+            project.getMembers(),
+            project.getBacklog(),
+            categories
+        );
     }
 
     @Override
-    public Boolean doesProjectExisted(String projectName) {
-        Query query = new Query(Criteria.where("name").is(projectName));
-        Project project = mongoTemplate.findOne(query, Project.class);
+    public Boolean doesProjectExisted(Project project) {
+        Query query = new Query(Criteria.where("name").is(project.getName()));
+        Project existedProject = mongoTemplate.findOne(query, Project.class);
 
+        if (existedProject.getId().equals(project.getId())) {
+            return false;
+        }
         return project != null;
     }
 
@@ -76,16 +101,50 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
     }
 
     @Override
+    public List<ProjectManagementResponse> loadAllProjectsForManagement() {
+        return mongoTemplate
+            .findAll(Project.class)
+            .stream()
+            .map(project -> {
+                Query query = new Query(Criteria.where("projects").is(project.getId()));
+                ArrayList<CategoryProjectResponse> categories = mongoTemplate
+                    .find(query, Category.class)
+                    .stream()
+                    .map(category -> new CategoryProjectResponse(
+                        category.getId(),
+                        category.getName(),
+                        category.getColor(),
+                        category.getBackground()
+                    ))
+                    .collect(Collectors.toCollection(ArrayList::new));
+                ArrayList<UserResponse> managers = project
+                    .getMembers()
+                    .stream()
+                    .filter(member -> member.getRole().equals("manager"))
+                    .map(member -> getUserResponse(member.getUserId()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+                return new ProjectManagementResponse(
+                    project.getId(),
+                    project.getName(),
+                    project.getDescription(),
+                    project.getStatus(),
+                    managers,
+                    categories
+                );
+            })
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public ResponseEntity<?> addUserToProject(UserProjectRequest userProjectRequest) {
         ServerResponse serverResponse;
         Query query = new Query(Criteria.where("_id").is(userProjectRequest.getProjectId()));
-        Project project = mongoTemplate.findOne(query, Project.class);
         Update update = new Update();
 
-        project.setMembers(new UserRole(userProjectRequest.getUserId(), userProjectRequest.getRole()));
-        update.set("members", project.getMembers());
-
+        update.push("members", new UserRole(userProjectRequest.getUserId(), userProjectRequest.getRole()));
         UpdateResult result = mongoTemplate.updateFirst(query, update, Project.class);
+
         query = new Query(Criteria.where("_id").is(userProjectRequest.getUserId()));
         User user = mongoTemplate.findOne(query, User.class);
 
@@ -119,6 +178,40 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         serverResponse = new ServerResponse(true, "Remove user from project failed");
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public void updateProject(ProjectCategoryRequest projectRequest) {
+        Project project = projectRequest.getProject();
+        Query query = new Query(Criteria.where("_id").is(project.getId()));
+        Update update = new Update();
+
+        update.set("name", project.getName());
+        update.set("description", project.getDescription());
+        update.set("members", project.getMembers());
+        update.set("status", project.getStatus());
+        mongoTemplate.updateFirst(query, update, Project.class);
+
+        update = new Update();
+        query = new Query(Criteria.where("projects").is(project.getId()));
+        update.pull("projects", project.getId());
+        mongoTemplate.updateMulti(query, update, Category.class);
+
+        update = new Update();
+        query = new Query(Criteria.where("_id").in(projectRequest.getCategories()));
+        update.push("projects", project.getId());
+        mongoTemplate.updateMulti(query, update, Category.class);
+    }
+
+    private UserResponse getUserResponse(String userId) {
+        Query query = new Query(Criteria.where("_id").is(userId));
+        User user = mongoTemplate.findOne(query, User.class);
+
+        if (user.getProfile() == null) {
+            return new UserResponse(user.getId(), user.getUsername());
+        }
+
+        return new UserResponse(user.getId(), user.getUsername(), user.getProfile().getAvatarURL());
     }
 
     public void updateBacklog(String projectId, ArrayList<String> backlog) {

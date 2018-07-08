@@ -15,9 +15,10 @@ import {
   Input
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { ISSUE_STATUS_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES } from '../../../utils/enums';
+import { COLOR_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES, ICONS } from '../../../utils/enums';
 import { openModal } from '../../layout/actions/layout';
 import { loadAllStatus, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
+import Icon from '../../../components/icon/Icon';
 
 class StatusManagement extends Component {
 
@@ -130,17 +131,21 @@ class StatusManagement extends Component {
         )
       },
       {
-        Header: 'Action',
-        ...styleColumn,
+        Header: '',
+        style: {
+          ...styleColumn.style,
+          justifyContent: 'flex-end'
+        },
+        ...styleColumn.headerStyle,
         Cell: row => (
-          <Button
-            small
-            hasBorder
-            remove
+          <Icon
+            icon={ICONS.TRASH}
+            color={'#ff3000'}
+            width={15}
+            height={15}
+            margin={'0'}
             onClick={() => removeStatus(row.original.id)}
-          >
-            Remove
-          </Button>
+          />
         )
       },
     ];

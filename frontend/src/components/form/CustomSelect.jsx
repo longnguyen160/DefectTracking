@@ -8,9 +8,9 @@ import CustomValueForSelect from './CustomValueForSelect';
 class CustomSelect extends Component {
 
   handleChange = (event) => {
-    const { input, handleChange, field, multi } = this.props;
+    const { input } = this.props;
 
-    input.onChange(event.value);
+    input.onChange(event ? event.value : null);
   };
 
   optionComponent = () => {

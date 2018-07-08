@@ -17,17 +17,17 @@ import {
   ListTableBodyContainerStyled,
   ListTableStyled
 } from '../../../stylesheets/Table';
-import { openModal, resetProject } from '../../layout/actions/layout';
+import { openModal, resetSelectedProject } from '../../layout/actions/layout';
 import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
-import { loadAllIssuesShortcut, loadIssueDetails } from '../../issue/actions/issue';
+import { loadAllIssuesShortcut, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
 
 class Home extends React.Component {
 
   componentWillMount() {
-    const { resetProject, loadAllIssuesShortcut, user } = this.props;
+    const { resetSelectedProject, loadAllIssuesShortcut, user } = this.props;
 
-    resetProject();
+    resetSelectedProject();
 
     if (user) {
       loadAllIssuesShortcut(user.id);
@@ -40,6 +40,12 @@ class Home extends React.Component {
     if (user && !this.props.user) {
       loadAllIssuesShortcut(user.id);
     }
+  }
+
+  componentWillUnmount() {
+    const { resetIssueList } = this.props;
+
+    resetIssueList();
   }
 
   handleOpenModal = (issueId) => {
@@ -86,7 +92,12 @@ class Home extends React.Component {
                         key={issue.id}
                         odd={index % 2 === 0}
                       >
-                        <ListTableBodyStyled showList noBackground fixed>
+                        <ListTableBodyStyled
+                          showList
+                          noBackground
+                          fixed
+                          color={issue.status}
+                        >
                           <ListTableBodyItemStyled itemId>
                             {issue.issueKey}
                           </ListTableBodyItemStyled>
@@ -224,10 +235,11 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  resetProject: PropTypes.func.isRequired,
+  resetSelectedProject: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   loadAllIssuesShortcut: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
+  resetIssueList: PropTypes.func.isRequired,
   issues: PropTypes.array.isRequired,
   user: PropTypes.object
 };
@@ -238,10 +250,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  resetProject: resetProject,
+  resetSelectedProject: resetSelectedProject,
   openModal: openModal,
   loadAllIssuesShortcut: loadAllIssuesShortcut,
-  loadIssueDetails: loadIssueDetails
+  loadIssueDetails: loadIssueDetails,
+  resetIssueList: resetIssueList
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
