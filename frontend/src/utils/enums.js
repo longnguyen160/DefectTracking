@@ -305,7 +305,7 @@ const MESSAGE = (value) => ({
   UPDATE_ISSUE: `changed ${value}`,
   CHANGE_STATUS: `changed status to ${value}`,
   DELETE_COMMENT: `delete a comment`,
-  CHANGE_ASSIGNEE: `changed assignee to ${value}`,
+  CHANGE_ASSIGNEE: `changed assignee to ${value ? value : 'no one'}`,
   UPDATE_CATEGORIES: 'updated categories'
 });
 

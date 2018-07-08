@@ -215,6 +215,14 @@ export const ModalLineTitleStyled = styled.div`
       cursor: pointer;
     }
   `}
+  ${props => props.hoverBorder && css`
+    &:hover {
+      color: #026a95;
+      cursor: pointer;
+      border-bottom: 1px solid #7f7f7f;
+      transition: 0.5s border-bottom-color linear;
+    }
+  `}
 `;
 
 export const ModalLineContentStyled = styled.div`

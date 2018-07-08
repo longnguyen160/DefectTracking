@@ -55,7 +55,7 @@ class CustomSelect extends Component {
   };
 
   render() {
-    const { renderCustom, usersInProject, name, categories, multi } = this.props;
+    const { renderCustom, usersInProject, name, categories, multi, clearable } = this.props;
     let { options } = this.props;
     const { value } = this.state;
     let config = {};
@@ -77,6 +77,7 @@ class CustomSelect extends Component {
     return (
       <Select
         searchable={true}
+        clearable={clearable}
         multi={multi}
         classNamePrefix="react-select"
         value={value}
@@ -99,7 +100,8 @@ CustomSelect.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.array,
   categories: PropTypes.array.isRequired,
-  value: PropTypes.object.isRequired
+  value: PropTypes.object.isRequired,
+  clearable: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

@@ -128,26 +128,30 @@ class ModalIssueDetails extends React.Component {
 
     switch (e.props.name) {
       case 'priority':
-        value = e.value.value;
+        value = e.value ? e.value.value : null;
         message = MESSAGE(ISSUE_PRIORITY_ARRAY.find(element => element.value === e.value.value).label).UPDATE_PRIORITY;
         break;
 
       case 'status':
-        value = e.value.id;
+        value = e.value ? e.value.id : null;
         message = MESSAGE(e.value.name).CHANGE_STATUS;
         break;
 
       case 'categories':
-        value = e.value.map(category => category.id);
+        value = e.value ? e.value.map(category => category.id) : [];
         message = MESSAGE().UPDATE_CATEGORIES;
         break;
 
+      case 'issueName', 'description':
+        value = e.value;
+        message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
+        break;
+
       default:
-        value = e.value.id ? e.value.id : e.value;
-        if (e.props.name === 'issueName' || e.props.name === 'description') {
-          message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
-        } else if (e.props.name === 'assignee') {
-          message = MESSAGE(e.value.username).CHANGE_ASSIGNEE;
+        value = (e.value && e.value.id) || '';
+
+        if (e.props.name === 'assignee') {
+          message = MESSAGE(e.value ? e.value.username : null).CHANGE_ASSIGNEE;
         }
     }
     this.updateIssue(e.props.name, value);
@@ -176,7 +180,7 @@ class ModalIssueDetails extends React.Component {
       value: category.id,
       label: category.name
     }));
-    const assignee = issue && Object.assign(issue.assignee, {
+    const assignee = issue && issue.assignee && Object.assign(issue.assignee, {
       value: issue.assignee.id,
       label: issue.assignee.username
     });
@@ -285,6 +289,7 @@ class ModalIssueDetails extends React.Component {
                   customComponent={(props, state) => (
                     <CustomSelect
                       renderCustom={true}
+                      clearable={false}
                       {...props}
                       {...state}
                     />
@@ -402,10 +407,21 @@ class ModalIssueDetails extends React.Component {
                   showButtons={true}
                   display={(value) => (
                     <LineFormStyled hover>
-                      <ElementHeaderStyled padding={'0'}>
-                        <Image topNav src={value.avatarURL? value.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
-                        <span>{value.username}</span>
-                      </ElementHeaderStyled>
+                      {
+                        value.username ?
+                          <ElementHeaderStyled padding={'0'}>
+                            <Image
+                              topNav
+                              src={value.avatarURL ? value.avatarURL : '/images/default_avatar.jpg'}
+                              margin={'0 5px'}
+                            />
+                            <span>{value.username}</span>
+                          </ElementHeaderStyled>
+                        :
+                          <ElementHeaderStyled padding={'0'}>
+                            <span>No assignee yet</span>
+                          </ElementHeaderStyled>
+                      }
                     </LineFormStyled>
                   )}
                   customComponent={(props, state) => (
