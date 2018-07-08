@@ -41,7 +41,7 @@ public class FilterRepositoryCustomImpl implements FilterRepositoryCustom {
             update.set("priority", filter.getPriority() == null ? "" : filter.getPriority());
             update.set("assignee", filter.getAssignee() == null ? "" : filter.getAssignee());
             update.set("reporter", filter.getReporter() == null ? "" : filter.getReporter());
-            update.set("project", filter.getProjectId() == null ? "" : filter.getProjectId());
+            update.set("projectId", filter.getProjectId() == null ? "" : filter.getProjectId());
             update.set("categories", filter.getCategories() == null ? new ArrayList<>() : filter.getCategories());
 
             return mongoTemplate.updateFirst(query, update, Filter.class).getModifiedCount() != 0;
@@ -51,8 +51,15 @@ public class FilterRepositoryCustomImpl implements FilterRepositoryCustom {
     @Override
     public Filter getFilter(String userId) {
         Query query = new Query(Criteria.where("userId").is(userId));
+        Filter filter = mongoTemplate.findOne(query, Filter.class);
 
-        return mongoTemplate.findOne(query, Filter.class);
+        if (filter == null) {
+            filter = new Filter(userId);
+            mongoTemplate.save(filter);
+
+            return filter;
+        }
+        return filter;
     }
 
 }

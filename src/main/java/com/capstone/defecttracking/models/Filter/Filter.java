@@ -31,6 +31,10 @@ public class Filter {
     public Filter() {
     }
 
+    public Filter(String userId) {
+        this.userId = userId;
+    }
+
     public Filter(String id, String status, String priority, String assignee, String reporter, String projectId, String userId, ArrayList<String> categories) {
         this.id = id;
         this.status = status;
