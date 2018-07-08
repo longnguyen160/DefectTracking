@@ -136,13 +136,13 @@ class Message extends Component {
     return (
       <ModalLineContentStyled alignLeft maxImage>
         <LineFormStyled>
-          <ModalLineTitleStyled>
+          <ModalLineTitleStyled margin={'0 5px'} hoverBorder>
             All
           </ModalLineTitleStyled>
-          <ModalLineTitleStyled>
+          <ModalLineTitleStyled margin={'0 5px'} hoverBorder>
             Logs
           </ModalLineTitleStyled>
-          <ModalLineTitleStyled>
+          <ModalLineTitleStyled margin={'0 5px'} hoverBorder>
             Comments
           </ModalLineTitleStyled>
         </LineFormStyled>

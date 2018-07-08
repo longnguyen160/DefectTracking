@@ -116,11 +116,13 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         Query query = new Query(Criteria.where("_id").is(userId));
         User user = mongoTemplate.findOne(query, User.class);
 
-        if (user.getProfile() == null) {
+        if (user != null && user.getProfile() == null) {
             return new UserResponse(user.getId(), user.getUsername());
+        } else if (user != null) {
+            return new UserResponse(user.getId(), user.getUsername(), user.getProfile().getAvatarURL());
         }
 
-        return new UserResponse(user.getId(), user.getUsername(), user.getProfile().getAvatarURL());
+        return null;
     }
 
     @Override
