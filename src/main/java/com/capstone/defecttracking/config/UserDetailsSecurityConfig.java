@@ -54,7 +54,16 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/").permitAll()
+            .antMatchers("/",
+                "/static/**",
+                "/favicon.ico",
+                "/**/*.png",
+                "/**/*.gif",
+                "/**/*.svg",
+                "/**/*.jpg",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js").permitAll()
             .antMatchers("/files/**").permitAll()
             .antMatchers("/user/**").permitAll()
             .antMatchers("/ws/**").permitAll()
