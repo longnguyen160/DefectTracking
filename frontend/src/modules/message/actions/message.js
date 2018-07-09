@@ -7,10 +7,15 @@ import {
   LOAD_ALL_MESSAGES_REQUEST,
   LOAD_ALL_MESSAGES_SUCCESS,
   LOAD_ALL_MESSAGES_FAILURE,
+  LOAD_ALL_MESSAGES_ON_ISSUES,
+  LOAD_ALL_MESSAGES_ON_ISSUES_REQUEST,
+  LOAD_ALL_MESSAGES_ON_ISSUES_SUCCESS,
+  LOAD_ALL_MESSAGES_ON_ISSUES_FAILURE,
   EDIT_MESSAGE,
   EDIT_MESSAGE_REQUEST,
   EDIT_MESSAGE_SUCCESS,
-  EDIT_MESSAGE_FAILURE
+  EDIT_MESSAGE_FAILURE,
+  RESET_MESSAGE
 } from './types';
 
 const createMessage = (message) => {
@@ -39,11 +44,9 @@ const createMessageFailure = (error) => {
   }
 };
 
-const loadAllMessages = (issueId, messageType) => {
+const loadAllMessages = () => {
   return {
     type: LOAD_ALL_MESSAGES,
-    issueId,
-    messageType
   }
 };
 
@@ -63,6 +66,34 @@ const loadAllMessagesSuccess = (messages) => {
 const loadAllMessagesFailure = (error) => {
   return {
     type: LOAD_ALL_MESSAGES_FAILURE,
+    error
+  }
+};
+
+const loadAllMessagesOnIssue = (issueId, messageType) => {
+  return {
+    type: LOAD_ALL_MESSAGES_ON_ISSUES,
+    issueId,
+    messageType
+  }
+};
+
+const loadAllMessagesOnIssueRequest = () => {
+  return {
+    type: LOAD_ALL_MESSAGES_ON_ISSUES_REQUEST
+  }
+};
+
+const loadAllMessagesOnIssueSuccess = (messages) => {
+  return {
+    type: LOAD_ALL_MESSAGES_ON_ISSUES_SUCCESS,
+    messages
+  }
+};
+
+const loadAllMessagesOnIssueFailure = (error) => {
+  return {
+    type: LOAD_ALL_MESSAGES_ON_ISSUES_FAILURE,
     error
   }
 };
@@ -87,9 +118,15 @@ const editMessageSuccess = () => {
 };
 
 const editMessageFailure = (error) => {
-  return{
+  return {
     type: EDIT_MESSAGE_FAILURE,
     error
+  }
+};
+
+const resetMessage = () => {
+  return {
+    type: RESET_MESSAGE
   }
 };
 
@@ -102,8 +139,13 @@ export {
   loadAllMessagesRequest,
   loadAllMessagesSuccess,
   loadAllMessagesFailure,
+  loadAllMessagesOnIssue,
+  loadAllMessagesOnIssueRequest,
+  loadAllMessagesOnIssueSuccess,
+  loadAllMessagesOnIssueFailure,
   editMessage,
   editMessageRequest,
   editMessageSuccess,
-  editMessageFailure
+  editMessageFailure,
+  resetMessage
 }

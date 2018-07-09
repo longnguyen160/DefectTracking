@@ -2,6 +2,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import {
   CREATE_MESSAGE,
   LOAD_ALL_MESSAGES,
+  LOAD_ALL_MESSAGES_ON_ISSUES,
   EDIT_MESSAGE
 } from '../actions/types';
 import {
@@ -11,6 +12,9 @@ import {
   loadAllMessagesRequest,
   loadAllMessagesSuccess,
   loadAllMessagesFailure,
+  loadAllMessagesOnIssueRequest,
+  loadAllMessagesOnIssueSuccess,
+  loadAllMessagesOnIssueFailure,
   editMessageRequest,
   editMessageSuccess,
   editMessageFailure
@@ -22,8 +26,7 @@ import { showSuccessNotification } from '../../../components/notification/Notifi
 function* createMessage({ message }) {
   try {
     yield put(createMessageRequest());
-    const { data } = yield call(API.createMessage, message);
-
+    yield call(API.createMessage, message);
     yield put(createMessageSuccess());
   } catch (error) {
     yield put(createMessageFailure(getError(error)));
@@ -34,10 +37,25 @@ function* watchCreateMessage() {
   yield takeLatest(CREATE_MESSAGE, createMessage);
 }
 
-function* loadAllMessages({ issueId, messageType }) {
+function* loadAllMessagesOnIssue({ issueId, messageType }) {
+  try {
+    yield put(loadAllMessagesOnIssueRequest());
+    const { data } = yield call(API.loadAllMessagesOnIssue, issueId, messageType);
+
+    yield put(loadAllMessagesOnIssueSuccess(data));
+  } catch (error) {
+    yield put(loadAllMessagesOnIssueFailure(getError(error)))
+  }
+}
+
+function* watchLoadAllMessagesOnIssue() {
+  yield takeLatest(LOAD_ALL_MESSAGES_ON_ISSUES, loadAllMessagesOnIssue);
+}
+
+function* loadAllMessages({}) {
   try {
     yield put(loadAllMessagesRequest());
-    const { data } = yield call(API.loadAllMessages, issueId, messageType);
+    const { data } = yield call(API.loadAllMessages);
 
     yield put(loadAllMessagesSuccess(data));
   } catch (error) {
@@ -68,6 +86,7 @@ function* watchEditMessage() {
 export default function* messageFlow() {
   yield all([
     watchCreateMessage(),
+    watchLoadAllMessagesOnIssue(),
     watchLoadAllMessages(),
     watchEditMessage()
   ]);

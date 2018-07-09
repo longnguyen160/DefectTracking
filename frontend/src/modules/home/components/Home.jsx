@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import SockJsClient from "react-stomp";
+import moment from 'moment';
 import {
   PageBoardStyled,
   PageBoardItemStyled,
   TitleElementStyled,
   ElementHeaderStyled,
+  Image,
+  TitleFormStyled,
+  LabelStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
   ListTableHeaderStyled,
@@ -21,13 +25,15 @@ import { openModal, resetSelectedProject } from '../../layout/actions/layout';
 import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllIssuesShortcut, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
+import { loadAllMessages, resetMessage } from '../../message/actions/message';
 
 class Home extends React.Component {
 
   componentWillMount() {
-    const { resetSelectedProject, loadAllIssuesShortcut, user } = this.props;
+    const { resetSelectedProject, loadAllIssuesShortcut, loadAllMessages, user } = this.props;
 
     resetSelectedProject();
+    loadAllMessages();
 
     if (user) {
       loadAllIssuesShortcut(user.id);
@@ -43,9 +49,10 @@ class Home extends React.Component {
   }
 
   componentWillUnmount() {
-    const { resetIssueList } = this.props;
+    const { resetIssueList, resetMessage } = this.props;
 
     resetIssueList();
+    resetMessage();
   }
 
   handleOpenModal = (issueId) => {
@@ -63,8 +70,63 @@ class Home extends React.Component {
     }
   };
 
+  renderLog = (message) => (
+    <ListTableBodyStyled showList top key={message.id}>
+      <ListTableBodyItemStyled flex={'0 0 45px'}>
+        <Image dynamic={'35px'} src={message.sender.avatarURL || '/images/default_avatar.jpg'}/>
+      </ListTableBodyItemStyled>
+      <ListTableBodyItemStyled issueName container>
+        <ListTableBodyItemStyled display={'inline-block'} noPadding>
+          <TitleFormStyled username margin={'0 5px 0 0'}>
+            {message.sender.username}
+          </TitleFormStyled>
+          <TitleFormStyled message margin={'0'}>
+            {`${message.message} on `}
+          </TitleFormStyled>
+          <TitleFormStyled
+            detail
+            noMargin
+            onClick={() => this.handleOpenModal(message.issue.id)}
+          >
+            {`${message.issue.key} - ${message.issue.name}`}
+          </TitleFormStyled>
+        </ListTableBodyItemStyled>
+        <TitleElementStyled padding={'5px 0'} fontSize={'12px'}>{moment(message.createdAt).format('LLL')}</TitleElementStyled>
+      </ListTableBodyItemStyled>
+    </ListTableBodyStyled>
+  );
+
+  renderComment = (message) => (
+    <ListTableBodyStyled showList top key={message.id}>
+      <ListTableBodyItemStyled flex={'0 0 45px'}>
+        <Image dynamic={'35px'} src={message.sender.avatarURL || '/images/default_avatar.jpg'}/>
+      </ListTableBodyItemStyled>
+      <ListTableBodyItemStyled issueName container>
+        <ListTableBodyItemStyled display={'inline-block'} noPadding>
+          <TitleFormStyled username margin={'0 5px 0 0'}>
+            {message.sender.username}
+          </TitleFormStyled>
+          <TitleFormStyled message margin={'0'}>
+            {`commented on `}
+          </TitleFormStyled>
+          <TitleFormStyled
+            detail
+            noMargin
+            onClick={() => this.handleOpenModal(message.issue.id)}
+          >
+            {`${message.issue.key} - ${message.issue.name}`}
+          </TitleFormStyled>
+        </ListTableBodyItemStyled>
+        <LabelStyled left maxContent>
+          {message.message}
+        </LabelStyled>
+        <TitleElementStyled padding={'5px 0'} fontSize={'12px'}>{moment(message.createdAt).format('LLL')}</TitleElementStyled>
+      </ListTableBodyItemStyled>
+    </ListTableBodyStyled>
+  );
+
   render() {
-    const { issues } = this.props;
+    const { issues, messages } = this.props;
 
     return (
       <PageBoardStyled>
@@ -130,95 +192,12 @@ class Home extends React.Component {
           </ElementHeaderStyled>
           <div>
             <div>
-              <ListTableBodyContainerStyled borderTop activity>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
-                <ListTableBodyStyled showList>
-                  <ListTableBodyItemStyled itemId>
-                    ISSUE-1
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled issueName>
-                    As a developer, I'd like to update story status during the sprint >> Click the Active sprints link at the top right of the screen to go to the Active sprints where the current Sprint's items can be updated
-                  </ListTableBodyItemStyled>
-                  <ListTableBodyItemStyled priority>
-                    High
-                  </ListTableBodyItemStyled>
-                </ListTableBodyStyled>
+              <ListTableBodyContainerStyled willChange borderTop activity>
+                {
+                  messages.map(message => (
+                    message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
+                  ))
+                }
               </ListTableBodyContainerStyled>
             </div>
           </div>
@@ -240,13 +219,17 @@ Home.propTypes = {
   loadAllIssuesShortcut: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
   resetIssueList: PropTypes.func.isRequired,
+  loadAllMessages: PropTypes.func.isRequired,
+  resetMessage: PropTypes.func.isRequired,
   issues: PropTypes.array.isRequired,
+  messages: PropTypes.array.isRequired,
   user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   issues: state.issue.issues,
-  user: state.layout.user
+  user: state.layout.user,
+  messages: state.message.messages
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -254,7 +237,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadAllIssuesShortcut: loadAllIssuesShortcut,
   loadIssueDetails: loadIssueDetails,
-  resetIssueList: resetIssueList
+  loadAllMessages: loadAllMessages,
+  resetIssueList: resetIssueList,
+  resetMessage: resetMessage
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

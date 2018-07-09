@@ -16,25 +16,31 @@ import { FILE_BASE_URL, WEB_SOCKET_URL } from '../../../utils/enums';
 import { ModalLineContentStyled, ModalLineTitleStyled } from '../../../stylesheets/Modal';
 import moment from 'moment/moment';
 import { deleteFile, uploadFile } from '../../file/actions/file';
-import { createMessage, editMessage, loadAllMessages } from '../actions/message';
+import { createMessage, editMessage, loadAllMessagesOnIssue } from '../actions/message';
 import CommentBox from './CommentBox';
 
 class Message extends Component {
 
+  state = {
+    activity: 'all'
+  };
+
   componentWillMount() {
-    const { loadAllMessages, issue } = this.props;
+    const { loadAllMessagesOnIssue, issue } = this.props;
+    const { activity } = this.state;
 
     if (issue) {
-      loadAllMessages(issue.id, 'all');
+      loadAllMessagesOnIssue(issue.id, activity);
     }
     this.editBox = {};
   }
 
   componentWillReceiveProps(nextProps) {
-    const { loadAllMessages, issue } = this.props;
+    const { loadAllMessagesOnIssue, issue } = this.props;
+    const { activity } = this.state;
 
     if (JSON.stringify(issue) !== JSON.stringify(nextProps.issue)) {
-      loadAllMessages(nextProps.issue.id, 'all');
+      loadAllMessagesOnIssue(nextProps.issue.id, activity);
     }
   }
 
@@ -51,10 +57,17 @@ class Message extends Component {
     });
   };
 
-  onMessageReceive = () => {
-    const { loadAllMessages, issue } = this.props;
+  handleChangeActivity = (activity) => {
+    const { issue, loadAllMessagesOnIssue } = this.props;
 
-    loadAllMessages(issue.id, 'all');
+    this.setState({ activity });
+    loadAllMessagesOnIssue(issue.id, activity);
+  };
+
+  onMessageReceive = () => {
+    const { loadAllMessagesOnIssue, issue } = this.props;
+
+    loadAllMessagesOnIssue(issue.id, 'all');
   };
 
   renderLog = (message) => {
@@ -87,6 +100,7 @@ class Message extends Component {
               mode={'inline'}
               showButtons={true}
               value={message}
+              disabled={this.props.user.id !== message.sender.id}
               display={(value) => (
                 <DescriptionElementStyled notPointer noPadding>
                   <ElementHeaderStyled padding={'0'}>
@@ -113,17 +127,20 @@ class Message extends Component {
               )}
               handleSubmit={this.handleSubmit}
             />
-            <LineFormStyled noMargin>
-              <TitleFormStyled
-                detail
-                onClick={() => this.handleEdit(message.id)}
-              >
-                Edit
-              </TitleFormStyled>
-              <TitleFormStyled detail>
-                Delete
-              </TitleFormStyled>
-            </LineFormStyled>
+            {
+              this.props.user.id === message.sender.id &&
+                <LineFormStyled noMargin>
+                  <TitleFormStyled
+                    detail
+                    onClick={() => this.handleEdit(message.id)}
+                  >
+                    Edit
+                  </TitleFormStyled>
+                  <TitleFormStyled detail>
+                    Delete
+                  </TitleFormStyled>
+                </LineFormStyled>
+            }
           </DescriptionElementStyled>
         </FilterBoxWrapperStyled>
       </LineFormStyled>
@@ -132,17 +149,33 @@ class Message extends Component {
 
   render() {
     const { messages } = this.props;
+    const { activity } = this.state;
 
     return (
       <ModalLineContentStyled alignLeft maxImage>
-        <LineFormStyled>
-          <ModalLineTitleStyled margin={'0 5px'} hoverBorder>
+        <LineFormStyled borderBottom>
+          <ModalLineTitleStyled
+            padding={'0 10px'}
+            hoverBorder
+            active={activity === 'all'}
+            onClick={() => this.handleChangeActivity('all')}
+          >
             All
           </ModalLineTitleStyled>
-          <ModalLineTitleStyled margin={'0 5px'} hoverBorder>
+          <ModalLineTitleStyled
+            padding={'0 10px'}
+            hoverBorder
+            active={activity === 'logs'}
+            onClick={() => this.handleChangeActivity('logs')}
+          >
             Logs
           </ModalLineTitleStyled>
-          <ModalLineTitleStyled margin={'0 5px'} hoverBorder>
+          <ModalLineTitleStyled
+            padding={'0 10px'}
+            hoverBorder
+            active={activity === 'comments'}
+            onClick={() => this.handleChangeActivity('comments')}
+          >
             Comments
           </ModalLineTitleStyled>
         </LineFormStyled>
@@ -165,13 +198,13 @@ class Message extends Component {
 
 Message.propTypes = {
   messages: PropTypes.array.isRequired,
-  loadAllMessages: PropTypes.func.isRequired,
+  loadAllMessagesOnIssue: PropTypes.func.isRequired,
   editMessage: PropTypes.func.isRequired,
   issue: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
-  messages: state.message.messages,
+  messages: state.message.messagesOnIssue,
   user: state.layout.user,
   issue: state.issue.issue
 });
@@ -180,7 +213,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   uploadFile: uploadFile,
   deleteFile: deleteFile,
   createMessage: createMessage,
-  loadAllMessages: loadAllMessages,
+  loadAllMessagesOnIssue: loadAllMessagesOnIssue,
   editMessage: editMessage
 }, dispatch);
 

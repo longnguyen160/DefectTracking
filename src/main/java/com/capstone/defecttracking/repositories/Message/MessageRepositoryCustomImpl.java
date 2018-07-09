@@ -1,7 +1,11 @@
 package com.capstone.defecttracking.repositories.Message;
 
+import com.capstone.defecttracking.models.Issue.Issue;
+import com.capstone.defecttracking.models.Issue.IssueHistoryResponse;
 import com.capstone.defecttracking.models.Message.Message;
+import com.capstone.defecttracking.models.Message.MessageHistoryResponse;
 import com.capstone.defecttracking.models.Message.MessageResponse;
+import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.mongodb.client.result.UpdateResult;
@@ -23,7 +27,7 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
     MongoTemplate mongoTemplate;
 
     @Override
-    public List<MessageResponse> findAllMessages(String issueId, String type) {
+    public List<MessageResponse> findAllMessagesOnIssue(String issueId, String type) {
         Criteria criteria = new Criteria();
 
         switch (type) {
@@ -54,6 +58,50 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
                 message.getAttachments()
             ))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MessageHistoryResponse> findAllMessages(String userId) {
+        Query query = new Query(Criteria.where("members.userId").is(userId));
+        List<String> projectIds = mongoTemplate
+            .find(query, Project.class)
+            .stream()
+            .map(Project::getId)
+            .collect(Collectors.toList());
+
+        query = new Query(Criteria.where("projectId").in(projectIds));
+        List<String> issueIds = mongoTemplate
+            .find(query, Issue.class)
+            .stream()
+            .map(Issue::getId)
+            .collect(Collectors.toList());
+
+        query = new Query(Criteria.where("issueId").in(issueIds)).with(Sort.by("createdAt").descending()).limit(10);
+
+        return mongoTemplate
+            .find(query, Message.class)
+            .stream()
+            .map(message -> new MessageHistoryResponse(
+                message.getId(),
+                getIssueKey(message.getIssueId()),
+                message.getMessage(),
+                message.getType(),
+                getUserResponse(message.getSender()),
+                message.getCreatedAt(),
+                message.getUpdatedAt()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    private IssueHistoryResponse getIssueKey(String issueId) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+        return new IssueHistoryResponse(
+            issue.getId(),
+            issue.getIssueName(),
+            issue.getIssueKey()
+        );
     }
 
     private UserResponse getUserResponse(String userId) {

@@ -145,8 +145,12 @@ const createMessage = (message) => {
   return axios.post('user/createMessage', message);
 };
 
-const loadAllMessages = (issueId, messageType) => {
-  return axios.get(`user/getAllMessages?issueId=${issueId}&type=${messageType}`);
+const loadAllMessagesOnIssue = (issueId, messageType) => {
+  return axios.get(`user/loadAllMessagesOnIssue?issueId=${issueId}&type=${messageType}`);
+};
+
+const loadAllMessages = () => {
+  return axios.get('user/loadAllMessages');
 };
 
 const editMessage = (message) => {
@@ -201,6 +205,7 @@ const API = {
   updateBacklog,
   loadAllIssuesFromBacklog,
   createMessage,
+  loadAllMessagesOnIssue,
   loadAllMessages,
   editMessage,
   createStatus,
