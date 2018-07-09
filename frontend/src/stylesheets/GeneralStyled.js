@@ -341,13 +341,16 @@ export const LineFormStyled = styled.div`
   ${props => props.wrap && css`
     flex-wrap: wrap;
   `}
+  ${props => props.borderBottom && css`
+    border-bottom: 1px solid #d1d1d1;
+  `}
 `;
 
 export const TitleFormStyled = styled.span`
   margin-bottom: 5px  
   ${props => props.username && css`
     font-size: 14px;
-    margin: 0 5px;
+    margin: ${props => props.margin ? props.margin : '0 5px'};
     font-weight: 600;
   `}
   ${props => props.time && css`
@@ -360,13 +363,17 @@ export const TitleFormStyled = styled.span`
     font-size: 14px;
     color: #aeaeae;
     margin: 5px;
+    ${props => props.noMargin && css`
+      margin: 0;
+    `}
     &:hover {
       cursor: pointer;
       color: #026a95;      
     }
   `}
   ${props => props.message && css`
-    margin: 0 5px;
+    margin: ${props => props.margin || '0 5px'};
+    font-size: 14px;
   `}
 `;
 
@@ -774,13 +781,20 @@ export const AttachmentDetailsBodyDeleteStyled = styled.div`
 export const LabelStyled = styled.div`
   display: block;
   padding: ${props => props.padding ? props.padding : '3px'};
-  font-size: ${props => props.fontSize ? props.fontSize : '13'};
+  font-size: ${props => props.fontSize ? props.fontSize : '13px'};
   border-radius: 3px;
   border: 1px solid ${props => props.background ? props.background : '#d1d1d1'};
   background-color: ${props => props.background ? props.background : '#d1d1d1'};
   color: ${props => props.color ? props.color : '#000'};
   text-align: center;
   margin: 3px;
+  ${props => props.left && css`
+    text-align: left;
+  `}
+  
+  ${props => props.maxContent && css`
+    width: max-content;
+  `}
 `;
 
 export const DropZoneStyled = styled(Dropzone)`

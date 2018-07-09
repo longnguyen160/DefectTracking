@@ -55,7 +55,7 @@ class ModalCreatingProject extends React.Component {
       change('name', loadedProject.name);
       change('description', loadedProject.description);
       change('status', loadedProject.status);
-      this.setState({ categories: loadedProject.categories });
+      this.setState({ categories: loadedProject.categories.map(category => category.id) });
     }
   }
 

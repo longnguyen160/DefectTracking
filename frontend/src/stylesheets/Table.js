@@ -91,6 +91,9 @@ export const ListTableBodyStyled = styled.div`
     padding: 0px;
     align-items: center;
   `};
+  ${props => props.top && css`
+    align-items: flex-start;
+  `}
   background-color: ${({ isDragging }) => (isDragging ? 'rgb(185, 244, 188)' : 'white')};
   box-shadow: ${({ isDragging }) => (isDragging ? '2px 2px 1px rgba(0,0,0,0.2)' : 'none')};
   ${props => props.noBackground && css`
@@ -98,8 +101,8 @@ export const ListTableBodyStyled = styled.div`
   `}
 `;
 
-export const ListTableBodyItemStyled = styled.div`
-  display: flex;
+export const ListTableBodyItemStyled = styled.div`  
+  display: ${props => props.display || 'flex'};
   padding: 0px 5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -112,15 +115,22 @@ export const ListTableBodyItemStyled = styled.div`
     flex: 0 0 85px;
     padding: 0 5px 0 10px;
   `}
+  
   ${props => props.issueName && css`
     flex: 1;
   `}
+  
   ${props => props.priority && css`
     flex: 0 0 55px;
     padding: 0px 5px 0px 0px;
     justify-content: center;
   `}
+  
   ${props => props.container && css`
     flex-direction: column;
+  `}
+  
+  ${props => props.noPadding && css`
+    padding: 0;
   `}
 `;

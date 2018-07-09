@@ -192,8 +192,8 @@ export const ModalLineTitleStyled = styled.div`
   color: #7f7f7f;
   font-weight: 600;
   
-  ${props => props.margin && css`
-    margin: ${props.margin};
+  ${props => props.padding && css`
+    padding: ${props.padding};
   `}
   ${props => props.fullInput && css`
     width: 100%;
@@ -215,12 +215,39 @@ export const ModalLineTitleStyled = styled.div`
       cursor: pointer;
     }
   `}
+  ${props => props.active && css`
+    color: #026a95;
+    cursor: pointer;      
+    &:after {
+      background: #026a95;
+      bottom: -4px;
+      content: "";
+      display: block;
+      height: 2px;
+      left: 10px;
+      position: absolute;
+      right: 10px;
+      width: initial;
+      z-index: 1;      
+    }
+  `}
   ${props => props.hoverBorder && css`
+    position: relative;
     &:hover {
       color: #026a95;
-      cursor: pointer;
-      border-bottom: 1px solid #7f7f7f;
-      transition: 0.5s border-bottom-color linear;
+      cursor: pointer;      
+      &:after {
+        background: #026a95;
+        bottom: -4px;
+        content: "";
+        display: block;
+        height: 2px;
+        left: 10px;
+        position: absolute;
+        right: 10px;
+        width: initial;
+        z-index: 1;      
+      }
     }
   `}
 `;

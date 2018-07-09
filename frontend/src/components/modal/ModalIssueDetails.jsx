@@ -40,7 +40,7 @@ import CustomInput from '../editable/CustomInput';
 import CustomSelect from '../editable/CustomSelect';
 import CustomSelectStatus from '../editable/CustomSelectStatus';
 import Message from '../../modules/message/components/Message';
-import { createMessage } from '../../modules/message/actions/message';
+import { createMessage, resetMessage } from '../../modules/message/actions/message';
 import { loadProjectDetails, resetProject } from '../../modules/layout/actions/layout';
 
 class ModalIssueDetails extends React.Component {
@@ -65,10 +65,11 @@ class ModalIssueDetails extends React.Component {
   }
 
   componentWillUnmount() {
-    const { resetIssueDetails, resetProject } = this.props;
+    const { resetIssueDetails, resetProject, resetMessage } = this.props;
 
     resetIssueDetails();
     resetProject();
+    resetMessage();
   }
 
   handleCreateMessage = (message) => {
@@ -142,7 +143,8 @@ class ModalIssueDetails extends React.Component {
         message = MESSAGE().UPDATE_CATEGORIES;
         break;
 
-      case 'issueName', 'description':
+      case 'issueName':
+      case 'description':
         value = e.value;
         message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
         break;
@@ -184,7 +186,7 @@ class ModalIssueDetails extends React.Component {
       value: issue.assignee.id,
       label: issue.assignee.username
     });
-    const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
+    // const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'750px'} isHidden={true} fullHeight={true}>
@@ -349,7 +351,10 @@ class ModalIssueDetails extends React.Component {
               </ModalLineContentStyled>
             </ModalLineStyled>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <Message />
+              <ModalLineContentStyled alignLeft>
+                <ModalLineTitleStyled padding={'5px 0'}>Activity</ModalLineTitleStyled>
+                <Message />
+              </ModalLineContentStyled>
             </ModalLineStyled>
           </ModalContentStyled>
           <ModalContentStyled padding={'0 10px'} fullWidth>
@@ -490,6 +495,7 @@ ModalIssueDetails.propTypes = {
   createMessage: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
   resetProject: PropTypes.func.isRequired,
+  resetMessage: PropTypes.func.isRequired,
   issue: PropTypes.object,
   selectedProject: PropTypes.object,
   project: PropTypes.object,
@@ -512,7 +518,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   resetIssueDetails: resetIssueDetails,
   createMessage: createMessage,
   loadProjectDetails: loadProjectDetails,
-  resetProject: resetProject
+  resetProject: resetProject,
+  resetMessage: resetMessage
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalIssueDetails);
