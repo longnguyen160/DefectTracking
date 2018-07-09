@@ -29,9 +29,8 @@ public class FilterRepositoryCustomImpl implements FilterRepositoryCustom {
     @Override
     public Boolean updateFilter(Filter filter) {
         Query query = new Query(Criteria.where("userId").is(filter.getUserId()));
-        Filter userFilter = mongoTemplate.findOne(query, Filter.class);
 
-        if (userFilter == null) {
+        if (mongoTemplate.findOne(query, Filter.class) == null) {
             mongoTemplate.save(filter);
             return true;
         } else {
