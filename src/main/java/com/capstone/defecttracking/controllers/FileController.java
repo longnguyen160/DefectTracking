@@ -74,13 +74,13 @@ public class FileController {
 
     @GetMapping("/")
     public HttpEntity<byte[]> downloadFile(@RequestParam(value = "fileId") String fileId) {
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+        MongoClient mongoClient = new MongoClient(new MongoClientURI("${spring.data.mongodb.uri}"));
         Query query = new Query(GridFsCriteria.where("_id").is(fileId));
         GridFSFile file = gridFsTemplate.findOne(query);
         HttpHeaders headers = new HttpHeaders();
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("springreact");
+            MongoDatabase database = mongoClient.getDatabase("defect-tracking");
             GridFSBucket gridFSBucket = GridFSBuckets.create(database);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
