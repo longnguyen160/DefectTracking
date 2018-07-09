@@ -43,8 +43,10 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     @Override
     public String getDefaultStatus() {
         Query query = new Query(Criteria.where("isDefault").is(true));
-
-        return mongoTemplate.findOne(query, Status.class).getId();
+        if (mongoTemplate.findOne(query, Status.class) != null) {
+            return mongoTemplate.findOne(query, Status.class).getId();
+        }
+        return null;
     }
 
     @Override
@@ -78,6 +80,32 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
             // update trang thai default qua cho status moi
             query = new Query(Criteria.where("_id").is(statusId));
             update.set("isDefault", true);
+
+            return mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0;
+        }
+        return false;
+    }
+
+    @Override
+    public String getDoneStatus() {
+        Query query = new Query(Criteria.where("isDone").is(true));
+        if (mongoTemplate.findOne(query, Status.class) != null) {
+            return mongoTemplate.findOne(query, Status.class).getId();
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean updateStatusDone(String statusId) {
+        Query query = new Query(Criteria.where("isDone").is(true));
+        Status status = mongoTemplate.findOne(query, Status.class);
+        Update update = new Update();
+
+        update.set("isDone", false);
+        if (mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0 || status == null) {
+            // update trang thai done qua cho status moi
+            query = new Query(Criteria.where("_id").is(statusId));
+            update.set("isDone", true);
 
             return mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0;
         }
