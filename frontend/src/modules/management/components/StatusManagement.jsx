@@ -47,10 +47,10 @@ class StatusManagement extends Component {
     updateStatus(status);
   };
 
-  handleRadioButton = (row) => {
+  handleRadioButton = (type, row) => {
     const { updateStatusDefault } = this.props;
 
-    updateStatusDefault(row.id);
+    updateStatusDefault({ id: row.id, type });
   };
 
   onMessageReceive = () => {
@@ -76,7 +76,7 @@ class StatusManagement extends Component {
         Header: 'Name',
         accessor: 'name',
         ...styleColumn,
-        width: 200,
+        width: 150,
         Cell: row => (
           <TableBlockStyled
             alignLeft
@@ -92,7 +92,7 @@ class StatusManagement extends Component {
         Header: 'Allow role',
         accessor: 'handlers',
         ...styleColumn,
-        width: 450,
+        width: 350,
         Cell: row => (
           <TableBlockStyled alignLeft>
             {
@@ -125,7 +125,24 @@ class StatusManagement extends Component {
               name={'default'}
               value={row.original.name}
               checked={row.value}
-              onChange={() => this.handleRadioButton(row.original)}
+              onChange={() => this.handleRadioButton('isDefault', row.original)}
+            />
+          </TableBlockStyled>
+        )
+      },
+      {
+        Header: 'Default status when issue ends it lifecycle',
+        accessor: 'isDone',
+        ...styleColumn,
+        Cell: row => (
+          <TableBlockStyled alignLeft>
+            <Input
+              autoWidth
+              type={'radio'}
+              name={'done'}
+              value={row.original.name}
+              checked={row.value}
+              onChange={() => this.handleRadioButton('isDone', row.original)}
             />
           </TableBlockStyled>
         )
@@ -137,6 +154,7 @@ class StatusManagement extends Component {
           justifyContent: 'flex-end'
         },
         ...styleColumn.headerStyle,
+        width: 50,
         Cell: row => (
           <Icon
             icon={ICONS.TRASH}

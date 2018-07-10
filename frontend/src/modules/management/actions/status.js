@@ -22,10 +22,10 @@ import {
 } from './types';
 //status default
 
-const updateStatusDefault = (statusId) => {
+const updateStatusDefault = (status) => {
   return {
     type: UPDATE_STATUS_DEFAULT,
-    statusId
+    status
   }
 };
 

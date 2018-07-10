@@ -56,11 +56,11 @@ function* watchLoadAllProjectsForManagement() {
 
 
 //update status default
-function* updateStatusDefault({ statusId }) {
+function* updateStatusDefault({ status }) {
   try {
-    yield put(requestUpdateStatusDefault(statusId));
+    yield put(requestUpdateStatusDefault(status));
 
-    const {data} = yield call(API.updateStatusDefault, statusId);
+    const {data} = yield call(API.updateStatusDefault, status);
 
     yield put(updateStatusDefaultSuccess(data));
     showSuccessNotification(data.message);

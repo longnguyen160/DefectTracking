@@ -96,7 +96,7 @@ class Dashboard extends Component {
       });
       getFilter(user.id);
     }
-    if (JSON.stringify(filter) !== JSON.stringify(this.props.filter)) {
+    if (filter && JSON.stringify(filter) !== JSON.stringify(this.state.filter) && selectedProject) {
       const newFilter = Object.assign(filter, {
         projectId: selectedProject.id
       });
@@ -337,7 +337,7 @@ class Dashboard extends Component {
         }
         <SockJsClient
           url={WEB_SOCKET_URL}
-          topics={['/topic/issuesList']}
+          topics={['/topic/issuesList', '/topic/message']}
           onMessage={this.onMessageReceive}
           debug={true}
         />

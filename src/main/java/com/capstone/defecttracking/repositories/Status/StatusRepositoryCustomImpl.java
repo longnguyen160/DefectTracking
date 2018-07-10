@@ -7,6 +7,7 @@ package com.capstone.defecttracking.repositories.Status;
 
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Status.Status;
+import com.capstone.defecttracking.models.Status.StatusUpdateRequest;
 import com.mongodb.client.result.UpdateResult;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,42 +71,16 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     }
 
     @Override
-    public Boolean updateStatusDefault(String statusId) {
-        Query query = new Query(Criteria.where("isDefault").is(true));
+    public Boolean updateStatusDefault(StatusUpdateRequest statusRequest) {
+        Query query = new Query(Criteria.where(statusRequest.getType()).is(true));
         Status status = mongoTemplate.findOne(query, Status.class);
         Update update = new Update();
 
-        update.set("isDefault", false);
+        update.set(statusRequest.getType(), false);
         if (mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0 || status == null) {
             // update trang thai default qua cho status moi
-            query = new Query(Criteria.where("_id").is(statusId));
-            update.set("isDefault", true);
-
-            return mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0;
-        }
-        return false;
-    }
-
-    @Override
-    public String getDoneStatus() {
-        Query query = new Query(Criteria.where("isDone").is(true));
-        if (mongoTemplate.findOne(query, Status.class) != null) {
-            return mongoTemplate.findOne(query, Status.class).getId();
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean updateStatusDone(String statusId) {
-        Query query = new Query(Criteria.where("isDone").is(true));
-        Status status = mongoTemplate.findOne(query, Status.class);
-        Update update = new Update();
-
-        update.set("isDone", false);
-        if (mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0 || status == null) {
-            // update trang thai done qua cho status moi
-            query = new Query(Criteria.where("_id").is(statusId));
-            update.set("isDone", true);
+            query = new Query(Criteria.where("_id").is(statusRequest.getId()));
+            update.set(statusRequest.getType(), true);
 
             return mongoTemplate.updateFirst(query, update, Status.class).getModifiedCount() != 0;
         }

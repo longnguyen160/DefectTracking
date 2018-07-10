@@ -7,6 +7,7 @@ package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Status.Status;
+import com.capstone.defecttracking.models.Status.StatusUpdateRequest;
 import com.capstone.defecttracking.repositories.Status.StatusRepository;
 import com.capstone.defecttracking.repositories.Status.StatusRepositoryCustom;
 import java.util.List;
@@ -89,11 +90,10 @@ public class StatusController {
     }
 
     @PostMapping("/admin/changeDefaultStatus")
-    public ResponseEntity<?> changeDefaultStatus(@RequestBody String statusId) {
+    public ResponseEntity<?> changeDefaultStatus(@RequestBody StatusUpdateRequest status) {
         ServerResponse serverResponse;
-        String newStatusId = statusId.substring(0, statusId.length() - 1);
 
-        if (statusRepositoryCustom.updateStatusDefault(newStatusId)) {
+        if (statusRepositoryCustom.updateStatusDefault(status)) {
             serverResponse = new ServerResponse(true, "Update Status successfully");
 
             messageTemplate.convertAndSend("/topic/status", serverResponse);
@@ -103,20 +103,4 @@ public class StatusController {
         serverResponse = new ServerResponse(true, "Update Status fail");
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/admin/changeDoneStatus")
-    public ResponseEntity<?> changeDoneStatus(@RequestBody String statusId) {
-        ServerResponse serverResponse;
-        String newStatusId = statusId.substring(0, statusId.length() - 1);
-
-        if (statusRepositoryCustom.updateStatusDone(newStatusId)) {
-            serverResponse = new ServerResponse(true, "Update Status successfully");
-
-            messageTemplate.convertAndSend("/topic/status", serverResponse);
-            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
-        }
-
-        serverResponse = new ServerResponse(true, "Update Status fail");
-        return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
-    }
-
 }

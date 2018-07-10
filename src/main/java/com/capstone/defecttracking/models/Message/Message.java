@@ -1,6 +1,8 @@
 package com.capstone.defecttracking.models.Message;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -16,7 +18,9 @@ public class Message {
     private String type;
     private String sender;
     private Boolean edited;
+    @CreatedDate
     private Date createdAt;
+    @LastModifiedDate
     private Date updatedAt;
     private ArrayList<String> attachments = new ArrayList<>();
 
