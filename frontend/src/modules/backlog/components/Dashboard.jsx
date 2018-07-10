@@ -51,7 +51,8 @@ class Dashboard extends Component {
 
     this.state = {
       view: 'list',
-      filter: filter || {
+      filter: {
+        ...filter,
         projectId: selectedProject && selectedProject.id,
         userId: user && user.id
       }
@@ -61,12 +62,12 @@ class Dashboard extends Component {
   componentWillMount() {
     const {
       loadAllStatus,
-      user,
-      getFilter,
       loadAllCategoriesInProject,
       selectedProject,
+      user,
+      getFilter,
       filter,
-      loadAllIssuesBasedOnFilter
+      loadAllIssuesBasedOnFilter,
     } = this.props;
 
     loadAllStatus(ROLES.ADMIN);
@@ -83,9 +84,9 @@ class Dashboard extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { selectedProject, user, issues, filter } = nextProps;
-    const { updateCurrentUserRole, loadAllUsersInProject, getFilter, loadAllCategoriesInProject, loadAllIssuesBasedOnFilter } = this.props;
+    const { updateCurrentUserRole, loadAllUsersInProject, getFilter, loadAllCategoriesInProject, loadAllIssuesBasedOnFilter, updateFilter } = this.props;
 
-    if (JSON.stringify(user) !== JSON.stringify(this.props.user)) {
+    if (user && !this.props.user) {
       const filterState = this.state.filter;
 
       this.setState({
@@ -96,23 +97,22 @@ class Dashboard extends Component {
       getFilter(user.id);
     }
     if (JSON.stringify(filter) !== JSON.stringify(this.props.filter)) {
-      this.setState({ filter });
-      loadAllIssuesBasedOnFilter(filter);
-    }
-    if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
-      const list = {
-        backlog: selectedProject.backlog
-      };
-      const newFilter = Object.assign(this.state.filter, {
+      const newFilter = Object.assign(filter, {
         projectId: selectedProject.id
       });
 
       this.setState({
         filter: newFilter
       });
+      updateFilter(newFilter);
+      loadAllIssuesBasedOnFilter(newFilter);
+    }
+    if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
+      const list = {
+        backlog: selectedProject.backlog
+      };
       const existedMember = selectedProject.members.find(member => member.userId === user.id);
 
-      loadAllIssuesBasedOnFilter(newFilter);
       loadAllUsersInProject(selectedProject.id);
       loadAllCategoriesInProject(selectedProject.id);
 

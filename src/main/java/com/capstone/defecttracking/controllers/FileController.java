@@ -9,6 +9,7 @@ import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
@@ -29,6 +30,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/files")
 public class FileController {
     private final GridFsTemplate gridFsTemplate;
+
+    @Value("${spring.data.mongodb.uri}")
+    private String dbURI;
+
+    @Value("${app.dbName}")
+    private String dbName;
 
     @Autowired
     public FileController(GridFsTemplate gridFsTemplate) {
@@ -74,13 +81,13 @@ public class FileController {
 
     @GetMapping("/")
     public HttpEntity<byte[]> downloadFile(@RequestParam(value = "fileId") String fileId) {
-        MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+        MongoClient mongoClient = new MongoClient(new MongoClientURI(dbURI));
         Query query = new Query(GridFsCriteria.where("_id").is(fileId));
         GridFSFile file = gridFsTemplate.findOne(query);
         HttpHeaders headers = new HttpHeaders();
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("springreact");
+            MongoDatabase database = mongoClient.getDatabase(dbName);
             GridFSBucket gridFSBucket = GridFSBuckets.create(database);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

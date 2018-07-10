@@ -68,7 +68,7 @@ class CategoriesManagement extends React.Component {
           <PageCustomStyled margin={'0'}>
             {
               row.value.map(project => (
-                <TableBlockStyled alignLeft key={project.id}>
+                <TableBlockStyled alignLeft key={project.id} padding={'0 5px'}>
                   {project.name}
                 </TableBlockStyled>
               ))

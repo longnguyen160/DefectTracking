@@ -51,6 +51,9 @@ a {
   padding: 8px;
 }
 
+.Select-input input {
+  border: none !important;
+}
 *, :after, :before {
   box-sizing: border-box;
   outline: none;

@@ -64,7 +64,10 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/**/*.jpg",
                 "/**/*.html",
                 "/**/*.css",
-                "/**/*.js").permitAll()
+                "/**/*.json",
+                "/index.html",
+                "/*.json",
+                "/*.js").permitAll()
             .antMatchers("/files/**").permitAll()
             .antMatchers("/user/**").permitAll()
             .antMatchers("/ws/**").permitAll()

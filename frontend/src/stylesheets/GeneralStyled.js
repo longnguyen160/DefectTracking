@@ -637,6 +637,9 @@ export const TableBlockStyled = styled.div`
   ${props => props.alignRight && css`
     justify-content: flex-end;
   `}
+  ${props => props.padding && css`
+    padding: ${props.padding};
+  `}
 `;
 
 export const IssueStatusStyled = styled.div`
