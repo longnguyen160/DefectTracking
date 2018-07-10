@@ -103,5 +103,20 @@ public class StatusController {
         serverResponse = new ServerResponse(true, "Update Status fail");
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
+    @PostMapping("/admin/changeDoneStatus")
+    public ResponseEntity<?> changeDoneStatus(@RequestBody String statusId) {
+        ServerResponse serverResponse;
+        String newStatusId = statusId.substring(0, statusId.length() - 1);
+
+        if (statusRepositoryCustom.updateStatusDone(newStatusId)) {
+            serverResponse = new ServerResponse(true, "Update Status successfully");
+
+            messageTemplate.convertAndSend("/topic/status", serverResponse);
+            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+        }
+
+        serverResponse = new ServerResponse(true, "Update Status fail");
+        return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
 
 }

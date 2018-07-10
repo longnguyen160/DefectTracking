@@ -23,6 +23,7 @@ public class Status {
     private String background;
     private String color;
     private boolean isDefault;
+    private boolean isDone;
     private List<String> handlers;
 
     public Status() {
@@ -37,11 +38,28 @@ public class Status {
         this.handlers = handlers;
     }
 
-    public Status(String name, String background, String color, boolean isDefault, List<String> handlers) {
+    public boolean isIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    public boolean isIsDone() {
+        return isDone;
+    }
+
+    public void setIsDone(boolean isDone) {
+        this.isDone = isDone;
+    }
+    
+    public Status(String name, String background, String color, boolean isDefault, boolean isDone, List<String> handlers) {
         this.name = name;
         this.background = background;
         this.color = color;
         this.isDefault = isDefault;
+        this.isDone = isDone;
         this.handlers = handlers;
     }
 
