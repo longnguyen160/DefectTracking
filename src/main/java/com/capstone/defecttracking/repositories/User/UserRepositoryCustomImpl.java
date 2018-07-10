@@ -46,8 +46,10 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
     @Override
     public List<User> getAllUsers(String input, String projectId) {
-        if (input.length() == 0) {
-            return mongoTemplate.findAll(User.class);
+        if (input.length() == 0 && projectId.length() == 0) {
+            Query query = new Query(Criteria.where("roles").ne("ADMIN"));
+
+            return mongoTemplate.find(query, User.class);
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -111,6 +113,17 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 }
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean manageUser(UserActiveRequest userActiveRequest) {
+        Query query = new Query(Criteria.where("_id").is(userActiveRequest.getId()));
+        Update update = new Update();
+
+        update.set("active", userActiveRequest.isActive());
+        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, User.class);
+
+        return updateResult.getModifiedCount() != 0;
     }
 
 }

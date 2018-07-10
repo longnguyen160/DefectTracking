@@ -31,10 +31,20 @@ import {
   requestUpdateStatus,
   updateStatusSuccess,
   updateStatusFailure
-
 } from '../actions/status';
-import { LOAD_ALL_PROJECTS_FOR_MANAGEMENT, LOAD_ALL_CATEGORIES, CREATE_CATEGORY ,CREATE_STATUS,LOAD_ALL_STATUS, REMOVE_STATUS,UPDATE_STATUS,UPDATE_STATUS_DEFAULT}
+import {
+  LOAD_ALL_PROJECTS_FOR_MANAGEMENT,
+  LOAD_ALL_CATEGORIES,
+  CREATE_CATEGORY,
+  CREATE_STATUS,
+  LOAD_ALL_STATUS,
+  REMOVE_STATUS,
+  UPDATE_STATUS,
+  UPDATE_STATUS_DEFAULT,
+  BAN_USER
+}
 from '../actions/types';
+import { banUserFailure, banUserSuccess, requestBanUser } from '../actions/user';
 // load all projects for management
 
 function* loadAllProjectsForManagement() {
@@ -181,6 +191,22 @@ function* watchLoadAllCategories() {
   yield takeLatest(LOAD_ALL_CATEGORIES, loadAllCategories);
 }
 
+function* banUser({ user }){
+  try {
+    yield put(requestBanUser());
+    const { data } = yield call(API.manageUser, user);
+    //tra ve message
+    yield put(banUserSuccess());
+    showSuccessNotification(data.message);
+
+  } catch (error){
+    yield put(banUserFailure(getError((error))));
+  }
+}
+function* watchBanUser(){
+  yield takeLatest(BAN_USER, banUser);
+}
+
 export default function* managementFlow() {
   yield all([
     watchCreateCategory(),
@@ -191,5 +217,6 @@ export default function* managementFlow() {
     watchUpdateStatus(),
     watchUpdateStatusDefault(),
     watchLoadAllProjectsForManagement(),
+    watchBanUser()
   ]);
 }

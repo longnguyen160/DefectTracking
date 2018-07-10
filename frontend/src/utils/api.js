@@ -33,6 +33,9 @@ const loadAllUsers = (input, projectId) => {
   return axios.get(`user/loadAllUsers?input=${input}&projectId=${projectId}`);
 };
 
+const manageUser = (user) => {
+  return axios.post('user/manageUser', user);
+};
 // Project
 const createProject = (projectCategory) => {
   return axios.post('admin/createProject', projectCategory);
@@ -217,7 +220,8 @@ const API = {
   loadAllProjectsForManagement,
   loadAllCategoriesInProject,
   updateProject,
-  loadAllIssuesBasedOnFilter
+  loadAllIssuesBasedOnFilter,
+  manageUser
 };
 
 export default API;

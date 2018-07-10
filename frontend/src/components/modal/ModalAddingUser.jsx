@@ -12,7 +12,7 @@ import {
 } from '../../stylesheets/Modal';
 import {LineFormStyled, TextErrorStyled} from '../../stylesheets/GeneralStyled';
 import { Button } from '../../stylesheets/Button';
-import { loadAllUsers } from '../../modules/account/actions/account';
+import { loadAllUsers, resetUsers } from '../../modules/account/actions/account';
 import { USER_ROLE_IN_PROJECT } from '../../utils/enums';
 import CustomOptionForSelect from '../form/CustomOptionForSelect';
 import CustomValueForSelect from '../form/CustomValueForSelect';
@@ -24,6 +24,12 @@ class ModalAddingUser extends React.Component {
     selectedUser: null,
     selectedRole: null
   };
+
+  componentWillUnmount() {
+    const { resetUsers } = this.props;
+
+    resetUsers();
+  }
 
   optionComponent = () => {
     return (props) => (
@@ -149,6 +155,7 @@ ModalAddingUser.propTypes = {
   onClose: PropTypes.func.isRequired,
   loadAllUsers: PropTypes.func.isRequired,
   addUserToProject: PropTypes.func.isRequired,
+  resetUsers: PropTypes.func.isRequired,
   users: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
@@ -169,7 +176,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   loadAllUsers: loadAllUsers,
-  addUserToProject: addUserToProject
+  addUserToProject: addUserToProject,
+  resetUsers: resetUsers
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalAddingUser);

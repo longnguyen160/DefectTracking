@@ -13,30 +13,33 @@ public class UserDetailsSecurity implements UserDetails {
     private String username;
     private String password;
     private String email;
+    private boolean active;
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsSecurity() {
     }
 
-    public UserDetailsSecurity(String id, String username, String password, String email, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsSecurity(String id, String username, String password, String email, boolean active, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.active = active;
         this.authorities = authorities;
     }
 
-    public UserDetailsSecurity(String id, String username, String email, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsSecurity(String id, String username, String email, boolean active, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.active = active;
         this.authorities = authorities;
     }
 
     public static UserDetailsSecurity create(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        return new UserDetailsSecurity(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), authorities);
+        return new UserDetailsSecurity(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.isActive(), authorities);
     }
 
     public String getId() {
@@ -61,6 +64,14 @@ public class UserDetailsSecurity implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
@@ -95,6 +106,6 @@ public class UserDetailsSecurity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 }

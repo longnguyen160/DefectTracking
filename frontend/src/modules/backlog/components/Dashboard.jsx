@@ -112,7 +112,15 @@ class Dashboard extends Component {
         backlog: selectedProject.backlog
       };
       const existedMember = selectedProject.members.find(member => member.userId === user.id);
+      const newFilter = Object.assign(filter, {
+        projectId: selectedProject.id
+      });
 
+      this.setState({
+        filter: newFilter
+      });
+      updateFilter(newFilter);
+      loadAllIssuesBasedOnFilter(newFilter);
       loadAllUsersInProject(selectedProject.id);
       loadAllCategoriesInProject(selectedProject.id);
 

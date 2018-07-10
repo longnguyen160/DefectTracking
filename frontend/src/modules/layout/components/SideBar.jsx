@@ -15,10 +15,13 @@ class SideBar extends React.Component {
     super(props);
 
     const { history, selectedProject, user } = props;
-    let sideBar = user && user.roles.includes(ROLES.ADMIN) ? SIDE_BAR_BEFORE_SELECT_PROJECT : SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.name !== 'Management');
+    let sideBar;
 
     if (selectedProject) {
-      sideBar = SIDE_BAR_AFTER_SELECT_PROJECT
+      const userRole = user && user.roles.find(role => role !== ROLES.USER);
+      sideBar = userRole ? SIDE_BAR_AFTER_SELECT_PROJECT.filter(element => element.role.includes(userRole)) : SIDE_BAR_AFTER_SELECT_PROJECT;
+    } else {
+      sideBar = user ? SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.role.includes(...user.roles)) : SIDE_BAR_BEFORE_SELECT_PROJECT;
     }
 
     this.state = {
@@ -34,12 +37,13 @@ class SideBar extends React.Component {
     const { user } = nextProps;
 
     if (nextProps.selectedProject) {
-      sideBar = SIDE_BAR_AFTER_SELECT_PROJECT;
+      const userRole = user && user.roles.find(role => role !== ROLES.USER);
+      sideBar = userRole ? SIDE_BAR_AFTER_SELECT_PROJECT.filter(element => element.role.includes(userRole)) : SIDE_BAR_AFTER_SELECT_PROJECT;
     } else if (history.location.pathname.includes('manage')) {
       sideBar = MANAGEMENT_SIDE_BAR;
       this.setState({ managementSideBar: true });
     } else {
-      sideBar = user && user.roles.includes(ROLES.ADMIN) ? SIDE_BAR_BEFORE_SELECT_PROJECT : SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.name !== 'Management');
+      sideBar = user ? SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.role.includes(...user.roles)) : SIDE_BAR_BEFORE_SELECT_PROJECT;
     }
 
     this.setState({
@@ -51,7 +55,7 @@ class SideBar extends React.Component {
   }
 
   handleSelectSideBar = (value) => {
-    const { history, selectedProject } = this.props;
+    const { history, selectedProject, user } = this.props;
     const { sideBar } = this.state;
 
     this.setState({ selected: value });
@@ -64,7 +68,10 @@ class SideBar extends React.Component {
       if (JSON.stringify(sideBar) !== JSON.stringify(MANAGEMENT_SIDE_BAR)) {
         this.setState({ sideBar: MANAGEMENT_SIDE_BAR, managementSideBar: true });
       } else {
-        this.setState({ sideBar: SIDE_BAR_BEFORE_SELECT_PROJECT, managementSideBar: false });
+        this.setState({
+          sideBar: SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.role.includes(...user.roles)),
+          managementSideBar: false
+        });
       }
     }
   };

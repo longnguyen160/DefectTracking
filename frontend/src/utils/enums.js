@@ -10,6 +10,14 @@ const CREATABLE = 'creatable';
 const DATETIME_PICKER = 'datetime_picker';
 const FILE = 'file';
 
+const ROLES = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  DEVELOPER: 'developer',
+  REPORTER: 'reporter',
+  MANAGER: 'manager'
+};
+
 const ICONS = {
   ARROW: ['M389.632 102.912l-358.4 358.4c-27.955 27.955-27.955 73.318 0 101.376l358.4 358.4c27.955 27.955 73.318 27.955 101.376 0 27.955-27.955 27.955-73.318 0-101.376l-236.032-236.032h687.104c39.629 0 71.68-32.051 71.68-71.68s-32.051-71.68-71.68-71.68h-687.104l236.032-236.032c14.029-14.029 20.992-32.358 20.992-50.688s-6.963-36.659-20.992-50.688c-28.058-27.955-73.421-27.955-101.376 0z'],
   ATTACHMENT: ['M847.77 273.92l-121.549-119.808c-9.216-9.114-21.504-14.131-34.509-14.131v0h-173.466v-42.906c0-47.821-38.912-86.835-86.835-86.835-23.245 0-45.056 9.011-61.44 25.498-16.384 16.384-25.498 38.195-25.395 61.44v42.906h-133.837c-27.034 0-49.050 22.016-49.050 49.050v775.578c0 27.034 22.016 49.050 49.050 49.050h602.624c27.136 0 49.152-22.016 49.152-49.050v-655.77c-0.102-13.107-5.427-25.805-14.746-35.021zM805.581 288.768h-93.491l-0.102-92.262 93.594 92.262zM384.819 97.075c0-12.493 4.813-24.166 13.722-32.973 8.806-8.806 20.48-13.722 32.973-13.722 25.702 0 46.694 20.992 46.694 46.592v42.906h-93.286v-42.803zM813.261 973.517h-602.522c-4.915 0-8.909-3.994-8.909-8.909v-775.475c0-4.915 3.994-8.909 8.909-8.909h267.366v278.118c0 37.99-30.925 68.915-68.915 68.915 0 0 0 0 0 0-18.33 0-35.635-7.168-48.742-20.173-13.005-13.005-20.173-30.31-20.173-48.742v-187.187c0-11.059-9.011-20.070-20.070-20.070s-20.070 9.011-20.070 20.070v187.187c0 29.082 11.366 56.525 31.949 77.107s48.026 31.949 77.107 31.949c0 0 0 0 0 0 60.109 0 109.056-48.947 109.056-109.056v-278.118h153.498l0.102 128.717c0 11.059 9.011 20.070 20.070 20.070h130.253v635.597c-0 4.915-3.994 8.909-8.909 8.909z'],
@@ -131,16 +139,19 @@ const SIDE_BAR_BEFORE_SELECT_PROJECT = [
   {
     name: 'Home',
     icon: ICONS.HOME,
-    url: '/'
+    url: '/',
+    role: [ROLES.USER, ROLES.ADMIN]
   },
   {
     name: 'Projects',
     icon: ICONS.PROJECT,
-    url: '/projects'
+    url: '/projects',
+    role: [ROLES.USER, ROLES.ADMIN]
   },
   {
     name: 'Management',
-    icon: ICONS.MANAGEMENT
+    icon: ICONS.MANAGEMENT,
+    role: [ROLES.MANAGER, ROLES.ADMIN]
   }
 ];
 
@@ -148,49 +159,58 @@ const SIDE_BAR_AFTER_SELECT_PROJECT = [
   {
     name: 'Dashboard',
     icon: ICONS.BACKLOG,
-    url: '/dashboard'
+    url: '/dashboard',
+    role: [ROLES.DEVELOPER, ROLES.REPORTER, ROLES.MANAGER, ROLES.ADMIN]
   },
   {
     name: 'Summary',
     icon: ICONS.SUMMARY,
-    url: '/summary'
+    url: '/summary',
+    role: [ROLES.MANAGER, ROLES.ADMIN]
   },
   {
     name: 'Members',
     icon: ICONS.USER,
-    url: '/members'
+    url: '/members',
+    role: [ROLES.MANAGER, ROLES.ADMIN]
   }
 ];
 
 const MANAGEMENT_SIDE_BAR = [
   {
     name: 'Management',
-    icon: ICONS.ARROW
+    icon: ICONS.ARROW,
+    role: [ROLES.MANAGER, ROLES.ADMIN]
   },
   {
     name: 'Projects',
     icon: ICONS.PROJECT,
-    url: '/manage/projects'
+    url: '/manage/projects',
+    role: [ROLES.MANAGER, ROLES.ADMIN]
   },
   {
     name: 'Accounts',
     icon: ICONS.USER,
-    url: '/manage/users'
+    url: '/manage/users',
+    role: [ROLES.ADMIN]
   },
   {
     name: 'Issues',
     icon: ICONS.ISSUES,
-    url: '/manage/issues'
+    url: '/manage/issues',
+    role: [ROLES.MANAGER, ROLES.ADMIN]
   },
   {
     name: 'Categories',
     icon: ICONS.CATEGORY,
-    url: '/manage/categories'
+    url: '/manage/categories',
+    role: [ROLES.ADMIN]
   },
   {
     name: 'Status',
     icon: ICONS.STATUS,
-    url: '/manage/status'
+    url: '/manage/status',
+    role: [ROLES.ADMIN]
   }
 ];
 
@@ -287,11 +307,6 @@ const USER_ROLE_IN_PROJECT = [
   { value: 'manager', label: 'Manager' }
 ];
 
-const ROLES = {
-  ADMIN: 'ADMIN',
-  USER: 'USER'
-};
-
 const MESSAGE_TYPE = {
   COMMENTS: 'comments',
   LOGS: 'logs',
@@ -337,5 +352,5 @@ export {
   MESSAGE_TYPE,
   MESSAGE,
   ISSUE_DETAILS,
-  ROLES
+  ROLES,
 }

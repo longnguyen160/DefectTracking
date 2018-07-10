@@ -1,4 +1,13 @@
-import { LOAD_ALL_USERS, LOAD_ALL_USERS_SUCCESS, LOAD_ALL_USERS_FAILURE ,REMOVE_USER, REMOVE_USER_SUCCESS, REMOVE_USER_FAILURE, REMOVE_USER_REQUEST } from './types';
+import {
+  LOAD_ALL_USERS,
+  LOAD_ALL_USERS_SUCCESS,
+  LOAD_ALL_USERS_FAILURE,
+  REMOVE_USER,
+  REMOVE_USER_SUCCESS,
+  REMOVE_USER_FAILURE,
+  REMOVE_USER_REQUEST,
+  RESET_USERS
+} from './types';
 
 const loadAllUsers = (input, projectId) => {
   return {
@@ -48,6 +57,12 @@ const removeUserFailure = () => {
   }
 };
 
+const resetUsers = () => {
+  return {
+    type: RESET_USERS
+  }
+};
+
 export {
   loadAllUsers,
   loadAllUsersSuccess,
@@ -55,6 +70,6 @@ export {
   removeUser,
   removeUserRequest,
   removeUserSuccess,
-  removeUserFailure
-
+  removeUserFailure,
+  resetUsers
 }

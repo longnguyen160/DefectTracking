@@ -15,32 +15,36 @@ public class User {
     private String email;
     private ArrayList<String> roles = new ArrayList<String>();
     private UserProfile profile;
+    private boolean active;
 
     public User() {
     }
 
-    public User(String id, String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
+    public User(String id, String username, String password, String email, ArrayList<String> roles, UserProfile profile, boolean active) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.roles = roles;
         this.profile = profile;
+        this.active = active;
     }
 
-    public User(String username, String password, String email, ArrayList<String> roles, UserProfile profile) {
+    public User(String username, String password, String email, ArrayList<String> roles, UserProfile profile, boolean active) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.roles = roles;
         this.profile = profile;
+        this.active = active;
     }
 
-    public User(String id, String username, String email, ArrayList<String> roles) {
+    public User(String id, String username, String email, ArrayList<String> roles, boolean active) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.roles = roles;
+        this.active = active;
     }
 
 
@@ -90,5 +94,13 @@ public class User {
 
     public void setRoles(String role) {
         roles.add(role);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

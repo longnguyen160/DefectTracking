@@ -62,12 +62,19 @@ public class UserController {
                         user.getPassword()
                 )
         );
-
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        JwtAuthentication jwt = tokenProvider.generateToken(authentication);
+        if (userDetailsSecurity.isEnabled()) {
+            JwtAuthentication jwt = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        } else {
+            ServerResponse serverResponse;
+            serverResponse = new ServerResponse(false, "Account is locked!!!");
+
+            return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/signup")
@@ -86,6 +93,7 @@ public class UserController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(String.valueOf(Roles.USER));
+        user.setActive(true);
         userRepository.save(user).getId();
 
         serverResponse = new ServerResponse(true, "User registered successfully");
@@ -97,7 +105,7 @@ public class UserController {
     public User getCurrentUser(@CurrentUser UserDetailsSecurity currentUser) {
         User user = userRepositoryCustom.findById(currentUser.getId());
 
-        return new User(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles(), user.getProfile());
+        return new User(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles(), user.getProfile(), user.isActive());
     }
 
     @GetMapping("/loadAllUsers")
@@ -131,4 +139,19 @@ public class UserController {
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/manageUser")
+    public ResponseEntity<?> manageUser(@RequestBody UserActiveRequest userActiveRequest) {
+        ServerResponse serverResponse;
+
+        if (!userRepositoryCustom.manageUser(userActiveRequest)) {
+            serverResponse = new ServerResponse(false, "Update failed!!!");
+
+            return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        serverResponse = new ServerResponse(false, "Update successfully!!!");
+
+        template.convertAndSend("/topic/manageUser", serverResponse);
+        return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+    }
 }
