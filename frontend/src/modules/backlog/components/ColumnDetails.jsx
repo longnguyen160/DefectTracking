@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { ListTableBodyContainerStyled, ListTableBodyItemStyled, ListTableBodyStyled } from '../../../stylesheets/Table';
-import { ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE } from '../../../utils/enums';
+import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE } from '../../../utils/enums';
 import {
   DescriptionElementStyled,
   Image, LabelStyled,
@@ -71,7 +71,7 @@ class ColumnDetails extends React.Component {
                         </TableBlockStyled>
                       </ListTableBodyItemStyled>
                       <ListTableBodyItemStyled flex={'0 0 35px'}>
-                        <Image dynamic={'25px'} src={item.assignee.avatarURL}/>
+                        <Image dynamic={'25px'} src={FILE_BASE_URL + item.assignee.avatarURL}/>
                       </ListTableBodyItemStyled>
                     </ListTableBodyStyled>
                   )

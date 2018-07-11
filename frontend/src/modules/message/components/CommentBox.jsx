@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { ICONS, MESSAGE_TYPE } from '../../../utils/enums';
+import { FILE_BASE_URL, ICONS, MESSAGE_TYPE } from '../../../utils/enums';
 import {
   DropZoneStyled,
   Image,
@@ -126,7 +126,7 @@ class CommentBox extends Component {
       <ElementHeaderStyled padding={'0'} top margin={'0 0 15px 0'}>
         {
           !value &&
-            <Image topNav src={user.profile ? user.profile.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'}/>
+            <Image topNav src={user.profile ? FILE_BASE_URL + user.profile.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'}/>
         }
         <InputCommentStyled>
           <LineFormStyled noMargin>

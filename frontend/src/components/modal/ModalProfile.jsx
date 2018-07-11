@@ -11,15 +11,17 @@ import {
   ModalLineStyled,
   ModalLineContentStyled,
   ModalLineTitleStyled,
-  ModalBodyStyled
+  ModalBodyStyled,
+  ModalCloseStyle
 } from '../../stylesheets/Modal';
 import { Image, LineFormStyled, TextErrorStyled } from '../../stylesheets/GeneralStyled';
-import { INPUT_TEXT, FILE_BASE_URL } from '../../utils/enums';
+import { INPUT_TEXT, FILE_BASE_URL, ICONS } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import { validateForm } from '../../utils/ultis';
 import InputField from '../form/InputField';
 import { updateProfile } from '../../modules/account/actions/update';
 import { loadFile, resetState, uploadFile } from '../../modules/file/actions/file';
+import Icon from '../icon/Icon';
 
 class ModalProfile extends React.Component {
 
@@ -43,7 +45,7 @@ class ModalProfile extends React.Component {
     const { fileIds } = nextProps;
 
     if (fileIds.length > 0) {
-      this.setState({ avatarURL: FILE_BASE_URL + fileIds[0] });
+      this.setState({ avatarURL: fileIds[0] });
     }
   }
 
@@ -104,12 +106,22 @@ class ModalProfile extends React.Component {
           <ModalHeaderTitleStyled>
             <span>Profile</span>
           </ModalHeaderTitleStyled>
+          <ModalCloseStyle>
+            <Icon
+              icon={ICONS.DELETE}
+              width={15}
+              height={15}
+              color={'#626262'}
+              hoverPointer
+              onClick={() => onClose()}
+            />
+          </ModalCloseStyle>
         </ModalHeaderStyled>
         <form onSubmit={handleSubmit(this.handleEditProfile)} id="EditProfileForm">
           <ModalBodyStyled>
             <ModalContentStyled>
               <LineFormStyled hasTitle image alignCenter innerRef={(e) => this.avatar = e}>
-                <Image avatar src={url} />
+                <Image avatar src={FILE_BASE_URL + url} />
                 <Button
                   hasBorder
                   no

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, TableBlockStyled } from '../../stylesheets/GeneralStyled';
-import { ICONS } from '../../utils/enums';
+import { FILE_BASE_URL, ICONS } from '../../utils/enums';
 import Icon from '../icon/Icon';
 
 class CustomValueForSelect extends React.Component {
@@ -16,7 +16,7 @@ class CustomValueForSelect extends React.Component {
         );
       default:
         return (
-          <Image topNav src={value.avatarURL || '/images/default_avatar.jpg'}/>
+          <Image topNav src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}/>
         );
     }
   };

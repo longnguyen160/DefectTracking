@@ -13,7 +13,7 @@ import {
 } from '../../../stylesheets/TopNavBar';
 import { FilterBoxWrapperStyled , Image} from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
-import { ICONS, MODAL_TYPE, ROLES } from '../../../utils/enums';
+import { FILE_BASE_URL, ICONS, MODAL_TYPE, ROLES } from '../../../utils/enums';
 
 class TopNavBar extends Component {
 
@@ -69,7 +69,7 @@ class TopNavBar extends Component {
             </HeaderMainItemsStyled>
             <HeaderMainItemsStyled info user hover>
               <span>
-                <Image topNav src={user.profile && user.profile.avatarURL ? user.profile.avatarURL : '/images/default_avatar.jpg'}/>
+                <Image topNav src={user.profile && user.profile.avatarURL ? FILE_BASE_URL + user.profile.avatarURL : '/images/default_avatar.jpg'}/>
                 <span>{user ? user.username : null}</span>
               </span>
               <i className="fa fa-chevron-down" />

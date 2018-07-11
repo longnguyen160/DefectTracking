@@ -14,6 +14,7 @@ import {
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import { loadAllIssues } from '../actions/issue';
+import { FILE_BASE_URL } from '../../../utils/enums';
 
 
 class IssueList extends React.Component {
@@ -48,7 +49,7 @@ class IssueList extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.value && row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
             {row.value && row.value.username}
           </TableBlockStyled>
         )
@@ -59,7 +60,7 @@ class IssueList extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.value && row.value.avatarURL ? row.value.avatarURL : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
             {row.value && row.value.username}
           </TableBlockStyled>
         )

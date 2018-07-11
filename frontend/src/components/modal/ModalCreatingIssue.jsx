@@ -188,7 +188,9 @@ class ModalCreatingIssue extends React.Component {
             </ModalLineStyled>
             <ModalLineStyled>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Summary</ModalLineTitleStyled>
+                <ModalLineTitleStyled>
+                  Summary (*)
+                </ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
                     <InputField
@@ -274,7 +276,9 @@ class ModalCreatingIssue extends React.Component {
             </ModalLineStyled>
             <ModalLineStyled>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Due Date</ModalLineTitleStyled>
+                <ModalLineTitleStyled>
+                  Due Date (*)
+                </ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
                     <InputField

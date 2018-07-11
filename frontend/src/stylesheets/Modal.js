@@ -49,7 +49,7 @@ export const MyModal = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  padding: 20px 20px;
+  padding: ${props => props.padding || '20px 20px'};
   background: #fff;
   box-shadow: 0px 0px 50px -10px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
@@ -92,6 +92,16 @@ export const ModalHeaderTitleStyled = styled.div`
   ${props => props.flex && css`
     flex: ${props.flex}
   `}
+`;
+
+export const ModalCloseStyle = styled.div`
+  flex: 0 0 auto;
+  color: #bbb;
+  cursor: pointer;
+  margin-left: 8px;
+  &:hover{
+    color: #ff3000;
+  }
 `;
 
 export const ModalBodyStyled = styled.div`

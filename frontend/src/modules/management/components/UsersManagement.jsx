@@ -4,7 +4,7 @@ import SockJsClient from 'react-stomp';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTable from "react-table";
-import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import {
   ElementHeaderStyled, Image,
   PageBoardStyled,
@@ -49,7 +49,7 @@ class UsersManagement extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.original.profile && row.original.profile.avatarURL ? row.original.profile.avatarURL : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.original.profile && row.original.profile.avatarURL ? FILE_BASE_URL + row.original.profile.avatarURL : '/images/default_avatar.jpg'}/>
             {row.value}
           </TableBlockStyled>
         )

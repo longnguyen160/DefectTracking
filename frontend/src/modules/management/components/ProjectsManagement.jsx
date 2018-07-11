@@ -15,7 +15,7 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { loadProjectDetails, openModal } from '../../layout/actions/layout';
-import { MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjectsForManagement } from '../actions/project';
 
 class ProjectsManagement extends React.Component {
@@ -77,7 +77,7 @@ class ProjectsManagement extends React.Component {
         Cell: row => (
           row.value.map(manager => (
             <TableBlockStyled alignLeft key={manager.id}>
-              <Image topNav src={manager.avatarURL ? manager.avatarURL : '/images/default_avatar.jpg'}/>
+              <Image topNav src={manager.avatarURL ? FILE_BASE_URL + manager.avatarURL : '/images/default_avatar.jpg'}/>
               {manager.username}
             </TableBlockStyled>
           ))

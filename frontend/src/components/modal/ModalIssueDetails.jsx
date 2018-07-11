@@ -13,7 +13,8 @@ import {
   ModalLineStyled,
   ModalLineContentStyled,
   ModalLineTitleStyled,
-  ModalBodyStyled
+  ModalBodyStyled,
+  ModalCloseStyle
 } from '../../stylesheets/Modal';
 import {
   ElementHeaderStyled,
@@ -24,11 +25,14 @@ import {
   LabelStyled,
 } from '../../stylesheets/GeneralStyled';
 import {
+  FILE_BASE_URL,
   ICONS,
-  INPUT_TEXT, ISSUE_DETAILS,
+  INPUT_TEXT,
+  ISSUE_DETAILS,
   ISSUE_PRIORITY_ARRAY,
   MESSAGE,
-  MESSAGE_TYPE, ROLES,
+  MESSAGE_TYPE,
+  ROLES,
   TEXT_AREA,
   WEB_SOCKET_URL
 } from '../../utils/enums';
@@ -189,11 +193,28 @@ class ModalIssueDetails extends React.Component {
     // const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
-      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'750px'} isHidden={true} fullHeight={true}>
-        <ModalHeaderStyled noMargin padding={'0'}>
+      <Modal
+        onClose={onClose}
+        isOpen={isOpen}
+        maxWidth={'950px'}
+        isHidden={true}
+        fullHeight={true}
+        padding={'20px 20px 35px'}
+      >
+        <ModalHeaderStyled padding={'0'}>
           <ModalHeaderTitleStyled>
             <span>{issue && issue.issueKey}</span>
           </ModalHeaderTitleStyled>
+          <ModalCloseStyle>
+            <Icon
+              icon={ICONS.DELETE}
+              width={15}
+              height={15}
+              color={'#626262'}
+              hoverPointer
+              onClick={() => onClose()}
+            />
+          </ModalCloseStyle>
           {/*<Icon*/}
             {/*icon={isWatching ? ICONS.EYE : ICONS.EYE_CROSS}*/}
             {/*width={20}*/}
@@ -204,7 +225,7 @@ class ModalIssueDetails extends React.Component {
           {/*/>*/}
         </ModalHeaderStyled>
         <ModalBodyStyled padding={'10px 0'}>
-          <ModalContentStyled flex={'0 0 540px'} padding={'0 10px'}>
+          <ModalContentStyled flex={'0 0 715px'} padding={'0 10px'}>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <Editable
@@ -395,7 +416,7 @@ class ModalIssueDetails extends React.Component {
                 <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
                 <LineFormStyled>
                   <ElementHeaderStyled padding={'0'}>
-                    <Image topNav src={issue && issue.reporter.avatarURL ?  issue.reporter.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
+                    <Image topNav src={issue && issue.reporter.avatarURL ?  FILE_BASE_URL + issue.reporter.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />
                     <span>{issue && issue.reporter.username}</span>
                   </ElementHeaderStyled>
                 </LineFormStyled>
@@ -417,7 +438,7 @@ class ModalIssueDetails extends React.Component {
                           <ElementHeaderStyled padding={'0'}>
                             <Image
                               topNav
-                              src={value.avatarURL ? value.avatarURL : '/images/default_avatar.jpg'}
+                              src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}
                               margin={'0 5px'}
                             />
                             <span>{value.username}</span>

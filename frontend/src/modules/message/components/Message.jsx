@@ -74,7 +74,7 @@ class Message extends Component {
     return (
       <LineFormStyled hasTitle key={message.id}>
         <FilterBoxWrapperStyled top fullWidth>
-          <Image topNav src={message.sender.avatarURL || '/images/default_avatar.jpg'} />
+          <Image topNav src={FILE_BASE_URL + message.sender.avatarURL || '/images/default_avatar.jpg'} />
           <DescriptionElementStyled noPadding>
             <ElementHeaderStyled padding={'0'}>
               <TitleFormStyled username>{message.sender.username}</TitleFormStyled>
@@ -91,7 +91,7 @@ class Message extends Component {
     return (
       <LineFormStyled hasTitle key={message.id}>
         <FilterBoxWrapperStyled top fullWidth>
-          <Image topNav src={message.sender.avatarURL || '/images/default_avatar.jpg'} />
+          <Image topNav src={FILE_BASE_URL + message.sender.avatarURL || '/images/default_avatar.jpg'} />
           <DescriptionElementStyled noPadding notPointer>
             <Editable
               name={'message'}
