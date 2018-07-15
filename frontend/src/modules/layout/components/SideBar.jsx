@@ -46,11 +46,16 @@ class SideBar extends React.Component {
       sideBar = user ? SIDE_BAR_BEFORE_SELECT_PROJECT.filter(element => element.role.includes(...user.roles)) : SIDE_BAR_BEFORE_SELECT_PROJECT;
     }
 
+    let selected = sideBar.find(element =>
+      (history.location.pathname.includes(element.url) && element.url !== '/') || (element.url === '/' && history.location.pathname === '/')
+    );
+
+    if (!selected) {
+      selected = sideBar.find(element => element.url === '/');
+    }
     this.setState({
       sideBar,
-      selected: sideBar.find(element =>
-        (history.location.pathname.includes(element.url) && element.url !== '/') || (element.url === '/' && history.location.pathname === '/')
-      )
+      selected
     });
   }
 
@@ -82,10 +87,10 @@ class SideBar extends React.Component {
     return (
       <SideBarMainStyled>
         {
-          selected && sideBar.map(item => (
+          sideBar.map(item => (
             <SideBarMainBlockStyled
               onClick={() => this.handleSelectSideBar(item)}
-              selected={selected.name === item.name}
+              selected={selected && selected.name === item.name}
               key={item.name}
               isHeader={item.name === 'Management' && managementSideBar}
             >

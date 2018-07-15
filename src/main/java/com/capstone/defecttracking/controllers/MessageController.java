@@ -1,13 +1,21 @@
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.models.Message.EditedMessageRequest;
+import com.capstone.defecttracking.models.Issue.Issue;
+import com.capstone.defecttracking.models.Issue.IssueHistoryResponse;
+import com.capstone.defecttracking.models.Mail.Mail;
 import com.capstone.defecttracking.models.Message.Message;
 import com.capstone.defecttracking.models.Message.MessageHistoryResponse;
 import com.capstone.defecttracking.models.Message.MessageResponse;
+import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Server.ServerResponse;
+import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
+import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
 import com.capstone.defecttracking.repositories.Message.MessageRepository;
 import com.capstone.defecttracking.repositories.Message.MessageRepositoryCustom;
+import com.capstone.defecttracking.repositories.Project.ProjectRepositoryCustom;
+import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
+import com.capstone.defecttracking.services.EmailServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +23,17 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class MessageController {
@@ -27,6 +43,19 @@ public class MessageController {
 
     @Autowired
     MessageRepositoryCustom messageRepositoryCustom;
+
+    @Autowired
+    EmailServices emailService;
+
+    @Autowired
+    UserRepositoryCustom userRepositoryCustom;
+
+    @Autowired
+    ProjectRepositoryCustom projectRepositoryCustom;
+
+    @Autowired
+    IssueRepositoryCustom issueRepositoryCustom;
+
 
     private SimpMessagingTemplate template;
 
@@ -38,11 +67,41 @@ public class MessageController {
     @PostMapping("/user/createMessage")
     public ResponseEntity<?> createMessage(@RequestBody Message message) {
         ServerResponse serverResponse;
+        Mail mail = new Mail();
+        Map<String, Object> model = new HashMap<>();
+        HttpServletRequest request = ((ServletRequestAttributes)Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        String baseURL = String.format("%s://%s:%d/",request.getScheme(),  request.getServerName(), request.getServerPort());
 
         messageRepository.save(message);
         serverResponse = new ServerResponse(true, "Create message successfully");
 
         template.convertAndSend("/topic/message", serverResponse);
+
+        User sender = userRepositoryCustom.findById(message.getSender());
+        String src = sender.getProfile() != null  && sender.getProfile().getAvatarURL() != null ? sender.getProfile().getAvatarURL() : "/images/default_avatar.jpg";
+        IssueHistoryResponse issue = messageRepositoryCustom.getIssueKey(message.getIssueId());
+        List<String> watchers = issueRepositoryCustom.loadWatcherEmails(message.getIssueId());
+        String email = sender.getUsername() + " " + message.getMessage() + " on " + issue.getKey() + " - " + issue.getName();
+        Project project = projectRepositoryCustom.getProject(message.getIssueId());
+
+        model.put("src", baseURL + "files/?fileId=" + src);
+        model.put("sender", sender.getUsername());
+        model.put("message", message.getMessage());
+        model.put("issueLink", baseURL + "issue/" + message.getIssueId());
+        model.put("issueName", issue.getKey() + " - " + issue.getName());
+        model.put("projectLink", baseURL + "project/" + project.getId() + "/dashboard");
+        model.put("projectName", project.getName());
+
+        mail.setFrom("no-reply@defecttracking.com");
+        mail.setTo(watchers.toArray(new String[watchers.size()]));
+        mail.setSubject(email);
+        mail.setModel(model);
+
+        try {
+            emailService.sendMail(mail);
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
 
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }

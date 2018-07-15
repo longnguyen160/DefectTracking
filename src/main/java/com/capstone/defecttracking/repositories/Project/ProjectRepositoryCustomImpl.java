@@ -3,6 +3,7 @@ package com.capstone.defecttracking.repositories.Project;
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Category.Category;
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
+import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
@@ -178,6 +179,16 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         serverResponse = new ServerResponse(true, "Remove user from project failed");
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public Project getProject(String issueId) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        String projectId = mongoTemplate.findOne(query, Issue.class).getProjectId();
+
+        query = new Query(Criteria.where("_id").is(projectId));
+
+        return mongoTemplate.findOne(query, Project.class);
     }
 
     @Override

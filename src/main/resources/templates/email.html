@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Title</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'/>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: 48px;
+    }
+  </style>
+
+</head>
+<body>
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+    <tr>
+      <td align="center" bgcolor="#026a95" style="padding: 20px;">
+        <span style="font-size: 18px; font-family: 'Montserrat'; color: #fff; font-weight: 700">Defect Tracking</span>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#eaeaea" style="padding: 40px 30px 40px 30px;">
+        <div style="display: flex">
+          <div>
+            <img th:src="${src}"/>
+          </div>
+          <div style="display: inline-block; margin-left: 10px;">
+            <span th:text="${sender}"></span>
+            <span th:text="${message}"></span>
+            on
+            <a th:href="${issueLink}">
+              <span th:text="${issueName}"></span>
+            </a>
+            on
+            <a th:href="${projectLink}">
+              <span th:text="${projectName}"></span>
+            </a>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

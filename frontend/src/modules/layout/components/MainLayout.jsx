@@ -28,6 +28,7 @@ import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddingUser';
 import ModalAddCategory from '../../../components/modal/ModalAddingCategory';
 import ModalAddStatus from '../../../components/modal/ModalAddingStatus';
+import { loadIssueDetails } from '../../issue/actions/issue';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
@@ -43,6 +44,8 @@ const LIST_MODAL = {
 const getParams = pathname => {
   const matchProfile = matchPath(pathname, {
     path: `/project/:projectId/`,
+  }) || matchPath(pathname, {
+    path: `/issue/:issueId`,
   });
   return (matchProfile && matchProfile.params) || {};
 };
@@ -63,6 +66,11 @@ class MainLayout extends React.Component {
       const { loadProjectDetails } = this.props;
 
       loadProjectDetails(currentParams.projectId, (project) => selectProject(project));
+    } else if (currentParams.issueId) {
+      const { openModal, loadIssueDetails } = this.props;
+
+      loadIssueDetails(currentParams.issueId);
+      openModal(MODAL_TYPE.ISSUE_DETAILS);
     }
   }
 
@@ -151,6 +159,7 @@ MainLayout.propTypes = {
   openModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
+  loadIssueDetails: PropTypes.func.isRequired,
   resetUser: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
@@ -176,6 +185,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   selectProject: selectProject,
   loadAllProjects: loadAllProjects,
   loadProjectDetails: loadProjectDetails,
+  loadIssueDetails: loadIssueDetails,
   resetUser: resetUser
 }, dispatch);
 

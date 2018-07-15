@@ -93,7 +93,8 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
             .collect(Collectors.toList());
     }
 
-    private IssueHistoryResponse getIssueKey(String issueId) {
+    @Override
+    public IssueHistoryResponse getIssueKey(String issueId) {
         Query query = new Query(Criteria.where("_id").is(issueId));
         Issue issue = mongoTemplate.findOne(query, Issue.class);
 

@@ -51,17 +51,17 @@ class ModalIssueDetails extends React.Component {
 
   state = {
     uploadedFile: [],
-    userRole: this.props.user.roles.find(role => role !== ROLES.USER)
+    userRole: this.props.user && this.props.user.roles.find(role => role !== ROLES.USER)
   };
 
   componentWillReceiveProps(nextProps) {
-    const { issue, project } = nextProps;
-    const { loadProjectDetails, user, selectedProject } = this.props;
+    const { issue, project, user } = nextProps;
+    const { loadProjectDetails, selectedProject } = this.props;
 
     if (issue && !this.props.issue && !selectedProject) {
       loadProjectDetails(issue.projectId);
     }
-    if (JSON.stringify(project) !== JSON.stringify(this.props.project)) {
+    if (user && JSON.stringify(project) !== JSON.stringify(this.props.project)) {
       const userRole = project.members.find(member => member.userId === user.id).role;
 
       this.setState({ userRole });

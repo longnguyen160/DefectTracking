@@ -93,8 +93,11 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
-    public List<Issue> loadAllIssuesInProject(String projectId) {
-        return null;
+    public List<String> loadWatcherEmails(String issueId) {
+        Query query = new Query(Criteria.where("_id").is(issueId));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+        return getUserEmail(issue.getWatchers());
     }
 
     @Override
@@ -123,6 +126,12 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         }
 
         return null;
+    }
+
+    private List<String> getUserEmail(ArrayList<String> userIds) {
+        Query query = new Query(Criteria.where("_id").in(userIds));
+
+        return mongoTemplate.find(query, User.class).stream().map(User::getEmail).collect(Collectors.toList());
     }
 
     @Override

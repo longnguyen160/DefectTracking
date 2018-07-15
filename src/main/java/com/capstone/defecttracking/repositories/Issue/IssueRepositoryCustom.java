@@ -10,7 +10,7 @@ public interface IssueRepositoryCustom {
     IssueDetailsResponse loadIssueDetails(String issueId);
     IssueShortcutResponse loadIssueShortcut(String issueId);
     Boolean didIssueExisted(String issueName);
-    List<Issue> loadAllIssuesInProject(String projectId);
+    List<String> loadWatcherEmails(String issue);
     String generateIssueKey(String projectId);
     List<IssueResponse> loadAllIssues(String userId);
     List<IssueShortcutResponse>loadAllIssuesBasedOnFilter(Filter filter);

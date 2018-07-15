@@ -13,6 +13,7 @@ public interface ProjectRepositoryCustom {
     List<ProjectManagementResponse> loadAllProjectsForManagement();
     ResponseEntity<?> addUserToProject(UserProjectRequest userProjectRequest);
     ResponseEntity<?> removeUserFromProject(String projectID, String userID);
+    Project getProject(String issueId);
     void updateProject(ProjectCategoryRequest project);
     void updateBacklog(String projectId, ArrayList<String> backlog);
 }
