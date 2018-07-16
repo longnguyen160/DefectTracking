@@ -23,10 +23,19 @@ public class Status {
     private String background;
     private String color;
     private boolean isDefault;
+    private boolean isAssign;
     private boolean isDone;
     private List<String> handlers;
 
     public Status() {
+    }
+
+    public boolean isIsAssign() {
+        return isAssign;
+    }
+
+    public void setIsAssign(boolean isAssign) {
+        this.isAssign = isAssign;
     }
 
     public Status(String id, String name, String background, String color, boolean isDefault, List<String> handlers) {
@@ -53,16 +62,17 @@ public class Status {
     public void setIsDone(boolean isDone) {
         this.isDone = isDone;
     }
-    
-    public Status(String name, String background, String color, boolean isDefault, boolean isDone, List<String> handlers) {
+
+    public Status(String name, String background, String color, boolean isDefault, boolean isAssign, boolean isDone, List<String> handlers) {
         this.name = name;
         this.background = background;
         this.color = color;
         this.isDefault = isDefault;
+        this.isAssign = isAssign;
         this.isDone = isDone;
         this.handlers = handlers;
     }
-
+    
     public String getId() {
         return id;
     }
