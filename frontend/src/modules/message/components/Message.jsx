@@ -30,7 +30,7 @@ class Message extends Component {
     const { activity } = this.state;
 
     if (issue) {
-      loadAllMessagesOnIssue(issue.id, activity);
+      loadAllMessagesOnIssue(issue.id, activity, true);
     }
     this.editBox = {};
   }
@@ -38,9 +38,14 @@ class Message extends Component {
   componentWillReceiveProps(nextProps) {
     const { loadAllMessagesOnIssue, issue } = this.props;
     const { activity } = this.state;
+    let loading = true;
+
+    if (issue) {
+      loading = false;
+    }
 
     if (JSON.stringify(issue) !== JSON.stringify(nextProps.issue)) {
-      loadAllMessagesOnIssue(nextProps.issue.id, activity);
+      loadAllMessagesOnIssue(nextProps.issue.id, activity, loading);
     }
   }
 
@@ -61,13 +66,13 @@ class Message extends Component {
     const { issue, loadAllMessagesOnIssue } = this.props;
 
     this.setState({ activity });
-    loadAllMessagesOnIssue(issue.id, activity);
+    loadAllMessagesOnIssue(issue.id, activity, true);
   };
 
   onMessageReceive = () => {
     const { loadAllMessagesOnIssue, issue } = this.props;
 
-    loadAllMessagesOnIssue(issue.id, 'all');
+    loadAllMessagesOnIssue(issue.id, 'all', false);
   };
 
   renderLog = (message) => {
@@ -148,7 +153,7 @@ class Message extends Component {
   };
 
   render() {
-    const { messages } = this.props;
+    const { messages, loadingMessages } = this.props;
     const { activity } = this.state;
 
     return (
@@ -181,9 +186,14 @@ class Message extends Component {
         </LineFormStyled>
         <CommentBox />
         {
-          messages.map(message => (
-            message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
-          ))
+          loadingMessages ?
+            <ElementHeaderStyled loading>
+              <i className="fa fa-circle-o-notch fa-spin" />
+            </ElementHeaderStyled>
+          :
+            messages.map(message => (
+              message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
+            ))
         }
         <SockJsClient
           url={WEB_SOCKET_URL}
@@ -201,10 +211,12 @@ Message.propTypes = {
   loadAllMessagesOnIssue: PropTypes.func.isRequired,
   editMessage: PropTypes.func.isRequired,
   issue: PropTypes.object,
+  loadingMessages: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
   messages: state.message.messagesOnIssue,
+  loadingMessages: state.message.isLoading,
   user: state.layout.user,
   issue: state.issue.issue
 });

@@ -98,7 +98,7 @@ export default function issue(state = initialState, action) {
 
     case LOAD_ISSUE_DETAILS_REQUEST:
       return Object.assign({}, state, {
-        isLoading: true,
+        isLoading: action.loading,
         error: null
       });
 

@@ -109,7 +109,7 @@ class CommentBox extends Component {
         attachments: fileIds,
         createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
         updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
-      });
+      }, false);
       this.message.value = '';
       this.setState({ fileIds: [] });
     } else {

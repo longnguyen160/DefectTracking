@@ -37,24 +37,24 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         query = new Query(Criteria.where("projects").is(projectId));
 
         ArrayList<CategoryProjectResponse> categories = mongoTemplate
-                .find(query, Category.class)
-                .stream()
-                .map(category -> new CategoryProjectResponse(
+            .find(query, Category.class)
+            .stream()
+            .map(category -> new CategoryProjectResponse(
                 category.getId(),
                 category.getName(),
                 category.getColor(),
                 category.getBackground()
-        ))
-                .collect(Collectors.toCollection(ArrayList::new));
+            ))
+            .collect(Collectors.toCollection(ArrayList::new));
 
         return new ProjectDetailsResponse(
-                projectId,
-                project.getName(),
-                project.getDescription(),
-                project.getStatus(),
-                project.getMembers(),
-                project.getBacklog(),
-                categories
+            projectId,
+            project.getName(),
+            project.getDescription(),
+            project.getStatus(),
+            project.getMembers(),
+            project.getBacklog(),
+            categories
         );
     }
 
@@ -75,66 +75,72 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         User user = mongoTemplate.findOne(query, User.class);
 
         if (user.getRoles().contains(Roles.USER.toString())) {
-            query = new Query(Criteria.where("members.userId").is(userId));
+            Criteria criteria = new Criteria();
+
+            criteria.orOperator(
+                Criteria.where("status").is("public"),
+                Criteria.where("members.userId").is(userId)
+            );
+            query = new Query(criteria);
 
             return mongoTemplate
-                    .find(query, Project.class)
-                    .stream()
-                    .map(project -> new ProjectResponse(
+                .find(query, Project.class)
+                .stream()
+                .map(project -> new ProjectResponse(
                     project.getId(),
                     project.getName(),
                     project.getDescription(),
                     project.getStatus()
-            ))
-                    .collect(Collectors.toList());
+                ))
+                .collect(Collectors.toList());
         } else {
             return mongoTemplate
-                    .findAll(Project.class)
-                    .stream()
-                    .map(project -> new ProjectResponse(
+                .findAll(Project.class)
+                .stream()
+                .map(project -> new ProjectResponse(
                     project.getId(),
                     project.getName(),
                     project.getDescription(),
                     project.getStatus()
-            ))
-                    .collect(Collectors.toList());
+                ))
+                .collect(Collectors.toList());
         }
     }
 
     @Override
     public List<ProjectManagementResponse> loadAllProjectsForManagement() {
         return mongoTemplate
-                .findAll(Project.class)
-                .stream()
-                .map(project -> {
-                    Query query = new Query(Criteria.where("projects").is(project.getId()));
-                    ArrayList<CategoryProjectResponse> categories = mongoTemplate
-                            .find(query, Category.class)
-                            .stream()
-                            .map(category -> new CategoryProjectResponse(
-                            category.getId(),
-                            category.getName(),
-                            category.getColor(),
-                            category.getBackground()
+            .findAll(Project.class)
+            .stream()
+            .map(project -> {
+                Query query = new Query(Criteria.where("projects").is(project.getId()));
+                ArrayList<CategoryProjectResponse> categories = mongoTemplate
+                    .find(query, Category.class)
+                    .stream()
+                    .map(category -> new CategoryProjectResponse(
+                        category.getId(),
+                        category.getName(),
+                        category.getColor(),
+                        category.getBackground()
                     ))
-                            .collect(Collectors.toCollection(ArrayList::new));
-                    ArrayList<UserResponse> managers = project
-                            .getMembers()
-                            .stream()
-                            .filter(member -> member.getRole().equals("manager"))
-                            .map(member -> getUserResponse(member.getUserId()))
-                            .collect(Collectors.toCollection(ArrayList::new));
+                    .collect(Collectors.toCollection(ArrayList::new));
+                ArrayList<UserResponse> managers = project
+                    .getMembers()
+                    .stream()
+                    .filter(member -> member.getRole().equals("manager"))
+                    .map(member -> getUserResponse(member.getUserId()))
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-                    return new ProjectManagementResponse(
-                            project.getId(),
-                            project.getName(),
-                            project.getDescription(),
-                            project.getStatus(),
-                            managers,
-                            categories
-                    );
-                })
-                .collect(Collectors.toList());
+                return new ProjectManagementResponse(
+                    project.getId(),
+                    project.getName(),
+                    project.getDescription(),
+                    project.getStatus(),
+                    managers,
+                    categories
+                );
+            })
+            .collect(Collectors.toList());
     }
 
     @Override

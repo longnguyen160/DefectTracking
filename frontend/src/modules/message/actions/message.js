@@ -18,10 +18,11 @@ import {
   RESET_MESSAGE
 } from './types';
 
-const createMessage = (message) => {
+const createMessage = (message, loading) => {
   return {
     type: CREATE_MESSAGE,
-    message
+    message,
+    loading
   }
 };
 
@@ -70,17 +71,19 @@ const loadAllMessagesFailure = (error) => {
   }
 };
 
-const loadAllMessagesOnIssue = (issueId, messageType) => {
+const loadAllMessagesOnIssue = (issueId, messageType, loading) => {
   return {
     type: LOAD_ALL_MESSAGES_ON_ISSUES,
     issueId,
-    messageType
+    messageType,
+    loading
   }
 };
 
-const loadAllMessagesOnIssueRequest = () => {
+const loadAllMessagesOnIssueRequest = (loading) => {
   return {
-    type: LOAD_ALL_MESSAGES_ON_ISSUES_REQUEST
+    type: LOAD_ALL_MESSAGES_ON_ISSUES_REQUEST,
+    loading
   }
 };
 

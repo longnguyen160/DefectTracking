@@ -5,12 +5,10 @@
  */
 package com.capstone.defecttracking.repositories.Status;
 
-import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.Status.StatusUpdateRequest;
 import com.mongodb.client.result.UpdateResult;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

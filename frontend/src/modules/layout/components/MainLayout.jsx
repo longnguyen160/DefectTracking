@@ -69,7 +69,7 @@ class MainLayout extends React.Component {
     } else if (currentParams.issueId) {
       const { openModal, loadIssueDetails } = this.props;
 
-      loadIssueDetails(currentParams.issueId);
+      loadIssueDetails(currentParams.issueId, true);
       openModal(MODAL_TYPE.ISSUE_DETAILS);
     }
   }

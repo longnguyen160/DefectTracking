@@ -20,7 +20,7 @@ class CustomSelect extends Component {
 
     if (name === 'categories') {
       loadAllCategoriesInProject(value.projectId);
-    } else if (value.projectId) {
+    } else if (value && value.projectId) {
       loadAllUsersInProject(value.projectId);
     }
   }

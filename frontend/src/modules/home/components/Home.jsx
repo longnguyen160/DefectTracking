@@ -58,7 +58,7 @@ class Home extends React.Component {
   handleOpenModal = (issueId) => {
     const { openModal, loadIssueDetails } = this.props;
 
-    loadIssueDetails(issueId);
+    loadIssueDetails(issueId, true);
     openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
 
@@ -126,7 +126,7 @@ class Home extends React.Component {
   );
 
   render() {
-    const { issues, messages } = this.props;
+    const { issues, messages, loadingIssues, loadingMessages } = this.props;
 
     return (
       <PageBoardStyled>
@@ -145,40 +145,45 @@ class Home extends React.Component {
               </ListTableHeaderStyled>
               <ListTableBodyContainerStyled willChange>
                 {
-                  issues.map((issue, index) => {
-                    const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
+                  loadingIssues ?
+                    <ElementHeaderStyled loading>
+                      <i className="fa fa-circle-o-notch fa-spin" />
+                    </ElementHeaderStyled>
+                  :
+                    issues.map((issue, index) => {
+                      const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
 
-                    return (
-                      <ListTableStyled
-                        onClick={() => this.handleOpenModal(issue.id)}
-                        key={issue.id}
-                        odd={index % 2 === 0}
-                      >
-                        <ListTableBodyStyled
-                          showList
-                          noBackground
-                          fixed
-                          color={issue.status}
+                      return (
+                        <ListTableStyled
+                          onClick={() => this.handleOpenModal(issue.id)}
+                          key={issue.id}
+                          odd={index % 2 === 0}
                         >
-                          <ListTableBodyItemStyled itemId>
-                            {issue.issueKey}
-                          </ListTableBodyItemStyled>
-                          <ListTableBodyItemStyled issueName>
-                            {issue.summary}
-                          </ListTableBodyItemStyled>
-                          <ListTableBodyItemStyled priority>
-                            <Icon
-                              icon={ICONS.ARROW}
-                              color={priority && priority.color}
-                              width={15}
-                              height={15}
-                              rotated rotate={'rotateZ(90deg)'}
-                            />
-                          </ListTableBodyItemStyled>
-                        </ListTableBodyStyled>
-                      </ListTableStyled>
-                    );
-                  })
+                          <ListTableBodyStyled
+                            showList
+                            noBackground
+                            fixed
+                            color={issue.status}
+                          >
+                            <ListTableBodyItemStyled itemId>
+                              {issue.issueKey}
+                            </ListTableBodyItemStyled>
+                            <ListTableBodyItemStyled issueName>
+                              {issue.summary}
+                            </ListTableBodyItemStyled>
+                            <ListTableBodyItemStyled priority>
+                              <Icon
+                                icon={ICONS.ARROW}
+                                color={priority && priority.color}
+                                width={15}
+                                height={15}
+                                rotated rotate={'rotateZ(90deg)'}
+                              />
+                            </ListTableBodyItemStyled>
+                          </ListTableBodyStyled>
+                        </ListTableStyled>
+                      );
+                    })
                 }
               </ListTableBodyContainerStyled>
             </div>
@@ -194,9 +199,14 @@ class Home extends React.Component {
             <div>
               <ListTableBodyContainerStyled willChange borderTop activity>
                 {
-                  messages.map(message => (
-                    message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
-                  ))
+                  loadingMessages ?
+                    <ElementHeaderStyled loading>
+                      <i className="fa fa-circle-o-notch fa-spin" />
+                    </ElementHeaderStyled>
+                  :
+                    messages.map(message => (
+                      message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
+                    ))
                 }
               </ListTableBodyContainerStyled>
             </div>
@@ -223,13 +233,17 @@ Home.propTypes = {
   resetMessage: PropTypes.func.isRequired,
   issues: PropTypes.array.isRequired,
   messages: PropTypes.array.isRequired,
-  user: PropTypes.object
+  user: PropTypes.object,
+  loadingIssues: PropTypes.bool.isRequired,
+  loadingMessages: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
   issues: state.issue.issues,
+  loadingIssues: state.issue.isLoading,
   user: state.layout.user,
-  messages: state.message.messages
+  messages: state.message.messages,
+  loadingMessages: state.message.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

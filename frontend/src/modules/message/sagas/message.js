@@ -23,9 +23,9 @@ import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
 
-function* createMessage({ message }) {
+function* createMessage({ message, loading }) {
   try {
-    yield put(createMessageRequest());
+    yield put(createMessageRequest(loading));
     yield call(API.createMessage, message);
     yield put(createMessageSuccess());
   } catch (error) {
@@ -37,9 +37,9 @@ function* watchCreateMessage() {
   yield takeLatest(CREATE_MESSAGE, createMessage);
 }
 
-function* loadAllMessagesOnIssue({ issueId, messageType }) {
+function* loadAllMessagesOnIssue({ issueId, messageType, loading }) {
   try {
-    yield put(loadAllMessagesOnIssueRequest());
+    yield put(loadAllMessagesOnIssueRequest(loading));
     const { data } = yield call(API.loadAllMessagesOnIssue, issueId, messageType);
 
     yield put(loadAllMessagesOnIssueSuccess(data));

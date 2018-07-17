@@ -17,7 +17,7 @@ class ColumnDetails extends React.Component {
   handleOpenModal = (issueId) => {
     const { openModal, loadIssueDetails } = this.props;
 
-    loadIssueDetails(issueId);
+    loadIssueDetails(issueId, true);
     openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
 

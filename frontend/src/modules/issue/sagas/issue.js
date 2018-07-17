@@ -85,9 +85,9 @@ function* watchLoadAllIssuesShortcut() {
   yield takeLatest(LOAD_ALL_ISSUES_SHORTCUT, loadAllIssuesShortcut)
 }
 
-function* loadIssueDetails({ issueId }) {
+function* loadIssueDetails({ issueId, loading }) {
   try {
-    yield put(loadIssueDetailsRequest());
+    yield put(loadIssueDetailsRequest(loading));
 
     const { data } = yield call(API.loadIssueDetails, issueId);
 

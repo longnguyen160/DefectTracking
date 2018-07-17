@@ -158,16 +158,18 @@ const loadIssueShortcutFailure = (error) => {
   }
 };
 
-const loadIssueDetails = (issueId) => {
+const loadIssueDetails = (issueId, loading) => {
   return {
     type: LOAD_ISSUE_DETAILS,
-    issueId
+    issueId,
+    loading
   }
 };
 
-const loadIssueDetailsRequest = () => {
+const loadIssueDetailsRequest = (loading) => {
   return {
-    type: LOAD_ISSUE_DETAILS_REQUEST
+    type: LOAD_ISSUE_DETAILS_REQUEST,
+    loading
   }
 };
 

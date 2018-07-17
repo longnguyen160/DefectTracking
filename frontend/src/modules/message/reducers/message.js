@@ -23,7 +23,7 @@ export default function message(state = initialState, action) {
 
     case CREATE_MESSAGE_REQUEST:
       return Object.assign({}, state, {
-        isLoading: true,
+        isLoading: action.loading,
         error: null
       });
 
@@ -59,7 +59,7 @@ export default function message(state = initialState, action) {
 
     case LOAD_ALL_MESSAGES_ON_ISSUES_REQUEST:
       return Object.assign({}, state, {
-        isLoading: true,
+        isLoading: action.loading,
         error: null
       });
 

@@ -251,9 +251,9 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
     private Update configUpdate(ArrayList<?> list, String type, String value) {
         if (list.contains(value)) {
-            return new Update().pull(type, value);
+            return new Update().pull(type, value).currentDate("updatedAt");
         } else {
-            return new Update().push(type, value);
+            return new Update().push(type, value).currentDate("updatedAt");
         }
     }
 
@@ -272,7 +272,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 update = configUpdate(issue.getAttachments(), type, value);
                 break;
             default:
-                update.set(type, value);
+                update.set(type, value).currentDate("updatedAt");
                 break;
         }
 

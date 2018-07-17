@@ -163,7 +163,7 @@ class Dashboard extends Component {
   handleOpenModal = (issueId) => {
     const { openModal, loadIssueDetails } = this.props;
 
-    loadIssueDetails(issueId);
+    loadIssueDetails(issueId, true);
     openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
 
@@ -194,7 +194,7 @@ class Dashboard extends Component {
 
   render() {
     const { view, filter } = this.state;
-    const { usersInProject, statusList, categories, issues, openModal } = this.props;
+    const { usersInProject, statusList, categories, issues, openModal, loadingIssues } = this.props;
 
     return (
       <PageBoardStyled backlog>
@@ -301,40 +301,45 @@ class Dashboard extends Component {
                   </ListTableHeaderStyled>
                   <ListTableBodyContainerStyled willChange>
                     {
-                      issues.map((issue, index) => {
-                        const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
+                      loadingIssues ?
+                        <ElementHeaderStyled loading>
+                          <i className="fa fa-circle-o-notch fa-spin" />
+                        </ElementHeaderStyled>
+                      :
+                        issues.map((issue, index) => {
+                          const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
 
-                        return (
-                          <ListTableStyled
-                            onClick={() => this.handleOpenModal(issue.id)}
-                            key={issue.id}
-                            odd={index % 2 === 0}
-                          >
-                            <ListTableBodyStyled
-                              showList
-                              noBackground
-                              fixed
-                              color={issue.status}
+                          return (
+                            <ListTableStyled
+                              onClick={() => this.handleOpenModal(issue.id)}
+                              key={issue.id}
+                              odd={index % 2 === 0}
                             >
-                              <ListTableBodyItemStyled itemId>
-                                {issue.issueKey}
-                              </ListTableBodyItemStyled>
-                              <ListTableBodyItemStyled issueName>
-                                {issue.summary}
-                              </ListTableBodyItemStyled>
-                              <ListTableBodyItemStyled priority>
-                                <Icon
-                                  icon={ICONS.ARROW}
-                                  color={priority && priority.color}
-                                  width={15}
-                                  height={15}
-                                  rotated rotate={'rotateZ(90deg)'}
-                                />
-                              </ListTableBodyItemStyled>
-                            </ListTableBodyStyled>
-                          </ListTableStyled>
-                        );
-                      })
+                              <ListTableBodyStyled
+                                showList
+                                noBackground
+                                fixed
+                                color={issue.status}
+                              >
+                                <ListTableBodyItemStyled itemId>
+                                  {issue.issueKey}
+                                </ListTableBodyItemStyled>
+                                <ListTableBodyItemStyled issueName>
+                                  {issue.summary}
+                                </ListTableBodyItemStyled>
+                                <ListTableBodyItemStyled priority>
+                                  <Icon
+                                    icon={ICONS.ARROW}
+                                    color={priority && priority.color}
+                                    width={15}
+                                    height={15}
+                                    rotated rotate={'rotateZ(90deg)'}
+                                  />
+                                </ListTableBodyItemStyled>
+                              </ListTableBodyStyled>
+                            </ListTableStyled>
+                          );
+                        })
                     }
                   </ListTableBodyContainerStyled>
                 </div>
@@ -345,7 +350,7 @@ class Dashboard extends Component {
         }
         <SockJsClient
           url={WEB_SOCKET_URL}
-          topics={['/topic/issuesList', '/topic/message']}
+          topics={['/topic/issuesList']}
           onMessage={this.onMessageReceive}
           debug={true}
         />
@@ -374,6 +379,7 @@ Dashboard.propTypes = {
   selectedProject: PropTypes.object,
   user: PropTypes.object,
   filter: PropTypes.object,
+  loadingIssues: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -381,6 +387,7 @@ const mapStateToProps = state => ({
   user: state.layout.user,
   statusList: state.management.statusList,
   issues: state.issue.issues,
+  loadingIssues: state.issue.isLoading,
   filter: state.backlog.filter,
   categories: state.layout.categories,
   usersInProject: state.project.usersInProject.map(user => ({

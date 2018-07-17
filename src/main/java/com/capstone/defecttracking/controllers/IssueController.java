@@ -133,7 +133,7 @@ public class IssueController {
         if (issueRepositoryCustom.updateIssue(data.getIssueId(), data.getType(), data.getValue())) {
             serverResponse = new ServerResponse(true, "Update issue successfully");
 
-            template.convertAndSend("/topic/issuesList", serverResponse);
+            template.convertAndSend("/topic/issue/update", serverResponse);
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
         }
 
@@ -149,7 +149,7 @@ public class IssueController {
         if (issueRepositoryCustom.updateIssueCategories(data.getIssueId(), data.getType(), data.getValue())) {
             serverResponse = new ServerResponse(true, "Update issue successfully");
 
-            template.convertAndSend("/topic/issuesList", serverResponse);
+            template.convertAndSend("/topic/issue/update", serverResponse);
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
         }
 

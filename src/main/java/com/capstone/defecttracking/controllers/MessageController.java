@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class MessageController {
@@ -80,7 +81,6 @@ public class MessageController {
         User sender = userRepositoryCustom.findById(message.getSender());
         String src = sender.getProfile() != null  && sender.getProfile().getAvatarURL() != null ? sender.getProfile().getAvatarURL() : "/images/default_avatar.jpg";
         IssueHistoryResponse issue = messageRepositoryCustom.getIssueKey(message.getIssueId());
-        List<String> watchers = issueRepositoryCustom.loadWatcherEmails(message.getIssueId());
         String email = sender.getUsername() + " " + message.getMessage() + " on " + issue.getKey() + " - " + issue.getName();
         Project project = projectRepositoryCustom.getProject(message.getIssueId());
 
@@ -93,7 +93,11 @@ public class MessageController {
         model.put("projectName", project.getName());
 
         mail.setFrom("no-reply@defecttracking.com");
-        mail.setTo(watchers.toArray(new String[watchers.size()]));
+        mail.setTo(issueRepositoryCustom
+            .loadWatcherEmails(message.getIssueId())
+            .stream()
+            .filter(watcher -> !watcher.equals(sender.getEmail()))
+            .toArray(String[]::new));
         mail.setSubject(email);
         mail.setModel(model);
 
