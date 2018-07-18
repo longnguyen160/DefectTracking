@@ -15,6 +15,8 @@ import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
 import { loadAllUsers } from '../../account/actions/account';
 import { banUser } from '../actions/user';
+import NoDataProps from '../../../components/table/NoDataProps';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class UsersManagement extends React.Component {
 
@@ -31,7 +33,7 @@ class UsersManagement extends React.Component {
   };
 
   render() {
-    const { openModal, users, banUser } = this.props;
+    const { openModal, users, banUser, loading } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -134,6 +136,8 @@ class UsersManagement extends React.Component {
         <ReactTable
           data={users}
           columns={columns}
+          getNoDataProps={() => NoDataProps({ loading })}
+          NoDataComponent={NoDataComponent}
           defaultPageSize={10}
           className="-striped -highlight"
         />
@@ -152,11 +156,13 @@ UsersManagement.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadAllUsers: PropTypes.func.isRequired,
   banUser: PropTypes.func.isRequired,
-  users: PropTypes.array.isRequired
+  users: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  users: state.account.users
+  users: state.account.users,
+  loading: state.account.isFetching
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -15,8 +15,10 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
-import { loadAllCategories } from '../actions/category';
+import { deleteCategory, loadAllCategories } from '../actions/category';
 import Icon from '../../../components/icon/Icon';
+import NoDataProps from '../../../components/table/NoDataProps';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class CategoriesManagement extends React.Component {
 
@@ -33,7 +35,7 @@ class CategoriesManagement extends React.Component {
   };
 
   render() {
-    const { openModal, categories } = this.props;
+    const { openModal, categories, loading, deleteCategory } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -90,6 +92,7 @@ class CategoriesManagement extends React.Component {
             width={15}
             height={15}
             margin={'0'}
+            onClick={() => deleteCategory(row.original.id)}
           />
         )
       },
@@ -108,6 +111,8 @@ class CategoriesManagement extends React.Component {
         <ReactTable
           data={categories}
           columns={columns}
+          getNoDataProps={() => NoDataProps({ loading })}
+          NoDataComponent={NoDataComponent}
           defaultPageSize={10}
           className="-striped -highlight"
         />
@@ -126,15 +131,19 @@ CategoriesManagement.propTypes = {
   openModal: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
   loadAllCategories: PropTypes.func.isRequired,
+  deleteCategory: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  categories: state.management.categories
+  categories: state.management.categories,
+  loading: state.management.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
-  loadAllCategories: loadAllCategories
+  loadAllCategories: loadAllCategories,
+  deleteCategory: deleteCategory
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoriesManagement);

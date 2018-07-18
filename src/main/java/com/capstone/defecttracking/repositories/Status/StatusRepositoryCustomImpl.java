@@ -5,6 +5,7 @@
  */
 package com.capstone.defecttracking.repositories.Status;
 
+import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.Status.StatusUpdateRequest;
 import com.mongodb.client.result.UpdateResult;
@@ -40,8 +41,16 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
     }
 
     @Override
+    public Status loadStatusDetails(String statusId) {
+        Query query = new Query(Criteria.where("_id").is(statusId));
+
+        return mongoTemplate.findOne(query, Status.class);
+    }
+
+    @Override
     public String getDefaultStatus() {
         Query query = new Query(Criteria.where("isDefault").is(true));
+
         if (mongoTemplate.findOne(query, Status.class) != null) {
             return mongoTemplate.findOne(query, Status.class).getId();
         }
@@ -85,4 +94,14 @@ public class StatusRepositoryCustomImpl implements StatusRepositoryCustom {
         return false;
     }
 
+    @Override
+    public void changeIssuesStatus(String statusId) {
+        Query query = new Query(Criteria.where("isDefault").is(true));
+        String statusDefault = mongoTemplate.findOne(query, Status.class).getId();
+        query = new Query(Criteria.where("status").is(statusId));
+        Update update = new Update();
+
+        update.set("status", statusDefault);
+        mongoTemplate.updateMulti(query, update, Issue.class);
+    }
 }

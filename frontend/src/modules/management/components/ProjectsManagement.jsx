@@ -17,6 +17,8 @@ import { Button } from '../../../stylesheets/Button';
 import { loadProjectDetails, openModal } from '../../layout/actions/layout';
 import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjectsForManagement } from '../actions/project';
+import NoDataComponent from '../../../components/table/NoDataComponent';
+import NoDataProps from '../../../components/table/NoDataProps';
 
 class ProjectsManagement extends React.Component {
 
@@ -116,7 +118,7 @@ class ProjectsManagement extends React.Component {
         )
       },
     ];
-    const { projects } = this.props;
+    const { projects, loading } = this.props;
 
     return (
       <PageBoardStyled backlog>
@@ -131,6 +133,8 @@ class ProjectsManagement extends React.Component {
         <ReactTable
           data={projects}
           columns={columns}
+          getNoDataProps={() => NoDataProps({ loading })}
+          NoDataComponent={NoDataComponent}
           defaultPageSize={10}
           className="-striped -highlight"
         />
@@ -149,11 +153,13 @@ ProjectsManagement.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadAllProjects: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
-  projects: PropTypes.array.isRequired
+  projects: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  projects: state.management.projectList
+  projects: state.management.projectList,
+  loading: state.management.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

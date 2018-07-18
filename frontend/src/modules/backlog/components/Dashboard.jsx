@@ -41,6 +41,7 @@ import CustomValueForSelect from '../../../components/form/CustomValueForSelect'
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { loadAllStatus } from '../../management/actions/status';
 import { loadAllIssuesBasedOnFilter, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
+import LoadingIcon from '../../../components/icon/LoadingIcon';
 
 class Dashboard extends Component {
 
@@ -303,7 +304,7 @@ class Dashboard extends Component {
                     {
                       loadingIssues ?
                         <ElementHeaderStyled loading>
-                          <i className="fa fa-circle-o-notch fa-spin" />
+                          <LoadingIcon />
                         </ElementHeaderStyled>
                       :
                         issues.map((issue, index) => {

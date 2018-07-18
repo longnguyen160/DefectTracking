@@ -127,8 +127,11 @@ const loadAllCategories = () => {
 
 const loadAllCategoriesInProject = (projectId) => {
   return axios.get(`user/loadAllCategoriesInProject?projectId=${projectId}`);
-}
+};
 
+const deleteCategory = (categoryId) => {
+  return axios.delete(`admin/deleteCategory/${categoryId}`);
+};
 // File
 const uploadFile = (file) => {
   return axios.post('files/uploadFile', file);
@@ -166,6 +169,10 @@ const createStatus = (status) => {
 
 const loadAllStatus = (role) => {
   return axios.get(`admin/loadAllStatus?role=${role}`);
+};
+
+const loadStatusDetails = (statusId) => {
+  return axios.get(`admin/loadStatusDetails?statusId=${statusId}`);
 };
 
 const removeStatus = (statusId) => {
@@ -221,7 +228,9 @@ const API = {
   loadAllCategoriesInProject,
   updateProject,
   loadAllIssuesBasedOnFilter,
-  manageUser
+  manageUser,
+  loadStatusDetails,
+  deleteCategory
 };
 
 export default API;

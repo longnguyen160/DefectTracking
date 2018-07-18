@@ -20,18 +20,23 @@ import {
   LOAD_ALL_STATUS_REQUEST,
   LOAD_ALL_STATUS_SUCCESS,
   LOAD_ALL_STATUS_FAILURE,
+  LOAD_STATUS_DETAILS_REQUEST,
+  LOAD_STATUS_DETAILS_SUCCESS,
+  LOAD_STATUS_DETAILS_FAILURE,
   REQUEST_REMOVE_STATUS,
   REMOVE_STATUS_SUCCESS,
   REMOVE_STATUS_FAILURE,
   REQUEST_UPDATE_STATUS,
   UPDATE_STATUS_SUCCESS,
-  UPDATE_STATUS_FAILURE
+  UPDATE_STATUS_FAILURE,
+  RESET_STATUS
 } from '../actions/types';
 
 const initialState = {
-  projectList:[],
+  projectList: [],
   statusList: [],
   categories: [],
+  status: null,
   isLoading: false,
   error: null
 };
@@ -135,10 +140,27 @@ export default function management(state = initialState, action) {
         isLoading: false,
         statusList: action.statusList,
         error: null
-
       });
 
     case LOAD_ALL_STATUS_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_STATUS_DETAILS_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case LOAD_STATUS_DETAILS_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        status: action.status,
+        error: null
+      });
+
+    case LOAD_STATUS_DETAILS_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
@@ -191,6 +213,12 @@ export default function management(state = initialState, action) {
         isLoading: false,
         error: action.error
       });
+
+    case RESET_STATUS:
+      return Object.assign({}, state, {
+        status: null
+      });
+
     default:
       return state;
   }

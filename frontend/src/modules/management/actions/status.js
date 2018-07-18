@@ -11,6 +11,10 @@ import {
   LOAD_ALL_STATUS_REQUEST,
   LOAD_ALL_STATUS_SUCCESS,
   LOAD_ALL_STATUS_FAILURE,
+  LOAD_STATUS_DETAILS,
+  LOAD_STATUS_DETAILS_REQUEST,
+  LOAD_STATUS_DETAILS_SUCCESS,
+  LOAD_STATUS_DETAILS_FAILURE,
   REMOVE_STATUS,
   REQUEST_REMOVE_STATUS,
   REMOVE_STATUS_FAILURE,
@@ -18,7 +22,8 @@ import {
   UPDATE_STATUS,
   REQUEST_UPDATE_STATUS,
   UPDATE_STATUS_FAILURE,
-  UPDATE_STATUS_SUCCESS
+  UPDATE_STATUS_SUCCESS,
+  RESET_STATUS
 } from './types';
 //status default
 
@@ -103,6 +108,33 @@ const loadAllStatusFailure = (error) => {
   }
 };
 
+const loadStatusDetails = (statusId) => {
+  return {
+    type: LOAD_STATUS_DETAILS,
+    statusId
+  }
+};
+
+const loadStatusDetailsRequest = () => {
+  return {
+    type: LOAD_STATUS_DETAILS_REQUEST
+  }
+};
+
+const loadStatusDetailsSuccess = (status) => {
+  return {
+    type: LOAD_STATUS_DETAILS_SUCCESS,
+    status
+  }
+};
+
+const loadStatusDetailsFailure = (error) => {
+  return {
+    type: LOAD_STATUS_DETAILS_FAILURE,
+    error
+  }
+};
+
 const removeStatus = (statusId) => {
   return {
     type: REMOVE_STATUS,
@@ -155,6 +187,12 @@ const updateStatusFailure = (error) => {
   }
 };
 
+const resetStatus = () => {
+  return {
+    type: RESET_STATUS
+  }
+};
+
 export{
   updateStatusDefault,
   requestUpdateStatusDefault,
@@ -168,6 +206,10 @@ export{
   loadAllStatusRequest,
   loadAllStatusSuccess,
   loadAllStatusFailure,
+  loadStatusDetails,
+  loadStatusDetailsRequest,
+  loadStatusDetailsSuccess,
+  loadStatusDetailsFailure,
   removeStatus,
   requestRemoveStatus,
   removeStatusSuccess,
@@ -175,6 +217,6 @@ export{
   updateStatus,
   requestUpdateStatus,
   updateStatusSuccess,
-  updateStatusFailure
+  updateStatusFailure,
+  resetStatus
 }
-

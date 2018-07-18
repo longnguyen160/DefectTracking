@@ -175,8 +175,7 @@ export const ElementHeaderStyled = styled.div`
     margin: ${props.margin}
   `}
   ${props => props.loading && css`
-    justify-content: center;
-    color: #999;
+    justify-content: center;    
   `}
   input {
     background: #fff;

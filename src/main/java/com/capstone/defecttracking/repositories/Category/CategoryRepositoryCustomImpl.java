@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.capstone.defecttracking.models.Category.CategoryManagementResponse;
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
+import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Project.ProjectCategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,15 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
         update.push("projects", projectId);
         mongoTemplate.updateMulti(query, update, Category.class);
+    }
+
+    @Override
+    public void removeCategoryFromIssue(String categoryId) {
+        Query query = new Query(Criteria.where("categories").is(categoryId));
+        Update update = new Update();
+
+        update.pull("categories", categoryId);
+        mongoTemplate.updateMulti(query, update, Issue.class);
     }
 
     @Override

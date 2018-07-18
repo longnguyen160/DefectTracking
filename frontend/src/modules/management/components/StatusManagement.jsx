@@ -15,10 +15,12 @@ import {
   Input
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { COLOR_ARRAY, MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES, ICONS } from '../../../utils/enums';
+import { MODAL_TYPE, WEB_SOCKET_URL, USER_ROLE_IN_PROJECT, ROLES, ICONS } from '../../../utils/enums';
 import { openModal } from '../../layout/actions/layout';
-import { loadAllStatus, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
+import { loadAllStatus, loadStatusDetails, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
 import Icon from '../../../components/icon/Icon';
+import NoDataProps from '../../../components/table/NoDataProps';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class StatusManagement extends Component {
 
@@ -47,6 +49,13 @@ class StatusManagement extends Component {
     updateStatus(status);
   };
 
+  handleOpenModal = (statusId) => {
+    const { loadStatusDetails, openModal } = this.props;
+
+    loadStatusDetails(statusId);
+    openModal(MODAL_TYPE.ADD_STATUS);
+  };
+
   handleRadioButton = (type, row) => {
     const { updateStatusDefault } = this.props;
 
@@ -60,7 +69,7 @@ class StatusManagement extends Component {
   };
 
   render() {
-    const { openModal, statusList, removeStatus } = this.props;
+    const { openModal, statusList, removeStatus, loading } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -80,7 +89,7 @@ class StatusManagement extends Component {
         Cell: row => (
           <TableBlockStyled
             alignLeft
-            onClick={() => openModal(MODAL_TYPE.ADD_STATUS)}
+            onClick={() => this.handleOpenModal(row.original.id)}
           >
             <IssueStatusStyled status={row.original}>
               {row.value}
@@ -131,7 +140,7 @@ class StatusManagement extends Component {
         )
       },
       {
-        Header: 'Default status when issue ends it lifecycle',
+        Header: 'Default status when issue ends its lifecycle',
         accessor: 'isDone',
         ...styleColumn,
         Cell: row => (
@@ -181,6 +190,8 @@ class StatusManagement extends Component {
         <ReactTable
           data={statusList}
           columns={columns}
+          getNoDataProps={() => NoDataProps({ loading })}
+          NoDataComponent={NoDataComponent}
           defaultPageSize={10}
           className="-striped -highlight"
         />
@@ -201,11 +212,14 @@ StatusManagement.propTypes = {
   updateStatus: PropTypes.func.isRequired,
   removeStatus: PropTypes.func.isRequired,
   updateStatusDefault: PropTypes.func.isRequired,
-  statusList: PropTypes.array.isRequired
+  loadStatusDetails: PropTypes.func.isRequired,
+  statusList: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   statusList: state.management.statusList,
+  loading: state.management.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -213,7 +227,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   loadAllStatus: loadAllStatus,
   updateStatus: updateStatus,
   updateStatusDefault: updateStatusDefault,
-  removeStatus: removeStatus
+  removeStatus: removeStatus,
+  loadStatusDetails: loadStatusDetails
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(StatusManagement);

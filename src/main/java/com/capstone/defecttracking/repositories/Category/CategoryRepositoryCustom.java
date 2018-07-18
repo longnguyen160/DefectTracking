@@ -18,6 +18,7 @@ import java.util.List;
 public interface CategoryRepositoryCustom {
     boolean doesCategoryExited(String name);
     void addProject(String projectId, ArrayList<String> categories);
+    void removeCategoryFromIssue(String categoryId);
     List<CategoryManagementResponse> loadAllCategories();
     List<CategoryProjectResponse> loadAllCategoriesInProject(String projectId);
 }

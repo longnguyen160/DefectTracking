@@ -26,6 +26,7 @@ import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL 
 import { loadAllIssuesShortcut, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
 import { loadAllMessages, resetMessage } from '../../message/actions/message';
+import LoadingIcon from '../../../components/icon/LoadingIcon';
 
 class Home extends React.Component {
 
@@ -147,7 +148,7 @@ class Home extends React.Component {
                 {
                   loadingIssues ?
                     <ElementHeaderStyled loading>
-                      <i className="fa fa-circle-o-notch fa-spin" />
+                      <LoadingIcon />
                     </ElementHeaderStyled>
                   :
                     issues.map((issue, index) => {
@@ -201,7 +202,7 @@ class Home extends React.Component {
                 {
                   loadingMessages ?
                     <ElementHeaderStyled loading>
-                      <i className="fa fa-circle-o-notch fa-spin" />
+                      <LoadingIcon />
                     </ElementHeaderStyled>
                   :
                     messages.map(message => (

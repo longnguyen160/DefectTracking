@@ -16,6 +16,8 @@ import { openModal } from '../../layout/actions/layout';
 import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { removeUser } from '../actions/account';
+import NoDataProps from '../../../components/table/NoDataProps';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class UsersList extends React.Component {
 
@@ -36,7 +38,7 @@ class UsersList extends React.Component {
   };
 
   render() {
-    const { users, openModal, selectedProject, removeUser } = this.props;
+    const { users, openModal, selectedProject, removeUser, loading } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -103,6 +105,8 @@ class UsersList extends React.Component {
         <ReactTable
           data={users}
           columns={columns}
+          getNoDataProps={() => NoDataProps({ loading })}
+          NoDataComponent={NoDataComponent}
           defaultPageSize={10}
           className="-striped -highlight"
         />
@@ -122,12 +126,14 @@ UsersList.propTypes = {
   loadAllUsersInProject: PropTypes.func.isRequired,
   removeUser: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
-  selectedProject: PropTypes.object
+  selectedProject: PropTypes.object,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   users: state.project.usersInProject,
-  selectedProject: state.layout.selectedProject
+  selectedProject: state.layout.selectedProject,
+  loading: state.account.isFetching
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

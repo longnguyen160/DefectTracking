@@ -51,10 +51,11 @@ public class CategoryController {
         return new ResponseEntity<>(serverResponse, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/admin/deleteCategory")
-    public ResponseEntity<?> deleteCategory(@RequestBody String categoryId) {
+    @DeleteMapping("/admin/deleteCategory/{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable("categoryId") String categoryId) {
         ServerResponse serverResponse;
 
+        categoryRepositoryCustom.removeCategoryFromIssue(categoryId);
         categoryRepository.deleteById(categoryId);
         serverResponse = new ServerResponse(Boolean.TRUE, "Delete category successfully");
 

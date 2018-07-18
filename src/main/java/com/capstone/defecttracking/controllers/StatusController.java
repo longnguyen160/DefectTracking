@@ -27,8 +27,10 @@ public class StatusController {
 
     @Autowired
     StatusRepository statusRepository;
+
     @Autowired
     StatusRepositoryCustom statusRepositoryCustom;
+
     private SimpMessagingTemplate messageTemplate;
 
     @Inject
@@ -58,11 +60,17 @@ public class StatusController {
         return statusRepositoryCustom.loadAllStatus(role);
     }
 
+    @GetMapping("/admin/loadStatusDetails")
+    public Status loadStatusDetails(@RequestParam String statusId) {
+        return statusRepositoryCustom.loadStatusDetails(statusId);
+    }
+
     @DeleteMapping("/admin/removeStatus/{statusId}")
     public ResponseEntity<?> removeStatus(@PathVariable("statusId") String statusId) {
         ServerResponse serverResponse;
 
         if (statusRepository.existsById(statusId)) {
+            statusRepositoryCustom.changeIssuesStatus(statusId);
             statusRepository.deleteById(statusId);
             serverResponse = new ServerResponse(true, "Remove Status successfully");
 

@@ -18,6 +18,7 @@ import moment from 'moment/moment';
 import { deleteFile, uploadFile } from '../../file/actions/file';
 import { createMessage, editMessage, loadAllMessagesOnIssue } from '../actions/message';
 import CommentBox from './CommentBox';
+import LoadingIcon from '../../../components/icon/LoadingIcon';
 
 class Message extends Component {
 
@@ -188,7 +189,7 @@ class Message extends Component {
         {
           loadingMessages ?
             <ElementHeaderStyled loading>
-              <i className="fa fa-circle-o-notch fa-spin" />
+              <LoadingIcon />
             </ElementHeaderStyled>
           :
             messages.map(message => (

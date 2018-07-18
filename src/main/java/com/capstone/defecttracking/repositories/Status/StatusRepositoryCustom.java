@@ -16,8 +16,10 @@ import java.util.List;
  */
 public interface StatusRepositoryCustom {
     List<Status> loadAllStatus(String role);
+    Status loadStatusDetails(String statusId);
     String getDefaultStatus();
     Boolean didStatusExisted(String name);
     Boolean updateStatus(Status status);
     Boolean updateStatusDefault(StatusUpdateRequest statusRequest);
+    void changeIssuesStatus(String statusId);
 }

@@ -23,7 +23,7 @@ import { SubSelectListStyled, SubSelectStyled } from '../../stylesheets/TopNavBa
 import { Button } from '../../stylesheets/Button';
 import { ICONS, COLOR_ARRAY, USER_ROLE_IN_PROJECT } from '../../utils/enums';
 import Icon from '../icon/Icon';
-import { createStatus } from '../../modules/management/actions/status';
+import { createStatus, resetStatus, updateStatus } from '../../modules/management/actions/status';
 
 class ModalAddingStatus extends Component {
 
@@ -36,11 +36,28 @@ class ModalAddingStatus extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { error } = nextProps;
+    const { error, status } = nextProps;
 
     if (error) {
       this.setState({ error });
     }
+    if (JSON.stringify(status) !== JSON.stringify(this.props.status)) {
+      this.input.value = status.name;
+      this.setState({
+        name: status.name,
+        field: {
+          background: status.background,
+          color: status.color
+        },
+        selectedRole: status.handlers.map(handler => USER_ROLE_IN_PROJECT.find(role => role.value === handler))
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { resetStatus } = this.props;
+
+    resetStatus();
   }
 
   handleSelectOnChange = (value) => {
@@ -66,15 +83,17 @@ class ModalAddingStatus extends Component {
   };
 
   handleCreateStatus = () => {
-    const { createStatus, onClose } = this.props;
+    const { createStatus, onClose, updateStatus, status } = this.props;
     const { field, selectedRole } = this.state;
+    const handleFunction = status ? updateStatus : createStatus;
 
     if (this.input.value.length === 0) {
       this.setState({ error: 'Name is required' });
       return;
     }
 
-    createStatus({
+    handleFunction({
+      id: status ? status.id : null,
       name: this.input.value,
       background: field.background,
       color: field.color,
@@ -84,7 +103,7 @@ class ModalAddingStatus extends Component {
   };
 
   render() {
-    const { onClose, isOpen, isLoading } = this.props;
+    const { onClose, isOpen, isLoading, status } = this.props;
     const { showStatus, field, name, selectedRole, error } = this.state;
     const listStatus = COLOR_ARRAY.filter(fieldData => fieldData.background !== field.background);
 
@@ -92,7 +111,7 @@ class ModalAddingStatus extends Component {
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'500px'} isVisible={true}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
-            <span>Add Status</span>
+            <span>{status ? 'Update' : 'Add'} Status</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
         <ModalContentStyled>
@@ -184,7 +203,7 @@ class ModalAddingStatus extends Component {
                     hasBorder
                     onClick={() => this.handleCreateStatus()}
                   >
-                    Create
+                    {status ? 'Update' : 'Create'}
                   </Button>
               }
             </ModalLineContentStyled>
@@ -199,17 +218,23 @@ ModalAddingStatus.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   createStatus: PropTypes.func.isRequired,
+  updateStatus: PropTypes.func.isRequired,
+  resetStatus: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  status: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   error: state.management.error,
-  isLoading: state.management.isLoading
+  isLoading: state.management.isLoading,
+  status: state.management.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createStatus: createStatus
+  createStatus: createStatus,
+  updateStatus: updateStatus,
+  resetStatus: resetStatus
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalAddingStatus);

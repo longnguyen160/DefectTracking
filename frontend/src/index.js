@@ -22,6 +22,7 @@ import Dashboard from './modules/backlog/components/Dashboard';
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
 import './index.css';
+import Summary from './modules/Summary';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -68,6 +69,7 @@ ReactDOM.render(
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/projects" component={Projects} />
             <PrivateRoute exact path="/project/:projectId?/dashboard" component={Dashboard} />
+            <PrivateRoute exact path="/project/:projectId?/summary" component={Summary} />
             <PrivateRoute exact path="/project/:projectId?/members" component={UsersList} />
             <PrivateRoute exact path="/issue/:issueId?" component={Home} />
             <PrivateRoute exact path="/manage/issues" component={IssueList} />

@@ -271,6 +271,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             case "attachments":
                 update = configUpdate(issue.getAttachments(), type, value);
                 break;
+
             default:
                 update.set(type, value).currentDate("updatedAt");
                 break;

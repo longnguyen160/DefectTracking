@@ -8,7 +8,10 @@ import {
   createCategoryFailure,
   loadAllCategoriesRequest,
   loadAllCategoriesSuccess,
-  loadAllCategoriesFailure
+  loadAllCategoriesFailure,
+  deleteCategoryRequest,
+  deleteCategorySuccess,
+  deleteCategoryFailure
 } from '../actions/category';
 import {
   loadAllProjectsForManagementRequest,
@@ -25,6 +28,9 @@ import {
   loadAllStatusRequest,
   loadAllStatusSuccess,
   loadAllStatusFailure,
+  loadStatusDetailsRequest,
+  loadStatusDetailsSuccess,
+  loadStatusDetailsFailure,
   requestRemoveStatus,
   removeStatusSuccess,
   removeStatusFailure,
@@ -35,9 +41,11 @@ import {
 import {
   LOAD_ALL_PROJECTS_FOR_MANAGEMENT,
   LOAD_ALL_CATEGORIES,
+  DELETE_CATEGORY,
   CREATE_CATEGORY,
   CREATE_STATUS,
   LOAD_ALL_STATUS,
+  LOAD_STATUS_DETAILS,
   REMOVE_STATUS,
   UPDATE_STATUS,
   UPDATE_STATUS_DEFAULT,
@@ -45,8 +53,8 @@ import {
 }
 from '../actions/types';
 import { banUserFailure, banUserSuccess, requestBanUser } from '../actions/user';
-// load all projects for management
 
+// load all projects for management
 function* loadAllProjectsForManagement() {
   try {
     yield put(loadAllProjectsForManagementRequest());
@@ -62,8 +70,6 @@ function* loadAllProjectsForManagement() {
 function* watchLoadAllProjectsForManagement() {
   yield takeLatest(LOAD_ALL_PROJECTS_FOR_MANAGEMENT, loadAllProjectsForManagement);
 }
-
-
 
 //update status default
 function* updateStatusDefault({ status }) {
@@ -99,6 +105,7 @@ function* updateStatus({ status }) {
 function* watchUpdateStatus() {
   yield takeLatest(UPDATE_STATUS, updateStatus);
 }
+
 //removeStatus
 function* removeStatus({ statusId }) {
   try {
@@ -117,7 +124,6 @@ function* watchRemoveStatus() {
 }
 
 //load all status
-
 function* loadAllStatus({ role }) {
   try {
     yield put(loadAllStatusRequest());
@@ -133,6 +139,23 @@ function* loadAllStatus({ role }) {
 function* watchLoadAllStatus() {
   yield takeLatest(LOAD_ALL_STATUS, loadAllStatus);
 }
+
+//load status details
+function* loadStatusDetails({ statusId }) {
+  try {
+    yield put(loadStatusDetailsRequest());
+    const { data } = yield call(API.loadStatusDetails, statusId);
+
+    yield put(loadStatusDetailsSuccess(data));
+  } catch (error) {
+    yield put(loadStatusDetailsFailure(getError(error)));
+  }
+}
+
+function* watchLoadStatusDetails() {
+  yield takeLatest(LOAD_STATUS_DETAILS, loadStatusDetails);
+}
+
 // create status
 function* createStatus({ status, closeModal }){
   try {
@@ -191,6 +214,22 @@ function* watchLoadAllCategories() {
   yield takeLatest(LOAD_ALL_CATEGORIES, loadAllCategories);
 }
 
+function* deleteCategory({ categoryId }) {
+  try {
+    yield put(deleteCategoryRequest());
+    const { data } = yield call(API.deleteCategory, categoryId);
+
+    yield put(deleteCategorySuccess());
+    showSuccessNotification(data.message);
+  } catch (error) {
+    yield put(deleteCategoryFailure(getError(error)));
+  }
+}
+
+function* watchDeleteCategory() {
+  yield takeLatest(DELETE_CATEGORY, deleteCategory);
+}
+
 function* banUser({ user }){
   try {
     yield put(requestBanUser());
@@ -203,6 +242,7 @@ function* banUser({ user }){
     yield put(banUserFailure(getError((error))));
   }
 }
+
 function* watchBanUser(){
   yield takeLatest(BAN_USER, banUser);
 }
@@ -211,8 +251,10 @@ export default function* managementFlow() {
   yield all([
     watchCreateCategory(),
     watchLoadAllCategories(),
+    watchDeleteCategory(),
     watchCreateStatus(),
     watchLoadAllStatus(),
+    watchLoadStatusDetails(),
     watchRemoveStatus(),
     watchUpdateStatus(),
     watchUpdateStatusDefault(),

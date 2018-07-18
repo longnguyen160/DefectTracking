@@ -6,7 +6,11 @@ import {
   LOAD_ALL_CATEGORIES,
   LOAD_ALL_CATEGORIES_REQUEST,
   LOAD_ALL_CATEGORIES_SUCCESS,
-  LOAD_ALL_CATEGORIES_FAILURE
+  LOAD_ALL_CATEGORIES_FAILURE,
+  DELETE_CATEGORY,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_FAILURE
 } from './types';
 
 const createCategory = (category, closeModal) => {
@@ -62,6 +66,32 @@ const loadAllCategoriesFailure = (error) => {
   }
 };
 
+const deleteCategory = (categoryId) => {
+  return {
+    type: DELETE_CATEGORY,
+    categoryId
+  }
+};
+
+const deleteCategoryRequest = () => {
+  return {
+    type: DELETE_CATEGORY_REQUEST
+  }
+};
+
+const deleteCategorySuccess = () => {
+  return {
+    type: DELETE_CATEGORY_SUCCESS
+  }
+};
+
+const deleteCategoryFailure = (error) => {
+  return {
+    type: DELETE_CATEGORY_FAILURE,
+    error
+  }
+};
+
 export {
   createCategory,
   requestCreateCategory,
@@ -70,5 +100,9 @@ export {
   loadAllCategories,
   loadAllCategoriesRequest,
   loadAllCategoriesSuccess,
-  loadAllCategoriesFailure
+  loadAllCategoriesFailure,
+  deleteCategory,
+  deleteCategoryRequest,
+  deleteCategorySuccess,
+  deleteCategoryFailure
 }
