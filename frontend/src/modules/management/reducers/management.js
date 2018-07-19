@@ -8,9 +8,15 @@ import {
   REQUEST_CREATE_CATEGORY,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
+  UPDATE_CATEGORY_REQUEST,
+  UPDATE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_FAILURE,
   LOAD_ALL_CATEGORIES_REQUEST,
   LOAD_ALL_CATEGORIES_SUCCESS,
   LOAD_ALL_CATEGORIES_FAILURE,
+  LOAD_CATEGORY_DETAILS_REQUEST,
+  LOAD_CATEGORY_DETAILS_SUCCESS,
+  LOAD_CATEGORY_DETAILS_FAILURE,
   REQUEST_BAN_USER,
   BAN_USER_SUCCESS,
   BAN_USER_FAILURE,
@@ -29,7 +35,8 @@ import {
   REQUEST_UPDATE_STATUS,
   UPDATE_STATUS_SUCCESS,
   UPDATE_STATUS_FAILURE,
-  RESET_STATUS
+  RESET_STATUS,
+  RESET_CATEGORY
 } from '../actions/types';
 
 const initialState = {
@@ -37,6 +44,7 @@ const initialState = {
   statusList: [],
   categories: [],
   status: null,
+  category: null,
   isLoading: false,
   error: null
 };
@@ -58,7 +66,7 @@ export default function management(state = initialState, action) {
 
     case LOAD_ALL_PROJECTS_FOR_MANAGEMENT_FAILURE:
       return Object.assign({}, state, {
-        isLoading: true,
+        isLoading: false,
         error: action.error
       });
     //create category
@@ -75,7 +83,24 @@ export default function management(state = initialState, action) {
 
     case CREATE_CATEGORY_FAILURE:
       return Object.assign({}, state, {
-        isLoading: true,
+        isLoading: false,
+        error: action.error
+      });
+
+    case UPDATE_CATEGORY_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case UPDATE_CATEGORY_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: null
+      });
+
+    case UPDATE_CATEGORY_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
         error: action.error
       });
 
@@ -93,7 +118,25 @@ export default function management(state = initialState, action) {
 
     case LOAD_ALL_CATEGORIES_FAILURE:
       return Object.assign({}, state, {
-        isLoading: true,
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_CATEGORY_DETAILS_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case LOAD_CATEGORY_DETAILS_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        category: action.category,
+        error: null
+      });
+
+    case LOAD_CATEGORY_DETAILS_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
         error: action.error
       });
 
@@ -217,6 +260,11 @@ export default function management(state = initialState, action) {
     case RESET_STATUS:
       return Object.assign({}, state, {
         status: null
+      });
+
+    case RESET_CATEGORY:
+      return Object.assign({}, state, {
+        category: null
       });
 
     default:

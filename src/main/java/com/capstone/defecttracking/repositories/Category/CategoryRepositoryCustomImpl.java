@@ -15,6 +15,7 @@ import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Project.ProjectCategoryResponse;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -51,6 +52,27 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
         update.pull("categories", categoryId);
         mongoTemplate.updateMulti(query, update, Issue.class);
+    }
+
+    @Override
+    public CategoryProjectResponse loadCategoryDetails(String categoryId) {
+        Query query = new Query(Criteria.where("_id").is(categoryId));
+        Category category = mongoTemplate.findOne(query, Category.class);
+
+        return new CategoryProjectResponse(categoryId, category.getName(), category.getColor(), category.getBackground());
+    }
+
+    @Override
+    public boolean updateCategory(Category category) {
+        Query query = new Query(Criteria.where("_id").is(category.getId()));
+        Update update = new Update();
+
+        update.set("name", category.getName());
+        update.set("color", category.getColor());
+        update.set("background", category.getBackground());
+        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, Category.class);
+
+        return updateResult.getModifiedCount() != 0;
     }
 
     @Override

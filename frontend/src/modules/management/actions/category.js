@@ -3,14 +3,23 @@ import {
   CREATE_CATEGORY_FAILURE,
   CREATE_CATEGORY_SUCCESS,
   REQUEST_CREATE_CATEGORY,
+  UPDATE_CATEGORY,
+  UPDATE_CATEGORY_REQUEST,
+  UPDATE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_FAILURE,
   LOAD_ALL_CATEGORIES,
   LOAD_ALL_CATEGORIES_REQUEST,
   LOAD_ALL_CATEGORIES_SUCCESS,
   LOAD_ALL_CATEGORIES_FAILURE,
+  LOAD_CATEGORY_DETAILS,
+  LOAD_CATEGORY_DETAILS_REQUEST,
+  LOAD_CATEGORY_DETAILS_SUCCESS,
+  LOAD_CATEGORY_DETAILS_FAILURE,
   DELETE_CATEGORY,
   DELETE_CATEGORY_REQUEST,
   DELETE_CATEGORY_SUCCESS,
-  DELETE_CATEGORY_FAILURE
+  DELETE_CATEGORY_FAILURE,
+  RESET_CATEGORY
 } from './types';
 
 const createCategory = (category, closeModal) => {
@@ -36,6 +45,33 @@ const createCategorySuccess = () => {
 const createCategoryFailure = (error) => {
   return {
     type: CREATE_CATEGORY_FAILURE,
+    error
+  }
+};
+
+const updateCategory = (category, closeModal) => {
+  return {
+    type: UPDATE_CATEGORY,
+    category,
+    closeModal
+  }
+};
+
+const updateCategoryRequest = () => {
+  return {
+    type: UPDATE_CATEGORY_REQUEST
+  }
+};
+
+const updateCategorySuccess = () => {
+  return {
+    type: UPDATE_CATEGORY_SUCCESS
+  }
+};
+
+const updateCategoryFailure = (error) => {
+  return {
+    type: UPDATE_CATEGORY_FAILURE,
     error
   }
 };
@@ -66,6 +102,33 @@ const loadAllCategoriesFailure = (error) => {
   }
 };
 
+const loadCategoryDetails = (categoryId) => {
+  return {
+    type: LOAD_CATEGORY_DETAILS,
+    categoryId
+  }
+};
+
+const loadCategoryDetailsRequest = () => {
+  return {
+    type: LOAD_CATEGORY_DETAILS_REQUEST
+  }
+};
+
+const loadCategoryDetailsSuccess = (category) => {
+  return {
+    type: LOAD_CATEGORY_DETAILS_SUCCESS,
+    category
+  }
+};
+
+const loadCategoryDetailsFailure = (error) => {
+  return {
+    type: LOAD_CATEGORY_DETAILS_FAILURE,
+    error
+  }
+};
+
 const deleteCategory = (categoryId) => {
   return {
     type: DELETE_CATEGORY,
@@ -92,17 +155,32 @@ const deleteCategoryFailure = (error) => {
   }
 };
 
+const resetCategory = () => {
+  return {
+    type: RESET_CATEGORY
+  }
+};
+
 export {
   createCategory,
   requestCreateCategory,
   createCategorySuccess,
   createCategoryFailure,
+  updateCategory,
+  updateCategoryRequest,
+  updateCategorySuccess,
+  updateCategoryFailure,
   loadAllCategories,
   loadAllCategoriesRequest,
   loadAllCategoriesSuccess,
   loadAllCategoriesFailure,
+  loadCategoryDetails,
+  loadCategoryDetailsRequest,
+  loadCategoryDetailsSuccess,
+  loadCategoryDetailsFailure,
   deleteCategory,
   deleteCategoryRequest,
   deleteCategorySuccess,
-  deleteCategoryFailure
+  deleteCategoryFailure,
+  resetCategory
 }

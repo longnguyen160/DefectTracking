@@ -1,10 +1,12 @@
 package com.capstone.defecttracking.models.Project;
 
 import com.capstone.defecttracking.models.User.UserRole;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Document(collection = "projects")
 
@@ -16,17 +18,22 @@ public class Project {
     private String status;
     private ArrayList<UserRole> members = new ArrayList<>();
     private ArrayList<String> backlog = new ArrayList<>();
+    @CreatedDate
+    private Date createdAt;
+    private boolean isClose = false;
 
     public Project() {
     }
 
-    public Project(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog) {
+    public Project(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog, Date createdAt, boolean isClose) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
         this.members = members;
         this.backlog = backlog;
+        this.createdAt = createdAt;
+        this.isClose = isClose;
     }
 
     public String getId() {
@@ -75,5 +82,21 @@ public class Project {
 
     public void setBacklog(ArrayList<String> backlog) {
         this.backlog = backlog;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean isClose() {
+        return isClose;
+    }
+
+    public void setClose(boolean close) {
+        isClose = close;
     }
 }

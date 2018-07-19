@@ -45,10 +45,30 @@ public class CategoryController {
             return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
         }
         categoryRepository.save(cate);
-        serverResponse = new ServerResponse(Boolean.TRUE, "Create category successfull");
+        serverResponse = new ServerResponse(Boolean.TRUE, "Create category successfully");
         messTemplate.convertAndSend("/topic/categories", serverResponse);
 
         return new ResponseEntity<>(serverResponse, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/admin/updateCategory")
+    public ResponseEntity<?> updateCategory(@RequestBody Category category) {
+        ServerResponse serverResponse;
+
+        if (!categoryRepositoryCustom.updateCategory(category)) {
+            serverResponse = new ServerResponse(Boolean.FALSE, "Update category failed");
+
+            return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+        }
+        serverResponse = new ServerResponse(Boolean.TRUE, "Update category successfully");
+        messTemplate.convertAndSend("/topic/categories", serverResponse);
+
+        return new ResponseEntity<>(serverResponse, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/admin/loadCategoryDetails")
+    public CategoryProjectResponse loadCategoryDetails(@RequestParam(value = "categoryId") String categoryId) {
+        return categoryRepositoryCustom.loadCategoryDetails(categoryId);
     }
 
     @DeleteMapping("/admin/deleteCategory/{categoryId}")

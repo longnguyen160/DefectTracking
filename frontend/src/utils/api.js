@@ -121,12 +121,20 @@ const createCategory = (category) => {
   return axios.post('admin/createCategory', category);
 };
 
+const updateCategory = (category) => {
+  return axios.post('admin/updateCategory', category);
+};
+
 const loadAllCategories = () => {
   return axios.get('admin/loadAllCategories');
 };
 
 const loadAllCategoriesInProject = (projectId) => {
   return axios.get(`user/loadAllCategoriesInProject?projectId=${projectId}`);
+};
+
+const loadCategoryDetails = (categoryId) => {
+  return axios.get(`admin/loadCategoryDetails?categoryId=${categoryId}`);
 };
 
 const deleteCategory = (categoryId) => {
@@ -230,7 +238,9 @@ const API = {
   loadAllIssuesBasedOnFilter,
   manageUser,
   loadStatusDetails,
-  deleteCategory
+  deleteCategory,
+  loadCategoryDetails,
+  updateCategory
 };
 
 export default API;

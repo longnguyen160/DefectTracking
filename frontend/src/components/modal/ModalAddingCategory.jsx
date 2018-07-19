@@ -20,7 +20,7 @@ import {
 } from '../../stylesheets/GeneralStyled';
 import { Button } from '../../stylesheets/Button';
 import { COLOR_ARRAY, ICONS } from '../../utils/enums';
-import { createCategory } from '../../modules/management/actions/category';
+import { createCategory, resetCategory, updateCategory } from '../../modules/management/actions/category';
 import Icon from '../icon/Icon';
 import { SubSelectListStyled, SubSelectStyled } from '../../stylesheets/TopNavBar';
 
@@ -35,11 +35,27 @@ class ModalAddingCategory extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { error } = nextProps;
+    const { error, category } = nextProps;
 
     if (error) {
       this.setState({ error });
     }
+    if (JSON.stringify(category) !== JSON.stringify(this.props.category)) {
+      this.input.value = category.name;
+      this.setState({
+        name: category.name,
+        field: {
+          background: category.background,
+          color: category.color
+        }
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    const { resetCategory } = this.props;
+
+    resetCategory();
   }
 
   handleShowFilter = () => {
@@ -61,15 +77,17 @@ class ModalAddingCategory extends React.Component {
   };
 
   handleCreateCategory = () => {
-    const { createCategory, onClose } = this.props;
+    const { createCategory, updateCategory, onClose, category } = this.props;
     const { field } = this.state;
+    const handleFunction = category ? updateCategory : createCategory;
 
     if (this.input.value.length === 0) {
       this.setState({ error: 'Name is required' });
       return;
     }
 
-    createCategory({
+    handleFunction({
+      id: category ? category.id : null,
       name: this.input.value,
       background: field.background,
       color: field.color
@@ -77,7 +95,7 @@ class ModalAddingCategory extends React.Component {
   };
 
   render() {
-    const { onClose, isOpen, error, isLoading } = this.props;
+    const { onClose, isOpen, error, isLoading, category } = this.props;
     const { showFilter, field, name } = this.state;
     const colorList = COLOR_ARRAY.filter(fieldData => fieldData.background !== field.background);
 
@@ -85,7 +103,7 @@ class ModalAddingCategory extends React.Component {
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'500px'} isVisible={true}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
-            <span>Add category</span>
+            <span>{category ? 'Update' : 'Add'} category</span>
           </ModalHeaderTitleStyled>
         </ModalHeaderStyled>
         <ModalContentStyled>
@@ -161,7 +179,7 @@ class ModalAddingCategory extends React.Component {
                     hasBorder
                     onClick={() => this.handleCreateCategory()}
                   >
-                    Create
+                    {category ? 'Update' : 'Create'}
                   </Button>
               }
             </ModalLineContentStyled>
@@ -176,17 +194,23 @@ ModalAddingCategory.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   createCategory: PropTypes.func.isRequired,
+  updateCategory: PropTypes.func.isRequired,
+  resetCategory: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  category: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   error: state.management.error,
-  isLoading: state.management.isLoading
+  isLoading: state.management.isLoading,
+  category: state.management.category
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createCategory: createCategory
+  createCategory: createCategory,
+  updateCategory: updateCategory,
+  resetCategory: resetCategory
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalAddingCategory);

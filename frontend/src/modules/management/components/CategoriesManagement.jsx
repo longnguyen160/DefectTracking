@@ -15,7 +15,7 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
-import { deleteCategory, loadAllCategories } from '../actions/category';
+import { deleteCategory, loadAllCategories, loadCategoryDetails } from '../actions/category';
 import Icon from '../../../components/icon/Icon';
 import NoDataProps from '../../../components/table/NoDataProps';
 import NoDataComponent from '../../../components/table/NoDataComponent';
@@ -32,6 +32,13 @@ class CategoriesManagement extends React.Component {
     const { loadAllCategories } = this.props;
 
     loadAllCategories();
+  };
+
+  handleOpenModal = (categoryId) => {
+    const { loadCategoryDetails, openModal } = this.props;
+
+    loadCategoryDetails(categoryId);
+    openModal(MODAL_TYPE.ADD_CATEGORY);
   };
 
   render() {
@@ -54,7 +61,7 @@ class CategoriesManagement extends React.Component {
         Cell: row => (
           <TableBlockStyled
             alignLeft
-            onClick={() => openModal(MODAL_TYPE.ADD_CATEGORY)}
+            onClick={() => this.handleOpenModal(row.original.id)}
           >
             <IssueStatusStyled status={row.original}>
               {row.value}
@@ -131,6 +138,7 @@ CategoriesManagement.propTypes = {
   openModal: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
   loadAllCategories: PropTypes.func.isRequired,
+  loadCategoryDetails: PropTypes.func.isRequired,
   deleteCategory: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
@@ -143,6 +151,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadAllCategories: loadAllCategories,
+  loadCategoryDetails: loadCategoryDetails,
   deleteCategory: deleteCategory
 }, dispatch);
 

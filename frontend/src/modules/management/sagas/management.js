@@ -6,9 +6,15 @@ import {
   requestCreateCategory,
   createCategorySuccess,
   createCategoryFailure,
+  updateCategoryRequest,
+  updateCategorySuccess,
+  updateCategoryFailure,
   loadAllCategoriesRequest,
   loadAllCategoriesSuccess,
   loadAllCategoriesFailure,
+  loadCategoryDetailsRequest,
+  loadCategoryDetailsSuccess,
+  loadCategoryDetailsFailure,
   deleteCategoryRequest,
   deleteCategorySuccess,
   deleteCategoryFailure
@@ -41,8 +47,10 @@ import {
 import {
   LOAD_ALL_PROJECTS_FOR_MANAGEMENT,
   LOAD_ALL_CATEGORIES,
+  LOAD_CATEGORY_DETAILS,
   DELETE_CATEGORY,
   CREATE_CATEGORY,
+  UPDATE_CATEGORY,
   CREATE_STATUS,
   LOAD_ALL_STATUS,
   LOAD_STATUS_DETAILS,
@@ -177,6 +185,7 @@ function* watchCreateStatus() {
   yield takeLatest(CREATE_STATUS, createStatus);
 }
 
+//Category
 function* createCategory({ category, closeModal }) {
   try {
     yield put(requestCreateCategory());
@@ -198,6 +207,27 @@ function* watchCreateCategory() {
   yield takeLatest(CREATE_CATEGORY, createCategory);
 }
 
+function* updateCategory({ category, closeModal }) {
+  try {
+    yield put(updateCategoryRequest());
+
+    const { data } = yield call(API.updateCategory, category);
+
+    yield put(updateCategorySuccess());
+    showSuccessNotification(data.message);
+
+    if (closeModal && typeof (closeModal) === 'function') {
+      closeModal();
+    }
+  } catch (error) {
+    yield put(updateCategoryFailure(getError(error)));
+  }
+}
+
+function* watchUpdateCategory() {
+  yield takeLatest(UPDATE_CATEGORY, updateCategory);
+}
+
 function* loadAllCategories() {
   try {
     yield put(loadAllCategoriesRequest());
@@ -212,6 +242,21 @@ function* loadAllCategories() {
 
 function* watchLoadAllCategories() {
   yield takeLatest(LOAD_ALL_CATEGORIES, loadAllCategories);
+}
+
+function* loadCategoryDetails({ categoryId }) {
+  try {
+    yield put(loadCategoryDetailsRequest());
+    const { data } = yield call(API.loadCategoryDetails, categoryId);
+
+    yield put(loadCategoryDetailsSuccess(data));
+  } catch (error) {
+    yield put(loadCategoryDetailsFailure(getError(error)));
+  }
+}
+
+function* watchLoadCategoryDetails() {
+  yield takeLatest(LOAD_CATEGORY_DETAILS, loadCategoryDetails);
 }
 
 function* deleteCategory({ categoryId }) {
@@ -230,6 +275,7 @@ function* watchDeleteCategory() {
   yield takeLatest(DELETE_CATEGORY, deleteCategory);
 }
 
+//User
 function* banUser({ user }){
   try {
     yield put(requestBanUser());
@@ -250,7 +296,9 @@ function* watchBanUser(){
 export default function* managementFlow() {
   yield all([
     watchCreateCategory(),
+    watchUpdateCategory(),
     watchLoadAllCategories(),
+    watchLoadCategoryDetails(),
     watchDeleteCategory(),
     watchCreateStatus(),
     watchLoadAllStatus(),
