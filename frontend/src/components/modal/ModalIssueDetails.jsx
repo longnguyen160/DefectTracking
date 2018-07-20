@@ -178,7 +178,7 @@ class ModalIssueDetails extends React.Component {
   };
 
   render() {
-    const { onClose, isOpen, issue, loadingIssue } = this.props;
+    const { onClose, isOpen, issue, loadingIssue, user } = this.props;
     const { userRole } = this.state;
     const projectId = issue && issue.projectId;
     const priority = issue && ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
@@ -191,6 +191,7 @@ class ModalIssueDetails extends React.Component {
       value: issue.assignee.id,
       label: issue.assignee.username
     });
+    const checkUserInIssue = (issue && issue.watchers.find(watcher => watcher.id === user.id)) || (userRole === ROLES.ADMIN || userRole === ROLES.MANAGER);
     // const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
@@ -238,26 +239,31 @@ class ModalIssueDetails extends React.Component {
                   loadingIssue ?
                     <PlaceHolder />
                   :
-                    <Editable
-                      name={'issueName'}
-                      dataType={'custom'}
-                      mode={'inline'}
-                      value={issue && issue.issueName}
-                      showButtons={true}
-                      display={(value) => (
-                        <ModalLineTitleStyled hover>
-                          {value}
-                        </ModalLineTitleStyled>
-                      )}
-                      customComponent={(props, state) => (
-                        <CustomInput
-                          {...props}
-                          {...state}
-                          renderType={INPUT_TEXT}
-                        />
-                      )}
-                      handleSubmit={this.handleSubmit}
-                    />
+                    checkUserInIssue ?
+                      <Editable
+                        name={'issueName'}
+                        dataType={'custom'}
+                        mode={'inline'}
+                        value={issue && issue.issueName}
+                        showButtons={true}
+                        display={(value) => (
+                          <ModalLineTitleStyled hover>
+                            {value}
+                          </ModalLineTitleStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomInput
+                            {...props}
+                            {...state}
+                            renderType={INPUT_TEXT}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
+                    :
+                      <ModalLineTitleStyled>
+                        {issue && issue.issueName}
+                      </ModalLineTitleStyled>
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -268,40 +274,55 @@ class ModalIssueDetails extends React.Component {
                   loadingIssue ?
                     <PlaceHolder />
                   :
-                    <Editable
-                      name={'categories'}
-                      dataType={'custom'}
-                      mode={'inline'}
-                      value={issue && { categories, projectId }}
-                      showButtons={true}
-                      display={(value) => (
-                        <LineFormStyled hover wrap>
-                          {
-                            value.categories && value.categories.length > 0 ?
-                              value.categories.map(category => (
-                                <LabelStyled
-                                  background={category.background}
-                                  color={category.color}
-                                  key={category.id}
-                                >
-                                  {category.name}
+                    checkUserInIssue ?
+                      <Editable
+                        name={'categories'}
+                        dataType={'custom'}
+                        mode={'inline'}
+                        value={issue && { categories, projectId }}
+                        showButtons={true}
+                        display={(value) => (
+                          <LineFormStyled hover wrap>
+                            {
+                              value.categories && value.categories.length > 0 ?
+                                value.categories.map(category => (
+                                  <LabelStyled
+                                    background={category.background}
+                                    color={category.color}
+                                    key={category.id}
+                                  >
+                                    {category.name}
+                                  </LabelStyled>
+                                ))
+                                :
+                                <LabelStyled>
                                 </LabelStyled>
-                              ))
-                              :
-                              <LabelStyled>
-                              </LabelStyled>
-                          }
-                        </LineFormStyled>
-                      )}
-                      customComponent={(props, state) => (
-                        <CustomSelect
-                          multi={true}
-                          {...props}
-                          {...state}
-                        />
-                      )}
-                      handleSubmit={this.handleSubmit}
-                    />
+                            }
+                          </LineFormStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomSelect
+                            multi={true}
+                            {...props}
+                            {...state}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
+                    :
+                      <LineFormStyled wrap>
+                        {
+                          issue && issue.categories.map(category => (
+                            <LabelStyled
+                              background={category.background}
+                              color={category.color}
+                              key={category.id}
+                            >
+                              {category.name}
+                            </LabelStyled>
+                          ))
+                        }
+                      </LineFormStyled>
                 }
               </ModalLineContentStyled>
               <ModalLineContentStyled alignLeft>
@@ -310,35 +331,48 @@ class ModalIssueDetails extends React.Component {
                   loadingIssue ?
                     <PlaceHolder />
                   :
-                    <Editable
-                      name={'priority'}
-                      dataType={'custom'}
-                      mode={'inline'}
-                      value={issue && priority}
-                      showButtons={true}
-                      options={ISSUE_PRIORITY_ARRAY}
-                      display={(value) => (
-                        <LineFormStyled hover>
+                    checkUserInIssue ?
+                      <Editable
+                        name={'priority'}
+                        dataType={'custom'}
+                        mode={'inline'}
+                        value={issue && priority}
+                        showButtons={true}
+                        options={ISSUE_PRIORITY_ARRAY}
+                        display={(value) => (
+                          <LineFormStyled hover>
+                            <Icon
+                              icon={ICONS.ARROW}
+                              color={value.color}
+                              width={15}
+                              height={15}
+                              rotated rotate={'rotateZ(90deg)'}
+                            />
+                            <span>{value.label}</span>
+                          </LineFormStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomSelect
+                            renderCustom={true}
+                            clearable={false}
+                            {...props}
+                            {...state}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
+                    :
+                      issue &&
+                        <LineFormStyled>
                           <Icon
                             icon={ICONS.ARROW}
-                            color={value.color}
+                            color={priority.color}
                             width={15}
                             height={15}
                             rotated rotate={'rotateZ(90deg)'}
                           />
-                          <span>{value.label}</span>
+                          <span>{priority.label}</span>
                         </LineFormStyled>
-                      )}
-                      customComponent={(props, state) => (
-                        <CustomSelect
-                          renderCustom={true}
-                          clearable={false}
-                          {...props}
-                          {...state}
-                        />
-                      )}
-                      handleSubmit={this.handleSubmit}
-                    />
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -349,28 +383,35 @@ class ModalIssueDetails extends React.Component {
                   loadingIssue ?
                     <PlaceHolder />
                   :
-                    <Editable
-                      name={'description'}
-                      dataType={'custom'}
-                      mode={'inline'}
-                      value={issue && issue.description}
-                      showButtons={true}
-                      display={(value) => (
-                        <LineFormStyled hover>
+                    checkUserInIssue ?
+                      <Editable
+                        name={'description'}
+                        dataType={'custom'}
+                        mode={'inline'}
+                        value={issue && issue.description}
+                        showButtons={true}
+                        display={(value) => (
+                          <LineFormStyled hover>
+                            <span>
+                              {value}
+                            </span>
+                          </LineFormStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomInput
+                            {...props}
+                            {...state}
+                            renderType={TEXT_AREA}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
+                    :
+                      <LineFormStyled>
                         <span>
-                          {value}
+                          {issue && issue.description}
                         </span>
-                        </LineFormStyled>
-                      )}
-                      customComponent={(props, state) => (
-                        <CustomInput
-                          {...props}
-                          {...state}
-                          renderType={TEXT_AREA}
-                        />
-                      )}
-                      handleSubmit={this.handleSubmit}
-                    />
+                      </LineFormStyled>
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
@@ -409,7 +450,7 @@ class ModalIssueDetails extends React.Component {
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Status</ModalLineTitleStyled>
                 {
-                  issue && issue.status.handlers.includes(userRole) ?
+                  issue && issue.status.handlers.includes(userRole) && checkUserInIssue ?
                     <Editable
                       name={'status'}
                       dataType={'custom'}
@@ -449,9 +490,11 @@ class ModalIssueDetails extends React.Component {
                   :
                     <LineFormStyled>
                       <ElementHeaderStyled padding={'0'}>
-                        <Image topNav
-                               src={issue && issue.reporter.avatarURL ? FILE_BASE_URL + issue.reporter.avatarURL : '/images/default_avatar.jpg'}
-                               margin={'0 5px'}/>
+                        <Image
+                          topNav
+                          src={issue && issue.reporter.avatarURL ? FILE_BASE_URL + issue.reporter.avatarURL : '/images/default_avatar.jpg'}
+                          margin={'0 5px'}
+                        />
                         <span>{issue && issue.reporter.username}</span>
                       </ElementHeaderStyled>
                     </LineFormStyled>
@@ -465,40 +508,60 @@ class ModalIssueDetails extends React.Component {
                   loadingIssue ?
                     <PlaceHolder />
                   :
-                    <Editable
-                      name={'assignee'}
-                      dataType={'custom'}
-                      mode={'inline'}
-                      value={issue && { ...assignee, projectId }}
-                      showButtons={true}
-                      display={(value) => (
-                        <LineFormStyled hover>
+                    checkUserInIssue ?
+                      <Editable
+                        name={'assignee'}
+                        dataType={'custom'}
+                        mode={'inline'}
+                        value={issue && { ...assignee, projectId }}
+                        showButtons={true}
+                        display={(value) => (
+                          <LineFormStyled hover>
+                            {
+                              value.username ?
+                                <ElementHeaderStyled padding={'0'}>
+                                  <Image
+                                    topNav
+                                    src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}
+                                    margin={'0 5px'}
+                                  />
+                                  <span>{value.username}</span>
+                                </ElementHeaderStyled>
+                                :
+                                <ElementHeaderStyled padding={'0'}>
+                                  <span>No assignee yet</span>
+                                </ElementHeaderStyled>
+                            }
+                          </LineFormStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomSelect
+                            renderCustom={true}
+                            {...props}
+                            {...state}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
+                    :
+                      issue &&
+                        <LineFormStyled>
                           {
-                            value.username ?
+                            assignee.username ?
                               <ElementHeaderStyled padding={'0'}>
                                 <Image
                                   topNav
-                                  src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}
+                                  src={assignee.avatarURL ? FILE_BASE_URL + assignee.avatarURL : '/images/default_avatar.jpg'}
                                   margin={'0 5px'}
                                 />
-                                <span>{value.username}</span>
+                                <span>{assignee.username}</span>
                               </ElementHeaderStyled>
-                              :
+                            :
                               <ElementHeaderStyled padding={'0'}>
                                 <span>No assignee yet</span>
                               </ElementHeaderStyled>
                           }
                         </LineFormStyled>
-                      )}
-                      customComponent={(props, state) => (
-                        <CustomSelect
-                          renderCustom={true}
-                          {...props}
-                          {...state}
-                        />
-                      )}
-                      handleSubmit={this.handleSubmit}
-                    />
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>

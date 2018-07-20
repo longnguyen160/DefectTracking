@@ -235,6 +235,7 @@ export const FormGroupStyled = styled.div`
   `};
   & > .Select {
     width: ${props => props.widthSelect ? props.widthSelect : '100%'};
+    height: ${props => props.heightSelect ? props.heightSelect : '100%'};
     margin: ${props => props.marginSelect ? props.marginSelect : '20px 5px'};
   }
   @media(max-width: 700px) {

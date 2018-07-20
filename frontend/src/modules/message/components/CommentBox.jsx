@@ -126,7 +126,7 @@ class CommentBox extends Component {
       <ElementHeaderStyled padding={'0'} top margin={'0 0 15px 0'}>
         {
           !value &&
-            <Image topNav src={user && user.profile ? FILE_BASE_URL + user.profile.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'}/>
+            <Image topNav src={user && user.profile && user.profile.avatarURL ? FILE_BASE_URL + user.profile.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'}/>
         }
         <InputCommentStyled>
           <LineFormStyled noMargin>

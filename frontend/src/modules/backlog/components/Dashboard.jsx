@@ -231,7 +231,8 @@ class Dashboard extends Component {
             valueKey={'id'}
             labelKey={'name'}
             value={filter['status']}
-            onChange={(e) => this.handleChangeSelect('status', e ? e.id : null)}
+            multi
+            onChange={(e) => this.handleChangeSelect('status', e ? e.map(status => status.id) : [])}
             classNamePrefix="react-select"
           />
           <Select
@@ -243,7 +244,8 @@ class Dashboard extends Component {
             optionComponent={this.optionComponent('priority')}
             valueComponent={this.valueComponent('priority')}
             classNamePrefix="react-select"
-            onChange={(e) => this.handleChangeSelect('priority', e ? e.value : null)}
+            multi
+            onChange={(e) => this.handleChangeSelect('priority', e ? e.map(priority => priority.value) : [])}
           />
           <Select
             isSearchable={false}
@@ -253,7 +255,8 @@ class Dashboard extends Component {
             classNamePrefix="react-select"
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
-            onChange={(e) => this.handleChangeSelect('assignee', e ? e.id : null)}
+            multi
+            onChange={(e) => this.handleChangeSelect('assignee', e ? e.map(assignee => assignee.id) : [])}
           />
           <Select
             isSearchable={false}
@@ -263,7 +266,8 @@ class Dashboard extends Component {
             classNamePrefix="react-select"
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
-            onChange={(e) => this.handleChangeSelect('reporter', e ? e.id : null)}
+            multi
+            onChange={(e) => this.handleChangeSelect('reporter', e ? e.map(reporter => reporter.id) : [])}
           />
           <Select
             isSearchable={false}

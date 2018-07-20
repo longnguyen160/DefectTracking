@@ -6,7 +6,6 @@
 package com.capstone.defecttracking.models.Filter;
 
 import java.util.ArrayList;
-import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,10 +19,10 @@ public class Filter {
 
     @Id
     private String id;
-    private String status;
-    private String priority;
-    private String assignee;
-    private String reporter;
+    private ArrayList<String> status;
+    private ArrayList<String> priority;
+    private ArrayList<String> assignee;
+    private ArrayList<String> reporter;
     private String projectId;
     private String userId;
     private ArrayList<String> categories = new ArrayList<>();
@@ -35,7 +34,7 @@ public class Filter {
         this.userId = userId;
     }
 
-    public Filter(String id, String status, String priority, String assignee, String reporter, String projectId, String userId, ArrayList<String> categories) {
+    public Filter(String id, ArrayList<String> status, ArrayList<String> priority, ArrayList<String> assignee, ArrayList<String> reporter, String projectId, String userId, ArrayList<String> categories) {
         this.id = id;
         this.status = status;
         this.priority = priority;
@@ -46,14 +45,6 @@ public class Filter {
         this.categories = categories;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
     public String getId() {
         return id;
     }
@@ -62,36 +53,44 @@ public class Filter {
         this.id = id;
     }
 
-    public String getStatus() {
+    public ArrayList<String> getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ArrayList<String> status) {
         this.status = status;
     }
 
-    public String getPriority() {
+    public ArrayList<String> getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(ArrayList<String> priority) {
         this.priority = priority;
     }
 
-    public String getAssignee() {
+    public ArrayList<String> getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(String assignee) {
+    public void setAssignee(ArrayList<String> assignee) {
         this.assignee = assignee;
     }
 
-    public String getReporter() {
+    public ArrayList<String> getReporter() {
         return reporter;
     }
 
-    public void setReporter(String reporter) {
+    public void setReporter(ArrayList<String> reporter) {
         this.reporter = reporter;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
     public String getUserId() {

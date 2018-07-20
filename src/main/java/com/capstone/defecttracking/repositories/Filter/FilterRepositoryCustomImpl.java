@@ -36,11 +36,11 @@ public class FilterRepositoryCustomImpl implements FilterRepositoryCustom {
         } else {
             Update update = new Update();
 
-            update.set("status", filter.getStatus() == null ? "" : filter.getStatus());
-            update.set("priority", filter.getPriority() == null ? "" : filter.getPriority());
-            update.set("assignee", filter.getAssignee() == null ? "" : filter.getAssignee());
-            update.set("reporter", filter.getReporter() == null ? "" : filter.getReporter());
-            update.set("projectId", filter.getProjectId() == null ? "" : filter.getProjectId());
+            update.set("status", filter.getStatus() == null ? new ArrayList<>() : filter.getStatus());
+            update.set("priority", filter.getPriority() == null ? new ArrayList<>() : filter.getPriority());
+            update.set("assignee", filter.getAssignee() == null ? new ArrayList<>() : filter.getAssignee());
+            update.set("reporter", filter.getReporter() == null ? new ArrayList<>() : filter.getReporter());
+            update.set("projectId", filter.getProjectId() == null ? new ArrayList<>() : filter.getProjectId());
             update.set("categories", filter.getCategories() == null ? new ArrayList<>() : filter.getCategories());
 
             return mongoTemplate.updateFirst(query, update, Filter.class).getModifiedCount() != 0;

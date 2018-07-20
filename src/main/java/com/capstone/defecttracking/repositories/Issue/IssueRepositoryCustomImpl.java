@@ -174,23 +174,23 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     public List<IssueShortcutResponse> loadAllIssuesBasedOnFilter(Filter filter) {
         Criteria criteria = new Criteria();
 
-        if (filter.getStatus() != null && filter.getStatus().length() > 0) {
-            criteria.and("status").is(filter.getStatus());
+        if (filter.getStatus() != null && filter.getStatus().size() > 0) {
+            criteria.and("status").in(filter.getStatus());
         }
-        if (filter.getAssignee() != null && filter.getAssignee().length() > 0) {
-            criteria.and("assignee").is(filter.getAssignee());
+        if (filter.getAssignee() != null && filter.getAssignee().size() > 0) {
+            criteria.and("assignee").in(filter.getAssignee());
         }
-        if (filter.getReporter() != null && filter.getReporter().length() > 0) {
-            criteria.and("reporter").is(filter.getReporter());
+        if (filter.getReporter() != null && filter.getReporter().size() > 0) {
+            criteria.and("reporter").in(filter.getReporter());
         }
         if (filter.getCategories() != null && filter.getCategories().size() > 0) {
             criteria.and("categories").all(filter.getCategories());
         }
         if (filter.getProjectId() != null && filter.getProjectId().length() > 0) {
-            criteria.and("projectId").is(filter.getProjectId());
+            criteria.and("projectId").in(filter.getProjectId());
         }
-        if (filter.getPriority() != null && filter.getPriority().length() > 0) {
-            criteria.and("priority").is(filter.getPriority());
+        if (filter.getPriority() != null && filter.getPriority().size() > 0) {
+            criteria.and("priority").in(filter.getPriority());
         }
         Query query = new Query(criteria).with(Sort.by("updatedAt").descending());
         return mongoTemplate
