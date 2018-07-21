@@ -28,11 +28,13 @@ public class Issue {
     private Date createdAt;
     @LastModifiedDate
     private Date updatedAt;
+    @LastModifiedDate
+    private Date finishedAt;
     private ArrayList<String> watchers = new ArrayList<String>();
     private ArrayList<String> categories = new ArrayList<String>();
     private ArrayList<String> attachments = new ArrayList<String>();
 
-    public Issue(String id, String issueName, String issueKey, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<String> watchers, ArrayList<String> categories, ArrayList<String> attachments) {
+    public Issue(String id, String issueName, String issueKey, String projectId, String description, String reporter, String assignee, String status, String priority, Date dueDate, Date createdAt, Date updatedAt, Date finishedAt, ArrayList<String> watchers, ArrayList<String> categories, ArrayList<String> attachments) {
         this.id = id;
         this.issueName = issueName;
         this.issueKey = issueKey;
@@ -45,6 +47,7 @@ public class Issue {
         this.dueDate = dueDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.finishedAt = finishedAt;
         this.watchers = watchers;
         this.categories = categories;
         this.attachments = attachments;
@@ -163,6 +166,14 @@ public class Issue {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Date getFinishedAt() {
+        return finishedAt;
+    }
+
+    public void setFinishedAt(Date finishedAt) {
+        this.finishedAt = finishedAt;
     }
 
     public ArrayList<String> getWatchers() {

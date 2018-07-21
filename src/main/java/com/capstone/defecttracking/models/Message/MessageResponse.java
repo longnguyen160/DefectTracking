@@ -9,7 +9,7 @@ public class MessageResponse {
     private String id;
     private String issueId;
     private String message;
-    private String type;
+    private MessageType type;
     private UserResponse sender;
     private Boolean edited;
     private Date createdAt;
@@ -19,7 +19,7 @@ public class MessageResponse {
     public MessageResponse() {
     }
 
-    public MessageResponse(String id, String issueId, String message, String type, UserResponse sender, Boolean edited, Date createdAt, Date updatedAt, ArrayList<String> attachments) {
+    public MessageResponse(String id, String issueId, String message, MessageType type, UserResponse sender, Boolean edited, Date createdAt, Date updatedAt, ArrayList<String> attachments) {
         this.id = id;
         this.issueId = issueId;
         this.message = message;
@@ -55,11 +55,11 @@ public class MessageResponse {
         this.message = message;
     }
 
-    public String getType() {
+    public MessageType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(MessageType type) {
         this.type = type;
     }
 

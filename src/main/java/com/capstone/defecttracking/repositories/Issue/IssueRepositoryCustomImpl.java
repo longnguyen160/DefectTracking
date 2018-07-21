@@ -274,12 +274,22 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
             default:
                 update.set(type, value).currentDate("updatedAt");
+
+                if (type.equals("status") && isStatusDone(value)) {
+                    update.currentDate("finishedAt");
+                }
                 break;
         }
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, Issue.class);
 
         return result.getModifiedCount() != 0;
+    }
+
+    private boolean isStatusDone(String statusId) {
+        Query query = new Query(Criteria.where("_id").is(statusId));
+
+        return mongoTemplate.findOne(query, Status.class).isIsDone();
     }
 
     @Override

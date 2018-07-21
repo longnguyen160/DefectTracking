@@ -9,7 +9,7 @@ public class MessageHistoryResponse {
     private String id;
     private IssueHistoryResponse issue;
     private String message;
-    private String type;
+    private MessageType type;
     private UserResponse sender;
     private Date createdAt;
     private Date updatedAt;
@@ -17,7 +17,7 @@ public class MessageHistoryResponse {
     public MessageHistoryResponse() {
     }
 
-    public MessageHistoryResponse(String id, IssueHistoryResponse issue, String message, String type, UserResponse sender, Date createdAt, Date updatedAt) {
+    public MessageHistoryResponse(String id, IssueHistoryResponse issue, String message, MessageType type, UserResponse sender, Date createdAt, Date updatedAt) {
         this.id = id;
         this.issue = issue;
         this.message = message;
@@ -51,11 +51,11 @@ public class MessageHistoryResponse {
         this.message = message;
     }
 
-    public String getType() {
+    public MessageType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(MessageType type) {
         this.type = type;
     }
 

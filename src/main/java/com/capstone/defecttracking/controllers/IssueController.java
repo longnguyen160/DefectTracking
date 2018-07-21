@@ -69,6 +69,7 @@ public class IssueController {
                         issue.getDueDate(),
                         issue.getCreatedAt(),
                         issue.getUpdatedAt(),
+                        issue.getFinishedAt(),
                         issue.getWatchers(),
                         issue.getCategories(),
                         issue.getAttachments()
