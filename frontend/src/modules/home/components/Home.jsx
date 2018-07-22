@@ -22,7 +22,14 @@ import {
   ListTableStyled
 } from '../../../stylesheets/Table';
 import { openModal, resetSelectedProject } from '../../layout/actions/layout';
-import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import {
+  FILE_BASE_URL,
+  ICONS,
+  ISSUE_PRIORITY_ARRAY,
+  MESSAGE_TYPE,
+  MODAL_TYPE,
+  WEB_SOCKET_URL
+} from '../../../utils/enums';
 import { loadAllIssuesShortcut, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
 import { loadAllMessages, resetMessage } from '../../message/actions/message';
@@ -206,7 +213,7 @@ class Home extends React.Component {
                     </ElementHeaderStyled>
                   :
                     messages.map(message => (
-                      message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
+                      message.type.entityName === MESSAGE_TYPE.LOGS ? this.renderLog(message) : this.renderComment(message)
                     ))
                 }
               </ListTableBodyContainerStyled>

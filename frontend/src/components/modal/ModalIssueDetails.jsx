@@ -77,13 +77,13 @@ class ModalIssueDetails extends React.Component {
     resetMessage();
   }
 
-  handleCreateMessage = (message) => {
+  handleCreateMessage = (message, type) => {
     const { createMessage, issue, user } = this.props;
 
     createMessage({
       issueId: issue.id,
       message: message,
-      type: MESSAGE_TYPE.LOGS,
+      type,
       sender: user.id,
       attachments: [],
       createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
@@ -105,6 +105,9 @@ class ModalIssueDetails extends React.Component {
     const { uploadFile } = this.props;
     const { uploadedFile } = this.state;
     const attachments = new FormData();
+    const type = {
+      entityName: MESSAGE_TYPE.LOGS
+    };
 
     Object.keys(files).filter(element => element !== 'preventDefault').map((file) =>{
       attachments.append('files', files[file]);
@@ -116,16 +119,19 @@ class ModalIssueDetails extends React.Component {
       fileIds.map(fileId =>
         this.updateIssue('attachments', fileId)
       );
-      this.handleCreateMessage(MESSAGE(fileIds.length).UPLOAD_ATTACHMENT);
+      this.handleCreateMessage(MESSAGE(fileIds.length).UPLOAD_ATTACHMENT, type);
     });
   };
 
   handleDeleteAttachment = (fileId) => {
     const { deleteFile } = this.props;
+    const type = {
+      entityName: MESSAGE_TYPE.LOGS
+    };
 
     deleteFile(fileId);
     this.updateIssue('attachments', fileId);
-    this.handleCreateMessage(MESSAGE().DELETE_ATTACHMENT);
+    this.handleCreateMessage(MESSAGE().DELETE_ATTACHMENT, type);
   };
 
   handleSubmit = (e) => {
@@ -161,8 +167,14 @@ class ModalIssueDetails extends React.Component {
           message = MESSAGE(e.value ? e.value.username : null).CHANGE_ASSIGNEE;
         }
     }
+    const type = {
+      entityName: MESSAGE_TYPE.LOGS,
+      entityType: e.props.name,
+      entityId: e.props.name === 'categories' ? [] : value
+    };
+
     this.updateIssue(e.props.name, value);
-    this.handleCreateMessage(message);
+    this.handleCreateMessage(message, type);
   };
 
   handleWatchingIssue = () => {
@@ -580,6 +592,30 @@ class ModalIssueDetails extends React.Component {
                 {/*</LineFormStyled>*/}
               {/*</ModalLineContentStyled>*/}
             {/*</ModalLineStyled>*/}
+            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+              <ModalLineContentStyled alignLeft>
+                <ModalLineTitleStyled>Due Date</ModalLineTitleStyled>
+                {
+                  loadingIssue ?
+                    <PlaceHolder />
+                    :
+                    <LineFormStyled>
+                      <span>{moment(issue && issue.dueDate).format('LLL')}</span>
+                    </LineFormStyled>
+                }
+              </ModalLineContentStyled>
+            </ModalLineStyled>
+            {
+              issue && issue.finishedAt &&
+                <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                  <ModalLineContentStyled alignLeft>
+                    <ModalLineTitleStyled>Finished at</ModalLineTitleStyled>
+                    <LineFormStyled>
+                      <span>{moment(issue && issue.finishedAt).format('LLL')}</span>
+                    </LineFormStyled>
+                  </ModalLineContentStyled>
+                </ModalLineStyled>
+            }
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Created At</ModalLineTitleStyled>

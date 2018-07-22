@@ -158,4 +158,19 @@ public class IssueController {
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/user/getIssueSummary")
+    public List<IssueReportResponse> getIssueSummary(@RequestParam(value = "summaryRequest") String summaryRequest) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            IssueReportRequest issueReportRequest = objectMapper.readValue(summaryRequest, IssueReportRequest.class);
+
+            return issueRepositoryCustom.getIssueSummary(issueReportRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return new ArrayList<>();
+        }
+    }
 }

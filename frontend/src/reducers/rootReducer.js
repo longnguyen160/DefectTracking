@@ -9,6 +9,7 @@ import management from '../modules/management/reducers/management';
 import file from '../modules/file/reducers/file';
 import backlog from '../modules/backlog/reducers/backlog';
 import message from '../modules/message/reducers/message';
+import summary from '../modules/summary/reducers/summary';
 
 const appReducer = combineReducers({
   account,
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
   file,
   backlog,
   message,
+  summary,
   form: reducerForm,
   notifications
 });

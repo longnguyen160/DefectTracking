@@ -250,7 +250,7 @@ export const LineFormStyled = styled.div`
   margin: 0 0 10px 0;
   font-size: 13px;
   align-items: center;
-  flex: 1;
+  flex: ${props => props.flex || 1};
   position: relative;
   color: initial;
   & > .Select {
@@ -259,7 +259,15 @@ export const LineFormStyled = styled.div`
     ${props => props.fullWidthSelect && css`
       max-width: 100%;
     `}
-  } 
+  }
+  ${props => props.customDatePicker && css`
+    .react-datepicker {
+      left: -80% !important;
+    }
+    .react-datepicker__triangle {
+      margin-left: 118px !important;
+    }
+  `}
   textarea, input, select {
     background: #fff;
     border: 1px solid #d1d1d1;
@@ -276,6 +284,17 @@ export const LineFormStyled = styled.div`
       border-color: #036a95;
       outline: 0;
     }
+  }
+  span[name="calendar"]{
+    font-size: 12px;
+    padding: 3px 10px;
+    position: absolute;
+    top: -14px;
+    left: -36px;
+    display: flex;
+    height: 20px;
+    border-radius: 0 2px 2px 0;
+    align-items: center;
   }
   ${props => props.alignCenter && css`
     justify-content: center;

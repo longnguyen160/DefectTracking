@@ -76,7 +76,9 @@ public class MessageController {
         messageRepository.save(message);
         serverResponse = new ServerResponse(true, "Create message successfully");
 
-        template.convertAndSend("/topic/message", serverResponse);
+        if (message.getType().getEntityName().equals("comments")) {
+            template.convertAndSend("/topic/message", serverResponse);
+        }
 
         User sender = userRepositoryCustom.findById(message.getSender());
         String src = sender.getProfile() != null  && sender.getProfile().getAvatarURL() != null ? sender.getProfile().getAvatarURL() : "/images/default_avatar.jpg";

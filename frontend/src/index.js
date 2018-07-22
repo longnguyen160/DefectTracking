@@ -22,7 +22,7 @@ import Dashboard from './modules/backlog/components/Dashboard';
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
 import './index.css';
-import Summary from './modules/Summary';
+import Summary from './modules/summary/components/Summary';
 
 export const history = createHistory();
 export const store = configureStore();

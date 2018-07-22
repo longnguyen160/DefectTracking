@@ -20,6 +20,7 @@ public class IssueDetailsResponse {
     private Date dueDate;
     private Date createdAt;
     private Date updatedAt;
+    private Date finishedAt;
     private ArrayList<UserResponse> watchers = new ArrayList<UserResponse>();
     private ArrayList<CategoryProjectResponse> categories = new ArrayList<>();
     private ArrayList<String> attachments = new ArrayList<String>();
@@ -27,7 +28,7 @@ public class IssueDetailsResponse {
     public IssueDetailsResponse() {
     }
 
-    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, Status status, String priority, Date dueDate, Date createdAt, Date updatedAt, ArrayList<UserResponse> watchers, ArrayList<CategoryProjectResponse> categories, ArrayList<String> attachments) {
+    public IssueDetailsResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, Status status, String priority, Date dueDate, Date createdAt, Date updatedAt, Date finishedAt, ArrayList<UserResponse> watchers, ArrayList<CategoryProjectResponse> categories, ArrayList<String> attachments) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
@@ -40,6 +41,7 @@ public class IssueDetailsResponse {
         this.dueDate = dueDate;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.finishedAt = finishedAt;
         this.watchers = watchers;
         this.categories = categories;
         this.attachments = attachments;
@@ -139,6 +141,14 @@ public class IssueDetailsResponse {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Date getFinishedAt() {
+        return finishedAt;
+    }
+
+    public void setFinishedAt(Date finishedAt) {
+        this.finishedAt = finishedAt;
     }
 
     public ArrayList<CategoryProjectResponse> getCategories() {

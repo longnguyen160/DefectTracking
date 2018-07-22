@@ -58,6 +58,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getDueDate(),
             issue.getCreatedAt(),
             issue.getUpdatedAt(),
+            issue.getFinishedAt(),
             new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
             categories,
             issue.getAttachments()
@@ -241,6 +242,35 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 );
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueReportResponse> getIssueSummary(IssueReportRequest issueReportRequest) {
+        ArrayList<Integer> createdData = new ArrayList<>();
+        ArrayList<Integer> resolvedData = new ArrayList<>();
+        List<IssueReportResponse> issueReportResponses = new ArrayList<>();
+
+        for (int i = 0; i < issueReportRequest.getDates().size(); i++) {
+            Criteria criteria = new Criteria();
+            criteria.andOperator(
+                Criteria.where("projectId").is(issueReportRequest.getProjectId()),
+                Criteria.where("createdAt").lte(issueReportRequest.getDates().get(i))
+            );
+            Query query = new Query(criteria);
+            createdData.add(mongoTemplate.find(query, Issue.class).size());
+
+            criteria = new Criteria();
+            criteria.andOperator(
+                Criteria.where("projectId").is(issueReportRequest.getProjectId()),
+                Criteria.where("finishedAt").lte(issueReportRequest.getDates().get(i))
+            );
+            query = new Query(criteria);
+            resolvedData.add(mongoTemplate.find(query, Issue.class).size());
+        }
+        issueReportResponses.add(new IssueReportResponse("created", createdData));
+        issueReportResponses.add(new IssueReportResponse("resolved", resolvedData));
+
+        return issueReportResponses;
     }
 
     private String getStatusColor(String statusId) {

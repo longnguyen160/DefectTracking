@@ -12,7 +12,7 @@ import {
   LineFormStyled,
   TitleFormStyled
 } from '../../../stylesheets/GeneralStyled';
-import { FILE_BASE_URL, WEB_SOCKET_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, MESSAGE_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { ModalLineContentStyled, ModalLineTitleStyled } from '../../../stylesheets/Modal';
 import moment from 'moment/moment';
 import { deleteFile, uploadFile } from '../../file/actions/file';
@@ -193,7 +193,7 @@ class Message extends Component {
             </ElementHeaderStyled>
           :
             messages.map(message => (
-              message.type === 'logs' ? this.renderLog(message) : this.renderComment(message)
+              message.type.entityName === MESSAGE_TYPE.LOGS ? this.renderLog(message) : this.renderComment(message)
             ))
         }
         <SockJsClient
