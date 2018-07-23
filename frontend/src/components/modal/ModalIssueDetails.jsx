@@ -203,7 +203,7 @@ class ModalIssueDetails extends React.Component {
       value: issue.assignee.id,
       label: issue.assignee.username
     });
-    const checkUserInIssue = (issue && issue.watchers.find(watcher => watcher.id === user.id)) || (userRole === ROLES.ADMIN || userRole === ROLES.MANAGER);
+    const checkUserInIssue = (issue && issue.watchers.find(watcher => watcher && watcher.id === user.id)) || (userRole === ROLES.ADMIN || userRole === ROLES.MANAGER);
     // const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (

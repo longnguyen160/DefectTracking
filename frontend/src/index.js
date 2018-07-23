@@ -10,7 +10,6 @@ import SignIn from './modules/account/components/SignIn';
 import SignUp from './modules/account/components/SignUp';
 import Projects from './modules/projects/components/Projects';
 import Home from './modules/home/components/Home';
-import BackLog from './modules/backlog/components/BackLog';
 import UsersList from './modules/account/components/UsersList';
 import IssueList from './modules/issue/components/IssueList';
 import ProjectsManagement from './modules/management/components/ProjectsManagement';
@@ -18,11 +17,12 @@ import UsersManagement from './modules/management/components/UsersManagement';
 import CategoriesManagement from './modules/management/components/CategoriesManagement';
 import StatusManagement from './modules/management/components/StatusManagement';
 import Dashboard from './modules/backlog/components/Dashboard';
+import Summary from './modules/summary/components/Summary';
+import KPIManagement from './modules/management/components/KPIManagement';
 
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-table/react-table.css';
 import './index.css';
-import Summary from './modules/summary/components/Summary';
 
 export const history = createHistory();
 export const store = configureStore();
@@ -77,6 +77,7 @@ ReactDOM.render(
             <PrivateRoute exact path="/manage/users" component={UsersManagement} />
             <PrivateRoute exact path="/manage/categories" component={CategoriesManagement} />
             <PrivateRoute exact path="/manage/status" component={StatusManagement} />
+            <PrivateRoute exact path="/manage/kpi" component={KPIManagement} />
           </Switch>
         </MainLayout>
       </Switch>

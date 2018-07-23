@@ -94,10 +94,10 @@ class ModalProfile extends React.Component {
     let url = '/images/default_avatar.jpg';
 
     if (user.profile && user.profile.avatarURL) {
-      url = user.profile.avatarURL;
+      url = FILE_BASE_URL + user.profile.avatarURL;
     }
     if (avatarURL) {
-      url = avatarURL;
+      url = FILE_BASE_URL + avatarURL;
     }
 
     return (
@@ -121,7 +121,7 @@ class ModalProfile extends React.Component {
           <ModalBodyStyled>
             <ModalContentStyled>
               <LineFormStyled hasTitle image alignCenter innerRef={(e) => this.avatar = e}>
-                <Image avatar src={FILE_BASE_URL + url} />
+                <Image avatar src={url} />
                 <Button
                   hasBorder
                   no

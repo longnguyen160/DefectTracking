@@ -14,7 +14,8 @@ import {
   PageBoardItemStyled,
   PageBoardStyled,
   TitleElementStyled,
-  Input, TableBlockStyled
+  Input,
+  TableBlockStyled
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { FILE_BASE_URL, ICONS } from '../../../utils/enums';
