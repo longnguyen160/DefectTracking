@@ -1,7 +1,7 @@
 package com.capstone.defecttracking.models.Message;
 
 public class MessageType {
-    private String entityName;
+    private String entityName; // logs va comments
     private String entityType;
     private String entityId;
 
