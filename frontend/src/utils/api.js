@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAccessToken } from './ultis';
 
-const BASE_URL = `http://localhost:8080/`;
+const BASE_URL = `${window.location.origin}/`;
 
 axios.interceptors.request.use((_config) => {
   const config = Object.assign({}, _config);

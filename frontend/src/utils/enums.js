@@ -1,6 +1,6 @@
-const WEB_SOCKET_URL = `http://localhost:8080/ws`;
+const WEB_SOCKET_URL = `${window.location.origin}/ws`;
 
-const FILE_BASE_URL = `http://localhost:8080/files/?fileId=`;
+const FILE_BASE_URL = `${window.location.origin}/?fileId=`;
 
 const INPUT_TEXT = 'text';
 const INPUT_PASSWORD = 'password';

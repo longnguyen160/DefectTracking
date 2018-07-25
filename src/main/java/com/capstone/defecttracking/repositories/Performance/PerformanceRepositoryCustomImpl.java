@@ -62,8 +62,16 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
 
                 if (member.getRole().equals("developer")) {
                     point = calculateDeveloperPoint(member.getUserId(), from, to);
+
+                    if (point < 0) {
+                        point = 0;
+                    }
                 } else if (member.getRole().equals("reporter")) {
                     point = calculateReporterPoint(member.getUserId(), from, to);
+
+                    if (point < 0) {
+                        point = 0;
+                    }
                 }
 
                 return new PerformanceAssessmentResponse(
@@ -103,6 +111,10 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
 
         if (issueList.size() > 0) {
             long sum = issueList.size();
+            long finishedIssues = issueList
+                .stream()
+                .filter(issue -> issue.getFinishedAt() != null)
+                .count();
             long onTimeIssues = issueList
                 .stream()
                 .filter(issue -> issue.getFinishedAt() != null && issue.getDueDate().after(issue.getFinishedAt()))
@@ -130,6 +142,7 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                 Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * onTimeIssues
                     - Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * lateTimeIssues
                     - Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues
+                    + (finishedIssues / sum) * 100
             ) / (sum * sumPA) * 100;
         }
 
