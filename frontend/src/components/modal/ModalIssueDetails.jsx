@@ -63,7 +63,8 @@ class ModalIssueDetails extends React.Component {
       loadProjectDetails(issue.projectId);
     }
     if (user && JSON.stringify(project) !== JSON.stringify(this.props.project)) {
-      const userRole = project.members.find(member => member.userId === user.id).role;
+      const userInProject = project.members.find(member => member.userId === user.id);
+      const userRole = userInProject ? userInProject.role : null;
 
       this.setState({ userRole });
     }
@@ -135,33 +136,40 @@ class ModalIssueDetails extends React.Component {
   };
 
   handleSubmit = (e) => {
+    const { issue } = this.props;
     let value = null;
+    let oldValue = null;
     let message = '';
 
     switch (e.props.name) {
       case 'priority':
         value = e.value ? e.value.value : null;
+        oldValue = e.props.value.value;
         message = MESSAGE(ISSUE_PRIORITY_ARRAY.find(element => element.value === e.value.value).label).UPDATE_PRIORITY;
         break;
 
       case 'status':
         value = e.value ? e.value.id : null;
+        oldValue = e.props.value.id;
         message = MESSAGE(e.value.name).CHANGE_STATUS;
         break;
 
       case 'categories':
         value = e.value ? e.value.map(category => category.id) : [];
+        oldValue = null;
         message = MESSAGE().UPDATE_CATEGORIES;
         break;
 
       case 'issueName':
       case 'description':
         value = e.value;
+        oldValue = e.props.value;
         message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
         break;
 
       default:
         value = (e.value && e.value.id) || '';
+        oldValue = e.props.value.id;
 
         if (e.props.name === 'assignee') {
           message = MESSAGE(e.value ? e.value.username : null).CHANGE_ASSIGNEE;
@@ -170,7 +178,8 @@ class ModalIssueDetails extends React.Component {
     const type = {
       entityName: MESSAGE_TYPE.LOGS,
       entityType: e.props.name,
-      entityId: e.props.name === 'categories' ? [] : value
+      newEntityId: e.props.name === 'categories' ? null : value,
+      oldEntityId: oldValue
     };
 
     this.updateIssue(e.props.name, value);
@@ -203,7 +212,7 @@ class ModalIssueDetails extends React.Component {
       value: issue.assignee.id,
       label: issue.assignee.username
     });
-    const checkUserInIssue = (issue && issue.watchers.find(watcher => watcher && watcher.id === user.id)) || (userRole === ROLES.ADMIN || userRole === ROLES.MANAGER);
+    const checkUserInIssue = (issue && issue.watchers.find(watcher => watcher && watcher.id === user.id)) || (user.roles.includes(ROLES.ADMIN) || userRole === ROLES.MANAGER);
     // const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
@@ -462,7 +471,7 @@ class ModalIssueDetails extends React.Component {
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>Status</ModalLineTitleStyled>
                 {
-                  issue && issue.status.handlers.includes(userRole) && checkUserInIssue ?
+                  issue && (issue.status.handlers.includes(userRole) || user.roles.includes(ROLES.ADMIN)) && checkUserInIssue ?
                     <Editable
                       name={'status'}
                       dataType={'custom'}

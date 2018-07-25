@@ -133,69 +133,91 @@ class Home extends React.Component {
     </ListTableBodyStyled>
   );
 
-  render() {
-    const { issues, messages, loadingIssues, loadingMessages } = this.props;
+  renderIssue = (issues) => {
+    return issues.map((issue, index) => {
+      const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
+
+      return (
+        <ListTableStyled
+          onClick={() => this.handleOpenModal(issue.id)}
+          key={issue.id}
+          odd={index % 2 === 0}
+        >
+          <ListTableBodyStyled
+            showList
+            noBackground
+            fixed
+            color={issue.status}
+          >
+            <ListTableBodyItemStyled itemId>
+              {issue.issueKey}
+            </ListTableBodyItemStyled>
+            <ListTableBodyItemStyled issueName>
+              {issue.summary}
+            </ListTableBodyItemStyled>
+            <ListTableBodyItemStyled priority>
+              <Icon
+                icon={ICONS.ARROW}
+                color={priority && priority.color}
+                width={15}
+                height={15}
+                rotated rotate={'rotateZ(90deg)'}
+              />
+            </ListTableBodyItemStyled>
+          </ListTableBodyStyled>
+        </ListTableStyled>
+      );
+    });
+  };
+
+  renderIssueList = (title, issues) => {
+    const { loadingIssues } = this.props;
 
     return (
-      <PageBoardStyled>
-        <PageBoardItemStyled>
-          <ElementHeaderStyled>
-            <TitleElementStyled noPadding>
-              Assigned to me
-            </TitleElementStyled>
-          </ElementHeaderStyled>
+      <PageBoardItemStyled>
+        <ElementHeaderStyled>
+          <TitleElementStyled noPadding>
+            {title}
+          </TitleElementStyled>
+        </ElementHeaderStyled>
+        <div>
           <div>
-            <div>
-              <ListTableHeaderStyled>
-                <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
-                <ListTableHeaderItemsStyled issueName>Summary</ListTableHeaderItemsStyled>
-                <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
-              </ListTableHeaderStyled>
-              <ListTableBodyContainerStyled willChange>
-                {
-                  loadingIssues ?
-                    <ElementHeaderStyled loading>
-                      <LoadingIcon />
-                    </ElementHeaderStyled>
+            <ListTableHeaderStyled>
+              <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
+              <ListTableHeaderItemsStyled issueName>Summary</ListTableHeaderItemsStyled>
+              <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
+            </ListTableHeaderStyled>
+            <ListTableBodyContainerStyled willChange height={'445px'}>
+              {
+                loadingIssues ?
+                  <ElementHeaderStyled loading>
+                    <LoadingIcon />
+                  </ElementHeaderStyled>
+                :
+                  issues.length > 0 ?
+                    this.renderIssue(issues)
                   :
-                    issues.map((issue, index) => {
-                      const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
-
-                      return (
-                        <ListTableStyled
-                          onClick={() => this.handleOpenModal(issue.id)}
-                          key={issue.id}
-                          odd={index % 2 === 0}
-                        >
-                          <ListTableBodyStyled
-                            showList
-                            noBackground
-                            fixed
-                            color={issue.status}
-                          >
-                            <ListTableBodyItemStyled itemId>
-                              {issue.issueKey}
-                            </ListTableBodyItemStyled>
-                            <ListTableBodyItemStyled issueName>
-                              {issue.summary}
-                            </ListTableBodyItemStyled>
-                            <ListTableBodyItemStyled priority>
-                              <Icon
-                                icon={ICONS.ARROW}
-                                color={priority && priority.color}
-                                width={15}
-                                height={15}
-                                rotated rotate={'rotateZ(90deg)'}
-                              />
-                            </ListTableBodyItemStyled>
-                          </ListTableBodyStyled>
-                        </ListTableStyled>
-                      );
-                    })
-                }
-              </ListTableBodyContainerStyled>
-            </div>
+                    <ElementHeaderStyled loading>
+                      No issues yet
+                    </ElementHeaderStyled>
+              }
+            </ListTableBodyContainerStyled>
           </div>
+        </div>
+      </PageBoardItemStyled>
+    )
+  };
+
+  render() {
+    const { issues, messages, loadingMessages } = this.props;
+    const assigned = issues ? issues.assigned : [];
+    const reported = issues ? issues.reported : [];
+
+    return (
+      <PageBoardStyled padding={'0 15px'}>
+        <PageBoardItemStyled>
+          {this.renderIssueList('Assigned to me', assigned)}
+          {this.renderIssueList('Reported by me', reported)}
         </PageBoardItemStyled>
         <PageBoardItemStyled activity>
           <ElementHeaderStyled>
@@ -212,9 +234,14 @@ class Home extends React.Component {
                       <LoadingIcon />
                     </ElementHeaderStyled>
                   :
-                    messages.map(message => (
-                      message.type.entityName === MESSAGE_TYPE.LOGS ? this.renderLog(message) : this.renderComment(message)
-                    ))
+                    messages.length > 0 ?
+                      messages.map(message => (
+                        message.type.entityName === MESSAGE_TYPE.LOGS ? this.renderLog(message) : this.renderComment(message)
+                      ))
+                    :
+                      <ElementHeaderStyled loading>
+                        No activities yet
+                      </ElementHeaderStyled>
                 }
               </ListTableBodyContainerStyled>
             </div>
@@ -239,7 +266,7 @@ Home.propTypes = {
   resetIssueList: PropTypes.func.isRequired,
   loadAllMessages: PropTypes.func.isRequired,
   resetMessage: PropTypes.func.isRequired,
-  issues: PropTypes.array.isRequired,
+  issues: PropTypes.object,
   messages: PropTypes.array.isRequired,
   user: PropTypes.object,
   loadingIssues: PropTypes.bool.isRequired,
@@ -247,7 +274,7 @@ Home.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  issues: state.issue.issues,
+  issues: state.issue.issueForHomePage,
   loadingIssues: state.issue.isLoading,
   user: state.layout.user,
   messages: state.message.messages,

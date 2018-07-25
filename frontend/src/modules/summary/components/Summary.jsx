@@ -15,13 +15,16 @@ import {
   PageBoardStyled,
   TitleElementStyled,
   Input,
-  TableBlockStyled
+  TableBlockStyled, Image
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { FILE_BASE_URL, ICONS } from '../../../utils/enums';
+import { FILE_BASE_URL, ICONS, ROLES } from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
 import CalendarIcon from '../../../components/icon/CalendarIcon';
 import { getIssueSummary, resetSummary } from '../actions/summary';
+import { loadUsersKPI } from '../../management/actions/kpi';
+import NoDataComponent from '../../../components/table/NoDataComponent';
+import NoDataProps from '../../../components/table/NoDataProps';
 
 class Summary extends Component {
 
@@ -118,6 +121,17 @@ class Summary extends Component {
   };
 
   handleChangeSelect = (value) => {
+    if (value.value === 'Staff') {
+      const { loadUsersKPI, selectedProject } = this.props;
+      const { from, to } = this.state;
+
+      loadUsersKPI({
+        projectId: selectedProject.id,
+        from: moment(from).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+        to: moment(to).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+      });
+    }
+
     this.setState({ summaryType: value });
   };
 
@@ -136,6 +150,7 @@ class Summary extends Component {
   };
 
   renderStaffSummary = () => {
+    const { usersKPI, loading } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -146,48 +161,6 @@ class Summary extends Component {
         textAlign: 'left'
       },
     };
-    const data = [
-      {
-        username: 'bim beo',
-        position: 'Developer',
-        point: 100
-      },
-      {
-        username: 'bim bim',
-        position: 'Developer',
-        point: 90
-      },
-      {
-        username: 'long nguyen',
-        position: 'Developer',
-        point: 99
-      },
-      {
-        username: 'Jotaro',
-        position: 'Developer',
-        point: 95
-      },
-      {
-        username: 'bim beo',
-        position: 'Reporter',
-        point: 100
-      },
-      {
-        username: 'bim bim',
-        position: 'Reporter',
-        point: 90
-      },
-      {
-        username: 'long nguyen',
-        position: 'Reporter',
-        point: 99
-      },
-      {
-        username: 'Jotaro',
-        position: 'Reporter',
-        point: 95
-      }
-    ];
     const columns = [
       {
         Header: 'Position',
@@ -196,8 +169,17 @@ class Summary extends Component {
       },
       {
         Header: 'Username',
-        accessor: 'username',
         ...styleColumn,
+        Cell: row => {
+          console.log(row);
+          return (
+            <TableBlockStyled alignLeft>
+              <Image topNav
+                     src={row.original && row.original.user.avatarURL ? FILE_BASE_URL + row.original.user.avatarURL : '/images/default_avatar.jpg'}/>
+              {row.original && row.original.user.username}
+            </TableBlockStyled>
+          )
+        }
       },
       {
         Header: 'Point',
@@ -208,8 +190,10 @@ class Summary extends Component {
 
     return (
       <ReactTable
-        data={data}
+        data={usersKPI}
         columns={columns}
+        getNoDataProps={() => NoDataProps({ loading })}
+        NoDataComponent={NoDataComponent}
         defaultPageSize={2}
         pivotBy={['position']}
         className="-striped -highlight"
@@ -382,18 +366,24 @@ class Summary extends Component {
 Summary.propTypes = {
   getIssueSummary: PropTypes.func.isRequired,
   resetSummary: PropTypes.func.isRequired,
+  loadUsersKPI: PropTypes.func.isRequired,
   selectedProject: PropTypes.object,
-  summaryData: PropTypes.array.isRequired
+  summaryData: PropTypes.array.isRequired,
+  usersKPI: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
   selectedProject: state.layout.selectedProject,
-  summaryData: state.summary.summaryData
+  summaryData: state.summary.summaryData,
+  usersKPI: state.management.usersKPI.filter(user => user.position !== ROLES.MANAGER),
+  loading: state.management.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   getIssueSummary: getIssueSummary,
-  resetSummary: resetSummary
+  resetSummary: resetSummary,
+  loadUsersKPI: loadUsersKPI
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Summary);

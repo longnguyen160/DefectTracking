@@ -12,4 +12,5 @@ public interface MessageRepositoryCustom {
     List<MessageHistoryResponse> findAllMessages(String userId);
     IssueHistoryResponse getIssueKey(String issueId);
     Boolean editMessage(Message message);
+    String checkReject(Message message);
 }

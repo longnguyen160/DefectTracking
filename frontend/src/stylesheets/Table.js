@@ -45,7 +45,7 @@ export const ListTableHeaderItemsStyled = styled.div`
 export const ListTableBodyContainerStyled = styled.div`
   display: block;
   overflow-y: auto;
-  height: calc(100vh - ${props => props.activity ? '145px' : '176px'});
+  height: calc(100vh - ${props => props.activity ? '127px' : '176px'});
   ${props => props.willChange && css`
     will-change: transform;
   `}
@@ -56,6 +56,9 @@ export const ListTableBodyContainerStyled = styled.div`
     max-height: calc(100vh - ${props => props.activity ? '145px' : '176px'});
     min-height: 100px;
     height: 100%;
+  `}
+  ${props => props.height && css`
+    height: calc(100vh - ${props.height});
   `}
 `;
 

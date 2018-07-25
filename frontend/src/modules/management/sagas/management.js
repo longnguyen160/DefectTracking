@@ -45,6 +45,17 @@ import {
   updateStatusFailure
 } from '../actions/status';
 import {
+  loadAllKPIRequest,
+  loadAllKPISuccess,
+  loadAllKPIFailure,
+  updateKPIRequest,
+  updateKPISuccess,
+  updateKPIFailure,
+  loadUsersKPIRequest,
+  loadUsersKPISuccess,
+  loadUsersKPIFailure
+} from '../actions/kpi';
+import {
   LOAD_ALL_PROJECTS_FOR_MANAGEMENT,
   LOAD_ALL_CATEGORIES,
   LOAD_CATEGORY_DETAILS,
@@ -57,6 +68,9 @@ import {
   REMOVE_STATUS,
   UPDATE_STATUS,
   UPDATE_STATUS_DEFAULT,
+  LOAD_ALL_KPI,
+  LOAD_USERS_KPI,
+  UPDATE_KPI,
   BAN_USER
 }
 from '../actions/types';
@@ -293,6 +307,53 @@ function* watchBanUser(){
   yield takeLatest(BAN_USER, banUser);
 }
 
+// KPI
+function* loadAllKPI() {
+  try {
+    yield put(loadAllKPIRequest());
+
+    const { data } = yield call(API.getKPIData);
+    yield put(loadAllKPISuccess(data));
+  } catch (error) {
+    yield put(loadAllKPIFailure(getError(error)));
+  }
+}
+
+function* watchLoadAllKPI() {
+  yield takeLatest(LOAD_ALL_KPI, loadAllKPI);
+}
+
+function* updateKPI({ kpi }) {
+  try {
+    yield put(updateKPIRequest());
+    const { data } = yield call(API.updateKPI, kpi);
+
+    showSuccessNotification(data.message);
+    yield put(updateKPISuccess());
+  } catch (error) {
+    yield put(updateKPIFailure(getError(error)));
+  }
+}
+
+function* watchUpdateKPI() {
+  yield takeLatest(UPDATE_KPI, updateKPI);
+}
+
+function* loadUsersKPI({ dataRequest }) {
+  try {
+    yield put(loadUsersKPIRequest());
+
+    const { data } = yield call(API.getUsersKPI, dataRequest);
+    yield put(loadUsersKPISuccess(data));
+  } catch (error) {
+    yield put(loadUsersKPIFailure(getError(error)));
+  }
+}
+
+function* watchLoadUsersKPI() {
+  yield takeLatest(LOAD_USERS_KPI, loadUsersKPI);
+}
+
 export default function* managementFlow() {
   yield all([
     watchCreateCategory(),
@@ -307,6 +368,9 @@ export default function* managementFlow() {
     watchUpdateStatus(),
     watchUpdateStatusDefault(),
     watchLoadAllProjectsForManagement(),
-    watchBanUser()
+    watchBanUser(),
+    watchLoadAllKPI(),
+    watchUpdateKPI(),
+    watchLoadUsersKPI()
   ]);
 }

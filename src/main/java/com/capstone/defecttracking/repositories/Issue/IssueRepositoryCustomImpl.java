@@ -208,11 +208,12 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
-    public List<IssueShortcutResponse> loadAllIssuesShortcut(String userId) {
-        Query query = new Query(Criteria.where("assignee").is(userId)).with(Sort.by("updatedAt").descending());
+    public IssueHomePageResponse loadAllIssuesShortcut(String userId) {
+        Query query = new Query(Criteria.where("assignee").is(userId)).with(Sort.by("updatedAt").descending()).limit(6);
         List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+        IssueHomePageResponse issuesResponse = new IssueHomePageResponse();
 
-        return issueList
+        issuesResponse.setAssigned(issueList
             .stream()
             .map(issue -> new IssueShortcutResponse(
                 issue.getId(),
@@ -221,7 +222,23 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getPriority(),
                 getStatusColor(issue.getStatus())
             ))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())
+        );
+
+        query = new Query(Criteria.where("reporter").is(userId)).with(Sort.by("updatedAt").descending()).limit(6);
+        issueList = mongoTemplate.find(query, Issue.class);
+        issuesResponse.setReported(issueList
+            .stream()
+            .map(issue -> new IssueShortcutResponse(
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getPriority(),
+                getStatusColor(issue.getStatus())
+            ))
+            .collect(Collectors.toList()));
+
+        return issuesResponse;
     }
 
     @Override

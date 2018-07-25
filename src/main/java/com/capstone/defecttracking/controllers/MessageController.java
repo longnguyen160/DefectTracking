@@ -6,6 +6,7 @@ import com.capstone.defecttracking.models.Mail.Mail;
 import com.capstone.defecttracking.models.Message.Message;
 import com.capstone.defecttracking.models.Message.MessageHistoryResponse;
 import com.capstone.defecttracking.models.Message.MessageResponse;
+import com.capstone.defecttracking.models.Message.MessageType;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -72,7 +74,14 @@ public class MessageController {
         Map<String, Object> model = new HashMap<>();
         HttpServletRequest request = ((ServletRequestAttributes)Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String baseURL = String.format("%s://%s:%d/",request.getScheme(),  request.getServerName(), request.getServerPort());
+        MessageType type = message.getType();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
+        if (!userDetailsSecurity.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")) && type.getEntityName().equals("logs")) {
+            type.setRejectBy(messageRepositoryCustom.checkReject(message));
+        }
+        message.setType(type);
         messageRepository.save(message);
         serverResponse = new ServerResponse(true, "Create message successfully");
 

@@ -108,7 +108,7 @@ public class IssueController {
     }
 
     @GetMapping("/user/loadAllIssuesShortcut")
-    public List<IssueShortcutResponse> loadAllIssuesShortcut(@RequestParam(value = "userId") String userId) {
+    public IssueHomePageResponse loadAllIssuesShortcut(@RequestParam(value = "userId") String userId) {
         return issueRepositoryCustom.loadAllIssuesShortcut(userId);
     }
 

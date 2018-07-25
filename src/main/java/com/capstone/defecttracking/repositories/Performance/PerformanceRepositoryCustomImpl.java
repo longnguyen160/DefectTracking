@@ -6,15 +6,25 @@
 package com.capstone.defecttracking.repositories.Performance;
 
 import com.capstone.defecttracking.models.Issue.Issue;
+import com.capstone.defecttracking.models.Message.Message;
 import com.capstone.defecttracking.models.PA.PerformanceAssessment;
+import com.capstone.defecttracking.models.PA.PerformanceAssessmentRequest;
+import com.capstone.defecttracking.models.PA.PerformanceAssessmentResponse;
+import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.User.User;
+import com.capstone.defecttracking.models.User.UserResponse;
 import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.function.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,92 +36,161 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
 
     @Autowired
     MongoTemplate mongoTemplate;
+
     @Autowired
     UserRepositoryCustom userRepositoryCustom;
 
-    @Override
-    public List<PerformanceAssessment> loadPAwithrole(String role) {
+
+    private List<PerformanceAssessment> loadPAWithRole(String role) {
         Query query = new Query(Criteria.where("role").is(role));
-        List<PerformanceAssessment> performances = mongoTemplate.find(query, PerformanceAssessment.class);
-        if (performances != null) {
-            return performances;
-        }
-        return null;
+
+        return mongoTemplate.find(query, PerformanceAssessment.class);
     }
 
     @Override
-    public Integer getPAofUser(String userId, Date StartDate, Date EndDate) {
-        User user = userRepositoryCustom.findById(userId);
-        int PAresult = 0;
-        //roles dev
-        if (user.getRoles().equals("developer")) {
-            List<PerformanceAssessment> ListPA = loadPAwithrole("developer");
-            // tinh tong cac trong so cua cac dev
-            int SumPAAmong = 0;
-            for (int i = 0; i < ListPA.size(); i++) {
-                SumPAAmong = SumPAAmong + Integer.parseInt(ListPA.get(i).getAmong());
-            }
-            int ontimebug = 0;
-            int latetimebug = 0;
-            int sumofthebug = 0;
-            int donebug = 0;
-            Query query = new Query(Criteria.where("assignee").is(userId));
-            List<Issue> issues = mongoTemplate.find(query, Issue.class);
-            for (int i = 0; i < issues.size(); i++) {
-                // tim bug trong khoang tg user chon
-                if (issues.get(i).getFinishedAt().getTime() <= EndDate.getTime() && issues.get(i).getFinishedAt().getTime() >= StartDate.getTime()) {
-                    if (issues.get(i).getFinishedAt().getTime() <= issues.get(i).getDueDate().getTime()) {
-                        ontimebug++;
-                    } else {
-                        latetimebug++;
-                    }
-                    if (issues.get(i).getFinishedAt().getTime() <= EndDate.getTime() && issues.get(i).getCreatedAt().getTime() >= StartDate.getTime()) {
-                        donebug++;
-                    }
-                    sumofthebug++;
-                }
-            }
-            // 
-            PAresult = ((Integer.parseInt(ListPA.get(1).getAmong()) * ontimebug / sumofthebug)
-                    - (Integer.parseInt(ListPA.get(2).getAmong()) * latetimebug / sumofthebug)
-                    + (Integer.parseInt(ListPA.get(3).getAmong()) * donebug / sumofthebug) // thieu tieu chi reopen
-                    )
-                    / SumPAAmong * 100;
-        }
-        // role tester
-        if (user.getRoles().equals("reporter")) {
-            List<PerformanceAssessment> ListPA = loadPAwithrole("reporter");
-            // tinh tong cac trong so cua cac tester
-            int SumPAAmong = 0;
-            for (int i = 0; i < ListPA.size(); i++) {
-                SumPAAmong = SumPAAmong + Integer.parseInt(ListPA.get(i).getAmong());
-            }
-            int reopenbug = 0;
-            int foundbug = 0;
-            int donebug = 0;
-            int sumofthebug = 0;
-            Query query = new Query(Criteria.where("reporter").is(userId));
-            List<Issue> issues = mongoTemplate.find(query, Issue.class);
-            for (int i = 0; i < issues.size(); i++) {
-                // tim bug trong khoang tg user chon
-                if (issues.get(i).getCreatedAt().getTime() <= StartDate.getTime() && issues.get(i).getCreatedAt().getTime() <= EndDate.getTime()) {
-                    sumofthebug++;
+    public List<PerformanceAssessmentResponse> getUserKPI(PerformanceAssessmentRequest performanceAssessmentRequest) {
+        Query query = new Query(Criteria.where("_id").is(performanceAssessmentRequest.getProjectId()));
+        Project project = mongoTemplate.findOne(query, Project.class);
+        Date from = performanceAssessmentRequest.getFrom();
+        Date to = performanceAssessmentRequest.getTo();
+
+        return project
+            .getMembers()
+            .stream()
+            .map(member -> {
+                double point = 0;
+
+                if (member.getRole().equals("developer")) {
+                    point = calculateDeveloperPoint(member.getUserId(), from, to);
+                } else if (member.getRole().equals("reporter")) {
+                    point = calculateReporterPoint(member.getUserId(), from, to);
                 }
 
-            }
-            // 
-            PAresult = ( - (Integer.parseInt(ListPA.get(5).getAmong()) * reopenbug / sumofthebug)
-                    + (Integer.parseInt(ListPA.get(6).getAmong()) * foundbug)
-                    + (Integer.parseInt(ListPA.get(7).getAmong()) * donebug / sumofthebug) // thieu tieu chi reopen
-                    )
-                    / SumPAAmong * 100;
-
-        } else {
-
-        }
-
-        return PAresult;
-
+                return new PerformanceAssessmentResponse(
+                    member.getRole(),
+                    point,
+                    getUserResponse(member.getUserId())
+                );
+            })
+            .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean updateKPI(PerformanceAssessment performanceAssessment) {
+        Query query = new Query(Criteria.where("_id").is(performanceAssessment.getId()));
+        Update update = new Update();
+
+        update.set("weight", performanceAssessment.getWeight());
+
+        return mongoTemplate.updateFirst(query, update, PerformanceAssessment.class).getModifiedCount() != 0;
+    }
+
+    private double calculateDeveloperPoint(String userId, Date from, Date to) {
+        Criteria criteria = new Criteria();
+        List<PerformanceAssessment> performanceAssessmentList = loadPAWithRole("developer");
+        double sumPA = 0;
+
+        for (PerformanceAssessment aPerformanceAssessmentList : performanceAssessmentList) {
+            sumPA = sumPA + Double.parseDouble(aPerformanceAssessmentList.getWeight());
+        }
+
+        criteria.andOperator(
+            Criteria.where("assignee").is(userId),
+            Criteria.where("createdAt").gte(from).lte(to)
+        );
+        Query query = new Query(criteria);
+        List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+
+        if (issueList.size() > 0) {
+            long sum = issueList.size();
+            long onTimeIssues = issueList
+                .stream()
+                .filter(issue -> issue.getFinishedAt() != null && issue.getDueDate().after(issue.getFinishedAt()))
+                .count();
+            long lateTimeIssues = issueList
+                .stream()
+                .filter(issue -> issue.getFinishedAt() == null || issue.getDueDate().before(issue.getFinishedAt()))
+                .count();
+            long reOpenedIssues = issueList
+                .stream()
+                .filter(issue -> {
+                    Criteria subCriteria = new Criteria();
+
+                    subCriteria.andOperator(
+                        Criteria.where("issueId").is(issue.getId()),
+                        Criteria.where("type.rejectBy").is("reporter")
+                    );
+                    Query subQuery = new Query(subCriteria).with(Sort.by("createdAt").descending());
+
+                    return mongoTemplate.findOne(subQuery, Message.class) != null;
+                })
+                .count();
+
+            return (
+                Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * onTimeIssues
+                    - Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * lateTimeIssues
+                    - Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues
+            ) / (sum * sumPA) * 100;
+        }
+
+        return 0;
+    }
+
+    private double calculateReporterPoint(String userId, Date from, Date to) {
+        Criteria criteria = new Criteria();
+        List<PerformanceAssessment> performanceAssessmentList = loadPAWithRole("reporter");
+        double sumPA = 0;
+
+        for (PerformanceAssessment aPerformanceAssessmentList : performanceAssessmentList) {
+            sumPA = sumPA + Double.parseDouble(aPerformanceAssessmentList.getWeight());
+        }
+
+        criteria.andOperator(
+            Criteria.where("reporter").is(userId),
+            Criteria.where("createdAt").gte(from).lte(to)
+        );
+        Query query = new Query(criteria);
+        List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+
+        if (issueList.size() > 0) {
+            long sum = issueList.size();
+            long finishedIssues = issueList
+                .stream()
+                .filter(issue -> issue.getFinishedAt() != null)
+                .count();
+            long reOpenedIssues = issueList
+                .stream()
+                .filter(issue -> {
+                    Criteria subCriteria = new Criteria();
+
+                    subCriteria.andOperator(
+                        Criteria.where("issueId").is(issue.getId()),
+                        Criteria.where("type.rejectBy").is("manager")
+                    );
+                    Query subQuery = new Query(subCriteria).with(Sort.by("createdAt").descending());
+
+                    return mongoTemplate.findOne(subQuery, Message.class) != null;
+                })
+                .count();
+
+            return (
+                Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * finishedIssues
+                    + Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * sum
+                    - Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues
+            ) / (sum * sumPA) * 100;
+        }
+
+        return 0;
+    }
+
+    private UserResponse getUserResponse(String userId) {
+        Query query = new Query(Criteria.where("_id").is(userId));
+        User user = mongoTemplate.findOne(query, User.class);
+
+        if (user.getProfile() == null) {
+            return new UserResponse(user.getId(), user.getUsername());
+        }
+
+        return new UserResponse(user.getId(), user.getUsername(), user.getProfile().getAvatarURL());
+    }
 }

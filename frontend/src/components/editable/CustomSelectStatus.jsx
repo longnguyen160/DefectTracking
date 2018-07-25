@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { ICONS } from '../../utils/enums';
+import { ICONS, ROLES } from '../../utils/enums';
 import { FilterBoxStyled, FilterBoxTopStyled, FilterBoxWrapperStyled } from '../../stylesheets/GeneralStyled';
 import { SubSelectListStyled, SubSelectStyled } from '../../stylesheets/TopNavBar';
 import Icon from '../icon/Icon';
@@ -16,9 +16,13 @@ class CustomSelectStatus extends React.Component {
   };
 
   componentWillMount() {
-    const { loadAllStatus, userRole } = this.props;
+    const { loadAllStatus, userRole, user } = this.props;
 
-    loadAllStatus(userRole);
+    if (userRole) {
+      loadAllStatus(userRole);
+    } else if (user.roles.includes(ROLES.ADMIN)) {
+      loadAllStatus(ROLES.ADMIN);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -90,11 +94,13 @@ CustomSelectStatus.propTypes = {
   loadAllStatus: PropTypes.func.isRequired,
   value: PropTypes.object.isRequired,
   statusList: PropTypes.array.isRequired,
-  userRole: PropTypes.string
+  userRole: PropTypes.string,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  statusList: state.management.statusList
+  statusList: state.management.statusList,
+  user: state.layout.user
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAccessToken } from './ultis';
 
-const BASE_URL = `${window.location.origin}/`;
+const BASE_URL = `http://localhost:8080/`;
 
 axios.interceptors.request.use((_config) => {
   const config = Object.assign({}, _config);
@@ -200,6 +200,19 @@ const getIssueSummary = (summaryRequest) => {
   return axios.get(`user/getIssueSummary?summaryRequest=${encodeURI(JSON.stringify(summaryRequest))}`);
 };
 
+// KPI
+const getUsersKPI = (dataRequest) => {
+  return axios.get(`user/getUsersKPI?dataRequest=${encodeURI(JSON.stringify(dataRequest))}`);
+};
+
+const getKPIData = () => {
+  return axios.get('admin/getKPIData');
+};
+
+const updateKPI = (kpi) => {
+  return axios.post('admin/updateKPI', kpi);
+};
+
 const API = {
   login,
   signUp,
@@ -246,7 +259,10 @@ const API = {
   deleteCategory,
   loadCategoryDetails,
   updateCategory,
-  getIssueSummary
+  getIssueSummary,
+  getUsersKPI,
+  getKPIData,
+  updateKPI
 };
 
 export default API;

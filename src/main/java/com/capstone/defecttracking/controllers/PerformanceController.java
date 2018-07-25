@@ -6,26 +6,38 @@
 package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.models.PA.PerformanceAssessment;
+import com.capstone.defecttracking.models.PA.PerformanceAssessmentRequest;
+import com.capstone.defecttracking.models.PA.PerformanceAssessmentResponse;
+import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.repositories.Performance.PerformanceRepository;
 import com.capstone.defecttracking.repositories.Performance.PerformanceRepositoryCustom;
 import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PerformanceController {
 
     @Autowired
-    PerformanceRepository performancerepository;
+    PerformanceRepository performanceRepository;
+
     @Autowired
     PerformanceRepositoryCustom performanceRepositoryCustom;
+
     @Autowired
     UserRepositoryCustom userRepositoryCustom;
+
     private SimpMessagingTemplate template;
 
     @Inject
@@ -33,15 +45,38 @@ public class PerformanceController {
         this.template = template;
     }
 
-    @GetMapping("/loadAllPAByRole")
-    public List<PerformanceAssessment> loadAllPerformanceByRole(String role) {
-        return performanceRepositoryCustom.loadPAwithrole(role);
+    @GetMapping("/admin/getKPIData")
+    public List<PerformanceAssessment> getKPIData() {
+        return performanceRepository.findAll();
     }
 
-    @GetMapping("/loadPAofUser")
-    public String loadPerformanceOfUser(String userId) {
+    @GetMapping("/user/getUsersKPI")
+    public List<PerformanceAssessmentResponse> getUserKPI(@RequestParam("dataRequest") String dataRequest) {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        return null;
+        try {
+            PerformanceAssessmentRequest performanceAssessmentRequest = objectMapper.readValue(dataRequest, PerformanceAssessmentRequest.class);
+
+            return performanceRepositoryCustom.getUserKPI(performanceAssessmentRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return new ArrayList<>();
+        }
     }
 
+    @PostMapping("/admin/updateKPI")
+    public ResponseEntity<?> updateKPI(@RequestBody PerformanceAssessment kpi) {
+        ServerResponse serverResponse;
+
+        if (performanceRepositoryCustom.updateKPI(kpi)) {
+            serverResponse = new ServerResponse(true, "Update KPI successfully");
+
+            return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+        }
+
+        serverResponse = new ServerResponse(true, "Update KPI failed");
+
+        return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
 }

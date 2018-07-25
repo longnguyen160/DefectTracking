@@ -59,8 +59,8 @@ export const PageCustomStyled = styled.div`
 export const PageBoardStyled = styled.section`
   display: flex; 
   width: 100%;
-  padding: 15px;
-  height: calc(100vh - 100px);
+  padding: ${props => props.padding || '15px'};
+  height: calc(100vh - 60px);
   overflow: hidden;
   ${props => props.backlog && css`
     flex-direction: column;
@@ -72,7 +72,7 @@ export const PageBoardStyled = styled.section`
   }
   ${props => props.noPadding && css`
     padding: 0;
-  `}
+  `}  
 `;
 
 export const PageBoardItemStyled = styled.div`
@@ -140,12 +140,12 @@ export const ElementStyled = styled.div`
   max-height: 300px;
   border-radius: 5px;
   background-color: #e6e6e6;
-  margin: 10px;  
+  margin: 10px;
   cursor: pointer;
   ${props => props.padding && css`
     padding: 5px;
   `}
-  
+
   ${props => props.created && css`
     display: flex;
     align-items: center;        
@@ -158,14 +158,14 @@ export const ElementStyled = styled.div`
   &:hover {
     & > ${TitleElementStyled} {
       color: #026a95;
-    }    
+    }
     background-color: #d1d1d1;
   }
 `;
 
 export const ElementHeaderStyled = styled.div`
-  display: flex;  
-  width: 100%;  
+  display: flex;
+  width: 100%;
   padding: ${props => props.padding ? props.padding : '5px'};
   align-items: center;
   ${props => props.top && css`
@@ -186,19 +186,19 @@ export const ElementHeaderStyled = styled.div`
     border-radius: 3px;
     font-size: 13px;
     width: 100%;
-    
+
     &:focus{
       //border-color: #036a95;
       outline: 0;
     }
-  }  
+  }
 `;
 
 export const FormBlockStyled = styled.div`
   ${props => props.auto && css`
     margin: auto;
     width: 50%;
-  `}  
+  `}
   ${props => props.show ? css`
     display: initial;    
   ` :
@@ -370,7 +370,7 @@ export const LineFormStyled = styled.div`
 `;
 
 export const TitleFormStyled = styled.span`
-  margin-bottom: 5px  
+  margin-bottom: 5px
   ${props => props.username && css`
     font-size: 14px;
     margin: ${props => props.margin ? props.margin : '0 5px'};
@@ -405,7 +405,7 @@ export const Image = styled.img`
   height: 80%;
   object-fit: cover;
   margin-bottom: 5px;
-  
+
   ${props => props.project && css`
     width: 30px;
     height: 30px;
@@ -482,7 +482,7 @@ export const TextArea = styled.textarea`
   background: #fff;
   border: none;
   border-radius: 3px;
-  width: 100%;  
+  width: 100%;
   transition: all 0.3s ease;
   height: ${props => props.height || '80px'};
   resize: none;
@@ -512,7 +512,7 @@ export const Label = styled.label`
 `;
 
 export const FilterBoxStyled = styled.div`
-  display: block;  
+  display: block;
   padding: ${props => props.padding || '4px 0'};
   font-size: 13px;
   width: 110px;
@@ -560,7 +560,7 @@ export const FilterBoxTopStyled = styled.div`
   border-left: 1px solid #ccd3d3;
   display: flex;
   align-items: center;
-  
+
   ${props => props.noBorder && css`
     border: none;
   `};
@@ -601,7 +601,7 @@ export const InputSearchStyled = styled.div`
 
 export const InputCommentStyled = styled.div`
   width: 100%;
-  display: block;  
+  display: block;
   background-color: #fff;
   border-radius: 5px;
   border: 1px solid #d1d1d1;
@@ -663,6 +663,13 @@ export const TableBlockStyled = styled.div`
   ${props => props.padding && css`
     padding: ${props.padding};
   `}
+  ${props => props.hover && css`
+    color: #7f7f7f;
+    &:hover {
+      color: #026a95;
+      cursor: pointer;
+    }
+  `}
 `;
 
 export const IssueStatusStyled = styled.div`
@@ -671,14 +678,14 @@ export const IssueStatusStyled = styled.div`
   font-size: 14px;
   border-radius: 3px;
   font-family: 'Proxima Nova Bold';
-  
+
   ${props => props.status && css`
     background: ${props.status.background};
     color: ${props.status.color};
   `}
 `;
 
-export const AttachmentWrapperStyled = styled.div`  
+export const AttachmentWrapperStyled = styled.div`
   height: ${props => props.height};
   width: ${props => props.width};
   padding: 5px;
@@ -721,24 +728,24 @@ export const AttachmentImageContentStyled = styled.div`
   background-repeat: no-repeat, repeat;
   background-position: center center, center center;
   background-size: cover, auto auto;
-  
+
   img {
     max-width: 100% !important;
     margin: 0 !important;
     border-radius: 0 !important;
-  }  
+  }
 `;
 
 export const AttachmentDetailsHeaderStyled = styled.div`
   box-sizing: border-box;
-  overflow-wrap: break-word;  
+  overflow-wrap: break-word;
   font-size: 12px;
   line-height: 18px;
   transition: opacity 0.3s ease 0s;
   color: ${props => props.color};
   visibility: hidden;
   opacity: 0;
-  
+
   &:hover {
     opacity: 1;
     visibility: visible;
@@ -750,7 +757,7 @@ export const AttachmentDetailsBodyStyled = styled.div`
   transition: transform 0.2s ease 0s, opacity 0.5s ease 0s;
   transform: translateY(35px);
   display: flex;
-  align-items: center;  
+  align-items: center;
   z-index: 1;
   height: 16px;
   color: ${props => props.color};
@@ -772,17 +779,17 @@ export const AttachmentDetailsStyled = styled.div`
   display: flex;
   flex-direction: column;
   transition: background 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, border-color 0.3s ease 0s;
-  background: transparent none repeat scroll 0% 0%;  
+  background: transparent none repeat scroll 0% 0%;
   border: 2px solid transparent;
   position: absolute;
   top: 0;
-  left: 0;  
+  left: 0;
   justify-content: space-between;
   padding: ${props => props.padding || '6px'};
-  
+
   &:hover {
     background-color: rgba(9, 30, 66, 0.5);
-    
+
     & > ${AttachmentDetailsHeaderStyled} {
       opacity: 1;
       visibility: visible;
@@ -817,7 +824,7 @@ export const LabelStyled = styled.div`
   ${props => props.left && css`
     text-align: left;
   `}
-  
+
   ${props => props.maxContent && css`
     width: max-content;
   `}
@@ -844,7 +851,7 @@ export const CheckBoxWrapper = styled.span`
 `;
 
 export const InputCheckboxStyled = styled.input`
-  position: absolute; 
+  position: absolute;
   opacity: 0;
 
   & + label {
@@ -869,7 +876,7 @@ export const InputCheckboxStyled = styled.input`
     background: white;
     border: 1px solid #ccc;
   }
-  
+
   &:disabled + label {
     color: #b8b8b8;
     cursor: auto;
@@ -892,7 +899,7 @@ export const InputCheckboxStyled = styled.input`
     background: #056a95;
     width: 3px;
     height: 3px;
-    box-shadow: 
+    box-shadow:
       2px 0 0 #056a95,
       4px 0 0 #056a95,
       4px -2px 0 #056a95,

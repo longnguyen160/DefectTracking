@@ -2,32 +2,73 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import SockJsClient from "react-stomp";
 import ReactTable from 'react-table';
+import Editable from 'react-x-editable';
 import NoDataProps from '../../../components/table/NoDataProps';
-import { WEB_SOCKET_URL } from '../../../utils/enums';
+import { INPUT_TEXT } from '../../../utils/enums';
 import NoDataComponent from '../../../components/table/NoDataComponent';
 import {
   ElementHeaderStyled,
-  Input,
   PageBoardItemStyled,
   PageBoardStyled,
-  TitleElementStyled
+  TitleElementStyled,
+  TableBlockStyled
 } from '../../../stylesheets/GeneralStyled';
+import { loadAllKPI, updateKPI } from '../actions/kpi';
+import CustomInput from '../../../components/editable/CustomInput';
 
 class KPIManagement extends Component {
 
+  componentWillMount() {
+    const { loadAllKPI } = this.props;
+
+    loadAllKPI();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { data } = nextProps;
+
+    if (JSON.stringify(data) !== JSON.stringify(this.props.data)) {
+      data.map(element => this.setState({ [element.id]: element }));
+    }
+  }
+
+  handleSubmit = (kpi, e) => {
+    const { updateKPI } = this.props;
+    const newKPI = Object.assign(kpi, {
+      weight: e.value
+    });
+
+    updateKPI(newKPI);
+  };
+
   renderEditable = (cell) => {
     return (
-      <Input
+      <Editable
+        name={'weight'}
+        dataType={'custom'}
+        mode={'inline'}
         value={cell.value}
-        fullWidth
-        fontSize={'14px'}
+        showButtons={true}
+        display={(value) => (
+          <TableBlockStyled hover>
+            {value}
+          </TableBlockStyled>
+        )}
+        customComponent={(props, state) => (
+          <CustomInput
+            {...props}
+            {...state}
+            renderType={INPUT_TEXT}
+          />
+        )}
+        handleSubmit={(e) => this.handleSubmit(cell.original, e)}
       />
     )
   };
 
   render() {
+    const { loading, data } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -40,9 +81,9 @@ class KPIManagement extends Component {
     };
     const columns = [
       {
-        Header: 'Position',
-        accessor: 'position',
-        ...styleColumn,
+        Header: 'Role',
+        accessor: 'role',
+        ...styleColumn
       },
       {
         Header: 'Criteria',
@@ -56,59 +97,7 @@ class KPIManagement extends Component {
         ...styleColumn,
         width: 100,
         Cell: this.renderEditable
-      },
-    ];
-    const data = [
-      {
-        position: 'Developer',
-        criteria: 'I want to fuck you',
-        weight: 0.2
-      },
-      {
-        position: 'Developer',
-        criteria: 'I want to suck you',
-        weight: 0.4
-      },
-      {
-        position: 'Developer',
-        criteria: 'I want to kick you',
-        weight: 0.5
-      },
-      {
-        position: 'Developer',
-        criteria: 'I want to fuck you',
-        weight: 0.6
-      },
-      {
-        position: 'Developer',
-        criteria: 'I want to fuck you',
-        weight: 0.7
-      },
-      {
-        position: 'Reporter',
-        criteria: 'I want to fuck you',
-        weight: 0.2
-      },
-      {
-        position: 'Reporter',
-        criteria: 'I want to suck you',
-        weight: 0.4
-      },
-      {
-        position: 'Reporter',
-        criteria: 'I want to kick you',
-        weight: 0.5
-      },
-      {
-        position: 'Reporter',
-        criteria: 'I want to fuck you',
-        weight: 0.6
-      },
-      {
-        position: 'Reporter',
-        criteria: 'I want to fuck you',
-        weight: 0.7
-      },
+      }
     ];
 
     return (
@@ -118,28 +107,37 @@ class KPIManagement extends Component {
             KPI
           </TitleElementStyled>
         </ElementHeaderStyled>
-        <PageBoardItemStyled activity margin={'0'}>
+        <PageBoardItemStyled activity margin={'10px 0'}>
           <ReactTable
             data={data}
             columns={columns}
-            getNoDataProps={() => NoDataProps({ loading: false })}
+            getNoDataProps={() => NoDataProps({ loading })}
             NoDataComponent={NoDataComponent}
             defaultPageSize={2}
-            pivotBy={['position']}
+            pivotBy={['role']}
             className="-striped -highlight"
           />
         </PageBoardItemStyled>
-        <SockJsClient
-          url={WEB_SOCKET_URL}
-          topics={['/topic/status']}
-          onMessage={this.onMessageReceive}
-          debug={true}
-        />
       </PageBoardStyled>
     );
   }
 }
 
-KPIManagement.propTypes = {};
+KPIManagement.propTypes = {
+  loadAllKPI: PropTypes.func.isRequired,
+  updateKPI: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired
+};
 
-export default KPIManagement;
+const mapStateToProps = state => ({
+  data: state.management.kpiData,
+  loading: state.management.isLoading
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  loadAllKPI: loadAllKPI,
+  updateKPI: updateKPI
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(KPIManagement);

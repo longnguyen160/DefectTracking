@@ -13,30 +13,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class PerformanceAssessment {
     @Id
-        private String id;
-        String name;
-        String description;
-        String among;
-        boolean isgood;
-        String role;
+    private String id;
+    private String criteria;
+    private String weight;
+    private String role;
 
-    public PerformanceAssessment(String id, String name, String description, String among, boolean isgood, String role) {
+    public PerformanceAssessment() {
+    }
+
+    public PerformanceAssessment(String id, String criteria, String weight, String role) {
         this.id = id;
-        this.name = name;
-        this.description = description;
-        this.among = among;
-        this.isgood = isgood;
+        this.criteria = criteria;
+        this.weight = weight;
         this.role = role;
     }
-
-    public boolean isIsgood() {
-        return isgood;
-    }
-
-    public void setIsgood(boolean isgood) {
-        this.isgood = isgood;
-    }
-
 
     public String getId() {
         return id;
@@ -46,28 +36,20 @@ public class PerformanceAssessment {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCriteria() {
+        return criteria;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
     }
 
-    public String getDescription() {
-        return description;
+    public String getWeight() {
+        return weight;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getAmong() {
-        return among;
-    }
-
-    public void setAmong(String among) {
-        this.among = among;
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
     public String getRole() {
@@ -77,6 +59,4 @@ public class PerformanceAssessment {
     public void setRole(String role) {
         this.role = role;
     }
-
-    
 }
