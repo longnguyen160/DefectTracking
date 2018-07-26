@@ -81,7 +81,7 @@ class ModalAddingUser extends React.Component {
   };
 
   render() {
-    const { onClose, isOpen, users, isLoading, error } = this.props;
+    const { onClose, isOpen, users, isLoading, error, loadingUsers } = this.props;
     const { selectedUser, selectedRole } = this.state;
 
     return (
@@ -104,6 +104,7 @@ class ModalAddingUser extends React.Component {
                   onChange={(value) => this.handleSelectOnChange('user', value)}
                   optionComponent={this.optionComponent()}
                   valueComponent={this.valueComponent()}
+                  isLoading={loadingUsers}
                 />
               </LineFormStyled>
             </ModalLineContentStyled>
@@ -159,6 +160,7 @@ ModalAddingUser.propTypes = {
   users: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
+  loadingUsers: PropTypes.bool.isRequired,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 
@@ -170,6 +172,7 @@ const mapStateToProps = state => ({
     avatarURL: user.profile && user.profile.avatarURL
   })),
   isLoading: state.project.isLoading,
+  loadingUsers: state.account.isFetching,
   error: state.project.error,
   selectedProject: state.layout.selectedProject
 });

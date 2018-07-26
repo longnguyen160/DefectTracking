@@ -104,7 +104,7 @@ class CommentBox extends Component {
       createMessage({
         issueId: issue.id,
         message: this.message.value,
-        type: MESSAGE_TYPE.COMMENTS,
+        type: { entityName: MESSAGE_TYPE.COMMENTS },
         sender: user.id,
         attachments: fileIds,
         createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),

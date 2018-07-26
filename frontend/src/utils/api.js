@@ -195,6 +195,24 @@ const updateStatusDefault = (status) => {
   return axios.post('admin/changeDefaultStatus', status);
 };
 
+// Summary
+const getIssueSummary = (summaryRequest) => {
+  return axios.get(`user/getIssueSummary?summaryRequest=${encodeURI(JSON.stringify(summaryRequest))}`);
+};
+
+// KPI
+const getUsersKPI = (dataRequest) => {
+  return axios.get(`user/getUsersKPI?dataRequest=${encodeURI(JSON.stringify(dataRequest))}`);
+};
+
+const getKPIData = () => {
+  return axios.get('admin/getKPIData');
+};
+
+const updateKPI = (kpi) => {
+  return axios.post('admin/updateKPI', kpi);
+};
+
 const API = {
   login,
   signUp,
@@ -240,7 +258,11 @@ const API = {
   loadStatusDetails,
   deleteCategory,
   loadCategoryDetails,
-  updateCategory
+  updateCategory,
+  getIssueSummary,
+  getUsersKPI,
+  getKPIData,
+  updateKPI
 };
 
 export default API;

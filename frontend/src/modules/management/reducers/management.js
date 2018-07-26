@@ -35,6 +35,15 @@ import {
   REQUEST_UPDATE_STATUS,
   UPDATE_STATUS_SUCCESS,
   UPDATE_STATUS_FAILURE,
+  LOAD_ALL_KPI_REQUEST,
+  LOAD_ALL_KPI_SUCCESS,
+  LOAD_ALL_KPI_FAILURE,
+  UPDATE_KPI_REQUEST,
+  UPDATE_KPI_SUCCESS,
+  UPDATE_KPI_FAILURE,
+  LOAD_USERS_KPI_REQUEST,
+  LOAD_USERS_KPI_SUCCESS,
+  LOAD_USERS_KPI_FAILURE,
   RESET_STATUS,
   RESET_CATEGORY
 } from '../actions/types';
@@ -43,6 +52,8 @@ const initialState = {
   projectList: [],
   statusList: [],
   categories: [],
+  kpiData: [],
+  usersKPI: [],
   status: null,
   category: null,
   isLoading: false,
@@ -252,6 +263,59 @@ export default function management(state = initialState, action) {
       });
 
     case UPDATE_STATUS_DEFAULT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_ALL_KPI_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case LOAD_ALL_KPI_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        kpiData: action.data,
+        error: null
+      });
+
+    case LOAD_ALL_KPI_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case UPDATE_KPI_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case UPDATE_KPI_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: null
+      });
+
+    case UPDATE_KPI_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_USERS_KPI_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case LOAD_USERS_KPI_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        usersKPI: action.data,
+        error: null
+      });
+
+    case LOAD_USERS_KPI_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error

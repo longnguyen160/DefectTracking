@@ -69,6 +69,7 @@ public class IssueController {
                         issue.getDueDate(),
                         issue.getCreatedAt(),
                         issue.getUpdatedAt(),
+                        issue.getFinishedAt(),
                         issue.getWatchers(),
                         issue.getCategories(),
                         issue.getAttachments()
@@ -107,7 +108,7 @@ public class IssueController {
     }
 
     @GetMapping("/user/loadAllIssuesShortcut")
-    public List<IssueShortcutResponse> loadAllIssuesShortcut(@RequestParam(value = "userId") String userId) {
+    public IssueHomePageResponse loadAllIssuesShortcut(@RequestParam(value = "userId") String userId) {
         return issueRepositoryCustom.loadAllIssuesShortcut(userId);
     }
 
@@ -156,5 +157,20 @@ public class IssueController {
         serverResponse = new ServerResponse(true, "Update issue failed");
 
         return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/user/getIssueSummary")
+    public List<IssueReportResponse> getIssueSummary(@RequestParam(value = "summaryRequest") String summaryRequest) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            IssueReportRequest issueReportRequest = objectMapper.readValue(summaryRequest, IssueReportRequest.class);
+
+            return issueRepositoryCustom.getIssueSummary(issueReportRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return new ArrayList<>();
+        }
     }
 }

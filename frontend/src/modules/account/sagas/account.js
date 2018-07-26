@@ -11,7 +11,7 @@ import {
 import { requestLogin, loginSuccess, loginError } from '../actions/login';
 import { requestSignUp, signUpSuccess, signUpError } from '../actions/signUp';
 import { requestLogOut, logOutSuccess, logOutFailure } from '../actions/logout';
-import { loadAllUsersSuccess, loadAllUsersFailure, removeUserRequest, removeUserSuccess, removeUserFailure } from '../actions/account';
+import { loadAllUsersRequest, loadAllUsersSuccess, loadAllUsersFailure, removeUserRequest, removeUserSuccess, removeUserFailure } from '../actions/account';
 import { updateProfileRequest, updateProfileSuccess, updateProfileFailure } from '../actions/update';
 import { setAccessToken, setExpiryDate, removeAccessToken, getError } from '../../../utils/ultis';
 import { showSuccessNotification } from '../../../components/notification/Notifications';
@@ -92,6 +92,7 @@ function* loadAllUsers({ input, projectId }) {
     if (projectId) {
       textProjectId = projectId;
     }
+    yield put(loadAllUsersRequest());
 
     const { data } = yield call(API.loadAllUsers, textInput, textProjectId);
 

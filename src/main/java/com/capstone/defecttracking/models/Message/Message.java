@@ -15,7 +15,7 @@ public class Message {
     private String id;
     private String issueId;
     private String message;
-    private String type;
+    private MessageType type;
     private String sender;
     private Boolean edited;
     @CreatedDate
@@ -27,7 +27,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(String id, String issueId, String message, String type, String sender, Boolean edited, Date createdAt, Date updatedAt, ArrayList<String> attachments) {
+    public Message(String id, String issueId, String message, MessageType type, String sender, Boolean edited, Date createdAt, Date updatedAt, ArrayList<String> attachments) {
         this.id = id;
         this.issueId = issueId;
         this.message = message;
@@ -39,7 +39,7 @@ public class Message {
         this.attachments = attachments;
     }
 
-    public Message(String issueId, String message, String type, String sender, Boolean edited, Date createdAt, Date updatedAt, ArrayList<String> attachments) {
+    public Message(String issueId, String message, MessageType type, String sender, Boolean edited, Date createdAt, Date updatedAt, ArrayList<String> attachments) {
         this.issueId = issueId;
         this.message = message;
         this.type = type;
@@ -74,11 +74,11 @@ public class Message {
         this.message = message;
     }
 
-    public String getType() {
+    public MessageType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(MessageType type) {
         this.type = type;
     }
 

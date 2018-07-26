@@ -14,7 +14,7 @@ import {
 const initialState = {
   messagesOnIssue: [],
   messages: [],
-  isLoading: false,
+  isLoading: true,
   error: null
 };
 

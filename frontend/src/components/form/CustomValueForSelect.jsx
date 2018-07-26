@@ -12,11 +12,22 @@ class CustomValueForSelect extends React.Component {
     switch (name) {
       case 'priority':
         return (
-          <Icon icon={ICONS.ARROW} color={value.color} width={20} height={20} rotated rotate={'rotateZ(90deg)'}/>
+          <Icon
+            icon={ICONS.ARROW}
+            color={value.color}
+            width={15}
+            height={20}
+            rotated
+            rotate={'rotateZ(90deg)'}
+          />
         );
       default:
         return (
-          <Image topNav src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}/>
+          <Image
+            dynamic={'20px'}
+            margin={'0 5px 0 0'}
+            src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}
+          />
         );
     }
   };
@@ -25,7 +36,7 @@ class CustomValueForSelect extends React.Component {
     return (
       <div className="Select-value">
 				<span className="Select-value-label">
-          <TableBlockStyled alignLeft>
+          <TableBlockStyled alignLeft fontSize={'13px'}>
             {this.renderIcon()}
             {this.props.children}
           </TableBlockStyled>

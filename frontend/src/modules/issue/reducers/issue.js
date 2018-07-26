@@ -22,9 +22,10 @@ import {
 
 const initialState = {
   issues: [],
+  issueForHomePage: null,
   issue: null,
   issueShortcut: null,
-  isLoading: false,
+  isLoading: true,
   error: null
 };
 
@@ -66,7 +67,7 @@ export default function issue(state = initialState, action) {
 
     case LOAD_ALL_ISSUES_SHORTCUT_SUCCESS:
       return Object.assign({}, state, {
-        issues: action.data,
+        issueForHomePage: action.data,
         isLoading: false,
         error: null
       });

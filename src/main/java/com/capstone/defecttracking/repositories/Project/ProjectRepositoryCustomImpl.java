@@ -52,6 +52,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
             project.getName(),
             project.getDescription(),
             project.getStatus(),
+            project.getCreatedAt(),
             project.getMembers(),
             project.getBacklog(),
             categories

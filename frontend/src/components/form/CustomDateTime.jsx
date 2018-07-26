@@ -17,6 +17,7 @@ class CustomDateTimeField extends PureComponent {
         onChange={onChange}
         placeholderText={label}
         showTimeSelect
+        minDate={moment()}
         timeIntervals={15}
         dateFormat="LLL"
         timeCaption="time"

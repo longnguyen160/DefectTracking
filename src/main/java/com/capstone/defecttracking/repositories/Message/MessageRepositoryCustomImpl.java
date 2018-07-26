@@ -6,6 +6,7 @@ import com.capstone.defecttracking.models.Message.Message;
 import com.capstone.defecttracking.models.Message.MessageHistoryResponse;
 import com.capstone.defecttracking.models.Message.MessageResponse;
 import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.mongodb.client.result.UpdateResult;
@@ -62,7 +63,27 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
 
     @Override
     public List<MessageHistoryResponse> findAllMessages(String userId) {
-        Query query = new Query(Criteria.where("members.userId").is(userId));
+        Query query = new Query(Criteria.where("_id").is(userId));
+        User user = mongoTemplate.findOne(query, User.class);
+
+        if (user.getRoles().contains("ADMIN")) {
+            query = new Query().limit(10);
+            return mongoTemplate
+                .find(query, Message.class)
+                .stream()
+                .map(message -> new MessageHistoryResponse(
+                    message.getId(),
+                    getIssueKey(message.getIssueId()),
+                    message.getMessage(),
+                    message.getType(),
+                    getUserResponse(message.getSender()),
+                    message.getCreatedAt(),
+                    message.getUpdatedAt()
+                ))
+                .collect(Collectors.toList());
+        }
+
+        query = new Query(Criteria.where("members.userId").is(userId));
         List<String> projectIds = mongoTemplate
             .find(query, Project.class)
             .stream()
@@ -127,5 +148,43 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
         UpdateResult result = mongoTemplate.updateFirst(query, update, Message.class);
 
         return result.getModifiedCount() == 1;
+    }
+
+    @Override
+    public String checkReject(Message message) {
+        Query query = new Query(Criteria.where("_id").is(message.getIssueId()));
+        Issue issue = mongoTemplate.findOne(query, Issue.class);
+
+        query = new Query(Criteria.where("_id").is(issue.getProjectId()));
+        Project project = mongoTemplate.findOne(query, Project.class);
+
+        if (project != null) {
+            String senderRole = project.getMembers()
+                .stream()
+                .filter(member -> member.getUserId().equals(message.getSender()))
+                .findFirst()
+                .get()
+                .getRole();
+
+            query = new Query(Criteria.where("_id").is(message.getType().getNewEntityId()));
+            Status newStatus = mongoTemplate.findOne(query, Status.class);
+            List<String> newHandlers = newStatus.getHandlers();
+
+            query = new Query(Criteria.where("_id").is(message.getType().getOldEntityId()));
+            Status oldStatus = mongoTemplate.findOne(query, Status.class);
+            List<String> oldHandlers = oldStatus.getHandlers();
+
+            if (senderRole.equals("reporter")) {
+                if (newHandlers.contains("reporter") && newHandlers.contains("developer") && oldHandlers.contains("reporter") && oldHandlers.contains("developer")) {
+                    return "reporter";
+                }
+            } else if (senderRole.equals("manager")) {
+                if (newHandlers.contains("manager") && newHandlers.contains("reporter") && oldHandlers.contains("manager") && oldHandlers.contains("reporter")) {
+                    return "manager";
+                }
+            }
+        }
+
+        return null;
     }
 }

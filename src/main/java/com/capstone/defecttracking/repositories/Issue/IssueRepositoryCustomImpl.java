@@ -58,6 +58,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getDueDate(),
             issue.getCreatedAt(),
             issue.getUpdatedAt(),
+            issue.getFinishedAt(),
             new ArrayList<UserResponse>(issue.getWatchers().stream().map(this::getUserResponse).collect(Collectors.toList())),
             categories,
             issue.getAttachments()
@@ -207,11 +208,12 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
-    public List<IssueShortcutResponse> loadAllIssuesShortcut(String userId) {
-        Query query = new Query(Criteria.where("assignee").is(userId)).with(Sort.by("updatedAt").descending());
+    public IssueHomePageResponse loadAllIssuesShortcut(String userId) {
+        Query query = new Query(Criteria.where("assignee").is(userId)).with(Sort.by("updatedAt").descending()).limit(6);
         List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+        IssueHomePageResponse issuesResponse = new IssueHomePageResponse();
 
-        return issueList
+        issuesResponse.setAssigned(issueList
             .stream()
             .map(issue -> new IssueShortcutResponse(
                 issue.getId(),
@@ -220,7 +222,23 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getPriority(),
                 getStatusColor(issue.getStatus())
             ))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())
+        );
+
+        query = new Query(Criteria.where("reporter").is(userId)).with(Sort.by("updatedAt").descending()).limit(6);
+        issueList = mongoTemplate.find(query, Issue.class);
+        issuesResponse.setReported(issueList
+            .stream()
+            .map(issue -> new IssueShortcutResponse(
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getPriority(),
+                getStatusColor(issue.getStatus())
+            ))
+            .collect(Collectors.toList()));
+
+        return issuesResponse;
     }
 
     @Override
@@ -241,6 +259,35 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 );
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueReportResponse> getIssueSummary(IssueReportRequest issueReportRequest) {
+        ArrayList<Integer> createdData = new ArrayList<>();
+        ArrayList<Integer> resolvedData = new ArrayList<>();
+        List<IssueReportResponse> issueReportResponses = new ArrayList<>();
+
+        for (int i = 0; i < issueReportRequest.getDates().size(); i++) {
+            Criteria criteria = new Criteria();
+            criteria.andOperator(
+                Criteria.where("projectId").is(issueReportRequest.getProjectId()),
+                Criteria.where("createdAt").lte(issueReportRequest.getDates().get(i))
+            );
+            Query query = new Query(criteria);
+            createdData.add(mongoTemplate.find(query, Issue.class).size());
+
+            criteria = new Criteria();
+            criteria.andOperator(
+                Criteria.where("projectId").is(issueReportRequest.getProjectId()),
+                Criteria.where("finishedAt").lte(issueReportRequest.getDates().get(i))
+            );
+            query = new Query(criteria);
+            resolvedData.add(mongoTemplate.find(query, Issue.class).size());
+        }
+        issueReportResponses.add(new IssueReportResponse("created", createdData));
+        issueReportResponses.add(new IssueReportResponse("resolved", resolvedData));
+
+        return issueReportResponses;
     }
 
     private String getStatusColor(String statusId) {
@@ -274,12 +321,22 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
             default:
                 update.set(type, value).currentDate("updatedAt");
+
+                if (type.equals("status") && isStatusDone(value)) {
+                    update.currentDate("finishedAt");
+                }
                 break;
         }
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, Issue.class);
 
         return result.getModifiedCount() != 0;
+    }
+
+    private boolean isStatusDone(String statusId) {
+        Query query = new Query(Criteria.where("_id").is(statusId));
+
+        return mongoTemplate.findOne(query, Status.class).isIsDone();
     }
 
     @Override

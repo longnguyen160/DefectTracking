@@ -8,6 +8,7 @@ import {
   REQUEST_LOG_OUT,
   LOG_OUT_SUCCESS,
   LOG_OUT_FAILURE,
+  LOAD_ALL_USERS_REQUEST,
   LOAD_ALL_USERS_SUCCESS,
   LOAD_ALL_USERS_FAILURE,
   UPDATE_PROFILE_REQUEST,
@@ -86,14 +87,22 @@ export default function account(state = initialState, action) {
         error: action.error
       });
 
+    case LOAD_ALL_USERS_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true,
+        error: null
+      });
+
     case LOAD_ALL_USERS_SUCCESS:
       return Object.assign({}, state, {
+        isFetching: false,
         users: action.users,
         error: null
       });
 
     case LOAD_ALL_USERS_FAILURE:
       return Object.assign({}, state, {
+        isFetching: false,
         error: action.error
       });
 
