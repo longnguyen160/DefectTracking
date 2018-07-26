@@ -172,6 +172,7 @@ class Dashboard extends Component {
     return (props) => (
       <CustomOptionForSelect
         name={name}
+        multi={true}
         {...props}
       />
     );
@@ -232,6 +233,9 @@ class Dashboard extends Component {
             labelKey={'name'}
             value={filter['status']}
             multi
+            removeSelected={false}
+            closeOnSelect={false}
+            optionComponent={this.optionComponent('status')}
             onChange={(e) => this.handleChangeSelect('status', e ? e.map(status => status.id) : [])}
             classNamePrefix="react-select"
           />
@@ -245,6 +249,8 @@ class Dashboard extends Component {
             valueComponent={this.valueComponent('priority')}
             classNamePrefix="react-select"
             multi
+            removeSelected={false}
+            closeOnSelect={false}
             onChange={(e) => this.handleChangeSelect('priority', e ? e.map(priority => priority.value) : [])}
           />
           <Select
@@ -256,6 +262,8 @@ class Dashboard extends Component {
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
             multi
+            removeSelected={false}
+            closeOnSelect={false}
             onChange={(e) => this.handleChangeSelect('assignee', e ? e.map(assignee => assignee.id) : [])}
           />
           <Select
@@ -267,6 +275,8 @@ class Dashboard extends Component {
             optionComponent={this.optionComponent('user')}
             valueComponent={this.valueComponent('user')}
             multi
+            removeSelected={false}
+            closeOnSelect={false}
             onChange={(e) => this.handleChangeSelect('reporter', e ? e.map(reporter => reporter.id) : [])}
           />
           <Select
@@ -278,6 +288,9 @@ class Dashboard extends Component {
             classNamePrefix="react-select"
             value={filter['categories']}
             multi
+            removeSelected={false}
+            closeOnSelect={false}
+            optionComponent={this.optionComponent('category')}
             onChange={(e) => this.handleChangeSelect('categories', e ? e.map(category => category.id) : [])}
           />
         </FormGroupStyled>

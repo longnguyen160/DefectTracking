@@ -1,5 +1,6 @@
 import {
   LOAD_ALL_USERS,
+  LOAD_ALL_USERS_REQUEST,
   LOAD_ALL_USERS_SUCCESS,
   LOAD_ALL_USERS_FAILURE,
   REMOVE_USER,
@@ -14,6 +15,12 @@ const loadAllUsers = (input, projectId) => {
     type: LOAD_ALL_USERS,
     input,
     projectId
+  }
+};
+
+const loadAllUsersRequest = () => {
+  return {
+    type: LOAD_ALL_USERS_REQUEST
   }
 };
 
@@ -65,6 +72,7 @@ const resetUsers = () => {
 
 export {
   loadAllUsers,
+  loadAllUsersRequest,
   loadAllUsersSuccess,
   loadAllUsersFailure,
   removeUser,

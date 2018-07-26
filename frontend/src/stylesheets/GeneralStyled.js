@@ -237,6 +237,16 @@ export const FormGroupStyled = styled.div`
     width: ${props => props.widthSelect ? props.widthSelect : '100%'};
     height: ${props => props.heightSelect ? props.heightSelect : '100%'};
     margin: ${props => props.marginSelect ? props.marginSelect : '20px 5px'};
+    
+    .Select-multi-value-wrapper {
+      white-space: nowrap;
+      width: 170px;
+      overflow: hidden;
+      
+      .Select-value-icon {
+        padding: 4px 5px 4px;
+      }
+    }
   }
   @media(max-width: 700px) {
     ${props => props.input && css`
@@ -652,7 +662,7 @@ export const TableBlockStyled = styled.div`
   display: flex !important;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: ${props => props.fontSize || '14px'};
   flex-wrap: wrap;
   ${props => props.alignLeft && css`
     justify-content: flex-start;
@@ -855,9 +865,11 @@ export const InputCheckboxStyled = styled.input`
   opacity: 0;
 
   & + label {
+    display: flex;
+    align-items: center;
     position: relative;
     cursor: pointer;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     padding: 0;
     transition: .3s ease;
   }

@@ -143,7 +143,7 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                     - Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * lateTimeIssues
                     - Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues
                     + (finishedIssues / sum) * 100
-            ) / (sum * sumPA) * 100;
+            ) / sum * 100;
         }
 
         return 0;
