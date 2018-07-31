@@ -25,6 +25,7 @@ const initialState = {
   issueForHomePage: null,
   issue: null,
   issueShortcut: null,
+  loadingIssueDetails: true,
   isLoading: true,
   error: null
 };
@@ -99,20 +100,20 @@ export default function issue(state = initialState, action) {
 
     case LOAD_ISSUE_DETAILS_REQUEST:
       return Object.assign({}, state, {
-        isLoading: action.loading,
+        loadingIssueDetails: action.loading,
         error: null
       });
 
     case LOAD_ISSUE_DETAILS_SUCCESS:
       return Object.assign({}, state, {
         issue: action.data,
-        isLoading: false,
+        loadingIssueDetails: false,
         error: null
       });
 
     case LOAD_ISSUE_DETAILS_FAILURE:
       return Object.assign({}, state, {
-        isLoading: false,
+        loadingIssueDetails: false,
         error: action.error
       });
 

@@ -15,6 +15,7 @@ const initialState = {
   messagesOnIssue: [],
   messages: [],
   isLoading: true,
+  loadingMessagesOnIssues: true,
   error: null
 };
 
@@ -59,19 +60,19 @@ export default function message(state = initialState, action) {
 
     case LOAD_ALL_MESSAGES_ON_ISSUES_REQUEST:
       return Object.assign({}, state, {
-        isLoading: action.loading,
+        loadingMessagesOnIssues: action.loading,
         error: null
       });
 
     case LOAD_ALL_MESSAGES_ON_ISSUES_SUCCESS:
       return Object.assign({}, state, {
-        isLoading: false,
+        loadingMessagesOnIssues: false,
         messagesOnIssue: action.messages
       });
 
     case LOAD_ALL_MESSAGES_ON_ISSUES_FAILURE:
       return Object.assign({}, state, {
-        isLoading: false,
+        loadingMessagesOnIssues: false,
         error: action.error
       });
 

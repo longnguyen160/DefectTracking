@@ -38,7 +38,7 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
             default:
                 criteria.andOperator(
                     Criteria.where("issueId").is(issueId),
-                    Criteria.where("type").is(type)
+                    Criteria.where("type.entityName").is(type)
                 );
                 break;
         }

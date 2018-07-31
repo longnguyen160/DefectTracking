@@ -685,7 +685,7 @@ ModalIssueDetails.propTypes = {
 
 const mapStateToProps = state => ({
   issue: state.issue.issue,
-  loadingIssue: state.issue.isLoading,
+  loadingIssue: state.issue.loadingIssueDetails,
   user: state.layout.user,
   selectedProject: state.layout.selectedProject,
   project: state.layout.project

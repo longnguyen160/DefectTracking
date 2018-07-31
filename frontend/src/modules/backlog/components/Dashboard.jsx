@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-import SockJsClient from "react-stomp";
+import ReactTable from 'react-table';
+import SockJsClient from 'react-stomp';
 import {
   ElementHeaderStyled,
   FormGroupStyled,
@@ -12,10 +13,7 @@ import {
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
-  ListTableBodyContainerStyled,
-  ListTableBodyItemStyled,
   ListTableBodyStyled,
-  ListTableHeaderItemsStyled,
   ListTableHeaderStyled,
   ListTableStyled
 } from '../../../stylesheets/Table';
@@ -41,7 +39,8 @@ import CustomValueForSelect from '../../../components/form/CustomValueForSelect'
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { loadAllStatus } from '../../management/actions/status';
 import { loadAllIssuesBasedOnFilter, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
-import LoadingIcon from '../../../components/icon/LoadingIcon';
+import NoDataProps from '../../../components/table/NoDataProps';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class Dashboard extends Component {
 
@@ -112,11 +111,19 @@ class Dashboard extends Component {
       const list = {
         backlog: selectedProject.backlog
       };
-      const existedMember = selectedProject.members.find(member => member.userId === user.id);
-      const newFilter = Object.assign(filter || this.state.filter, {
+      const newExistedMember = selectedProject.members.find(member => member.userId === user.id);
+      const newRole = newExistedMember ? newExistedMember.role : null;
+      const oldRole = user.roles.find(role => role !== ROLES.USER && role !== ROLES.ADMIN);
+      let newFilter = Object.assign(filter || this.state.filter, {
         projectId: selectedProject.id
       });
 
+      if (this.props.selectedProject && selectedProject.id !== this.props.selectedProject.id) {
+        newFilter = Object.assign(newFilter, {
+          assignee: [],
+          reporter: []
+        });
+      }
       this.setState({
         filter: newFilter
       });
@@ -125,9 +132,7 @@ class Dashboard extends Component {
       loadAllUsersInProject(selectedProject.id);
       loadAllCategoriesInProject(selectedProject.id);
 
-      if (existedMember) {
-        updateCurrentUserRole(existedMember.role);
-      }
+      updateCurrentUserRole(newRole, oldRole);
       this.setState({ list });
     }
     if (JSON.stringify(issues) !== JSON.stringify(this.props.issues)) {
@@ -187,6 +192,99 @@ class Dashboard extends Component {
     );
   };
 
+  renderRow = (props) => (
+    <ListTableStyled
+      className={'rt-tr ' + props.className}
+      onClick={() => this.handleOpenModal(props.original && props.original.id)}
+      style={{
+        ...props.style,
+      }}
+    >
+      <ListTableBodyStyled
+        showList
+        noBackground
+        fixed
+        color={props.original && props.original.status}
+      >
+        {props.children}
+      </ListTableBodyStyled>
+    </ListTableStyled>
+  );
+
+  renderHeader = (props) => (
+    <ListTableHeaderStyled
+      className={`rt-thead ${props.className}`}
+      padding={'0'}
+      odd={props.index && props.index % 2 === 0}
+      style={{
+        ...props.style
+      }}
+    >
+      {props.children}
+    </ListTableHeaderStyled>
+  );
+
+  renderList = () => {
+    const { issues, loadingIssues } = this.props;
+    const styleColumn = {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        fontSize: '13px'
+      },
+      headerStyle: {
+        textAlign: 'left'
+      }
+    };
+    const columns = [
+      {
+        Header: 'Issue',
+        accessor: 'issueKey',
+        ...styleColumn,
+        width: 85
+      },
+      {
+        Header: 'Name',
+        accessor: 'summary',
+        ...styleColumn,
+      },
+      {
+        Header: 'Priority',
+        accessor: 'priority',
+        ...styleColumn,
+        width: 55,
+        Cell: (row) => {
+          const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === row.value);
+
+          return (
+            <Icon
+              icon={ICONS.ARROW}
+              color={priority && priority.color}
+              width={15}
+              height={15}
+              rotated rotate={'rotateZ(90deg)'}
+            />
+          );
+        }
+      },
+    ];
+
+    return (
+      <ReactTable
+        key={issues.length}
+        columns={columns}
+        data={issues}
+        style={{ willChange: 'transform' }}
+        getTrGroupProps={(state, rowInfo, column, instance) => rowInfo}
+        TrGroupComponent={this.renderRow}
+        TheadComponent={this.renderHeader}
+        getNoDataProps={() => NoDataProps({ loading: loadingIssues })}
+        NoDataComponent={NoDataComponent}
+        defaultPageSize={issues.length <= 10 ? issues.length : 10}
+      />
+    );
+  };
+
   onMessageReceive = () => {
     const { loadAllIssuesBasedOnFilter } = this.props;
     const { filter } = this.state;
@@ -196,7 +294,7 @@ class Dashboard extends Component {
 
   render() {
     const { view, filter } = this.state;
-    const { usersInProject, statusList, categories, issues, openModal, loadingIssues } = this.props;
+    const { usersInProject, statusList, categories, issues, openModal } = this.props;
 
     return (
       <PageBoardStyled backlog>
@@ -310,58 +408,7 @@ class Dashboard extends Component {
                   </Button>
                 </TitleElementStyled>
               </ElementHeaderStyled>
-              <div>
-                <div>
-                  <ListTableHeaderStyled>
-                    <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
-                    <ListTableHeaderItemsStyled issueName>Name</ListTableHeaderItemsStyled>
-                    <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
-                  </ListTableHeaderStyled>
-                  <ListTableBodyContainerStyled willChange>
-                    {
-                      loadingIssues ?
-                        <ElementHeaderStyled loading>
-                          <LoadingIcon />
-                        </ElementHeaderStyled>
-                      :
-                        issues.map((issue, index) => {
-                          const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
-
-                          return (
-                            <ListTableStyled
-                              onClick={() => this.handleOpenModal(issue.id)}
-                              key={issue.id}
-                              odd={index % 2 === 0}
-                            >
-                              <ListTableBodyStyled
-                                showList
-                                noBackground
-                                fixed
-                                color={issue.status}
-                              >
-                                <ListTableBodyItemStyled itemId>
-                                  {issue.issueKey}
-                                </ListTableBodyItemStyled>
-                                <ListTableBodyItemStyled issueName>
-                                  {issue.summary}
-                                </ListTableBodyItemStyled>
-                                <ListTableBodyItemStyled priority>
-                                  <Icon
-                                    icon={ICONS.ARROW}
-                                    color={priority && priority.color}
-                                    width={15}
-                                    height={15}
-                                    rotated rotate={'rotateZ(90deg)'}
-                                  />
-                                </ListTableBodyItemStyled>
-                              </ListTableBodyStyled>
-                            </ListTableStyled>
-                          );
-                        })
-                    }
-                  </ListTableBodyContainerStyled>
-                </div>
-              </div>
+              {this.renderList()}
             </PageBoardItemStyled>
           :
             <Column />

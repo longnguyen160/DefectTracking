@@ -217,7 +217,7 @@ Message.propTypes = {
 
 const mapStateToProps = state => ({
   messages: state.message.messagesOnIssue,
-  loadingMessages: state.message.isLoading,
+  loadingMessages: state.message.loadingMessagesOnIssues,
   user: state.layout.user,
   issue: state.issue.issue
 });

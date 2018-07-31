@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const ListTableHeaderStyled = styled.div`
   display: flex;
-  padding: 7px 0px;
+  padding: ${props => props.padding || '7px 0'};
   border: 1px solid #cacaca;
   background-color: #f7f7f7;
 `;
@@ -11,32 +11,32 @@ export const ListTableHeaderItemsStyled = styled.div`
   padding: 0px 10px;
   color: #626262;
   font-size: 12px;
-  ${props => props.itemId && css`
+  ${props => props.propertyType === 'Issue' && css`
     flex: 0 0 85px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   `};
-  ${props => props.issueName && css`
+  ${props => props.propertyType === 'Name' && css`
     flex: 1;
   `};
-  ${props => props.priority && css`
+  ${props => props.propertyType === 'Priority' && css`
     flex: 0 0 55px;
     padding: 0px 5px 0px 0px;
   `};
   @media (max-width: 1024px) {
-    ${props => props.itemId && css`
+    ${props => props.propertyType === 'Issue' && css`
       flex: 0 0 110px;
     `}
-    ${props => props.priority && css`
+    ${props => props.propertyType === 'Priority' && css`
       flex: 0 0 110px;
     `}
   }
   @media (max-width: 680px) {
-    ${props => props.itemId && css`
+    ${props => props.propertyType === 'Issue' && css`
       flex: 0 0 85px;
     `}
-    ${props => props.priority && css`
+    ${props => props.propertyType === 'Priority' && css`
       flex: 0 0 45px;   
     `}
   }  
@@ -96,7 +96,7 @@ export const ListTableBodyStyled = styled.div`
   `};
   ${props => props.top && css`
     align-items: flex-start;
-  `}
+  `};
   background-color: ${({ isDragging }) => (isDragging ? 'rgb(185, 244, 188)' : 'white')};
   box-shadow: ${({ isDragging }) => (isDragging ? '2px 2px 1px rgba(0,0,0,0.2)' : 'none')};
   ${props => props.noBackground && css`
@@ -114,16 +114,16 @@ export const ListTableBodyItemStyled = styled.div`
     flex: ${props.flex};
   `}
 
-  ${props => props.itemId && css`
+  ${props => props.propertyType === 'Issue' && css`
     flex: 0 0 85px;
     padding: 0 5px 0 10px;
   `}
   
-  ${props => props.issueName && css`
+  ${props => props.propertyType === 'Name' && css`
     flex: 1;
   `}
   
-  ${props => props.priority && css`
+  ${props => props.propertyType === 'Priority' && css`
     flex: 0 0 55px;
     padding: 0px 5px 0px 0px;
     justify-content: center;

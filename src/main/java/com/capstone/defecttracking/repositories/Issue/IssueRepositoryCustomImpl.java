@@ -5,6 +5,7 @@ import com.capstone.defecttracking.models.Category.Category;
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Filter.Filter;
 import com.capstone.defecttracking.models.Issue.*;
+import com.capstone.defecttracking.models.Message.Message;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.User;
@@ -19,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -263,29 +265,60 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
     @Override
     public List<IssueReportResponse> getIssueSummary(IssueReportRequest issueReportRequest) {
-        ArrayList<Integer> createdData = new ArrayList<>();
-        ArrayList<Integer> resolvedData = new ArrayList<>();
+        ArrayList<Long> createdData = new ArrayList<>();
         List<IssueReportResponse> issueReportResponses = new ArrayList<>();
 
-        for (int i = 0; i < issueReportRequest.getDates().size(); i++) {
-            Criteria criteria = new Criteria();
-            criteria.andOperator(
-                Criteria.where("projectId").is(issueReportRequest.getProjectId()),
-                Criteria.where("createdAt").lte(issueReportRequest.getDates().get(i))
-            );
-            Query query = new Query(criteria);
-            createdData.add(mongoTemplate.find(query, Issue.class).size());
+        for (int j = 0; j < issueReportRequest.getStatus().size(); j++) {
+            ArrayList<Long> data = new ArrayList<>();
+            String statusId = issueReportRequest.getStatus().get(j);
+            Query query = new Query(Criteria.where("_id").is(statusId));
+            Status statusData = mongoTemplate.findOne(query, Status.class);
 
-            criteria = new Criteria();
-            criteria.andOperator(
-                Criteria.where("projectId").is(issueReportRequest.getProjectId()),
-                Criteria.where("finishedAt").lte(issueReportRequest.getDates().get(i))
-            );
-            query = new Query(criteria);
-            resolvedData.add(mongoTemplate.find(query, Issue.class).size());
+            for (int i = 0; i < issueReportRequest.getDates().size(); i++) {
+                Criteria criteria = new Criteria();
+                Date date = issueReportRequest.getDates().get(i);
+                long count1 = 0;
+
+                criteria.andOperator(
+                    Criteria.where("projectId").is(issueReportRequest.getProjectId()),
+                    Criteria.where("createdAt").lte(date)
+                );
+                query = new Query(criteria);
+                if (createdData.size() < issueReportRequest.getDates().size()) {
+                    createdData.add((long) mongoTemplate.find(query, Issue.class).size());
+                }
+                if (statusData.isDefault() == true) {
+                    criteria.and("status").is(statusId);
+                    query = new Query(criteria);
+                    count1 = (long) mongoTemplate.find(query, Issue.class).size();
+                }
+                if (statusData.isIsDone() == true) {
+                    criteria.and("finishedAt").lte(date);
+                    query = new Query(criteria);
+                    data.add((long) mongoTemplate.find(query, Issue.class).size());
+                    continue;
+                }
+                query = new Query(criteria);
+                long count = mongoTemplate.find(query, Issue.class)
+                    .stream()
+                    .filter(issue -> {
+                        Criteria subCriteria = new Criteria();
+
+                        subCriteria.andOperator(
+                            Criteria.where("issueId").is(issue.getId()),
+                            Criteria.where("type.newEntityId").is(statusId),
+                            Criteria.where("createdAt").lte(date)
+                        );
+                        Query subQuery = new Query(subCriteria);
+
+                        return mongoTemplate.findOne(subQuery, Message.class) != null;
+                    })
+                    .count();
+                data.add(count1 > 0 ? count + count1 : count);
+            }
+            issueReportResponses.add(new IssueReportResponse(statusData.getName(), data));
         }
-        issueReportResponses.add(new IssueReportResponse("created", createdData));
-        issueReportResponses.add(new IssueReportResponse("resolved", resolvedData));
+        issueReportResponses.add(new IssueReportResponse("Created", createdData));
 
         return issueReportResponses;
     }

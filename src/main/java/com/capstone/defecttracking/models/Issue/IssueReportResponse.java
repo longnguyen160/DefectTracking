@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class IssueReportResponse {
     private String type;
-    private ArrayList<Integer> data;
+    private ArrayList<Long> data;
 
     public IssueReportResponse() {
     }
 
-    public IssueReportResponse(String type, ArrayList<Integer> data) {
+    public IssueReportResponse(String type, ArrayList<Long> data) {
         this.type = type;
         this.data = data;
     }
@@ -22,11 +22,11 @@ public class IssueReportResponse {
         this.type = type;
     }
 
-    public ArrayList<Integer> getData() {
+    public ArrayList<Long> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Integer> data) {
+    public void setData(ArrayList<Long> data) {
         this.data = data;
     }
 }

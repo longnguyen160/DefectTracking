@@ -269,6 +269,15 @@ export const LineFormStyled = styled.div`
     ${props => props.fullWidthSelect && css`
       max-width: 100%;
     `}
+    .Select-multi-value-wrapper {
+      white-space: nowrap;
+      width: 170px;
+      overflow: hidden;
+      
+      .Select-value-icon {
+        padding: 4px 5px 4px;
+      }
+    }
   }
   ${props => props.customDatePicker && css`
     .react-datepicker {

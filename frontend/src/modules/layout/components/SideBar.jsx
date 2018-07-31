@@ -37,8 +37,8 @@ class SideBar extends React.Component {
     const { user } = nextProps;
 
     if (nextProps.selectedProject) {
-      const userRole = user && user.roles.find(role => role !== ROLES.USER);
-      sideBar = userRole ? SIDE_BAR_AFTER_SELECT_PROJECT.filter(element => element.role.includes(userRole)) : SIDE_BAR_AFTER_SELECT_PROJECT;
+      const userRole = (user && user.roles.find(role => role !== ROLES.USER)) || ROLES.USER;
+      sideBar = SIDE_BAR_AFTER_SELECT_PROJECT.filter(element => element.role.includes(userRole));
     } else if (history.location.pathname.includes('manage')) {
       sideBar = MANAGEMENT_SIDE_BAR;
       this.setState({ managementSideBar: true });

@@ -74,7 +74,7 @@ export default function account(state = initialState, action) {
       return Object.assign({}, state, {
         user: {
           ...state.user,
-          roles: state.user.roles.concat(action.role)
+          roles: action.newRole ? state.user.roles.filter(role => role !== action.oldRole).concat(action.newRole) : state.user.roles.filter(role => role !== action.oldRole)
         }
       });
 

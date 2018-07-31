@@ -174,7 +174,7 @@ const SIDE_BAR_AFTER_SELECT_PROJECT = [
     name: 'Dashboard',
     icon: ICONS.BACKLOG,
     url: '/dashboard',
-    role: [ROLES.DEVELOPER, ROLES.REPORTER, ROLES.MANAGER, ROLES.ADMIN]
+    role: [ROLES.DEVELOPER, ROLES.REPORTER, ROLES.MANAGER, ROLES.ADMIN, ROLES.USER]
   },
   {
     name: 'Summary',

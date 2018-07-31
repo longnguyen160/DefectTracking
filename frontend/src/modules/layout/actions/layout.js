@@ -47,9 +47,10 @@ const loadCurrentUser = goToLoginPage => ({
   goToLoginPage
 });
 
-const updateCurrentUserRole = (role) => ({
+const updateCurrentUserRole = (newRole, oldRole) => ({
   type: UPDATE_CURRENT_USER_ROLE,
-  role
+  newRole,
+  oldRole
 });
 
 const requestLoadCurrentUser = () => ({

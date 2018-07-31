@@ -149,13 +149,13 @@ class Home extends React.Component {
             fixed
             color={issue.status}
           >
-            <ListTableBodyItemStyled itemId>
+            <ListTableBodyItemStyled propertyType={'Issue'}>
               {issue.issueKey}
             </ListTableBodyItemStyled>
-            <ListTableBodyItemStyled issueName>
+            <ListTableBodyItemStyled propertyType={'Name'}>
               {issue.summary}
             </ListTableBodyItemStyled>
-            <ListTableBodyItemStyled priority>
+            <ListTableBodyItemStyled propertyType={'Priority'}>
               <Icon
                 icon={ICONS.ARROW}
                 color={priority && priority.color}
@@ -183,9 +183,9 @@ class Home extends React.Component {
         <div>
           <div>
             <ListTableHeaderStyled>
-              <ListTableHeaderItemsStyled itemId>Issue</ListTableHeaderItemsStyled>
-              <ListTableHeaderItemsStyled issueName>Summary</ListTableHeaderItemsStyled>
-              <ListTableHeaderItemsStyled priority>Priority</ListTableHeaderItemsStyled>
+              <ListTableHeaderItemsStyled propertyType={'Issue'}>Issue</ListTableHeaderItemsStyled>
+              <ListTableHeaderItemsStyled propertyType={'Name'}>Summary</ListTableHeaderItemsStyled>
+              <ListTableHeaderItemsStyled propertyType={'Priority'}>Priority</ListTableHeaderItemsStyled>
             </ListTableHeaderStyled>
             <ListTableBodyContainerStyled willChange height={'445px'}>
               {
