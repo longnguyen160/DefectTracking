@@ -9,12 +9,14 @@ import {
   ElementHeaderStyled,
   FormGroupStyled,
   Image,
+  IssueStatusStyled,
   PageBoardStyled,
   TableBlockStyled,
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import { loadAllIssues } from '../actions/issue';
-import { FILE_BASE_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY } from '../../../utils/enums';
+import Icon from '../../../components/icon/Icon';
 
 
 class IssueList extends React.Component {
@@ -69,6 +71,22 @@ class IssueList extends React.Component {
         Header: 'Priority',
         accessor: 'priority',
         ...styleColumn,
+        Cell: (row) => {
+          const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === row.value);
+
+          return (
+            <TableBlockStyled alignLeft>
+              <Icon
+                icon={ICONS.ARROW}
+                color={priority && priority.color}
+                width={15}
+                height={15}
+                rotated rotate={'rotateZ(90deg)'}
+              />
+              <span>{priority && priority.label}</span>
+            </TableBlockStyled>
+          );
+        }
       },
       {
         Header: 'Created At',
@@ -86,6 +104,13 @@ class IssueList extends React.Component {
         Header: 'Status',
         accessor: 'status',
         ...styleColumn,
+        Cell: row => (
+          <TableBlockStyled alignLeft>
+            <IssueStatusStyled status={row.value}>
+              {row.value.name}
+            </IssueStatusStyled>
+          </TableBlockStyled>
+        )
       }
     ];
 

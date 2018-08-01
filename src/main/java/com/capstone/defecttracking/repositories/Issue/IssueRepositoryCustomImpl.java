@@ -164,7 +164,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getDescription(),
                 getUserResponse(issue.getReporter()),
                 getUserResponse(issue.getAssignee()),
-                issue.getStatus(),
+                getStatus(issue.getStatus()),
                 issue.getPriority(),
                 issue.getDueDate(),
                 issue.getCreatedAt(),
@@ -321,6 +321,12 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         issueReportResponses.add(new IssueReportResponse("Created", createdData));
 
         return issueReportResponses;
+    }
+
+    private Status getStatus(String statusId) {
+        Query query = new Query(Criteria.where("_id").is(statusId));
+
+        return mongoTemplate.findOne(query, Status.class);
     }
 
     private String getStatusColor(String statusId) {
