@@ -2,6 +2,7 @@ import {
   CREATE_ISSUE_REQUEST,
   CREATE_ISSUE_SUCCESS,
   CREATE_ISSUE_FAILURE,
+  LOAD_ALL_ISSUES_REQUEST,
   LOAD_ALL_ISSUES_SUCCESS,
   LOAD_ALL_ISSUES_FAILURE,
   LOAD_ALL_ISSUES_SHORTCUT_REQUEST,
@@ -26,6 +27,7 @@ const initialState = {
   issue: null,
   issueShortcut: null,
   loadingIssueDetails: true,
+  pages: 0,
   isLoading: true,
   error: null
 };
@@ -49,14 +51,22 @@ export default function issue(state = initialState, action) {
         error: action.error
       });
 
+    case LOAD_ALL_ISSUES_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
     case LOAD_ALL_ISSUES_SUCCESS:
       return Object.assign({}, state, {
-        issues: action.data,
+        isLoading: false,
+        issues: action.data.issues,
+        pages: action.data.pages,
         error: null
       });
 
     case LOAD_ALL_ISSUES_FAILURE:
       return Object.assign({}, state, {
+        isLoading: false,
         error: action.error
       });
 

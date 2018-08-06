@@ -84,12 +84,19 @@ public class IssueController {
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/user/loadAllIssues")
-    public List<IssueResponse> loadAllIssues() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
+    @GetMapping("/admin/loadAllIssues")
+    public IssueListResponse loadAllIssues(@RequestParam(value = "request") String request) {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        return issueRepositoryCustom.loadAllIssues(userDetailsSecurity.getId());
+        try {
+            IssueListRequest issueListRequest = objectMapper.readValue(request, IssueListRequest.class);
+
+            return issueRepositoryCustom.loadAllIssues(issueListRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return new IssueListResponse(new ArrayList<>(), 0);
+        }
     }
 
     @GetMapping("/user/loadAllIssuesBasedOnFilter")

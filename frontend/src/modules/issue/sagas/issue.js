@@ -12,6 +12,7 @@ import {
   createIssueRequest,
   createIssueSuccess,
   createIssueFailure,
+  loadAllIssuesRequest,
   loadAllIssuesSuccess,
   loadAllIssuesFailure,
   loadAllIssuesShortcutRequest,
@@ -54,9 +55,10 @@ function* watchCreateIssue() {
   yield takeLatest(CREATE_ISSUE, createIssue)
 }
 
-function* loadAllIssues() {
+function* loadAllIssues({ request }) {
   try {
-    const { data } = yield call(API.loadAllIssues);
+    yield put(loadAllIssuesRequest());
+    const { data } = yield call(API.loadAllIssues, request);
 
     yield put(loadAllIssuesSuccess(data));
 

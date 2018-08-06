@@ -4,6 +4,7 @@ import {
   CREATE_ISSUE_SUCCESS,
   CREATE_ISSUE_FAILURE,
   LOAD_ALL_ISSUES,
+  LOAD_ALL_ISSUES_REQUEST,
   LOAD_ALL_ISSUES_SUCCESS,
   LOAD_ALL_ISSUES_FAILURE,
   LOAD_ALL_ISSUES_SHORTCUT,
@@ -57,9 +58,16 @@ const createIssueFailure = (error) => {
   }
 };
 
-const loadAllIssues = () => {
+const loadAllIssues = (request) => {
   return {
-    type: LOAD_ALL_ISSUES
+    type: LOAD_ALL_ISSUES,
+    request
+  }
+};
+
+const loadAllIssuesRequest = () => {
+  return {
+    type: LOAD_ALL_ISSUES_REQUEST
   }
 };
 
@@ -231,6 +239,7 @@ export {
   createIssueSuccess,
   createIssueFailure,
   loadAllIssues,
+  loadAllIssuesRequest,
   loadAllIssuesSuccess,
   loadAllIssuesFailure,
   loadAllIssuesShortcut,

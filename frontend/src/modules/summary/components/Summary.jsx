@@ -24,10 +24,11 @@ import Icon from '../../../components/icon/Icon';
 import CalendarIcon from '../../../components/icon/CalendarIcon';
 import { getIssueSummary, resetSummary } from '../actions/summary';
 import { loadUsersKPI } from '../../management/actions/kpi';
-import NoDataComponent from '../../../components/table/NoDataComponent';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataProps from '../../../components/table/NoDataProps';
 import { loadAllStatus } from '../../management/actions/status';
 import CustomOptionForSelect from '../../../components/form/CustomOptionForSelect';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class Summary extends Component {
 
@@ -237,6 +238,8 @@ class Summary extends Component {
       <ReactTable
         data={usersKPI}
         columns={columns}
+        loading={loading}
+        LoadingComponent={LoadingComponent}
         getNoDataProps={() => NoDataProps({ loading })}
         NoDataComponent={NoDataComponent}
         defaultPageSize={2}

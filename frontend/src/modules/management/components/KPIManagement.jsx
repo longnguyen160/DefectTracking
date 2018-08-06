@@ -6,7 +6,7 @@ import ReactTable from 'react-table';
 import Editable from 'react-x-editable';
 import NoDataProps from '../../../components/table/NoDataProps';
 import { INPUT_TEXT } from '../../../utils/enums';
-import NoDataComponent from '../../../components/table/NoDataComponent';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import {
   ElementHeaderStyled,
   PageBoardItemStyled,
@@ -16,6 +16,7 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { loadAllKPI, updateKPI } from '../actions/kpi';
 import CustomInput from '../../../components/editable/CustomInput';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class KPIManagement extends Component {
 
@@ -111,6 +112,8 @@ class KPIManagement extends Component {
           <ReactTable
             data={data}
             columns={columns}
+            loading={loading}
+            LoadingComponent={LoadingComponent}
             getNoDataProps={() => NoDataProps({ loading })}
             NoDataComponent={NoDataComponent}
             defaultPageSize={2}

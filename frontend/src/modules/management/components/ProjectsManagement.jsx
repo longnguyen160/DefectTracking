@@ -17,8 +17,9 @@ import { Button } from '../../../stylesheets/Button';
 import { loadProjectDetails, openModal } from '../../layout/actions/layout';
 import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
 import { loadAllProjectsForManagement } from '../actions/project';
-import NoDataComponent from '../../../components/table/NoDataComponent';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataProps from '../../../components/table/NoDataProps';
+import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class ProjectsManagement extends React.Component {
 
@@ -133,6 +134,8 @@ class ProjectsManagement extends React.Component {
         <ReactTable
           data={projects}
           columns={columns}
+          loading={loading}
+          LoadingComponent={LoadingComponent}
           getNoDataProps={() => NoDataProps({ loading })}
           NoDataComponent={NoDataComponent}
           defaultPageSize={10}

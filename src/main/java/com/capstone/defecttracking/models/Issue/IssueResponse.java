@@ -1,6 +1,6 @@
 package com.capstone.defecttracking.models.Issue;
 
-import com.capstone.defecttracking.models.Status.Status;
+import com.capstone.defecttracking.models.Status.StatusResponse;
 import com.capstone.defecttracking.models.User.UserResponse;
 
 import java.util.Date;
@@ -9,32 +9,28 @@ public class IssueResponse {
     private String id;
     private String issueKey;
     private String issueName;
-    private String projectId;
-    private String description;
     private UserResponse reporter;
     private UserResponse assignee;
-    private Status status;
+    private StatusResponse status;
     private String priority;
     private Date dueDate;
     private Date createdAt;
-    private Date updatedAt;
+    private Date finishedAt;
 
     public IssueResponse() {
     }
 
-    public IssueResponse(String id, String issueKey, String issueName, String projectId, String description, UserResponse reporter, UserResponse assignee, Status status, String priority, Date dueDate, Date createdAt, Date updatedAt) {
+    public IssueResponse(String id, String issueKey, String issueName, UserResponse reporter, UserResponse assignee, StatusResponse status, String priority, Date dueDate, Date createdAt, Date finishedAt) {
         this.id = id;
         this.issueKey = issueKey;
         this.issueName = issueName;
-        this.projectId = projectId;
-        this.description = description;
         this.reporter = reporter;
         this.assignee = assignee;
         this.status = status;
         this.priority = priority;
         this.dueDate = dueDate;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.finishedAt = finishedAt;
     }
 
     public String getId() {
@@ -61,22 +57,6 @@ public class IssueResponse {
         this.issueName = issueName;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public UserResponse getReporter() {
         return reporter;
     }
@@ -93,11 +73,11 @@ public class IssueResponse {
         this.assignee = assignee;
     }
 
-    public Status getStatus() {
+    public StatusResponse getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(StatusResponse status) {
         this.status = status;
     }
 
@@ -125,11 +105,11 @@ public class IssueResponse {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Date getFinishedAt() {
+        return finishedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setFinishedAt(Date finishedAt) {
+        this.finishedAt = finishedAt;
     }
 }

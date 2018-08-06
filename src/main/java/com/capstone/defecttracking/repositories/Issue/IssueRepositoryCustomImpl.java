@@ -1,6 +1,5 @@
 package com.capstone.defecttracking.repositories.Issue;
 
-import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Category.Category;
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Filter.Filter;
@@ -8,6 +7,7 @@ import com.capstone.defecttracking.models.Issue.*;
 import com.capstone.defecttracking.models.Message.Message;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Status.Status;
+import com.capstone.defecttracking.models.Status.StatusResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.mongodb.client.result.UpdateResult;
@@ -19,6 +19,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -138,39 +140,52 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
-    public List<IssueResponse> loadAllIssues(String userId) {
-        Query query = new Query(Criteria.where("_id").is(userId));
-        User user = mongoTemplate.findOne(query, User.class);
-        List<Issue> issueList;
+    public IssueListResponse loadAllIssues(IssueListRequest issueListRequest) {
+        Criteria criteria = new Criteria();
+        Sort sort = Sort.by("updatedAt").descending();
 
-        if (user.getRoles().contains(Roles.USER.toString())) {
-            query = new Query(Criteria.where("members.userId").is(userId));
-            List<Project> projects = mongoTemplate.find(query, Project.class);
-            List<String> projectIds = projects.stream().map(Project::getId).collect(Collectors.toList());
-
-            query = new Query(Criteria.where("projectId").in(projectIds));
-            issueList = mongoTemplate.find(query, Issue.class);
-        } else {
-            issueList = mongoTemplate.findAll(Issue.class);
+        for (int i = 0; i < issueListRequest.getFiltered().size(); i++) {
+            FilterType filterType = issueListRequest.getFiltered().get(i);
+            if (filterType.getId().equals("createdAt") || filterType.getId().equals("finishedAt")) {
+                Date date = null;
+                Date dateAfterDate = null;
+                try {
+                    date = new SimpleDateFormat("MM/dd/yyyy").parse(filterType.getValue());
+                    dateAfterDate = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                criteria.and(filterType.getId()).gte(date).lte(dateAfterDate);
+            } else {
+                criteria.and(filterType.getId()).regex(filterType.getValue(), "i");
+            }
         }
-
-        return issueList
+        if (issueListRequest.getSorted() != null && issueListRequest.getSorted().isDesc()) {
+            sort = Sort.by(issueListRequest.getSorted().getId()).descending();
+        } else if (issueListRequest.getSorted() != null) {
+            sort = Sort.by(issueListRequest.getSorted().getId()).ascending();
+        }
+        Query query = new Query(criteria).with(sort).limit(issueListRequest.getPageSize()).skip(issueListRequest.getPage() * issueListRequest.getPageSize());
+        List<IssueResponse> issueList = mongoTemplate
+            .find(query, Issue.class)
             .stream()
             .map(issue -> new IssueResponse(
                 issue.getId(),
                 issue.getIssueKey(),
                 issue.getIssueName(),
-                issue.getProjectId(),
-                issue.getDescription(),
                 getUserResponse(issue.getReporter()),
                 getUserResponse(issue.getAssignee()),
-                getStatus(issue.getStatus()),
+                getStatusResponse(issue.getStatus()),
                 issue.getPriority(),
                 issue.getDueDate(),
                 issue.getCreatedAt(),
-                issue.getUpdatedAt()
+                issue.getFinishedAt()
             ))
             .collect(Collectors.toList());
+
+        query = new Query(criteria);
+        int pages = (int) Math.ceil(mongoTemplate.find(query, Issue.class).size() / issueListRequest.getPageSize());
+        return new IssueListResponse(issueList, pages);
     }
 
     @Override
@@ -321,6 +336,13 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         issueReportResponses.add(new IssueReportResponse("Created", createdData));
 
         return issueReportResponses;
+    }
+
+    private StatusResponse getStatusResponse(String statusId) {
+        Query query = new Query(Criteria.where("_id").is(statusId));
+        Status status = mongoTemplate.findOne(query, Status.class);
+
+        return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor());
     }
 
     private Status getStatus(String statusId) {

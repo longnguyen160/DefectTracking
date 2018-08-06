@@ -57,6 +57,7 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/",
                 "/static/**",
                 "/fonts/**",
+                "/images/**",
                 "/favicon.ico",
                 "/**/*.png",
                 "/**/*.gif",

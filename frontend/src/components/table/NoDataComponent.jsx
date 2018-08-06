@@ -5,13 +5,13 @@ import LoadingIcon from '../icon/LoadingIcon';
 const NoDataComponent = (props) => {
   const { loading } = props;
 
+  if (loading) {
+    return null;
+  }
+
   return (
     <div className="rt-noData">
-      {
-        loading ?
-          <LoadingIcon />
-        : 'No data'
-      }
+      No data
     </div>
   );
 };

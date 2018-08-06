@@ -20,6 +20,7 @@ import { openModal } from '../../layout/actions/layout';
 import { loadAllStatus, loadStatusDetails, removeStatus, updateStatus, updateStatusDefault } from '../actions/status';
 import Icon from '../../../components/icon/Icon';
 import NoDataProps from '../../../components/table/NoDataProps';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class StatusManagement extends Component {
@@ -190,6 +191,8 @@ class StatusManagement extends Component {
         <ReactTable
           data={statusList}
           columns={columns}
+          loading={loading}
+          LoadingComponent={LoadingComponent}
           getNoDataProps={() => NoDataProps({ loading })}
           NoDataComponent={NoDataComponent}
           defaultPageSize={10}

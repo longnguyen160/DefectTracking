@@ -17,6 +17,7 @@ import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums'
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { removeUser } from '../actions/account';
 import NoDataProps from '../../../components/table/NoDataProps';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class UsersList extends React.Component {
@@ -114,6 +115,8 @@ class UsersList extends React.Component {
         <ReactTable
           data={users}
           columns={columns}
+          loading={loading}
+          LoadingComponent={LoadingComponent}
           getNoDataProps={() => NoDataProps({ loading })}
           NoDataComponent={NoDataComponent}
           defaultPageSize={10}

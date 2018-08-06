@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import { connect } from 'react-redux';
+import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { bindActionCreators } from 'redux';
 import Select from 'react-select';
 import {
   ElementHeaderStyled,
   FormGroupStyled,
-  Image,
-  IssueStatusStyled,
+  Image, Input,
+  IssueStatusStyled, LineFormStyled,
   PageBoardStyled,
   TableBlockStyled,
   TitleElementStyled
@@ -17,18 +18,38 @@ import {
 import { loadAllIssues } from '../actions/issue';
 import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY } from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
-
+import NoDataProps from '../../../components/table/NoDataProps';
+import LoadingComponent from '../../../components/table/LoadingComponent';
+import NoDataComponent from '../../../components/table/NoDataComponent';
+import CalendarIcon from '../../../components/icon/CalendarIcon';
 
 class IssueList extends React.Component {
 
-  componentWillMount() {
+  fetchData = (state) => {
     const { loadAllIssues } = this.props;
 
-    loadAllIssues();
-  }
+    loadAllIssues({
+      page: state.page,
+      pageSize: state.pageSize,
+      sorted: state.sorted[0],
+      filtered: state.filtered.map((filter) => {
+        if (filter.id === 'createdAt' || filter.id === 'finishedAt') {
+          return Object.assign({}, filter, {
+            value: moment(filter.value).format('MM/DD/YYYY')
+          });
+        }
+
+        return filter;
+      })
+    });
+  };
+
+  handleFocus = (type) => {
+    document.getElementById(type).click();
+  };
 
   render() {
-    const { issues } = this.props;
+    const { issues, loading, pages } = this.props;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -41,25 +62,51 @@ class IssueList extends React.Component {
     };
     const columns = [
       {
+        Header: 'Issue Key',
+        accessor: 'issueKey',
+        ...styleColumn,
+        width: 80,
+        Cell: row => (
+          <TableBlockStyled alignLeft>
+            {row.value}
+          </TableBlockStyled>
+        )
+      },
+      {
         Header: 'Summary',
         accessor: 'issueName',
         ...styleColumn,
+        width: 200,
+        Cell: row => (
+          <TableBlockStyled alignLeft fullText>
+            {row.value}
+          </TableBlockStyled>
+        )
       },
       {
         Header: 'Assignee',
         accessor: 'assignee',
         ...styleColumn,
-        Cell: row => (
-          <TableBlockStyled alignLeft>
-            <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
-            {row.value && row.value.username}
-          </TableBlockStyled>
-        )
+        Filter: () => null,
+        Cell: row => row.value && row.value.username ?
+          (
+            <TableBlockStyled alignLeft>
+              <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
+              {row.value && row.value.username}
+            </TableBlockStyled>
+          )
+        :
+          (
+            <TableBlockStyled alignLeft>
+              No assignee yet
+            </TableBlockStyled>
+          )
       },
       {
         Header: 'Reporter',
         accessor: 'reporter',
         ...styleColumn,
+        Filter: () => null,
         Cell: row => (
           <TableBlockStyled alignLeft>
             <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
@@ -71,6 +118,8 @@ class IssueList extends React.Component {
         Header: 'Priority',
         accessor: 'priority',
         ...styleColumn,
+        width: 85,
+        Filter: () => null,
         Cell: (row) => {
           const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === row.value);
 
@@ -92,18 +141,56 @@ class IssueList extends React.Component {
         Header: 'Created At',
         accessor: 'createdAt',
         ...styleColumn,
+        Filter: ({ filter, onChange }) =>
+          <LineFormStyled
+            noMargin
+            customDatePicker
+          >
+          <Input
+              value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
+              onFocus={() => this.handleFocus('event_datePicker_createdAt')}
+            />
+            <DatePicker
+              id="event_datePicker_createdAt"
+              customInput={<CalendarIcon />}
+              selected={filter ? filter.value : null}
+              maxDate={moment()}
+              onChange={onChange}
+            />
+          </LineFormStyled>
+        ,
         Cell: row => moment(row.value).format('LLL')
       },
       {
-        Header: 'Due Date',
-        accessor: 'dueDate',
+        Header: 'Finished At',
+        accessor: 'finishedAt',
         ...styleColumn,
-        Cell: row => moment(row.value).format('LLL')
+        Filter: ({ filter, onChange }) =>
+          <LineFormStyled
+            noMargin
+            customDatePicker
+          >
+            <Input
+              value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
+              onFocus={() => this.handleFocus('event_datePicker_finishedAt')}
+            />
+            <DatePicker
+              id="event_datePicker_finishedAt"
+              customInput={<CalendarIcon />}
+              selected={filter ? filter.value : null}
+              maxDate={moment()}
+              onChange={onChange}
+            />
+          </LineFormStyled>
+        ,
+        Cell: row => row.value && moment(row.value).format('LLL')
       },
       {
         Header: 'Status',
         accessor: 'status',
         ...styleColumn,
+        width: 90,
+        Filter: () => null,
         Cell: row => (
           <TableBlockStyled alignLeft>
             <IssueStatusStyled status={row.value}>
@@ -169,9 +256,18 @@ class IssueList extends React.Component {
           />
         </FormGroupStyled>
         <ReactTable
+          manual
+          filterable={true}
           data={issues}
           columns={columns}
           defaultPageSize={10}
+          pages={pages}
+          loading={loading}
+          LoadingComponent={LoadingComponent}
+          getNoDataProps={() => NoDataProps({ loading })}
+          NoDataComponent={NoDataComponent}
+          onFetchData={this.fetchData}
+          getTheadFilterThProps={() => { return { style: { position: "inherit", overflow: "inherit" } } }}
           className="-striped -highlight"
         />
       </PageBoardStyled>
@@ -181,11 +277,15 @@ class IssueList extends React.Component {
 
 IssueList.propTypes = {
   issues: PropTypes.array.isRequired,
+  pages: PropTypes.number.isRequired,
+  loading: PropTypes.bool.isRequired,
   loadAllIssues: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   issues: state.issue.issues,
+  loading: state.issue.isLoading,
+  pages: state.issue.pages
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

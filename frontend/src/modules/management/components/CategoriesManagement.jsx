@@ -18,6 +18,7 @@ import { openModal } from '../../layout/actions/layout';
 import { deleteCategory, loadAllCategories, loadCategoryDetails } from '../actions/category';
 import Icon from '../../../components/icon/Icon';
 import NoDataProps from '../../../components/table/NoDataProps';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class CategoriesManagement extends React.Component {
@@ -118,6 +119,8 @@ class CategoriesManagement extends React.Component {
         <ReactTable
           data={categories}
           columns={columns}
+          loading={loading}
+          LoadingComponent={LoadingComponent}
           getNoDataProps={() => NoDataProps({ loading })}
           NoDataComponent={NoDataComponent}
           defaultPageSize={10}

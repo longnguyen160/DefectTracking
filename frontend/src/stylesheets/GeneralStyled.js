@@ -673,6 +673,9 @@ export const TableBlockStyled = styled.div`
   justify-content: center;
   font-size: ${props => props.fontSize || '14px'};
   flex-wrap: wrap;
+  ${props => props.fullText && css`
+    white-space: normal;
+  `}
   ${props => props.alignLeft && css`
     justify-content: flex-start;
   `}

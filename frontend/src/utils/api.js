@@ -77,8 +77,8 @@ const createIssue = (issue) => {
   return axios.post('user/createIssue', issue);
 };
 
-const loadAllIssues = () => {
-  return axios.get('user/loadAllIssues');
+const loadAllIssues = (request) => {
+  return axios.get(`admin/loadAllIssues?request=${encodeURI(JSON.stringify(request))}`);
 };
 
 const loadAllIssuesShortcut = (userId) => {

@@ -12,7 +12,7 @@ public interface IssueRepositoryCustom {
     Boolean didIssueExisted(String issueName);
     List<String> loadWatcherEmails(String issue);
     String generateIssueKey(String projectId);
-    List<IssueResponse> loadAllIssues(String userId);
+    IssueListResponse loadAllIssues(IssueListRequest issueListRequest);
     List<IssueShortcutResponse>loadAllIssuesBasedOnFilter(Filter filter);
     IssueHomePageResponse loadAllIssuesShortcut(String userId);
     List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds);

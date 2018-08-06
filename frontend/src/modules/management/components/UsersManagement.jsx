@@ -16,6 +16,7 @@ import { openModal } from '../../layout/actions/layout';
 import { loadAllUsers } from '../../account/actions/account';
 import { banUser } from '../actions/user';
 import NoDataProps from '../../../components/table/NoDataProps';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class UsersManagement extends React.Component {
@@ -136,6 +137,8 @@ class UsersManagement extends React.Component {
         <ReactTable
           data={users}
           columns={columns}
+          loading={loading}
+          LoadingComponent={LoadingComponent}
           getNoDataProps={() => NoDataProps({ loading })}
           NoDataComponent={NoDataComponent}
           defaultPageSize={10}

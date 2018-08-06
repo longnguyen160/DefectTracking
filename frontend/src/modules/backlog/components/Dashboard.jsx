@@ -40,6 +40,7 @@ import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { loadAllStatus } from '../../management/actions/status';
 import { loadAllIssuesBasedOnFilter, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import NoDataProps from '../../../components/table/NoDataProps';
+import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataComponent from '../../../components/table/NoDataComponent';
 
 class Dashboard extends Component {
@@ -278,6 +279,8 @@ class Dashboard extends Component {
         getTrGroupProps={(state, rowInfo, column, instance) => rowInfo}
         TrGroupComponent={this.renderRow}
         TheadComponent={this.renderHeader}
+        loading={loadingIssues}
+        LoadingComponent={LoadingComponent}
         getNoDataProps={() => NoDataProps({ loading: loadingIssues })}
         NoDataComponent={NoDataComponent}
         defaultPageSize={issues.length <= 10 ? issues.length : 10}
