@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, TableBlockStyled } from '../../stylesheets/GeneralStyled';
-import { FILE_BASE_URL, ICONS } from '../../utils/enums';
+import { FILE_BASE_URL, ICONS, DEFAULT_AVATAR } from '../../utils/enums';
 import Icon from '../icon/Icon';
 
 class CustomValueForSelect extends React.Component {
@@ -26,7 +26,7 @@ class CustomValueForSelect extends React.Component {
           <Image
             dynamic={'20px'}
             margin={'0 5px 0 0'}
-            src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}
+            src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
           />
         );
     }

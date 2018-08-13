@@ -28,7 +28,8 @@ import {
   ISSUE_PRIORITY_ARRAY,
   MESSAGE_TYPE,
   MODAL_TYPE,
-  WEB_SOCKET_URL
+  WEB_SOCKET_URL,
+  DEFAULT_AVATAR
 } from '../../../utils/enums';
 import { loadAllIssuesShortcut, loadIssueDetails, resetIssueList } from '../../issue/actions/issue';
 import Icon from '../../../components/icon/Icon';
@@ -81,7 +82,7 @@ class Home extends React.Component {
   renderLog = (message) => (
     <ListTableBodyStyled showList top key={message.id}>
       <ListTableBodyItemStyled flex={'0 0 45px'}>
-        <Image dynamic={'35px'} src={FILE_BASE_URL + message.sender.avatarURL || '/images/default_avatar.jpg'}/>
+        <Image dynamic={'35px'} src={FILE_BASE_URL + message.sender.avatarURL || FILE_BASE_URL + DEFAULT_AVATAR}/>
       </ListTableBodyItemStyled>
       <ListTableBodyItemStyled issueName container>
         <ListTableBodyItemStyled display={'inline-block'} noPadding>
@@ -107,7 +108,7 @@ class Home extends React.Component {
   renderComment = (message) => (
     <ListTableBodyStyled showList top key={message.id}>
       <ListTableBodyItemStyled flex={'0 0 45px'}>
-        <Image dynamic={'35px'} src={FILE_BASE_URL + message.sender.avatarURL || '/images/default_avatar.jpg'}/>
+        <Image dynamic={'35px'} src={FILE_BASE_URL + message.sender.avatarURL || FILE_BASE_URL + DEFAULT_AVATAR}/>
       </ListTableBodyItemStyled>
       <ListTableBodyItemStyled issueName container>
         <ListTableBodyItemStyled display={'inline-block'} noPadding>

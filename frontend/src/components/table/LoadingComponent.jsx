@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import LoadingIcon from '../icon/LoadingIcon';
 
 const LoadingComponent = (props) => {
-  const { loading } = props;
+  const { loading, filter } = props;
 
   return loading && (
-    <div className='-loading -active'>
+    <div className={`-loading${filter ? ' -loading-filter' : ''} -active`}>
       <div className="-loading-inner">
         <LoadingIcon />
       </div>
@@ -15,7 +15,8 @@ const LoadingComponent = (props) => {
 };
 
 LoadingComponent.propTypes = {
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  filter: PropTypes.bool
 };
 
 export default LoadingComponent;

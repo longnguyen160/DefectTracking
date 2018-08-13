@@ -35,7 +35,8 @@ import {
   MESSAGE_TYPE,
   ROLES,
   TEXT_AREA,
-  WEB_SOCKET_URL
+  WEB_SOCKET_URL,
+  DEFAULT_AVATAR
 } from '../../utils/enums';
 import Icon from '../icon/Icon';
 import { deleteFile, uploadFile } from '../../modules/file/actions/file';
@@ -513,7 +514,7 @@ class ModalIssueDetails extends React.Component {
                       <ElementHeaderStyled padding={'0'}>
                         <Image
                           topNav
-                          src={issue && issue.reporter.avatarURL ? FILE_BASE_URL + issue.reporter.avatarURL : '/images/default_avatar.jpg'}
+                          src={issue && issue.reporter.avatarURL ? FILE_BASE_URL + issue.reporter.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
                           margin={'0 5px'}
                         />
                         <span>{issue && issue.reporter.username}</span>
@@ -543,7 +544,7 @@ class ModalIssueDetails extends React.Component {
                                 <ElementHeaderStyled padding={'0'}>
                                   <Image
                                     topNav
-                                    src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : '/images/default_avatar.jpg'}
+                                    src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
                                     margin={'0 5px'}
                                   />
                                   <span>{value.username}</span>
@@ -572,7 +573,7 @@ class ModalIssueDetails extends React.Component {
                               <ElementHeaderStyled padding={'0'}>
                                 <Image
                                   topNav
-                                  src={assignee.avatarURL ? FILE_BASE_URL + assignee.avatarURL : '/images/default_avatar.jpg'}
+                                  src={assignee.avatarURL ? FILE_BASE_URL + assignee.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
                                   margin={'0 5px'}
                                 />
                                 <span>{assignee.username}</span>
@@ -593,7 +594,7 @@ class ModalIssueDetails extends React.Component {
                   {/*{*/}
                     {/*issue && issue.watchers.map(watcher => (*/}
                       {/*<ElementHeaderStyled padding={'0'} key={watcher.id}>*/}
-                        {/*<Image topNav src={watcher.avatarURL ? watcher.avatarURL : '/images/default_avatar.jpg'} margin={'0 5px'} />*/}
+                        {/*<Image topNav src={watcher.avatarURL ? watcher.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR} margin={'0 5px'} />*/}
                         {/*<span>{watcher.username}</span>*/}
                       {/*</ElementHeaderStyled>*/}
                     {/*))*/}

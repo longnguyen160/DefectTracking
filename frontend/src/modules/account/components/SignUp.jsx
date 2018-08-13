@@ -126,7 +126,11 @@ class SignUp extends Component {
               }
               {
                 submitting || account.isFetching ?
-                  <Button hasBorder disabled>
+                  <Button
+                    hasBorder
+                    disabled
+                    margin={'0 auto 10px'}
+                  >
                     <i className="fa fa-circle-o-notch fa-spin" />Loading
                   </Button>
                 :
@@ -135,6 +139,7 @@ class SignUp extends Component {
                     type="submit"
                     form="SignUpForm"
                     disabled={pristine}
+                    margin={'0 auto 10px'}
                   >
                     Sign Up
                   </Button>

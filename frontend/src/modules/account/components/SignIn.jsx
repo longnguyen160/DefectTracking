@@ -101,7 +101,11 @@ class SignIn extends React.Component {
               }
               {
                 submitting || account.isFetching ?
-                  <Button hasBorder disabled>
+                  <Button
+                    hasBorder
+                    disabled
+                    margin={'0 auto 10px'}
+                  >
                     <i className="fa fa-circle-o-notch fa-spin" />Loading
                   </Button>
                 :
@@ -110,6 +114,7 @@ class SignIn extends React.Component {
                     type="submit"
                     form="LoginForm"
                     disabled={pristine}
+                    margin={'0 auto 10px'}
                   >
                     Sign In
                   </Button>

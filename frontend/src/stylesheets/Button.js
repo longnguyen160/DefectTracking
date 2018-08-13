@@ -114,11 +114,22 @@ export const Button = styled.button`
     }
   `}
   
+  ${props => props.action && css`
+    background: ${props.action === 'Deactivate' ? '#ff3000' : '#01abc5'};
+    color: #fff;
+    &:hover {
+      background: ${props.action === 'Deactivate' ? '#ca3512' : '#036a95'};      
+    }    
+  `}
+  
   ${props => props.autoHeight && css`
     height: auto !important;
   `}
   ${props => props.autoWidth && css`
     width: auto !important;
+  `}
+  ${props => props.margin && css`
+    margin: ${props.margin};
   `}
 `;
 

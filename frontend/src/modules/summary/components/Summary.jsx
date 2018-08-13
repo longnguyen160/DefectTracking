@@ -19,7 +19,7 @@ import {
   TableBlockStyled, Image
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { FILE_BASE_URL, ICONS, ROLES } from '../../../utils/enums';
+import { FILE_BASE_URL, DEFAULT_AVATAR, ROLES } from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
 import CalendarIcon from '../../../components/icon/CalendarIcon';
 import { getIssueSummary, resetSummary } from '../actions/summary';
@@ -220,7 +220,7 @@ class Summary extends Component {
             <TableBlockStyled alignLeft>
               <Image
                 topNav
-                src={row.original && row.original.user.avatarURL ? FILE_BASE_URL + row.original.user.avatarURL : '/images/default_avatar.jpg'}
+                src={row.original && row.original.user.avatarURL ? FILE_BASE_URL + row.original.user.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
               />
               {row.original && row.original.user.username}
             </TableBlockStyled>
