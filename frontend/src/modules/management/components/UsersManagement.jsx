@@ -4,7 +4,7 @@ import SockJsClient from 'react-stomp';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTable from "react-table";
-import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL, DEFAULT_AVATAR } from '../../../utils/enums';
 import {
   ElementHeaderStyled, Image,
   PageBoardStyled,
@@ -52,7 +52,7 @@ class UsersManagement extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.original.profile && row.original.profile.avatarURL ? FILE_BASE_URL + row.original.profile.avatarURL : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.original.profile && row.original.profile.avatarURL ? FILE_BASE_URL + row.original.profile.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>
             {row.value}
           </TableBlockStyled>
         )
@@ -94,7 +94,7 @@ class UsersManagement extends React.Component {
         )
       },
       {
-        Header: 'Active',
+        Header: 'Status',
         accessor: 'active',
         ...styleColumn,
         width: 80,
@@ -108,16 +108,14 @@ class UsersManagement extends React.Component {
         Header: '',
         ...styleColumn,
         Cell: row => (
-          <div>
           <Button
-            hasBorder
-            remove
-            fullWidth
+            action={row.original.active ? 'Deactivate' : 'Activate'}
+            autoWidth
+            small
             onClick={() => banUser({ id: row.original.id, active: !row.original.active })}
           >
-            { row.original.active ? 'Lock account' : 'Unlock account' }
+            { row.original.active ? 'Deactivate' : 'Activate' }
           </Button>
-        </div>
         ),
       },
 

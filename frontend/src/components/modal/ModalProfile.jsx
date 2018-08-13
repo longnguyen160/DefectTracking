@@ -15,7 +15,7 @@ import {
   ModalCloseStyle
 } from '../../stylesheets/Modal';
 import { Image, LineFormStyled, TextErrorStyled } from '../../stylesheets/GeneralStyled';
-import { INPUT_TEXT, FILE_BASE_URL, ICONS } from '../../utils/enums';
+import { INPUT_TEXT, FILE_BASE_URL, ICONS, DEFAULT_AVATAR } from '../../utils/enums';
 import { Button } from '../../stylesheets/Button';
 import { validateForm } from '../../utils/ultis';
 import InputField from '../form/InputField';
@@ -91,7 +91,7 @@ class ModalProfile extends React.Component {
   render() {
     const { onClose, isOpen, handleSubmit, submitFailed, error, submitSucceeded, submitting, user, account } = this.props;
     const { avatarURL } = this.state;
-    let url = '/images/default_avatar.jpg';
+    let url = FILE_BASE_URL + DEFAULT_AVATAR;
 
     if (user.profile && user.profile.avatarURL) {
       url = FILE_BASE_URL + user.profile.avatarURL;

@@ -1,6 +1,6 @@
 const WEB_SOCKET_URL = `${window.location.origin}/ws`;
-
 const FILE_BASE_URL = `${window.location.origin}/files/?fileId=`;
+const DEFAULT_AVATAR = '5b6a05d84943ba2af40579bf';
 
 const INPUT_TEXT = 'text';
 const INPUT_PASSWORD = 'password';
@@ -373,4 +373,5 @@ export {
   MESSAGE,
   ISSUE_DETAILS,
   ROLES,
+  DEFAULT_AVATAR
 }

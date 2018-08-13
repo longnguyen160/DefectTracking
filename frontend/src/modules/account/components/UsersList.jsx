@@ -13,7 +13,7 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
 import { openModal } from '../../layout/actions/layout';
-import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL, DEFAULT_AVATAR } from '../../../utils/enums';
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { removeUser } from '../actions/account';
 import NoDataProps from '../../../components/table/NoDataProps';
@@ -66,7 +66,7 @@ class UsersList extends React.Component {
         ...styleColumn,
         Cell: row => (
           <TableBlockStyled>
-            <Image topNav src={row.row._original.avatarURL ? FILE_BASE_URL + row.row._original.avatarURL : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.row._original.avatarURL ? FILE_BASE_URL + row.row._original.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>
             {row.value}
           </TableBlockStyled>
         )

@@ -16,7 +16,7 @@ import {
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import { loadAllIssues } from '../actions/issue';
-import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY } from '../../../utils/enums';
+import { FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY, DEFAULT_AVATAR } from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
 import NoDataProps from '../../../components/table/NoDataProps';
 import LoadingComponent from '../../../components/table/LoadingComponent';
@@ -24,6 +24,10 @@ import NoDataComponent from '../../../components/table/NoDataComponent';
 import CalendarIcon from '../../../components/icon/CalendarIcon';
 
 class IssueList extends React.Component {
+
+  state = {
+    filtered: []
+  };
 
   fetchData = (state) => {
     const { loadAllIssues } = this.props;
@@ -48,8 +52,19 @@ class IssueList extends React.Component {
     document.getElementById(type).click();
   };
 
+  handleEventDate = (type, e) => {
+    let { filtered } = this.state;
+
+    if (e.keyCode === 8 || e.keyCode === 46) {
+      e.target.value = '';
+      filtered = filtered.filter(filter => filter.id !== type);
+      this.setState({ filtered });
+    }
+  };
+
   render() {
     const { issues, loading, pages } = this.props;
+    const { filtered } = this.state;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -91,7 +106,7 @@ class IssueList extends React.Component {
         Cell: row => row.value && row.value.username ?
           (
             <TableBlockStyled alignLeft>
-              <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
+              <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>
               {row.value && row.value.username}
             </TableBlockStyled>
           )
@@ -109,7 +124,7 @@ class IssueList extends React.Component {
         Filter: () => null,
         Cell: row => (
           <TableBlockStyled alignLeft>
-            <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : '/images/default_avatar.jpg'}/>
+            <Image topNav src={row.value && row.value.avatarURL ? FILE_BASE_URL + row.value.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>
             {row.value && row.value.username}
           </TableBlockStyled>
         )
@@ -147,16 +162,17 @@ class IssueList extends React.Component {
             customDatePicker
           >
           <Input
-              value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
-              onFocus={() => this.handleFocus('event_datePicker_createdAt')}
-            />
-            <DatePicker
-              id="event_datePicker_createdAt"
-              customInput={<CalendarIcon />}
-              selected={filter ? filter.value : null}
-              maxDate={moment()}
-              onChange={onChange}
-            />
+            value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
+            onFocus={() => this.handleFocus('event_datePicker_createdAt')}
+            onKeyDown={(e) => this.handleEventDate('createdAt', e)}
+          />
+          <DatePicker
+            id="event_datePicker_createdAt"
+            customInput={<CalendarIcon />}
+            selected={filter ? filter.value : null}
+            maxDate={moment()}
+            onChange={onChange}
+          />
           </LineFormStyled>
         ,
         Cell: row => moment(row.value).format('LLL')
@@ -173,6 +189,7 @@ class IssueList extends React.Component {
             <Input
               value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
               onFocus={() => this.handleFocus('event_datePicker_finishedAt')}
+              onKeyDown={(e) => this.handleEventDate('finishedAt', e)}
             />
             <DatePicker
               id="event_datePicker_finishedAt"
@@ -263,7 +280,10 @@ class IssueList extends React.Component {
           defaultPageSize={10}
           pages={pages}
           loading={loading}
+          filtered={filtered}
+          onFilteredChange={data => this.setState({ filtered: data })}
           LoadingComponent={LoadingComponent}
+          getLoadingProps={() => ({ filter: true })}
           getNoDataProps={() => NoDataProps({ loading })}
           NoDataComponent={NoDataComponent}
           onFetchData={this.fetchData}

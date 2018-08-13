@@ -12,7 +12,7 @@ import {
   LineFormStyled,
   TitleFormStyled
 } from '../../../stylesheets/GeneralStyled';
-import { FILE_BASE_URL, MESSAGE_TYPE, WEB_SOCKET_URL } from '../../../utils/enums';
+import { FILE_BASE_URL, MESSAGE_TYPE, WEB_SOCKET_URL, DEFAULT_AVATAR } from '../../../utils/enums';
 import { ModalLineContentStyled, ModalLineTitleStyled } from '../../../stylesheets/Modal';
 import moment from 'moment/moment';
 import { deleteFile, uploadFile } from '../../file/actions/file';
@@ -80,7 +80,7 @@ class Message extends Component {
     return (
       <LineFormStyled hasTitle key={message.id}>
         <FilterBoxWrapperStyled top fullWidth>
-          <Image topNav src={FILE_BASE_URL + message.sender.avatarURL || '/images/default_avatar.jpg'} />
+          <Image topNav src={FILE_BASE_URL + message.sender.avatarURL || FILE_BASE_URL + DEFAULT_AVATAR} />
           <DescriptionElementStyled noPadding>
             <ElementHeaderStyled padding={'0'}>
               <TitleFormStyled username>{message.sender.username}</TitleFormStyled>
@@ -97,7 +97,7 @@ class Message extends Component {
     return (
       <LineFormStyled hasTitle key={message.id}>
         <FilterBoxWrapperStyled top fullWidth>
-          <Image topNav src={FILE_BASE_URL + message.sender.avatarURL || '/images/default_avatar.jpg'} />
+          <Image topNav src={FILE_BASE_URL + message.sender.avatarURL || FILE_BASE_URL + DEFAULT_AVATAR} />
           <DescriptionElementStyled noPadding notPointer>
             <Editable
               name={'message'}

@@ -51,9 +51,9 @@ a {
   padding: 8px;
 }
 
-.ReactTable .-loading {
-  top: 64px;
-  bottom: 42px;
+.ReactTable .-loading-filter {
+  top: 64px !important;
+  bottom: 42px !important;
 }
 
 .Select-input input {
