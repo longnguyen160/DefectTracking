@@ -705,6 +705,12 @@ export const IssueStatusStyled = styled.div`
     background: ${props.status.background};
     color: ${props.status.color};
   `}
+  
+  ${props => props.small && css`
+    padding: 5px;
+    font-size: 13px;
+    font-family: 'Proxima Nova Regular';
+  `}
 `;
 
 export const AttachmentWrapperStyled = styled.div`

@@ -161,18 +161,18 @@ class IssueList extends React.Component {
             noMargin
             customDatePicker
           >
-          <Input
-            value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
-            onFocus={() => this.handleFocus('event_datePicker_createdAt')}
-            onKeyDown={(e) => this.handleEventDate('createdAt', e)}
-          />
-          <DatePicker
-            id="event_datePicker_createdAt"
-            customInput={<CalendarIcon />}
-            selected={filter ? filter.value : null}
-            maxDate={moment()}
-            onChange={onChange}
-          />
+            <Input
+              value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
+              onFocus={() => this.handleFocus('event_datePicker_createdAt')}
+              onKeyDown={(e) => this.handleEventDate('createdAt', e)}
+            />
+            <DatePicker
+              id="event_datePicker_createdAt"
+              customInput={<CalendarIcon />}
+              selected={filter ? filter.value : null}
+              maxDate={moment()}
+              onChange={onChange}
+            />
           </LineFormStyled>
         ,
         Cell: row => moment(row.value).format('LLL')

@@ -1,16 +1,18 @@
 package com.capstone.defecttracking.models.Issue;
 
+import com.capstone.defecttracking.models.Status.StatusResponse;
+
 public class IssueShortcutResponse {
     private String id;
     private String issueKey;
     private String summary;
     private String priority;
-    private String status;
+    private StatusResponse status;
 
     public IssueShortcutResponse() {
     }
 
-    public IssueShortcutResponse(String id, String issueKey, String summary, String priority, String status) {
+    public IssueShortcutResponse(String id, String issueKey, String summary, String priority, StatusResponse status) {
         this.id = id;
         this.issueKey = issueKey;
         this.summary = summary;
@@ -50,11 +52,11 @@ public class IssueShortcutResponse {
         this.priority = priority;
     }
 
-    public String getStatus() {
+    public StatusResponse getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusResponse status) {
         this.status = status;
     }
 }

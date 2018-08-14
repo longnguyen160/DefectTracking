@@ -79,7 +79,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getIssueKey(),
             issue.getIssueName(),
             issue.getPriority(),
-            issue.getStatus()
+            getStatus(issue.getStatus())
         );
     }
 
@@ -219,7 +219,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getPriority(),
-                getStatusColor(issue.getStatus())
+                getStatus(issue.getStatus())
             ))
             .collect(Collectors.toList());
     }
@@ -237,7 +237,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getPriority(),
-                getStatusColor(issue.getStatus())
+                getStatus(issue.getStatus())
             ))
             .collect(Collectors.toList())
         );
@@ -251,7 +251,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getPriority(),
-                getStatusColor(issue.getStatus())
+                getStatus(issue.getStatus())
             ))
             .collect(Collectors.toList()));
 
@@ -345,10 +345,11 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor());
     }
 
-    private Status getStatus(String statusId) {
+    private StatusResponse getStatus(String statusId) {
         Query query = new Query(Criteria.where("_id").is(statusId));
+        Status status = mongoTemplate.findOne(query, Status.class);
 
-        return mongoTemplate.findOne(query, Status.class);
+        return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor());
     }
 
     private String getStatusColor(String statusId) {

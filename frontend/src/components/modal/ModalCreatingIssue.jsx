@@ -31,7 +31,7 @@ import {
   DATETIME_PICKER,
   CREATABLE,
   ISSUE_PRIORITY_ARRAY,
-  FILE_BASE_URL
+  FILE_BASE_URL, ROLES
 } from '../../utils/enums';
 import InputField from '../form/InputField';
 import { validateForm } from '../../utils/ultis';
@@ -159,7 +159,7 @@ class ModalCreatingIssue extends React.Component {
           <ModalContentStyled>
             <ModalLineStyled hasRows>
               <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Project</ModalLineTitleStyled>
+                <ModalLineTitleStyled>Project (*)</ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled reactSelect>
                     <InputField
@@ -277,7 +277,7 @@ class ModalCreatingIssue extends React.Component {
             <ModalLineStyled>
               <ModalLineContentStyled alignLeft>
                 <ModalLineTitleStyled>
-                  Due Date (*)
+                  Due Date
                 </ModalLineTitleStyled>
                 <ModalLineTitleStyled fullInput>
                   <LineFormStyled>
@@ -383,7 +383,11 @@ const mapStateToProps = state => ({
     value: project.id,
     label: project.name
   })),
-  usersInProject: state.project.usersInProject.map(user => ({
+  usersInProject: state.project.usersInProject.filter(user => {
+    const developers = state.layout.selectedProject.members.filter(member => member.role === ROLES.DEVELOPER);
+
+    return !!developers.find(member => member.userId === user.id);
+  }).map(user => ({
     value: user.id,
     label: user.username,
     ...user

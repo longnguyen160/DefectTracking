@@ -7,12 +7,13 @@ import ReactTable from 'react-table';
 import SockJsClient from 'react-stomp';
 import {
   ElementHeaderStyled,
-  FormGroupStyled,
+  FormGroupStyled, IssueStatusStyled,
   PageBoardItemStyled,
   PageBoardStyled,
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
+  ListTableBodyItemStyled,
   ListTableBodyStyled,
   ListTableHeaderStyled,
   ListTableStyled
@@ -196,6 +197,7 @@ class Dashboard extends Component {
   renderRow = (props) => (
     <ListTableStyled
       className={'rt-tr ' + props.className}
+      odd={props.index % 2 === 0}
       onClick={() => this.handleOpenModal(props.original && props.original.id)}
       style={{
         ...props.style,
@@ -205,7 +207,7 @@ class Dashboard extends Component {
         showList
         noBackground
         fixed
-        color={props.original && props.original.status}
+        color={props.original && props.original.status.background}
       >
         {props.children}
       </ListTableBodyStyled>
@@ -216,7 +218,6 @@ class Dashboard extends Component {
     <ListTableHeaderStyled
       className={`rt-thead ${props.className}`}
       padding={'0'}
-      odd={props.index && props.index % 2 === 0}
       style={{
         ...props.style
       }}
@@ -253,7 +254,7 @@ class Dashboard extends Component {
         Header: 'Priority',
         accessor: 'priority',
         ...styleColumn,
-        width: 55,
+        width: 75,
         Cell: (row) => {
           const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === row.value);
 
@@ -268,6 +269,17 @@ class Dashboard extends Component {
           );
         }
       },
+      {
+        Header: 'Status',
+        accessor: 'status',
+        ...styleColumn,
+        width: 85,
+        Cell: (row) => (
+          <IssueStatusStyled small status={row.value}>
+            {row.value.name}
+          </IssueStatusStyled>
+        )
+      }
     ];
 
     return (

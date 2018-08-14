@@ -21,8 +21,10 @@ export const ListTableHeaderItemsStyled = styled.div`
     flex: 1;
   `};
   ${props => props.propertyType === 'Priority' && css`
-    flex: 0 0 55px;
-    padding: 0px 5px 0px 0px;
+    flex: 0 0 75px;    
+  `};
+  ${props => props.propertyType === 'Status' && css`
+    flex: 0 0 85px;    
   `};
   @media (max-width: 1024px) {
     ${props => props.propertyType === 'Issue' && css`
@@ -124,9 +126,12 @@ export const ListTableBodyItemStyled = styled.div`
   `}
   
   ${props => props.propertyType === 'Priority' && css`
-    flex: 0 0 55px;
-    padding: 0px 5px 0px 0px;
+    flex: 0 0 75px;    
     justify-content: center;
+  `}
+  
+  ${props => props.propertyType === 'Status' && css`
+    flex: 0 0 85px;    
   `}
   
   ${props => props.container && css`

@@ -8,6 +8,7 @@ import CustomOptionForSelect from '../form/CustomOptionForSelect';
 import CustomValueForSelect from '../form/CustomValueForSelect';
 import { loadAllUsersInProject } from '../../modules/projects/actions/usersInProject';
 import { loadAllCategoriesInProject } from '../../modules/layout/actions/layout';
+import { ROLES } from '../../utils/enums';
 
 class CustomSelect extends Component {
 
@@ -55,7 +56,7 @@ class CustomSelect extends Component {
   };
 
   render() {
-    const { renderCustom, usersInProject, name, categories, multi, clearable } = this.props;
+    const { renderCustom, usersInProject, name, categories, multi, clearable, loading } = this.props;
     let { options } = this.props;
     const { value } = this.state;
     let config = {};
@@ -83,6 +84,7 @@ class CustomSelect extends Component {
         value={value}
         options={options}
         onChange={this.handleChange}
+        isLoading={loading}
         {...config}
       />
     );
@@ -101,11 +103,17 @@ CustomSelect.propTypes = {
   options: PropTypes.array,
   categories: PropTypes.array.isRequired,
   value: PropTypes.object.isRequired,
-  clearable: PropTypes.bool
+  clearable: PropTypes.bool,
+  loading: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
-  usersInProject: state.project.usersInProject.map(user => ({
+  usersInProject: state.project.usersInProject.filter(user => {
+    const project = state.layout.selectedProject || state.layout.project;
+    const developers = project.members.filter(member => member.role === ROLES.DEVELOPER);
+
+    return !!developers.find(member => member.userId === user.id);
+  }).map(user => ({
     value: user.id,
     label: user.username,
     ...user
@@ -115,6 +123,7 @@ const mapStateToProps = state => ({
     label: category.name,
     ...category
   })),
+  loading: state.project.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

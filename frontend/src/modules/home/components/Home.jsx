@@ -11,7 +11,7 @@ import {
   ElementHeaderStyled,
   Image,
   TitleFormStyled,
-  LabelStyled
+  LabelStyled, IssueStatusStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
   ListTableHeaderStyled,
@@ -148,7 +148,7 @@ class Home extends React.Component {
             showList
             noBackground
             fixed
-            color={issue.status}
+            color={issue.status.background}
           >
             <ListTableBodyItemStyled propertyType={'Issue'}>
               {issue.issueKey}
@@ -164,6 +164,11 @@ class Home extends React.Component {
                 height={15}
                 rotated rotate={'rotateZ(90deg)'}
               />
+            </ListTableBodyItemStyled>
+            <ListTableBodyItemStyled propertyType={'Status'}>
+              <IssueStatusStyled small status={issue.status}>
+                {issue.status.name}
+              </IssueStatusStyled>
             </ListTableBodyItemStyled>
           </ListTableBodyStyled>
         </ListTableStyled>
@@ -187,6 +192,7 @@ class Home extends React.Component {
               <ListTableHeaderItemsStyled propertyType={'Issue'}>Issue</ListTableHeaderItemsStyled>
               <ListTableHeaderItemsStyled propertyType={'Name'}>Summary</ListTableHeaderItemsStyled>
               <ListTableHeaderItemsStyled propertyType={'Priority'}>Priority</ListTableHeaderItemsStyled>
+              <ListTableHeaderItemsStyled propertyType={'Status'}>Status</ListTableHeaderItemsStyled>
             </ListTableHeaderStyled>
             <ListTableBodyContainerStyled willChange height={'445px'}>
               {
