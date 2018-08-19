@@ -140,10 +140,10 @@ function* watchUpdateIssue() {
   yield takeLatest(UPDATE_ISSUE, updateIssue);
 }
 
-function* loadAllIssuesBasedOnFilter({ filter }) {
+function* loadAllIssuesBasedOnFilter({ issueListRequest, filter }) {
   try {
     yield put(loadAllIssuesBasedOnFilterRequest());
-    const { data } = yield call(API.loadAllIssuesBasedOnFilter, filter);
+    const { data } = yield call(API.loadAllIssuesBasedOnFilter, issueListRequest, filter);
 
     yield put(loadAllIssuesBasedOnFilterSuccess(data));
   } catch (error) {

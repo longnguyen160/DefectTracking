@@ -100,17 +100,18 @@ public class IssueController {
     }
 
     @GetMapping("/user/loadAllIssuesBasedOnFilter")
-    public List<IssueShortcutResponse> loadAllIssuesBasedOnFilter(@RequestParam(value = "filter") String filterRequest) {
+    public IssueListResponse loadAllIssuesBasedOnFilter(@RequestParam(value = "issueListRequest") String request, @RequestParam(value = "filter") String filterRequest) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
+            IssueListRequest issueListRequest = objectMapper.readValue(request, IssueListRequest.class);
             Filter filter = objectMapper.readValue(filterRequest, Filter.class);
 
-            return issueRepositoryCustom.loadAllIssuesBasedOnFilter(filter);
+            return issueRepositoryCustom.loadAllIssuesBasedOnFilter(issueListRequest, filter);
         } catch (IOException e) {
             e.printStackTrace();
 
-            return new ArrayList<>();
+            return new IssueListResponse(new ArrayList<>(), 0);
         }
     }
 

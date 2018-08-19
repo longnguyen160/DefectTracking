@@ -33,6 +33,15 @@ public class IssueResponse {
         this.finishedAt = finishedAt;
     }
 
+    public IssueResponse(String id, String issueKey, String issueName, StatusResponse status, String priority, Date createdAt) {
+        this.id = id;
+        this.issueKey = issueKey;
+        this.issueName = issueName;
+        this.status = status;
+        this.priority = priority;
+        this.createdAt = createdAt;
+    }
+
     public String getId() {
         return id;
     }

@@ -67,8 +67,18 @@ export const PageBoardStyled = styled.section`
     height: 100%;
     overflow-y: auto;
   `}
+  ${props => props.block && css`
+    display: block;
+    overflow-y: auto;    
+  `}
   & > .ReactTable {
     flex: 1;
+  }
+  .rt-table {
+    overflow: visible !important;
+  }
+  .react-datepicker-popper {
+    z-index: 1000;    
   }
   ${props => props.noPadding && css`
     padding: 0;

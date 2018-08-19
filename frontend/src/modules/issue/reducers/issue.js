@@ -97,7 +97,8 @@ export default function issue(state = initialState, action) {
 
     case LOAD_ALL_ISSUES_BASED_ON_FILTER_SUCCESS:
       return Object.assign({}, state, {
-        issues: action.data,
+        issues: action.data.issues,
+        pages: action.data.pages,
         isLoading: false,
         error: null
       });

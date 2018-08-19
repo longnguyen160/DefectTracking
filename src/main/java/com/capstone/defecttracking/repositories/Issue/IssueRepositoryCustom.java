@@ -13,7 +13,7 @@ public interface IssueRepositoryCustom {
     List<String> loadWatcherEmails(String issue);
     String generateIssueKey(String projectId);
     IssueListResponse loadAllIssues(IssueListRequest issueListRequest);
-    List<IssueShortcutResponse>loadAllIssuesBasedOnFilter(Filter filter);
+    IssueListResponse loadAllIssuesBasedOnFilter(IssueListRequest issueListRequest, Filter filter);
     IssueHomePageResponse loadAllIssuesShortcut(String userId);
     List<IssueBacklogResponse> loadAllIssuesInPhase(ArrayList<String> issueIds);
     List<IssueReportResponse> getIssueSummary(IssueReportRequest issueReportRequest);

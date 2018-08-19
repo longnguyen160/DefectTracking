@@ -79,7 +79,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             issue.getIssueKey(),
             issue.getIssueName(),
             issue.getPriority(),
-            getStatus(issue.getStatus())
+            getStatusResponse(issue.getStatus())
         );
     }
 
@@ -189,39 +189,26 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     }
 
     @Override
-    public List<IssueShortcutResponse> loadAllIssuesBasedOnFilter(Filter filter) {
-        Criteria criteria = new Criteria();
+    public IssueListResponse loadAllIssuesBasedOnFilter(IssueListRequest issueListRequest, Filter filter) {
+        Query query = configCriteriaForIssueList(issueListRequest, filter);
+        int pages = (int) Math.ceil(mongoTemplate.find(query, Issue.class).size() / issueListRequest.getPageSize());
 
-        if (filter.getStatus() != null && filter.getStatus().size() > 0) {
-            criteria.and("status").in(filter.getStatus());
-        }
-        if (filter.getAssignee() != null && filter.getAssignee().size() > 0) {
-            criteria.and("assignee").in(filter.getAssignee());
-        }
-        if (filter.getReporter() != null && filter.getReporter().size() > 0) {
-            criteria.and("reporter").in(filter.getReporter());
-        }
-        if (filter.getCategories() != null && filter.getCategories().size() > 0) {
-            criteria.and("categories").all(filter.getCategories());
-        }
-        if (filter.getProjectId() != null && filter.getProjectId().length() > 0) {
-            criteria.and("projectId").in(filter.getProjectId());
-        }
-        if (filter.getPriority() != null && filter.getPriority().size() > 0) {
-            criteria.and("priority").in(filter.getPriority());
-        }
-        Query query = new Query(criteria).with(Sort.by("updatedAt").descending());
-        return mongoTemplate
+        query.limit(issueListRequest.getPageSize()).skip(issueListRequest.getPage() * issueListRequest.getPageSize());
+        List<IssueResponse> issueList = mongoTemplate
             .find(query, Issue.class)
             .stream()
-            .map(issue -> new IssueShortcutResponse(
+            .map(issue -> new IssueResponse(
                 issue.getId(),
                 issue.getIssueKey(),
                 issue.getIssueName(),
+                getStatusResponse(issue.getStatus()),
                 issue.getPriority(),
-                getStatus(issue.getStatus())
+                issue.getCreatedAt()
             ))
             .collect(Collectors.toList());
+
+
+        return new IssueListResponse(issueList, pages);
     }
 
     @Override
@@ -237,7 +224,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getPriority(),
-                getStatus(issue.getStatus())
+                getStatusResponse(issue.getStatus())
             ))
             .collect(Collectors.toList())
         );
@@ -251,7 +238,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
                 issue.getIssueKey(),
                 issue.getIssueName(),
                 issue.getPriority(),
-                getStatus(issue.getStatus())
+                getStatusResponse(issue.getStatus())
             ))
             .collect(Collectors.toList()));
 
@@ -338,24 +325,58 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         return issueReportResponses;
     }
 
+    private Query configCriteriaForIssueList(IssueListRequest issueListRequest, Filter filter) {
+        Criteria criteria = new Criteria();
+        Sort sort = Sort.by("updatedAt").descending();
+
+        if (filter.getStatus() != null && filter.getStatus().size() > 0) {
+            criteria.and("status").in(filter.getStatus());
+        }
+        if (filter.getAssignee() != null && filter.getAssignee().size() > 0) {
+            criteria.and("assignee").in(filter.getAssignee());
+        }
+        if (filter.getReporter() != null && filter.getReporter().size() > 0) {
+            criteria.and("reporter").in(filter.getReporter());
+        }
+        if (filter.getCategories() != null && filter.getCategories().size() > 0) {
+            criteria.and("categories").all(filter.getCategories());
+        }
+        if (filter.getProjectId() != null && filter.getProjectId().length() > 0) {
+            criteria.and("projectId").in(filter.getProjectId());
+        }
+        if (filter.getPriority() != null && filter.getPriority().size() > 0) {
+            criteria.and("priority").in(filter.getPriority());
+        }
+
+        for (int i = 0; i < issueListRequest.getFiltered().size(); i++) {
+            FilterType filterType = issueListRequest.getFiltered().get(i);
+            if (filterType.getId().equals("createdAt") || filterType.getId().equals("finishedAt")) {
+                Date date = null;
+                Date dateAfterDate = null;
+                try {
+                    date = new SimpleDateFormat("MM/dd/yyyy").parse(filterType.getValue());
+                    dateAfterDate = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                criteria.and(filterType.getId()).gte(date).lte(dateAfterDate);
+            } else {
+                criteria.and(filterType.getId()).regex(filterType.getValue(), "i");
+            }
+        }
+        if (issueListRequest.getSorted() != null && issueListRequest.getSorted().isDesc()) {
+            sort = Sort.by(issueListRequest.getSorted().getId()).descending();
+        } else if (issueListRequest.getSorted() != null) {
+            sort = Sort.by(issueListRequest.getSorted().getId()).ascending();
+        }
+        return new Query(criteria).with(sort);
+    }
+
     private StatusResponse getStatusResponse(String statusId) {
         Query query = new Query(Criteria.where("_id").is(statusId));
         Status status = mongoTemplate.findOne(query, Status.class);
 
         return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor());
-    }
-
-    private StatusResponse getStatus(String statusId) {
-        Query query = new Query(Criteria.where("_id").is(statusId));
-        Status status = mongoTemplate.findOne(query, Status.class);
-
-        return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor());
-    }
-
-    private String getStatusColor(String statusId) {
-        Query query = new Query(Criteria.where("_id").is(statusId));
-
-        return mongoTemplate.findOne(query, Status.class).getBackground();
     }
 
     private Update configUpdate(ArrayList<?> list, String type, String value) {

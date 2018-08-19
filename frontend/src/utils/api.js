@@ -85,8 +85,8 @@ const loadAllIssuesShortcut = (userId) => {
   return axios.get(`user/loadAllIssuesShortcut?userId=${userId}`);
 };
 
-const loadAllIssuesBasedOnFilter = (filter) => {
-  return axios.get(`user/loadAllIssuesBasedOnFilter?filter=${encodeURI(JSON.stringify(filter))}`);
+const loadAllIssuesBasedOnFilter = (issueListRequest, filter) => {
+  return axios.get(`user/loadAllIssuesBasedOnFilter?issueListRequest=${encodeURI(JSON.stringify(issueListRequest))}&filter=${encodeURI(JSON.stringify(filter))}`);
 };
 
 const loadIssueShortcut = (issueId) => {

@@ -2,14 +2,26 @@ package com.capstone.defecttracking.models.Issue;
 
 import com.capstone.defecttracking.models.Status.StatusResponse;
 
+import java.util.Date;
+
 public class IssueShortcutResponse {
     private String id;
     private String issueKey;
     private String summary;
     private String priority;
+    private Date createdAt;
     private StatusResponse status;
 
     public IssueShortcutResponse() {
+    }
+
+    public IssueShortcutResponse(String id, String issueKey, String summary, String priority, Date createdAt, StatusResponse status) {
+        this.id = id;
+        this.issueKey = issueKey;
+        this.summary = summary;
+        this.priority = priority;
+        this.createdAt = createdAt;
+        this.status = status;
     }
 
     public IssueShortcutResponse(String id, String issueKey, String summary, String priority, StatusResponse status) {
@@ -58,5 +70,13 @@ public class IssueShortcutResponse {
 
     public void setStatus(StatusResponse status) {
         this.status = status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

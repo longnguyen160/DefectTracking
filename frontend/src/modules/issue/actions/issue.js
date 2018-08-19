@@ -112,9 +112,10 @@ const loadAllIssuesShortcutFailure = (error) => {
   }
 };
 
-const loadAllIssuesBasedOnFilter = (filter) => {
+const loadAllIssuesBasedOnFilter = (issueListRequest, filter) => {
   return {
     type: LOAD_ALL_ISSUES_BASED_ON_FILTER,
+    issueListRequest,
     filter
   }
 };

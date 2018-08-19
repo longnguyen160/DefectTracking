@@ -5,15 +5,16 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import ReactTable from 'react-table';
 import SockJsClient from 'react-stomp';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 import {
   ElementHeaderStyled,
-  FormGroupStyled, IssueStatusStyled,
+  FormGroupStyled, Input, IssueStatusStyled, LineFormStyled,
   PageBoardItemStyled,
   PageBoardStyled,
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
-  ListTableBodyItemStyled,
   ListTableBodyStyled,
   ListTableHeaderStyled,
   ListTableStyled
@@ -43,6 +44,8 @@ import { loadAllIssuesBasedOnFilter, loadIssueDetails, resetIssueList } from '..
 import NoDataProps from '../../../components/table/NoDataProps';
 import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataComponent from '../../../components/table/NoDataComponent';
+import CalendarIcon from '../../../components/icon/CalendarIcon';
+
 
 class Dashboard extends Component {
 
@@ -53,6 +56,8 @@ class Dashboard extends Component {
 
     this.state = {
       view: 'list',
+      filtered: [],
+      issueListRequest: {},
       filter: {
         ...filter,
         projectId: selectedProject && selectedProject.id,
@@ -69,14 +74,12 @@ class Dashboard extends Component {
       user,
       getFilter,
       filter,
-      loadAllIssuesBasedOnFilter,
     } = this.props;
 
     loadAllStatus(ROLES.ADMIN);
     if (user && !filter) {
       getFilter(user.id);
     } else if (filter) {
-      loadAllIssuesBasedOnFilter(filter);
       this.setState({ filter });
     }
     if (selectedProject) {
@@ -87,6 +90,7 @@ class Dashboard extends Component {
   componentWillReceiveProps(nextProps) {
     const { selectedProject, user, issues, filter } = nextProps;
     const { updateCurrentUserRole, loadAllUsersInProject, getFilter, loadAllCategoriesInProject, loadAllIssuesBasedOnFilter, updateFilter } = this.props;
+    const { issueListRequest } = this.state;
 
     if (user && !this.props.user) {
       const filterState = this.state.filter;
@@ -107,7 +111,7 @@ class Dashboard extends Component {
         filter: newFilter
       });
       updateFilter(newFilter);
-      loadAllIssuesBasedOnFilter(newFilter);
+      loadAllIssuesBasedOnFilter(issueListRequest, newFilter);
     }
     if (user && JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const list = {
@@ -129,11 +133,10 @@ class Dashboard extends Component {
       this.setState({
         filter: newFilter
       });
+      loadAllIssuesBasedOnFilter(issueListRequest, newFilter);
       updateFilter(newFilter);
-      loadAllIssuesBasedOnFilter(newFilter);
       loadAllUsersInProject(selectedProject.id);
       loadAllCategoriesInProject(selectedProject.id);
-
       updateCurrentUserRole(newRole, oldRole);
       this.setState({ list });
     }
@@ -152,19 +155,61 @@ class Dashboard extends Component {
     resetIssueList();
   }
 
+  fetchData = (state) => {
+    const { loadAllIssuesBasedOnFilter, selectedProject } = this.props;
+    const { filter } = this.state;
+    const issueListRequest = {
+      page: state.page,
+      pageSize: 10,
+      sorted: state.sorted[0],
+      filtered: state.filtered.map((filter) => {
+        if (filter.id === 'createdAt') {
+          return Object.assign({}, filter, {
+            value: moment(filter.value).format('MM/DD/YYYY')
+          });
+        }
+
+        return filter;
+      })
+    };
+
+    if (JSON.stringify(issueListRequest) !== JSON.stringify(this.state.issueListRequest)) {
+      this.setState({ issueListRequest });
+
+      if (selectedProject) {
+        loadAllIssuesBasedOnFilter(issueListRequest, filter);
+      }
+    }
+  };
+
+  handleFocus = (type) => {
+    document.getElementById(type).click();
+  };
+
+  handleEventDate = (type, e) => {
+    let { filtered } = this.state;
+
+    if (e.keyCode === 8 || e.keyCode === 46) {
+      e.target.value = '';
+      filtered = filtered.filter(filter => filter.id !== type);
+      this.setState({ filtered });
+    }
+  };
+
   handleChangeView = (type) => {
     this.setState({ view: type });
   };
 
   handleChangeSelect = (type, value) => {
     let { filter } = this.state;
+    const { issueListRequest } = this.state;
     const { updateFilter, loadAllIssuesBasedOnFilter } = this.props;
 
     filter = Object.assign(filter, {
       [type]: value
     });
     this.setState({ filter });
-    loadAllIssuesBasedOnFilter(filter);
+    loadAllIssuesBasedOnFilter(issueListRequest, filter);
     updateFilter(filter);
   };
 
@@ -227,7 +272,8 @@ class Dashboard extends Component {
   );
 
   renderList = () => {
-    const { issues, loadingIssues } = this.props;
+    const { issues, loadingIssues, pages } = this.props;
+    const { filtered } = this.state;
     const styleColumn = {
       style: {
         display: 'flex',
@@ -247,7 +293,7 @@ class Dashboard extends Component {
       },
       {
         Header: 'Name',
-        accessor: 'summary',
+        accessor: 'issueName',
         ...styleColumn,
       },
       {
@@ -255,6 +301,7 @@ class Dashboard extends Component {
         accessor: 'priority',
         ...styleColumn,
         width: 75,
+        Filter: () => null,
         Cell: (row) => {
           const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === row.value);
 
@@ -270,10 +317,37 @@ class Dashboard extends Component {
         }
       },
       {
+        Header: 'Created At',
+        accessor: 'createdAt',
+        ...styleColumn,
+        width: 200,
+        Filter: ({ filter, onChange }) =>
+          <LineFormStyled
+            noMargin
+            customDatePicker
+          >
+            <Input
+              value={filter ? moment(filter.value).format('MM/DD/YYYY') : ''}
+              onFocus={() => this.handleFocus('event_datePicker_createdAt')}
+              onKeyDown={(e) => this.handleEventDate('createdAt', e)}
+            />
+            <DatePicker
+              id="event_datePicker_createdAt"
+              customInput={<CalendarIcon />}
+              selected={filter ? filter.value : null}
+              maxDate={moment()}
+              onChange={onChange}
+            />
+          </LineFormStyled>
+        ,
+        Cell: row => moment(row.value).format('LLL')
+      },
+      {
         Header: 'Status',
         accessor: 'status',
         ...styleColumn,
         width: 85,
+        Filter: () => null,
         Cell: (row) => (
           <IssueStatusStyled small status={row.value}>
             {row.value.name}
@@ -284,17 +358,25 @@ class Dashboard extends Component {
 
     return (
       <ReactTable
+        manual
         key={issues.length}
+        filterable={true}
         columns={columns}
         data={issues}
+        pages={pages}
+        filtered={filtered}
+        onFilteredChange={data => this.setState({ filtered: data })}
         style={{ willChange: 'transform' }}
         getTrGroupProps={(state, rowInfo, column, instance) => rowInfo}
         TrGroupComponent={this.renderRow}
         TheadComponent={this.renderHeader}
         loading={loadingIssues}
+        getLoadingProps={() => ({ filter: true })}
+        onFetchData={this.fetchData}
         LoadingComponent={LoadingComponent}
         getNoDataProps={() => NoDataProps({ loading: loadingIssues })}
         NoDataComponent={NoDataComponent}
+        getTheadFilterThProps={() => { return { style: { position: "inherit", overflow: "inherit" } } }}
         defaultPageSize={issues.length <= 10 ? issues.length : 10}
       />
     );
@@ -312,7 +394,7 @@ class Dashboard extends Component {
     const { usersInProject, statusList, categories, issues, openModal } = this.props;
 
     return (
-      <PageBoardStyled backlog>
+      <PageBoardStyled block>
         <ElementHeaderStyled padding={'0'}>
           <TitleElementStyled noPadding fontSize={'20px'}>
             Dashboard
@@ -455,6 +537,7 @@ Dashboard.propTypes = {
   usersInProject: PropTypes.array.isRequired,
   statusList: PropTypes.array.isRequired,
   issues: PropTypes.array.isRequired,
+  pages: PropTypes.number.isRequired,
   categories: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
   user: PropTypes.object,
@@ -467,6 +550,7 @@ const mapStateToProps = state => ({
   user: state.layout.user,
   statusList: state.management.statusList,
   issues: state.issue.issues,
+  pages: state.issue.pages,
   loadingIssues: state.issue.isLoading,
   filter: state.backlog.filter,
   categories: state.layout.categories,
