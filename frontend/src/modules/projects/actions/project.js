@@ -9,7 +9,9 @@ import {
   UPDATE_PROJECT,
   UPDATE_PROJECT_REQUEST,
   UPDATE_PROJECT_SUCCESS,
-  UPDATE_PROJECT_FAILURE
+  UPDATE_PROJECT_FAILURE,
+  SELECT_PROJECT_TYPE,
+  RESET_PROJECT_TYPE
 } from './types';
 
 const createProject = (projectCategory, closeModal) => {
@@ -86,6 +88,19 @@ const updateProjectFailure = (error) => {
   }
 };
 
+const selectProjectType = (projectType) => {
+  return {
+    type: SELECT_PROJECT_TYPE,
+    projectType
+  }
+};
+
+const resetProjectType = () => {
+  return {
+    type: RESET_PROJECT_TYPE
+  }
+};
+
 export {
   createProject,
   requestCreateProject,
@@ -97,5 +112,7 @@ export {
   updateProject,
   updateProjectRequest,
   updateProjectSuccess,
-  updateProjectFailure
+  updateProjectFailure,
+  selectProjectType,
+  resetProjectType
 }

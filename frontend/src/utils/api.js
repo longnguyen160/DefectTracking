@@ -129,6 +129,10 @@ const loadAllCategories = () => {
   return axios.get('admin/loadAllCategories');
 };
 
+const loadAllCategoryNames = () => {
+  return axios.get('admin/loadAllCategoryNames');
+};
+
 const loadAllCategoriesInProject = (projectId) => {
   return axios.get(`user/loadAllCategoriesInProject?projectId=${projectId}`);
 };
@@ -226,6 +230,7 @@ const API = {
   addUserToProject,
   createCategory,
   loadAllCategories,
+  loadAllCategoryNames,
   loadALlUsersInProject,
   loadProjectDetails,
   uploadFile,

@@ -15,6 +15,7 @@ public class Project {
     private String id;
     private String name;
     private String description;
+    private String key;
     private String status;
     private ArrayList<UserRole> members = new ArrayList<>();
     private ArrayList<String> backlog = new ArrayList<>();
@@ -25,10 +26,11 @@ public class Project {
     public Project() {
     }
 
-    public Project(String id, String name, String description, String status, ArrayList<UserRole> members, ArrayList<String> backlog, Date createdAt, boolean isClose) {
+    public Project(String id, String name, String description, String key, String status, ArrayList<UserRole> members, ArrayList<String> backlog, Date createdAt, boolean isClose) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.key = key;
         this.status = status;
         this.members = members;
         this.backlog = backlog;
@@ -58,6 +60,14 @@ public class Project {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getStatus() {

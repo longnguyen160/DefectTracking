@@ -346,7 +346,7 @@ class Dashboard extends Component {
         Header: 'Status',
         accessor: 'status',
         ...styleColumn,
-        width: 85,
+        width: 100,
         Filter: () => null,
         Cell: (row) => (
           <IssueStatusStyled small status={row.value}>
@@ -384,14 +384,14 @@ class Dashboard extends Component {
 
   onMessageReceive = () => {
     const { loadAllIssuesBasedOnFilter } = this.props;
-    const { filter } = this.state;
+    const { filter, issueListRequest } = this.state;
 
-    loadAllIssuesBasedOnFilter(filter);
+    loadAllIssuesBasedOnFilter(issueListRequest, filter);
   };
 
   render() {
     const { view, filter } = this.state;
-    const { usersInProject, statusList, categories, issues, openModal } = this.props;
+    const { usersInProject, statusList, categories, issues, openModal, user } = this.props;
 
     return (
       <PageBoardStyled block>
@@ -499,11 +499,14 @@ class Dashboard extends Component {
                 <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
                   {issues.length} Issues
                 </TitleElementStyled>
-                <TitleElementStyled noPadding flex={'0'}>
-                  <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
-                    Create Issue
-                  </Button>
-                </TitleElementStyled>
+                {
+                  user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER))) &&
+                    <TitleElementStyled noPadding flex={'0'}>
+                      <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
+                        Create Issue
+                      </Button>
+                    </TitleElementStyled>
+                }
               </ElementHeaderStyled>
               {this.renderList()}
             </PageBoardItemStyled>

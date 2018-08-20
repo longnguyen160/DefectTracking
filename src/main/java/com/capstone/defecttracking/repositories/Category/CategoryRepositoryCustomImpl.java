@@ -95,6 +95,18 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     }
 
     @Override
+    public List<Category> loadAllCategoryNames() {
+        return mongoTemplate
+            .findAll(Category.class)
+            .stream()
+            .map(category -> new Category(
+                category.getId(),
+                category.getName()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public List<CategoryProjectResponse> loadAllCategoriesInProject(String projectId) {
         Query query = new Query(Criteria.where("projects").is(projectId));
 

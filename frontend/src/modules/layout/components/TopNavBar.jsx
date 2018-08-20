@@ -47,26 +47,29 @@ class TopNavBar extends Component {
             <SearchBox />
           </HeaderMainBlockStyled>
           <HeaderMainBlockStyled hasAuto>
-            <HeaderMainItemsStyled info create hover>
-              <i className="fa fa-plus" />
-              <SubSelectStyled fixedWidth>
-                {
-                  user && user.roles.includes(ROLES.ADMIN) &&
-                    <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.CREATING_USER)}>
-                      <span>Create user...</span>
+            {
+              user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER))) &&
+                <HeaderMainItemsStyled info create hover>
+                  <i className="fa fa-plus"/>
+                  <SubSelectStyled fixedWidth>
+                    {
+                      user.roles.includes(ROLES.ADMIN) &&
+                      <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.CREATING_USER)}>
+                        <span>Create user...</span>
+                      </SubSelectListStyled>
+                    }
+                    {
+                      user.roles.includes(ROLES.ADMIN) &&
+                      <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.CREATING_PROJECT)}>
+                        <span>Create project...</span>
+                      </SubSelectListStyled>
+                    }
+                    <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
+                      <span>Create issue...</span>
                     </SubSelectListStyled>
-                }
-                {
-                  user && user.roles.includes(ROLES.ADMIN) &&
-                    <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.CREATING_PROJECT)}>
-                      <span>Create project...</span>
-                    </SubSelectListStyled>
-                }
-                <SubSelectListStyled onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
-                  <span>Create issue...</span>
-                </SubSelectListStyled>
-              </SubSelectStyled>
-            </HeaderMainItemsStyled>
+                  </SubSelectStyled>
+                </HeaderMainItemsStyled>
+            }
             <HeaderMainItemsStyled info user hover>
               <span>
                 <Image topNav src={user.profile && user.profile.avatarURL ? FILE_BASE_URL + user.profile.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>

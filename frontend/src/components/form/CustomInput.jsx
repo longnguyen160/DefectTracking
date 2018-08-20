@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Input, TextArea } from '../../stylesheets/GeneralStyled';
 
 const CustomInput = (field) => {
-  const { input, type, placeholder, renderType, meta: { touched, error } } = field;
+  const { input, type, placeholder, renderType, maxLength, meta: { touched, error } } = field;
   let InputType = Input;
 
   switch (renderType) {
@@ -19,6 +19,7 @@ const CustomInput = (field) => {
       type={type}
       placeholder={placeholder}
       {...input}
+      maxLength={maxLength}
       inputName={input.name}
     />
   );
@@ -30,6 +31,7 @@ CustomInput.propTypes = {
   type: PropTypes.string.isRequired,
   renderType: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
+  maxLength: PropTypes.string
 };
 
 export default CustomInput;

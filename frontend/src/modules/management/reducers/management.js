@@ -17,6 +17,9 @@ import {
   LOAD_CATEGORY_DETAILS_REQUEST,
   LOAD_CATEGORY_DETAILS_SUCCESS,
   LOAD_CATEGORY_DETAILS_FAILURE,
+  LOAD_ALL_CATEGORY_NAMES_REQUEST,
+  LOAD_ALL_CATEGORY_NAMES_SUCCESS,
+  LOAD_ALL_CATEGORY_NAMES_FAILURE,
   REQUEST_BAN_USER,
   BAN_USER_SUCCESS,
   BAN_USER_FAILURE,
@@ -45,7 +48,8 @@ import {
   LOAD_USERS_KPI_SUCCESS,
   LOAD_USERS_KPI_FAILURE,
   RESET_STATUS,
-  RESET_CATEGORY
+  RESET_CATEGORY,
+  RESET_CATEGORIES
 } from '../actions/types';
 
 const initialState = {
@@ -128,6 +132,24 @@ export default function management(state = initialState, action) {
       });
 
     case LOAD_ALL_CATEGORIES_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case LOAD_ALL_CATEGORY_NAMES_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case LOAD_ALL_CATEGORY_NAMES_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        categories: action.categories,
+        error: null
+      });
+
+    case LOAD_ALL_CATEGORY_NAMES_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
@@ -329,6 +351,11 @@ export default function management(state = initialState, action) {
     case RESET_CATEGORY:
       return Object.assign({}, state, {
         category: null
+      });
+
+    case RESET_CATEGORIES:
+      return Object.assign({}, state, {
+        categories: []
       });
 
     default:

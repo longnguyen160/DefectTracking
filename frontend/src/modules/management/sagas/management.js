@@ -12,6 +12,9 @@ import {
   loadAllCategoriesRequest,
   loadAllCategoriesSuccess,
   loadAllCategoriesFailure,
+  loadAllCategoryNamesRequest,
+  loadAllCategoryNamesSuccess,
+  loadAllCategoryNamesFailure,
   loadCategoryDetailsRequest,
   loadCategoryDetailsSuccess,
   loadCategoryDetailsFailure,
@@ -59,6 +62,7 @@ import {
   LOAD_ALL_PROJECTS_FOR_MANAGEMENT,
   LOAD_ALL_CATEGORIES,
   LOAD_CATEGORY_DETAILS,
+  LOAD_ALL_CATEGORY_NAMES,
   DELETE_CATEGORY,
   CREATE_CATEGORY,
   UPDATE_CATEGORY,
@@ -258,6 +262,22 @@ function* watchLoadAllCategories() {
   yield takeLatest(LOAD_ALL_CATEGORIES, loadAllCategories);
 }
 
+function* loadAllCategoryNames() {
+  try {
+    yield put(loadAllCategoryNamesRequest());
+
+    const { data } = yield call(API.loadAllCategoryNames);
+
+    yield put(loadAllCategoryNamesSuccess(data));
+  } catch (error) {
+    yield put(loadAllCategoryNamesFailure(getError(error)));
+  }
+}
+
+function* watchLoadAllCategoryNames() {
+  yield takeLatest(LOAD_ALL_CATEGORY_NAMES, loadAllCategoryNames);
+}
+
 function* loadCategoryDetails({ categoryId }) {
   try {
     yield put(loadCategoryDetailsRequest());
@@ -359,6 +379,7 @@ export default function* managementFlow() {
     watchCreateCategory(),
     watchUpdateCategory(),
     watchLoadAllCategories(),
+    watchLoadAllCategoryNames(),
     watchLoadCategoryDetails(),
     watchDeleteCategory(),
     watchCreateStatus(),

@@ -88,6 +88,11 @@ public class CategoryController {
         return categoryRepositoryCustom.loadAllCategories();
     }
 
+    @GetMapping("/admin/loadAllCategoryNames")
+    public List<Category> getAllCategoryNames() {
+        return categoryRepositoryCustom.loadAllCategoryNames();
+    }
+
     @GetMapping("/user/loadAllCategoriesInProject")
     public List<CategoryProjectResponse> loadAllCategoriesInProject(@RequestParam(value = "projectId") String projectId) {
         return categoryRepositoryCustom.loadAllCategoriesInProject(projectId);

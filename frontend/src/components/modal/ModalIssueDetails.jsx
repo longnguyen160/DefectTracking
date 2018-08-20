@@ -569,7 +569,7 @@ class ModalIssueDetails extends React.Component {
                       issue &&
                         <LineFormStyled>
                           {
-                            assignee.username ?
+                            assignee && assignee.username ?
                               <ElementHeaderStyled padding={'0'}>
                                 <Image
                                   topNav

@@ -23,5 +23,6 @@ public interface CategoryRepositoryCustom {
     CategoryProjectResponse loadCategoryDetails(String categoryId);
     boolean updateCategory(Category category);
     List<CategoryManagementResponse> loadAllCategories();
+    List<Category> loadAllCategoryNames();
     List<CategoryProjectResponse> loadAllCategoriesInProject(String projectId);
 }

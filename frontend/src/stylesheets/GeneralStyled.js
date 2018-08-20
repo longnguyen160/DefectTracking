@@ -279,15 +279,17 @@ export const LineFormStyled = styled.div`
     ${props => props.fullWidthSelect && css`
       max-width: 100%;
     `}
-    .Select-multi-value-wrapper {
-      white-space: nowrap;
-      width: 170px;
-      overflow: hidden;
-      
-      .Select-value-icon {
-        padding: 4px 5px 4px;
+    ${props => props.hasCheckBox && css`
+      .Select-multi-value-wrapper {
+        white-space: nowrap;
+        width: 170px;
+        overflow: hidden;
+        
+        .Select-value-icon {
+          padding: 4px 5px 4px;
+        }
       }
-    }
+    `}
   }
   ${props => props.customDatePicker && css`
     .react-datepicker {
@@ -452,11 +454,11 @@ export const Image = styled.img`
     margin: 5px;
   `}
   ${props => props.margin && css`
-    margin: ${props.margin}
+    margin: ${props.margin} !important;
   `}
   ${props => props.dynamic && css`
-    width: ${props.dynamic}
-    height: ${props.dynamic}
+    width: ${props.dynamic};
+    height: ${props.dynamic};
     border-radius: 25px;
   `}
   ${props => props.noRadius && css`
@@ -710,6 +712,8 @@ export const IssueStatusStyled = styled.div`
   font-size: 14px;
   border-radius: 3px;
   font-family: 'Proxima Nova Bold';
+  min-width: 90px;
+  text-align: center;
 
   ${props => props.status && css`
     background: ${props.status.background};

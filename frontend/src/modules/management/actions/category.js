@@ -11,6 +11,10 @@ import {
   LOAD_ALL_CATEGORIES_REQUEST,
   LOAD_ALL_CATEGORIES_SUCCESS,
   LOAD_ALL_CATEGORIES_FAILURE,
+  LOAD_ALL_CATEGORY_NAMES,
+  LOAD_ALL_CATEGORY_NAMES_REQUEST,
+  LOAD_ALL_CATEGORY_NAMES_SUCCESS,
+  LOAD_ALL_CATEGORY_NAMES_FAILURE,
   LOAD_CATEGORY_DETAILS,
   LOAD_CATEGORY_DETAILS_REQUEST,
   LOAD_CATEGORY_DETAILS_SUCCESS,
@@ -19,7 +23,8 @@ import {
   DELETE_CATEGORY_REQUEST,
   DELETE_CATEGORY_SUCCESS,
   DELETE_CATEGORY_FAILURE,
-  RESET_CATEGORY
+  RESET_CATEGORY,
+  RESET_CATEGORIES,
 } from './types';
 
 const createCategory = (category, closeModal) => {
@@ -102,6 +107,33 @@ const loadAllCategoriesFailure = (error) => {
   }
 };
 
+const loadAllCategoryNames = () => {
+  return {
+    type: LOAD_ALL_CATEGORY_NAMES
+  }
+};
+
+const loadAllCategoryNamesRequest = () => {
+  return {
+    type: LOAD_ALL_CATEGORY_NAMES_REQUEST
+  }
+};
+
+const loadAllCategoryNamesSuccess = (categories) => {
+  return {
+    type: LOAD_ALL_CATEGORY_NAMES_SUCCESS,
+    categories
+  }
+};
+
+const loadAllCategoryNamesFailure = (error) => {
+  return {
+    type: LOAD_ALL_CATEGORY_NAMES_FAILURE,
+    error
+  }
+};
+
+
 const loadCategoryDetails = (categoryId) => {
   return {
     type: LOAD_CATEGORY_DETAILS,
@@ -161,6 +193,12 @@ const resetCategory = () => {
   }
 };
 
+const resetCategories = () => {
+  return {
+    type: RESET_CATEGORIES
+  }
+};
+
 export {
   createCategory,
   requestCreateCategory,
@@ -174,6 +212,10 @@ export {
   loadAllCategoriesRequest,
   loadAllCategoriesSuccess,
   loadAllCategoriesFailure,
+  loadAllCategoryNames,
+  loadAllCategoryNamesRequest,
+  loadAllCategoryNamesSuccess,
+  loadAllCategoryNamesFailure,
   loadCategoryDetails,
   loadCategoryDetailsRequest,
   loadCategoryDetailsSuccess,
@@ -182,5 +224,6 @@ export {
   deleteCategoryRequest,
   deleteCategorySuccess,
   deleteCategoryFailure,
-  resetCategory
+  resetCategory,
+  resetCategories
 }

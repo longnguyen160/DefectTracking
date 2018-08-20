@@ -15,7 +15,7 @@ import {
 } from '../../../stylesheets/GeneralStyled';
 import { loadProjectDetails, openModal, selectProject } from '../../layout/actions/layout';
 import { ICONS, MODAL_TYPE, PROJECT_STATUS, ROLES, WEB_SOCKET_URL } from '../../../utils/enums';
-import { loadAllProjects } from '../actions/project';
+import { loadAllProjects, selectProjectType } from '../actions/project';
 import Icon from '../../../components/icon/Icon';
 
 class Projects extends React.Component {
@@ -31,6 +31,13 @@ class Projects extends React.Component {
 
     loadProjectDetails(projectId, (project) => selectProject(project));
     history.push(`/project/${projectId}/dashboard`);
+  };
+
+  handleCreateProject = (title) => {
+    const { openModal, selectProjectType } = this.props;
+
+    selectProjectType(title);
+    openModal(MODAL_TYPE.CREATING_PROJECT);
   };
 
   renderProjects = (projects, icon, title) => (
@@ -62,7 +69,7 @@ class Projects extends React.Component {
         }
         {
           this.props.user && this.props.user.roles.includes(ROLES.ADMIN) &&
-            <ElementStyled created onClick={() => this.props.openModal(MODAL_TYPE.CREATING_PROJECT)}>
+            <ElementStyled created onClick={() => this.handleCreateProject(title.toLowerCase())}>
               <TitleElementStyled>
                 Create new project...
               </TitleElementStyled>
@@ -97,6 +104,7 @@ Projects.propTypes = {
   loadProjectDetails: PropTypes.func.isRequired,
   loadAllProjects: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
+  selectProjectType: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   user: PropTypes.object,
   project: PropTypes.shape({
@@ -114,7 +122,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   openModal: openModal,
   loadProjectDetails: loadProjectDetails,
   selectProject: selectProject,
-  loadAllProjects: loadAllProjects
+  loadAllProjects: loadAllProjects,
+  selectProjectType: selectProjectType
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);

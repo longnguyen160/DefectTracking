@@ -109,14 +109,16 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     public String generateIssueKey(String projectId) {
         Query query = new Query(Criteria.where("projectId").is(projectId)).with(Sort.by("updatedAt").descending());
         Issue latestIssue = mongoTemplate.findOne(query, Issue.class);
+        query = new Query(Criteria.where("_id").is(projectId));
+        Project project = mongoTemplate.findOne(query, Project.class);
 
         if (latestIssue != null) {
             String key = latestIssue.getIssueKey();
             String[] arr = key.split("-");
 
-            return "ISSUE-" + (Integer.parseInt(arr[arr.length - 1]) + 1) + "";
+            return project.getKey() + "-" + (Integer.parseInt(arr[arr.length - 1]) + 1) + "";
         } else {
-            return "ISSUE-1";
+            return project.getKey() + "-1";
         }
     }
 

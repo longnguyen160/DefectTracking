@@ -22,7 +22,7 @@ class CustomValueForSelect extends React.Component {
           />
         );
       default:
-        return (
+        return value && (
           <Image
             dynamic={'20px'}
             margin={'0 5px 0 0'}

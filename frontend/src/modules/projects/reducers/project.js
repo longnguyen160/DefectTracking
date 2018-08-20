@@ -12,7 +12,9 @@ import {
   LOAD_ALL_USERS_IN_PROJECT_FAILURE,
   UPDATE_PROJECT_REQUEST,
   UPDATE_PROJECT_SUCCESS,
-  UPDATE_PROJECT_FAILURE
+  UPDATE_PROJECT_FAILURE,
+  SELECT_PROJECT_TYPE,
+  RESET_PROJECT_TYPE
 } from '../actions/types';
 
 const initialState = {
@@ -20,6 +22,7 @@ const initialState = {
   usersInProject: [],
   isLoading: false,
   error: null,
+  projectType: null
 };
 
 export default function project(state = initialState, action) {
@@ -104,6 +107,16 @@ export default function project(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error
+      });
+
+    case SELECT_PROJECT_TYPE:
+      return Object.assign({}, state, {
+        projectType: action.projectType
+      });
+
+    case RESET_PROJECT_TYPE:
+      return Object.assign({}, state, {
+        projectType: null
       });
 
     default:

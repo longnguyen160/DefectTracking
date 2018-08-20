@@ -24,7 +24,7 @@ export const ListTableHeaderItemsStyled = styled.div`
     flex: 0 0 75px;    
   `};
   ${props => props.propertyType === 'Status' && css`
-    flex: 0 0 85px;    
+    flex: 0 0 100px;    
   `};
   @media (max-width: 1024px) {
     ${props => props.propertyType === 'Issue' && css`
@@ -131,7 +131,7 @@ export const ListTableBodyItemStyled = styled.div`
   `}
   
   ${props => props.propertyType === 'Status' && css`
-    flex: 0 0 85px;    
+    flex: 0 0 100px;    
   `}
   
   ${props => props.container && css`

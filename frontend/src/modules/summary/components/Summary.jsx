@@ -312,7 +312,7 @@ class Summary extends Component {
           </LineFormStyled>
           {
             summaryType.value === 'Issues' &&
-              <LineFormStyled>
+              <LineFormStyled hasCheckBox>
                 <Select
                   isSearchable={false}
                   placeholder={'Status'}

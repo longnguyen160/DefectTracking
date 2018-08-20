@@ -22,6 +22,11 @@ public class Category {
     public Category() {
     }
 
+    public Category(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Category(String id, String name, String color, String background, ArrayList<String> projects) {
         this.id = id;
         this.name = name;

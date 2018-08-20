@@ -167,6 +167,7 @@ class ModalCreatingIssue extends React.Component {
                       type={SELECT}
                       options={projects}
                       searchable={false}
+                      disabled={!user.roles.includes(ROLES.ADMIN)}
                     />
                   </LineFormStyled>
                 </ModalLineTitleStyled>
