@@ -54,7 +54,6 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
             project.getStatus(),
             project.getCreatedAt(),
             project.getMembers(),
-            project.getBacklog(),
             categories
         );
     }

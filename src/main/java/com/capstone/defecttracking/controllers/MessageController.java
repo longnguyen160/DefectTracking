@@ -78,7 +78,7 @@ public class MessageController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
-        if (!userDetailsSecurity.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")) && type.getEntityName().equals("logs")) {
+        if (!userDetailsSecurity.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")) && type.getEntityName().equals("logs") && type.getEntityType().equals("status")) {
             type.setRejectBy(messageRepositoryCustom.checkReject(message));
         }
         message.setType(type);

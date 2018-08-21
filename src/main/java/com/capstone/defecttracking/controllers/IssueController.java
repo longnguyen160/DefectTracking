@@ -143,6 +143,10 @@ public class IssueController {
             serverResponse = new ServerResponse(true, "Update issue successfully");
 
             template.convertAndSend("/topic/issue/update", serverResponse);
+            if (data.getType().equals("status") || data.getType().equals("priority") || data.getType().equals("issueName")) {
+                template.convertAndSend("/topic/issuesList", serverResponse);
+            }
+
             return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
         }
 

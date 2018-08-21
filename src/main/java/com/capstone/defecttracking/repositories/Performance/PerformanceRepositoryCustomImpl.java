@@ -11,9 +11,12 @@ import com.capstone.defecttracking.models.PA.PerformanceAssessment;
 import com.capstone.defecttracking.models.PA.PerformanceAssessmentRequest;
 import com.capstone.defecttracking.models.PA.PerformanceAssessmentResponse;
 import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,10 +114,7 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
 
         if (issueList.size() > 0) {
             long sum = issueList.size();
-            long finishedIssues = issueList
-                .stream()
-                .filter(issue -> issue.getFinishedAt() != null)
-                .count();
+            long submittedIssues = getSubmittedIssues(issueList, "developer", "reporter");
             long onTimeIssues = issueList
                 .stream()
                 .filter(issue -> issue.getFinishedAt() != null && issue.getDueDate().after(issue.getFinishedAt()))
@@ -138,12 +138,12 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                 })
                 .count();
 
-            return (
-                Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * onTimeIssues
-                    - Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * lateTimeIssues
-                    - Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues
-                    + (finishedIssues / sum) * 100
-            ) / sum * 100;
+            return (double) Math.round((
+                Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * onTimeIssues / submittedIssues
+                    + Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * lateTimeIssues / submittedIssues
+                    + Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues / submittedIssues
+                    + Double.parseDouble(performanceAssessmentList.get(3).getWeight()) * submittedIssues / sum
+            ) * 100) / 100;
         }
 
         return 0;
@@ -167,10 +167,7 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
 
         if (issueList.size() > 0) {
             long sum = issueList.size();
-            long finishedIssues = issueList
-                .stream()
-                .filter(issue -> issue.getFinishedAt() != null)
-                .count();
+            long submittedIssues = getSubmittedIssues(issueList, "reporter", "manager");
             long reOpenedIssues = issueList
                 .stream()
                 .filter(issue -> {
@@ -186,14 +183,44 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                 })
                 .count();
 
-            return (
-                Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * finishedIssues
-                    + Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * sum
-                    - Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * reOpenedIssues
-            ) / (sum * sumPA) * 100;
+            double point = (double) Math.round((
+                Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * reOpenedIssues / submittedIssues
+                    + Double.parseDouble(performanceAssessmentList.get(1).getWeight())
+                    + Double.parseDouble(performanceAssessmentList.get(2).getWeight()) * submittedIssues / sum
+            ) * 100) / 100;
+
+            return point > 100 ? 100 : point;
         }
 
         return 0;
+    }
+
+    private long getSubmittedIssues(List<Issue> issueList, String roleA, String roleB) {
+        return issueList
+            .stream()
+            .filter(issue -> {
+                List<String> roles = new ArrayList<>();
+
+                roles.add(roleA);
+                roles.add(roleB);
+                Query subQuery = new Query(Criteria.where("handlers").all(roles));
+                List<String> statusIds = mongoTemplate
+                    .find(subQuery, Status.class)
+                    .stream()
+                    .map(Status::getId)
+                    .collect(Collectors.toList());
+                Criteria subCriteria1 = new Criteria();
+
+                subCriteria1.andOperator(
+                    Criteria.where("issueId").is(issue.getId()),
+                    Criteria.where("type.newEntityId").in(statusIds)
+                );
+                subQuery = new Query(subCriteria1);
+                Message message = mongoTemplate.findOne(subQuery, Message.class);
+
+                return message != null;
+            })
+            .count();
     }
 
     private UserResponse getUserResponse(String userId) {

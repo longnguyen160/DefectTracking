@@ -5,12 +5,14 @@ public class StatusResponse {
     private String name;
     private String background;
     private String color;
+    private boolean isDone;
 
-    public StatusResponse(String id, String name, String background, String color) {
+    public StatusResponse(String id, String name, String background, String color, boolean isDone) {
         this.id = id;
         this.name = name;
         this.background = background;
         this.color = color;
+        this.isDone = isDone;
     }
 
     public StatusResponse() {
@@ -46,5 +48,13 @@ public class StatusResponse {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 }

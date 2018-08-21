@@ -13,20 +13,18 @@ public class ProjectDetailsResponse {
     private String status;
     private Date createdAt;
     private ArrayList<UserRole> members = new ArrayList<UserRole>();
-    private ArrayList<String> backlog = new ArrayList<>();
     private ArrayList<CategoryProjectResponse> categories = new ArrayList<>();
 
     public ProjectDetailsResponse() {
     }
 
-    public ProjectDetailsResponse(String id, String name, String description, String status, Date createdAt, ArrayList<UserRole> members, ArrayList<String> backlog, ArrayList<CategoryProjectResponse> categories) {
+    public ProjectDetailsResponse(String id, String name, String description, String status, Date createdAt, ArrayList<UserRole> members, ArrayList<CategoryProjectResponse> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
         this.createdAt = createdAt;
         this.members = members;
-        this.backlog = backlog;
         this.categories = categories;
     }
 
@@ -76,14 +74,6 @@ public class ProjectDetailsResponse {
 
     public void setMembers(ArrayList<UserRole> members) {
         this.members = members;
-    }
-
-    public ArrayList<String> getBacklog() {
-        return backlog;
-    }
-
-    public void setBacklog(ArrayList<String> backlog) {
-        this.backlog = backlog;
     }
 
     public ArrayList<CategoryProjectResponse> getCategories() {

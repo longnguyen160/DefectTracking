@@ -67,7 +67,7 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom {
         User user = mongoTemplate.findOne(query, User.class);
 
         if (user.getRoles().contains("ADMIN")) {
-            query = new Query().limit(10);
+            query = new Query().with(Sort.by("createdAt").descending()).limit(10);
             return mongoTemplate
                 .find(query, Message.class)
                 .stream()

@@ -48,6 +48,7 @@ import CustomSelectStatus from '../editable/CustomSelectStatus';
 import Message from '../../modules/message/components/Message';
 import { createMessage, resetMessage } from '../../modules/message/actions/message';
 import { loadProjectDetails, resetProject } from '../../modules/layout/actions/layout';
+import { Button } from '../../stylesheets/Button';
 
 class ModalIssueDetails extends React.Component {
 
@@ -145,7 +146,7 @@ class ModalIssueDetails extends React.Component {
     switch (e.props.name) {
       case 'priority':
         value = e.value ? e.value.value : null;
-        oldValue = e.props.value.value;
+        oldValue = e.props.value ? e.props.value.value : '';
         message = MESSAGE(ISSUE_PRIORITY_ARRAY.find(element => element.value === e.value.value).label).UPDATE_PRIORITY;
         break;
 
@@ -213,7 +214,7 @@ class ModalIssueDetails extends React.Component {
       value: issue.assignee.id,
       label: issue.assignee.username
     });
-    const checkUserInIssue = (issue && issue.watchers.find(watcher => watcher && watcher.id === user.id)) || (user.roles.includes(ROLES.ADMIN) || userRole === ROLES.MANAGER);
+    const checkUserInIssue = (issue && (issue.reporter.id === user.id || issue.assignee.id === user.id)) || (user.roles.includes(ROLES.ADMIN) || userRole === ROLES.MANAGER);
     // const isWatching = issue && issue.watchers.find(watcher => watcher.id === user.id);
 
     return (
@@ -530,7 +531,7 @@ class ModalIssueDetails extends React.Component {
                   loadingIssue ?
                     <PlaceHolder />
                   :
-                    checkUserInIssue ?
+                    checkUserInIssue && userRole === ROLES.MANAGER ?
                       <Editable
                         name={'assignee'}
                         dataType={'custom'}
@@ -652,6 +653,29 @@ class ModalIssueDetails extends React.Component {
                 }
               </ModalLineContentStyled>
             </ModalLineStyled>
+            {
+              user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER))) &&
+                <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                  <ModalLineContentStyled alignLeft>
+                    <ModalLineTitleStyled>
+                      <Button
+                        small
+                        fullHeight
+                        action={'Deactivate'}
+                      >
+                        <Icon
+                          icon={ICONS.TRASH}
+                          color={'#fff'}
+                          width={15}
+                          height={15}
+                          margin={'0 5px 0 0'}
+                        />
+                        Delete
+                      </Button>
+                    </ModalLineTitleStyled>
+                  </ModalLineContentStyled>
+                </ModalLineStyled>
+            }
           </ModalContentStyled>
         </ModalBodyStyled>
         <SockJsClient

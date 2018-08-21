@@ -79,7 +79,10 @@ export const ListTableBodyStyled = styled.div`
   border-top-color: transparent;
   width: 100%;  
   min-height: 51px;
-
+  
+  ${props => props.done && css`
+    text-decoration: line-through;
+  `}
   ${props => props.color && css`
     border-left-color: ${props.color};
   `}

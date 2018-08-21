@@ -9,9 +9,13 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import {
   ElementHeaderStyled,
-  FormGroupStyled, Input, IssueStatusStyled, LineFormStyled,
+  FormGroupStyled,
+  Input,
+  IssueStatusStyled,
+  LineFormStyled,
   PageBoardItemStyled,
   PageBoardStyled,
+  TableBlockStyled,
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import {
@@ -70,6 +74,7 @@ class Dashboard extends Component {
     const {
       loadAllStatus,
       loadAllCategoriesInProject,
+      loadAllUsersInProject,
       selectedProject,
       user,
       getFilter,
@@ -83,6 +88,7 @@ class Dashboard extends Component {
       this.setState({ filter });
     }
     if (selectedProject) {
+      loadAllUsersInProject(selectedProject.id);
       loadAllCategoriesInProject(selectedProject.id);
     }
   }
@@ -252,6 +258,7 @@ class Dashboard extends Component {
         showList
         noBackground
         fixed
+        done={props.original.status.done}
         color={props.original && props.original.status.background}
       >
         {props.children}
@@ -300,19 +307,22 @@ class Dashboard extends Component {
         Header: 'Priority',
         accessor: 'priority',
         ...styleColumn,
-        width: 75,
+        width: 85,
         Filter: () => null,
         Cell: (row) => {
           const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === row.value);
 
           return (
-            <Icon
-              icon={ICONS.ARROW}
-              color={priority && priority.color}
-              width={15}
-              height={15}
-              rotated rotate={'rotateZ(90deg)'}
-            />
+            <TableBlockStyled alignLeft>
+              <Icon
+                icon={ICONS.ARROW}
+                color={priority && priority.color}
+                width={15}
+                height={15}
+                rotated rotate={'rotateZ(90deg)'}
+              />
+              <span>{priority && priority.label}</span>
+            </TableBlockStyled>
           );
         }
       },

@@ -29,6 +29,7 @@ import NoDataProps from '../../../components/table/NoDataProps';
 import { loadAllStatus } from '../../management/actions/status';
 import CustomOptionForSelect from '../../../components/form/CustomOptionForSelect';
 import NoDataComponent from '../../../components/table/NoDataComponent';
+import { updateCurrentUserRole } from '../../layout/actions/layout';
 
 class Summary extends Component {
 
@@ -70,15 +71,20 @@ class Summary extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { selectedProject, statusList } = nextProps;
+    const { updateCurrentUserRole, user } = this.props;
 
     if (JSON.stringify(selectedProject) !== JSON.stringify(this.props.selectedProject)) {
       const from = moment(selectedProject.createdAt);
       const to = moment();
+      const newExistedMember = selectedProject.members.find(member => member.userId === user.id);
+      const newRole = newExistedMember ? newExistedMember.role : null;
 
       this.setState({
         from,
         to
       });
+
+      updateCurrentUserRole(newRole, null);
       this.getSummary(from, to, selectedProject.id);
     }
     if (JSON.stringify(statusList) !== JSON.stringify(this.props.statusList)) {
@@ -231,6 +237,10 @@ class Summary extends Component {
         Header: 'Point',
         accessor: 'point',
         ...styleColumn,
+        Cell: row =>
+          <TableBlockStyled alignLeft>
+            {row.value} / 100
+          </TableBlockStyled>
       },
     ];
 
@@ -406,7 +416,7 @@ class Summary extends Component {
                   small
                   hasBorder
                   autoHeight
-                  onClick={() => this.getSummary(from, to)}
+                  onClick={() => this.getSummary(from, to, selectedProject.id)}
                 >
                   Get
                 </Button>
@@ -433,11 +443,13 @@ class Summary extends Component {
 }
 
 Summary.propTypes = {
+  updateCurrentUserRole: PropTypes.func.isRequired,
   getIssueSummary: PropTypes.func.isRequired,
   resetSummary: PropTypes.func.isRequired,
   loadUsersKPI: PropTypes.func.isRequired,
   loadAllStatus: PropTypes.func.isRequired,
   selectedProject: PropTypes.object,
+  user: PropTypes.object,
   summaryData: PropTypes.array.isRequired,
   usersKPI: PropTypes.array.isRequired,
   statusList: PropTypes.array.isRequired,
@@ -448,6 +460,7 @@ Summary.propTypes = {
 const mapStateToProps = state => ({
   selectedProject: state.layout.selectedProject,
   summaryData: state.summary.summaryData,
+  user: state.layout.user,
   usersKPI: state.management.usersKPI.filter(user => user.position !== ROLES.MANAGER),
   statusList: state.management.statusList,
   loading: state.management.isLoading,
@@ -455,6 +468,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  updateCurrentUserRole: updateCurrentUserRole,
   getIssueSummary: getIssueSummary,
   resetSummary: resetSummary,
   loadAllStatus: loadAllStatus,

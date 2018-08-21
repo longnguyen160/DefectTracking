@@ -215,7 +215,9 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
     @Override
     public IssueHomePageResponse loadAllIssuesShortcut(String userId) {
-        Query query = new Query(Criteria.where("assignee").is(userId)).with(Sort.by("updatedAt").descending()).limit(6);
+        Query query = new Query(Criteria.where("isDone").is(true));
+        Status status = mongoTemplate.findOne(query, Status.class);
+        query = new Query(Criteria.where("assignee").is(userId).and("status").ne(status.getId())).with(Sort.by("updatedAt").descending()).limit(6);
         List<Issue> issueList = mongoTemplate.find(query, Issue.class);
         IssueHomePageResponse issuesResponse = new IssueHomePageResponse();
 
@@ -231,7 +233,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             .collect(Collectors.toList())
         );
 
-        query = new Query(Criteria.where("reporter").is(userId)).with(Sort.by("updatedAt").descending()).limit(6);
+        query = new Query(Criteria.where("reporter").is(userId).and("status").ne(status.getId())).with(Sort.by("updatedAt").descending()).limit(6);
         issueList = mongoTemplate.find(query, Issue.class);
         issuesResponse.setReported(issueList
             .stream()
@@ -378,7 +380,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         Query query = new Query(Criteria.where("_id").is(statusId));
         Status status = mongoTemplate.findOne(query, Status.class);
 
-        return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor());
+        return new StatusResponse(statusId, status.getName(), status.getBackground(), status.getColor(), status.isIsDone());
     }
 
     private Update configUpdate(ArrayList<?> list, String type, String value) {

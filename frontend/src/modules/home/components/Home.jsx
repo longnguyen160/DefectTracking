@@ -71,7 +71,7 @@ class Home extends React.Component {
     openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
 
-  onMessageReceive = () => {
+  onMessageReceive = (message) => {
     const { loadAllIssuesShortcut, user } = this.props;
 
     if (user) {
@@ -82,7 +82,7 @@ class Home extends React.Component {
   renderLog = (message) => (
     <ListTableBodyStyled showList top key={message.id}>
       <ListTableBodyItemStyled flex={'0 0 45px'}>
-        <Image dynamic={'35px'} src={FILE_BASE_URL + message.sender.avatarURL || FILE_BASE_URL + DEFAULT_AVATAR}/>
+        <Image dynamic={'35px'} src={message.sender.avatarURL ? FILE_BASE_URL + message.sender.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>
       </ListTableBodyItemStyled>
       <ListTableBodyItemStyled issueName container>
         <ListTableBodyItemStyled display={'inline-block'} noPadding>
@@ -108,7 +108,7 @@ class Home extends React.Component {
   renderComment = (message) => (
     <ListTableBodyStyled showList top key={message.id}>
       <ListTableBodyItemStyled flex={'0 0 45px'}>
-        <Image dynamic={'35px'} src={FILE_BASE_URL + message.sender.avatarURL || FILE_BASE_URL + DEFAULT_AVATAR}/>
+        <Image dynamic={'35px'} src={message.sender.avatarURL ? FILE_BASE_URL + message.sender.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}/>
       </ListTableBodyItemStyled>
       <ListTableBodyItemStyled issueName container>
         <ListTableBodyItemStyled display={'inline-block'} noPadding>
@@ -148,6 +148,7 @@ class Home extends React.Component {
             showList
             noBackground
             fixed
+            done={issue.status.done}
             color={issue.status.background}
           >
             <ListTableBodyItemStyled propertyType={'Issue'}>
@@ -256,7 +257,7 @@ class Home extends React.Component {
         </PageBoardItemStyled>
         <SockJsClient
           url={WEB_SOCKET_URL}
-          topics={['/topic/issuesList']}
+          topics={['/topic/issuesList', '/topic/message']}
           onMessage={this.onMessageReceive}
           debug={true}
         />
