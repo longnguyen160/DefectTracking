@@ -1,9 +1,15 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { GET_ISSUE_SUMMARY } from '../actions/types';
-import { getIssueSummaryRequest, getIssueSummarySuccess, getIssueSummaryFailure } from '../actions/summary';
+import { GET_ISSUE_SUMMARY, GET_ISSUE_SUMMARY_DETAILS } from '../actions/types';
+import {
+  getIssueSummaryRequest,
+  getIssueSummarySuccess,
+  getIssueSummaryFailure,
+  getSummaryDetailsRequest,
+  getSummaryDetailsSuccess,
+  getSummaryDetailsFailure
+} from '../actions/summary';
 import API from '../../../utils/api';
 import { getError } from '../../../utils/ultis';
-import { showSuccessNotification } from '../../../components/notification/Notifications';
 
 function* getIssueSummary({ summaryRequest }) {
   try {
@@ -20,8 +26,24 @@ function* watchGetIssueSummary() {
   yield takeLatest(GET_ISSUE_SUMMARY, getIssueSummary);
 }
 
+function* getSummaryDetails({ userId, projectId }) {
+  try {
+    yield put(getSummaryDetailsRequest());
+    const { data } = yield call(API.getSummaryDetails, userId, projectId);
+
+    yield put(getSummaryDetailsSuccess(data));
+  } catch (error) {
+    yield put(getSummaryDetailsFailure(getError(error)));
+  }
+}
+
+function* watchGetSummaryDetails() {
+  yield takeLatest(GET_ISSUE_SUMMARY_DETAILS, getSummaryDetails);
+}
+
 export default function* summaryFlow() {
   yield all([
-    watchGetIssueSummary()
+    watchGetIssueSummary(),
+    watchGetSummaryDetails()
   ])
 }

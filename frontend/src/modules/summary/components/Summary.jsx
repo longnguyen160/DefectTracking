@@ -19,17 +19,17 @@ import {
   TableBlockStyled, Image
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { FILE_BASE_URL, DEFAULT_AVATAR, ROLES } from '../../../utils/enums';
+import { FILE_BASE_URL, DEFAULT_AVATAR, ROLES, USER_ROLE_IN_PROJECT, MODAL_TYPE } from '../../../utils/enums';
 import Icon from '../../../components/icon/Icon';
 import CalendarIcon from '../../../components/icon/CalendarIcon';
-import { getIssueSummary, resetSummary } from '../actions/summary';
+import { getIssueSummary, getSummaryDetails, resetSummary } from '../actions/summary';
 import { loadUsersKPI } from '../../management/actions/kpi';
 import LoadingComponent from '../../../components/table/LoadingComponent';
 import NoDataProps from '../../../components/table/NoDataProps';
 import { loadAllStatus } from '../../management/actions/status';
 import CustomOptionForSelect from '../../../components/form/CustomOptionForSelect';
 import NoDataComponent from '../../../components/table/NoDataComponent';
-import { updateCurrentUserRole } from '../../layout/actions/layout';
+import { openModal, updateCurrentUserRole } from '../../layout/actions/layout';
 
 class Summary extends Component {
 
@@ -190,6 +190,13 @@ class Summary extends Component {
     }
   };
 
+  handleOpenModal = (userId) => {
+    const { openModal, getSummaryDetails, selectedProject } = this.props;
+
+    getSummaryDetails(userId, selectedProject.id);
+    openModal(MODAL_TYPE.SUMMARY_REPORT);
+  };
+
   optionComponent = (name) => {
     return (props) => (
       <CustomOptionForSelect
@@ -217,13 +224,18 @@ class Summary extends Component {
         Header: 'Position',
         accessor: 'position',
         ...styleColumn,
+        Cell: row => USER_ROLE_IN_PROJECT.find(role => role.value === row.value).label
       },
       {
         Header: 'Username',
         ...styleColumn,
         Cell: row => {
           return (
-            <TableBlockStyled alignLeft>
+            <TableBlockStyled
+              hover
+              alignLeft
+              onClick={() => this.handleOpenModal(row.original.user.id)}
+            >
               <Image
                 topNav
                 src={row.original && row.original.user.avatarURL ? FILE_BASE_URL + row.original.user.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
@@ -448,6 +460,8 @@ Summary.propTypes = {
   resetSummary: PropTypes.func.isRequired,
   loadUsersKPI: PropTypes.func.isRequired,
   loadAllStatus: PropTypes.func.isRequired,
+  getSummaryDetails: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
   selectedProject: PropTypes.object,
   user: PropTypes.object,
   summaryData: PropTypes.array.isRequired,
@@ -472,7 +486,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   getIssueSummary: getIssueSummary,
   resetSummary: resetSummary,
   loadAllStatus: loadAllStatus,
-  loadUsersKPI: loadUsersKPI
+  loadUsersKPI: loadUsersKPI,
+  getSummaryDetails: getSummaryDetails,
+  openModal: openModal
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Summary);

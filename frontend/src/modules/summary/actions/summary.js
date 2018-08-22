@@ -3,7 +3,12 @@ import {
   GET_ISSUE_SUMMARY_REQUEST,
   GET_ISSUE_SUMMARY_SUCCESS,
   GET_ISSUE_SUMMARY_FAILURE,
-  RESET_SUMMARY
+  GET_ISSUE_SUMMARY_DETAILS,
+  GET_ISSUE_SUMMARY_DETAILS_REQUEST,
+  GET_ISSUE_SUMMARY_DETAILS_SUCCESS,
+  GET_ISSUE_SUMMARY_DETAILS_FAILURE,
+  RESET_SUMMARY,
+  RESET_SUMMARY_DETAILS
 } from './types';
 
 const getIssueSummary = (summaryRequest) => ({
@@ -25,8 +30,32 @@ const getIssueSummaryFailure = (error) => ({
   error
 });
 
+const getSummaryDetails = (userId, projectId) => ({
+  type: GET_ISSUE_SUMMARY_DETAILS,
+  userId,
+  projectId
+});
+
+const getSummaryDetailsRequest = () => ({
+  type: GET_ISSUE_SUMMARY_DETAILS_REQUEST
+});
+
+const getSummaryDetailsSuccess = (summaryDetails) => ({
+  type: GET_ISSUE_SUMMARY_DETAILS_SUCCESS,
+  summaryDetails
+});
+
+const getSummaryDetailsFailure = (error) => ({
+  type: GET_ISSUE_SUMMARY_DETAILS_FAILURE,
+  error
+});
+
 const resetSummary = () => ({
   type: RESET_SUMMARY
+});
+
+const resetSummaryDetails = () => ({
+  type: RESET_SUMMARY_DETAILS
 });
 
 export {
@@ -34,5 +63,10 @@ export {
   getIssueSummaryRequest,
   getIssueSummarySuccess,
   getIssueSummaryFailure,
-  resetSummary
+  getSummaryDetails,
+  getSummaryDetailsRequest,
+  getSummaryDetailsSuccess,
+  getSummaryDetailsFailure,
+  resetSummary,
+  resetSummaryDetails
 }

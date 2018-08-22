@@ -8,6 +8,7 @@ package com.capstone.defecttracking.controllers;
 import com.capstone.defecttracking.models.PA.PerformanceAssessment;
 import com.capstone.defecttracking.models.PA.PerformanceAssessmentRequest;
 import com.capstone.defecttracking.models.PA.PerformanceAssessmentResponse;
+import com.capstone.defecttracking.models.PA.PerformanceAssessmentSummaryResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.repositories.Performance.PerformanceRepository;
@@ -63,6 +64,11 @@ public class PerformanceController {
 
             return new ArrayList<>();
         }
+    }
+
+    @GetMapping("/user/getSummaryDetails")
+    public PerformanceAssessmentSummaryResponse getSummaryDetails(@RequestParam("userId") String userId) {
+        return performanceRepositoryCustom.getSummaryDetails(userId);
     }
 
     @PostMapping("/admin/updateKPI")

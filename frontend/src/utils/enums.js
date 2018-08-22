@@ -243,7 +243,8 @@ const MODAL_TYPE = {
   PROFILE: 'Profile',
   ADD_USER: 'Add user',
   ADD_CATEGORY: 'Add category',
-  ADD_STATUS: 'Add status'
+  ADD_STATUS: 'Add status',
+  SUMMARY_REPORT: 'Summary report'
 };
 
 const PROJECT_STATUS = {

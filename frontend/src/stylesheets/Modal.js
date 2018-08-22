@@ -197,7 +197,7 @@ export const ModalLineStyled = styled.div`
 
 export const ModalLineTitleStyled = styled.div`
   font-family: Proxima Nova bold;
-  font-size: 13px;
+  font-size: ${props => props.fontSize || '13px'};
   margin-bottom: 3px;
   color: #7f7f7f;
   font-weight: 600;

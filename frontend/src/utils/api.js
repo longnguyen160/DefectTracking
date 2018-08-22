@@ -208,6 +208,9 @@ const getIssueSummary = (summaryRequest) => {
   return axios.get(`user/getIssueSummary?summaryRequest=${encodeURI(JSON.stringify(summaryRequest))}`);
 };
 
+const getSummaryDetails = (userId, projectId) => {
+  return axios.get(`user/getSummaryDetails?userId=${userId}&projectId=${projectId}`);
+};
 // KPI
 const getUsersKPI = (dataRequest) => {
   return axios.get(`user/getUsersKPI?dataRequest=${encodeURI(JSON.stringify(dataRequest))}`);
@@ -272,7 +275,8 @@ const API = {
   getUsersKPI,
   getKPIData,
   updateKPI,
-  deleteIssue
+  deleteIssue,
+  getSummaryDetails
 };
 
 export default API;

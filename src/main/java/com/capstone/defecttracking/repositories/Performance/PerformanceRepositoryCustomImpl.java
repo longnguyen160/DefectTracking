@@ -7,9 +7,7 @@ package com.capstone.defecttracking.repositories.Performance;
 
 import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Message.Message;
-import com.capstone.defecttracking.models.PA.PerformanceAssessment;
-import com.capstone.defecttracking.models.PA.PerformanceAssessmentRequest;
-import com.capstone.defecttracking.models.PA.PerformanceAssessmentResponse;
+import com.capstone.defecttracking.models.PA.*;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.User.User;
@@ -43,6 +41,7 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
     @Autowired
     UserRepositoryCustom userRepositoryCustom;
 
+    List<PerformanceAssessmentSummaryResponse> performanceAssessmentSummaryResponses = new ArrayList<>();
 
     private List<PerformanceAssessment> loadPAWithRole(String role) {
         Query query = new Query(Criteria.where("role").is(role));
@@ -84,6 +83,18 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                 );
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public PerformanceAssessmentSummaryResponse getSummaryDetails(String userId) {
+        Query query = new Query(Criteria.where("_id").is(userId));
+        String username = mongoTemplate.findOne(query, User.class).getUsername();
+
+        return performanceAssessmentSummaryResponses
+            .stream()
+            .filter(item -> item.getUsername().equals(username))
+            .collect(Collectors.toList())
+            .get(0);
     }
 
     @Override
@@ -137,7 +148,25 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                     return mongoTemplate.findOne(subQuery, Message.class) != null;
                 })
                 .count();
+            query = new Query(Criteria.where("_id").is(userId));
+            String username = mongoTemplate.findOne(query, User.class).getUsername();
+            List<PerformanceAssementPoint> summary = new ArrayList<>();
 
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(0).getCriteria(), onTimeIssues));
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(1).getCriteria(), lateTimeIssues));
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(2).getCriteria(), reOpenedIssues));
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(3).getCriteria(), submittedIssues));
+
+            if (performanceAssessmentSummaryResponses.stream().anyMatch(item -> item.getUsername().equals(username))) {
+                performanceAssessmentSummaryResponses
+                    .stream()
+                    .filter(item -> item.getUsername().equals(username))
+                    .findFirst()
+                    .get()
+                    .setSummary(summary);
+            } else {
+                performanceAssessmentSummaryResponses.add(new PerformanceAssessmentSummaryResponse(username, summary));
+            }
             return (double) Math.round((
                 Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * onTimeIssues / submittedIssues
                     + Double.parseDouble(performanceAssessmentList.get(1).getWeight()) * lateTimeIssues / submittedIssues
@@ -182,6 +211,24 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                     return mongoTemplate.findOne(subQuery, Message.class) != null;
                 })
                 .count();
+            query = new Query(Criteria.where("_id").is(userId));
+            String username = mongoTemplate.findOne(query, User.class).getUsername();
+            List<PerformanceAssementPoint> summary = new ArrayList<>();
+
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(0).getCriteria(), reOpenedIssues));
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(1).getCriteria(), sum));
+            summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(2).getCriteria(), submittedIssues));
+
+            if (performanceAssessmentSummaryResponses.stream().anyMatch(item -> item.getUsername().equals(username))) {
+                performanceAssessmentSummaryResponses
+                    .stream()
+                    .filter(item -> item.getUsername().equals(username))
+                    .findFirst()
+                    .get()
+                    .setSummary(summary);
+            } else {
+                performanceAssessmentSummaryResponses.add(new PerformanceAssessmentSummaryResponse(username, summary));
+            }
 
             double point = (double) Math.round((
                 Double.parseDouble(performanceAssessmentList.get(0).getWeight()) * reOpenedIssues / submittedIssues

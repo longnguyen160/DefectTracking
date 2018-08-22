@@ -28,6 +28,7 @@ import ModalIssueDetails from '../../../components/modal/ModalIssueDetails';
 import ModalAddUser from '../../../components/modal/ModalAddingUser';
 import ModalAddCategory from '../../../components/modal/ModalAddingCategory';
 import ModalAddStatus from '../../../components/modal/ModalAddingStatus';
+import ModalSummaryReport from '../../../components/modal/ModalSummaryReport';
 import { loadIssueDetails } from '../../issue/actions/issue';
 
 const LIST_MODAL = {
@@ -38,7 +39,8 @@ const LIST_MODAL = {
   [MODAL_TYPE.ISSUE_DETAILS]: ModalIssueDetails,
   [MODAL_TYPE.ADD_USER]: ModalAddUser,
   [MODAL_TYPE.ADD_CATEGORY]: ModalAddCategory,
-  [MODAL_TYPE.ADD_STATUS]: ModalAddStatus
+  [MODAL_TYPE.ADD_STATUS]: ModalAddStatus,
+  [MODAL_TYPE.SUMMARY_REPORT]: ModalSummaryReport
 };
 
 const getParams = pathname => {
