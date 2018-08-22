@@ -5,6 +5,7 @@ import {
   LOAD_ALL_ISSUES_SHORTCUT,
   LOAD_ISSUE_DETAILS,
   UPDATE_ISSUE,
+  DELETE_ISSUE,
   LOAD_ISSUE_SHORTCUT,
   LOAD_ALL_ISSUES_BASED_ON_FILTER
 } from '../actions/types';
@@ -24,6 +25,9 @@ import {
   updateIssueRequest,
   updateIssueSuccess,
   updateIssueFailure,
+  deleteIssueRequest,
+  deleteIssueSuccess,
+  deleteIssueFailure,
   loadIssueShortcutRequest,
   loadIssueShortcutSuccess,
   loadIssueShortcutFailure,
@@ -140,6 +144,25 @@ function* watchUpdateIssue() {
   yield takeLatest(UPDATE_ISSUE, updateIssue);
 }
 
+function* deleteIssue({ issueId, closeModal }) {
+  try {
+    yield put(deleteIssueRequest());
+    const { data } = yield call(API.deleteIssue, issueId);
+
+    yield put(deleteIssueSuccess());
+    showSuccessNotification(data.message);
+    if (closeModal && typeof closeModal === 'function') {
+      closeModal();
+    }
+  } catch (error) {
+    yield put(deleteIssueFailure(getError(error)))
+  }
+}
+
+function* watchDeleteIssue() {
+  yield takeLatest(DELETE_ISSUE, deleteIssue);
+}
+
 function* loadAllIssuesBasedOnFilter({ issueListRequest, filter }) {
   try {
     yield put(loadAllIssuesBasedOnFilterRequest());
@@ -163,6 +186,7 @@ export default function* issueFlow() {
     watchLoadIssueShortcut(),
     watchLoadIssueDetails(),
     watchUpdateIssue(),
+    watchDeleteIssue(),
     watchLoadAllIssuesBasedOnFilter()
   ])
 }

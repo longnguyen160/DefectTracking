@@ -17,6 +17,9 @@ import {
   LOAD_ALL_ISSUES_BASED_ON_FILTER_REQUEST,
   LOAD_ALL_ISSUES_BASED_ON_FILTER_SUCCESS,
   LOAD_ALL_ISSUES_BASED_ON_FILTER_FAILURE,
+  DELETE_ISSUE_REQUEST,
+  DELETE_ISSUE_SUCCESS,
+  DELETE_ISSUE_FAILURE,
   RESET_ISSUE_DETAILS,
   RESET_ISSUE_LIST
 } from '../actions/types';
@@ -142,6 +145,22 @@ export default function issue(state = initialState, action) {
       });
 
     case LOAD_ISSUE_SHORTCUT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case DELETE_ISSUE_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true
+      });
+
+    case DELETE_ISSUE_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false
+      });
+
+    case DELETE_ISSUE_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error

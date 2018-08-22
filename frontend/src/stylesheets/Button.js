@@ -81,7 +81,7 @@ export const Button = styled.button`
   `}
   
   ${props => props.edit && css`
-    border: 2px solid #00c056;
+    border: 1px solid #00c056;
     color: #00c056;
     &:hover {
       background-color: #00c056;
@@ -90,7 +90,7 @@ export const Button = styled.button`
   `}
   
   ${props => props.remove && css`
-    border: 2px solid #ff3000;
+    border: 1px solid #ff3000;
     color: #ff3000;
     &:hover {
       background-color: #ff3000;
@@ -99,7 +99,7 @@ export const Button = styled.button`
   `}
   
   ${props => props.no && css`
-    border: 2px solid #626262;
+    border: 1px solid #626262;
     color: #626262;
     &:hover {
       background-color: #626262;
@@ -125,11 +125,17 @@ export const Button = styled.button`
   ${props => props.autoHeight && css`
     height: auto !important;
   `}
+  
   ${props => props.autoWidth && css`
     width: auto !important;
   `}
+  
   ${props => props.margin && css`
     margin: ${props.margin};
+  `}
+  
+  ${props => props.displayFlex && css`
+    display: flex;
   `}
 `;
 

@@ -19,6 +19,10 @@ import {
   UPDATE_ISSUE_REQUEST,
   UPDATE_ISSUE_SUCCESS,
   UPDATE_ISSUE_FAILURE,
+  DELETE_ISSUE,
+  DELETE_ISSUE_REQUEST,
+  DELETE_ISSUE_SUCCESS,
+  DELETE_ISSUE_FAILURE,
   LOAD_ISSUE_SHORTCUT,
   LOAD_ISSUE_SHORTCUT_REQUEST,
   LOAD_ISSUE_SHORTCUT_SUCCESS,
@@ -222,6 +226,33 @@ const updateIssueFailure = (error) => {
   };
 };
 
+const deleteIssue = (issueId, closeModal) => {
+  return {
+    type: DELETE_ISSUE,
+    issueId,
+    closeModal
+  };
+};
+
+const deleteIssueRequest = () => {
+  return {
+    type: DELETE_ISSUE_REQUEST
+  };
+};
+
+const deleteIssueSuccess = () => {
+  return {
+    type: DELETE_ISSUE_SUCCESS,
+  };
+};
+
+const deleteIssueFailure = (error) => {
+  return {
+    type: DELETE_ISSUE_FAILURE,
+    error
+  };
+};
+
 const resetIssueDetails = () => {
   return {
     type: RESET_ISSUE_DETAILS
@@ -255,6 +286,10 @@ export {
   updateIssueRequest,
   updateIssueSuccess,
   updateIssueFailure,
+  deleteIssue,
+  deleteIssueRequest,
+  deleteIssueSuccess,
+  deleteIssueFailure,
   loadIssueShortcut,
   loadIssueShortcutRequest,
   loadIssueShortcutSuccess,

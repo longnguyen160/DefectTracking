@@ -105,6 +105,10 @@ const updateIssueCategories = (data) => {
   return axios.post('user/updateIssueCategories', data);
 };
 
+const deleteIssue = (issueId) => {
+  return axios.delete(`user/deleteIssue/${issueId}`);
+};
+
 const loadAllIssuesFromBacklog = (issueList) => {
   return axios.get(`user/loadAllIssuesFromBacklog?issueIds=${issueList}`);
 };
@@ -267,7 +271,8 @@ const API = {
   getIssueSummary,
   getUsersKPI,
   getKPIData,
-  updateKPI
+  updateKPI,
+  deleteIssue
 };
 
 export default API;

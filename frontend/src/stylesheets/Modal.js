@@ -271,7 +271,10 @@ export const ModalLineContentStyled = styled.div`
   `}  
 
   svg {
-    margin: 0 5px;  
+    margin: 0 5px;
+    ${props => props.iconMarginRight && css`
+      margin: 0 5px 0 0;
+    `}
   }
   
   img{
@@ -283,22 +286,6 @@ export const ModalLineContentStyled = styled.div`
     font-style: italic;
     border: 1px solid #ff3000;
     padding: 7px;
-  `}
-  ${props => props.hasDottedLine && css`
-    position: relative;
-    margin-right: 15px;
-    &:after{
-      content: '';
-      position: absolute;
-      right: 0px;
-      background-position: top center;
-      background-image: linear-gradient(to bottom,#b0b0b0 20%,rgba(255,255,255,0) 0%);
-      background-size: 1px 4px;
-      background-repeat: repeat-y;
-      width: 1px;
-      height: 100%;
-      top: 0px;
-    }
   `}
   ${props => props.widthFixed && css`
     flex: 0 0 110px;
@@ -338,11 +325,6 @@ export const ModalLineContentStyled = styled.div`
     font-size: 18px;
     color: #0083b9;
   `}
-  ${props => props.numberTextPrimary && css`
-    font-family: Proxima Nova bold;
-    font-size: 18px;
-    color: ${props.theme.BorderColorPrimary};
-  `}
   ${props => props.numberTextBlack && css`
     font-family: Proxima Nova bold;
     font-size: 18px;
@@ -352,5 +334,8 @@ export const ModalLineContentStyled = styled.div`
     font-family: Proxima Nova bold;
     font-size: 18px;
     color: #333333;
+  `}
+  ${props => props.flexEnd && css`
+    justify-content: flex-end;
   `}
 `;

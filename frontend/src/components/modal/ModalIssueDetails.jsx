@@ -41,7 +41,7 @@ import {
 import Icon from '../icon/Icon';
 import { deleteFile, uploadFile } from '../../modules/file/actions/file';
 import Attachment from '../attachment/Attachment';
-import { loadIssueDetails, resetIssueDetails, updateIssue } from '../../modules/issue/actions/issue';
+import { deleteIssue, loadIssueDetails, resetIssueDetails, updateIssue } from '../../modules/issue/actions/issue';
 import CustomInput from '../editable/CustomInput';
 import CustomSelect from '../editable/CustomSelect';
 import CustomSelectStatus from '../editable/CustomSelectStatus';
@@ -49,11 +49,13 @@ import Message from '../../modules/message/components/Message';
 import { createMessage, resetMessage } from '../../modules/message/actions/message';
 import { loadProjectDetails, resetProject } from '../../modules/layout/actions/layout';
 import { Button } from '../../stylesheets/Button';
+import ModalConfirm from './ModalConfirm';
 
 class ModalIssueDetails extends React.Component {
 
   state = {
     uploadedFile: [],
+    showConfirmModal: false,
     userRole: this.props.user && this.props.user.roles.find(role => role !== ROLES.USER)
   };
 
@@ -138,7 +140,6 @@ class ModalIssueDetails extends React.Component {
   };
 
   handleSubmit = (e) => {
-    const { issue } = this.props;
     let value = null;
     let oldValue = null;
     let message = '';
@@ -188,6 +189,12 @@ class ModalIssueDetails extends React.Component {
     this.handleCreateMessage(message, type);
   };
 
+  handleConfirmModal = () => {
+    const { showConfirmModal } = this.state;
+
+    this.setState({ showConfirmModal: !showConfirmModal });
+  };
+
   handleWatchingIssue = () => {
     const { user } = this.props;
 
@@ -200,9 +207,18 @@ class ModalIssueDetails extends React.Component {
     loadIssueDetails(issue.id, false);
   };
 
+  handleDeleteIssue = () => {
+    const { deleteIssue, onClose, issue } = this.props;
+
+    deleteIssue(issue.id, () => {
+      this.handleConfirmModal();
+      onClose();
+    });
+  };
+
   render() {
-    const { onClose, isOpen, issue, loadingIssue, user } = this.props;
-    const { userRole } = this.state;
+    const { onClose, isOpen, issue, loadingIssue, user, isLoading } = this.props;
+    const { userRole, showConfirmModal } = this.state;
     const projectId = issue && issue.projectId;
     const priority = issue && ISSUE_PRIORITY_ARRAY.find(element => element.value === issue.priority);
     const categories = issue && issue.categories.map(category => ({
@@ -221,7 +237,7 @@ class ModalIssueDetails extends React.Component {
       <Modal
         onClose={onClose}
         isOpen={isOpen}
-        maxWidth={'950px'}
+        maxWidth={'1050px'}
         isHidden={true}
         fullHeight={true}
         padding={'20px 20px 35px'}
@@ -255,7 +271,7 @@ class ModalIssueDetails extends React.Component {
           {/*/>*/}
         </ModalHeaderStyled>
         <ModalBodyStyled padding={'10px 0'}>
-          <ModalContentStyled flex={'0 0 715px'} padding={'0 10px'}>
+          <ModalContentStyled flex={'0 0 770px'} padding={'0 10px'}>
             <ModalLineStyled noMargin padding={'0 0 10px 0'}>
               <ModalLineContentStyled alignLeft>
                 {
@@ -654,7 +670,8 @@ class ModalIssueDetails extends React.Component {
               </ModalLineContentStyled>
             </ModalLineStyled>
             {
-              user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER))) &&
+              user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER)))
+              && issue && issue.status.default &&
                 <ModalLineStyled noMargin padding={'0 0 10px 0'}>
                   <ModalLineContentStyled alignLeft>
                     <ModalLineTitleStyled>
@@ -662,6 +679,7 @@ class ModalIssueDetails extends React.Component {
                         small
                         fullHeight
                         action={'Deactivate'}
+                        onClick={this.handleConfirmModal}
                       >
                         <Icon
                           icon={ICONS.TRASH}
@@ -678,6 +696,16 @@ class ModalIssueDetails extends React.Component {
             }
           </ModalContentStyled>
         </ModalBodyStyled>
+        {
+          showConfirmModal &&
+            <ModalConfirm
+              isOpen={showConfirmModal}
+              onClose={this.handleConfirmModal}
+              handleDelete={this.handleDeleteIssue}
+              entityId={issue.id}
+              loading={isLoading}
+            />
+        }
         <SockJsClient
           url={WEB_SOCKET_URL}
           topics={['/topic/issue/update']}
@@ -699,13 +727,15 @@ ModalIssueDetails.propTypes = {
   loadIssueDetails: PropTypes.func.isRequired,
   createMessage: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
+  deleteIssue: PropTypes.func.isRequired,
   resetProject: PropTypes.func.isRequired,
   resetMessage: PropTypes.func.isRequired,
   issue: PropTypes.object,
   selectedProject: PropTypes.object,
   project: PropTypes.object,
   user: PropTypes.object.isRequired,
-  loadingIssue: PropTypes.bool.isRequired
+  loadingIssue: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -713,7 +743,8 @@ const mapStateToProps = state => ({
   loadingIssue: state.issue.loadingIssueDetails,
   user: state.layout.user,
   selectedProject: state.layout.selectedProject,
-  project: state.layout.project
+  project: state.layout.project,
+  isLoading: state.issue.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -724,6 +755,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   resetIssueDetails: resetIssueDetails,
   createMessage: createMessage,
   loadProjectDetails: loadProjectDetails,
+  deleteIssue: deleteIssue,
   resetProject: resetProject,
   resetMessage: resetMessage
 }, dispatch);

@@ -185,4 +185,15 @@ public class IssueController {
             return new ArrayList<>();
         }
     }
+
+    @DeleteMapping("/user/deleteIssue/{issueId}")
+    public ResponseEntity<?> deleteIssue(@PathVariable("issueId") String issueId) {
+        ServerResponse serverResponse;
+
+        issueRepository.deleteById(issueId);
+        serverResponse = new ServerResponse(Boolean.TRUE, "Delete issue successfully");
+
+        template.convertAndSend("/topic/issuesList",serverResponse);
+        return new ResponseEntity<>(serverResponse, HttpStatus.ACCEPTED);
+    }
 }
