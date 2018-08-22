@@ -258,7 +258,7 @@ class Dashboard extends Component {
         showList
         noBackground
         fixed
-        done={props.original.status.done}
+        done={props.original && props.original.status.done}
         color={props.original && props.original.status.background}
       >
         {props.children}
@@ -369,7 +369,6 @@ class Dashboard extends Component {
     return (
       <ReactTable
         manual
-        key={issues.length}
         filterable={true}
         columns={columns}
         data={issues}
@@ -387,7 +386,7 @@ class Dashboard extends Component {
         getNoDataProps={() => NoDataProps({ loading: loadingIssues })}
         NoDataComponent={NoDataComponent}
         getTheadFilterThProps={() => { return { style: { position: "inherit", overflow: "inherit" } } }}
-        defaultPageSize={issues.length <= 10 ? issues.length : 10}
+        pageSize={issues.length < 10 ? issues.length : 10}
       />
     );
   };

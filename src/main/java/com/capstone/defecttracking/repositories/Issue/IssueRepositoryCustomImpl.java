@@ -107,7 +107,7 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
 
     @Override
     public String generateIssueKey(String projectId) {
-        Query query = new Query(Criteria.where("projectId").is(projectId)).with(Sort.by("updatedAt").descending());
+        Query query = new Query(Criteria.where("projectId").is(projectId)).with(Sort.by("createdAt").descending());
         Issue latestIssue = mongoTemplate.findOne(query, Issue.class);
         query = new Query(Criteria.where("_id").is(projectId));
         Project project = mongoTemplate.findOne(query, Project.class);
@@ -186,14 +186,14 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
             .collect(Collectors.toList());
 
         query = new Query(criteria);
-        int pages = (int) Math.ceil(mongoTemplate.find(query, Issue.class).size() / issueListRequest.getPageSize());
+        int pages = (int) Math.ceil((double) mongoTemplate.find(query, Issue.class).size() / issueListRequest.getPageSize());
         return new IssueListResponse(issueList, pages);
     }
 
     @Override
     public IssueListResponse loadAllIssuesBasedOnFilter(IssueListRequest issueListRequest, Filter filter) {
         Query query = configCriteriaForIssueList(issueListRequest, filter);
-        int pages = (int) Math.ceil(mongoTemplate.find(query, Issue.class).size() / issueListRequest.getPageSize());
+        int pages = (int) Math.ceil((double) mongoTemplate.find(query, Issue.class).size() / issueListRequest.getPageSize());
 
         query.limit(issueListRequest.getPageSize()).skip(issueListRequest.getPage() * issueListRequest.getPageSize());
         List<IssueResponse> issueList = mongoTemplate
