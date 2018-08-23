@@ -126,6 +126,14 @@ class Summary extends Component {
   };
 
   getSummary = (from, to, projectId, status) => {
+    if (!from) {
+      const { selectedProject } = this.props;
+
+      from = moment(selectedProject.createdAt);
+    }
+    if (!to) {
+      to = moment();
+    }
     const diffDays = moment(to).diff(moment(from), 'days');
     const { summaryType } = this.state;
 
@@ -177,7 +185,9 @@ class Summary extends Component {
   };
 
   handleEventDateChange = (type, value) => {
-    this.setState({ [type]: value });
+    if (value) {
+      this.setState({ [type]: value });
+    }
   };
 
   handleFocus = (type) => {
@@ -265,6 +275,7 @@ class Summary extends Component {
         getNoDataProps={() => NoDataProps({ loading })}
         NoDataComponent={NoDataComponent}
         defaultPageSize={2}
+        collapseOnDataChange={false}
         pivotBy={['position']}
         className="-striped -highlight"
       />
@@ -313,7 +324,7 @@ class Summary extends Component {
     };
 
     return (
-      <PageBoardStyled backlog>
+      <PageBoardStyled block>
         <ElementHeaderStyled padding={'0 0 10px 0'}>
           <TitleElementStyled noPadding fontSize={'20px'}>
             Summary

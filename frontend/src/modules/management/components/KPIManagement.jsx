@@ -118,6 +118,7 @@ class KPIManagement extends Component {
             NoDataComponent={NoDataComponent}
             defaultPageSize={2}
             pivotBy={['role']}
+            collapseOnDataChange={false}
             className="-striped -highlight"
           />
         </PageBoardItemStyled>

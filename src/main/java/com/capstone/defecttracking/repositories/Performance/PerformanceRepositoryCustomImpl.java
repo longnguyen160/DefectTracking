@@ -110,11 +110,6 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
     private double calculateDeveloperPoint(String userId, Date from, Date to) {
         Criteria criteria = new Criteria();
         List<PerformanceAssessment> performanceAssessmentList = loadPAWithRole("developer");
-        double sumPA = 0;
-
-        for (PerformanceAssessment aPerformanceAssessmentList : performanceAssessmentList) {
-            sumPA = sumPA + Double.parseDouble(aPerformanceAssessmentList.getWeight());
-        }
 
         criteria.andOperator(
             Criteria.where("assignee").is(userId),
@@ -122,6 +117,8 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
         );
         Query query = new Query(criteria);
         List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+        query = new Query(Criteria.where("_id").is(userId));
+        String username = mongoTemplate.findOne(query, User.class).getUsername();
 
         if (issueList.size() > 0) {
             long sum = issueList.size();
@@ -148,8 +145,6 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                     return mongoTemplate.findOne(subQuery, Message.class) != null;
                 })
                 .count();
-            query = new Query(Criteria.where("_id").is(userId));
-            String username = mongoTemplate.findOne(query, User.class).getUsername();
             List<PerformanceAssementPoint> summary = new ArrayList<>();
 
             summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(0).getCriteria(), onTimeIssues));
@@ -174,6 +169,23 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                     + Double.parseDouble(performanceAssessmentList.get(3).getWeight()) * submittedIssues / sum
             ) * 100) / 100;
         }
+        List<PerformanceAssementPoint> summary = new ArrayList<>();
+
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(0).getCriteria(), 0));
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(1).getCriteria(), 0));
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(2).getCriteria(), 0));
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(3).getCriteria(), 0));
+
+        if (performanceAssessmentSummaryResponses.stream().anyMatch(item -> item.getUsername().equals(username))) {
+            performanceAssessmentSummaryResponses
+                .stream()
+                .filter(item -> item.getUsername().equals(username))
+                .findFirst()
+                .get()
+                .setSummary(summary);
+        } else {
+            performanceAssessmentSummaryResponses.add(new PerformanceAssessmentSummaryResponse(username, summary));
+        }
 
         return 0;
     }
@@ -181,11 +193,6 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
     private double calculateReporterPoint(String userId, Date from, Date to) {
         Criteria criteria = new Criteria();
         List<PerformanceAssessment> performanceAssessmentList = loadPAWithRole("reporter");
-        double sumPA = 0;
-
-        for (PerformanceAssessment aPerformanceAssessmentList : performanceAssessmentList) {
-            sumPA = sumPA + Double.parseDouble(aPerformanceAssessmentList.getWeight());
-        }
 
         criteria.andOperator(
             Criteria.where("reporter").is(userId),
@@ -193,6 +200,8 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
         );
         Query query = new Query(criteria);
         List<Issue> issueList = mongoTemplate.find(query, Issue.class);
+        query = new Query(Criteria.where("_id").is(userId));
+        String username = mongoTemplate.findOne(query, User.class).getUsername();
 
         if (issueList.size() > 0) {
             long sum = issueList.size();
@@ -211,8 +220,6 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
                     return mongoTemplate.findOne(subQuery, Message.class) != null;
                 })
                 .count();
-            query = new Query(Criteria.where("_id").is(userId));
-            String username = mongoTemplate.findOne(query, User.class).getUsername();
             List<PerformanceAssementPoint> summary = new ArrayList<>();
 
             summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(0).getCriteria(), reOpenedIssues));
@@ -237,6 +244,22 @@ public class PerformanceRepositoryCustomImpl implements PerformanceRepositoryCus
             ) * 100) / 100;
 
             return point > 100 ? 100 : point;
+        }
+        List<PerformanceAssementPoint> summary = new ArrayList<>();
+
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(0).getCriteria(), 0));
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(1).getCriteria(), 0));
+        summary.add(new PerformanceAssementPoint(performanceAssessmentList.get(2).getCriteria(), 0));
+
+        if (performanceAssessmentSummaryResponses.stream().anyMatch(item -> item.getUsername().equals(username))) {
+            performanceAssessmentSummaryResponses
+                .stream()
+                .filter(item -> item.getUsername().equals(username))
+                .findFirst()
+                .get()
+                .setSummary(summary);
+        } else {
+            performanceAssessmentSummaryResponses.add(new PerformanceAssessmentSummaryResponse(username, summary));
         }
 
         return 0;
