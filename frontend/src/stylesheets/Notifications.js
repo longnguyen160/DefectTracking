@@ -11,6 +11,11 @@ export const notificationStyle = {
       margin: '0px 0px 8px 0px',
       padding: '10px 18px 10px 10px',
     },
+    info: {
+      backgroundColor: '#edf2fa',
+      color: '#333333',
+
+    },
     // Applied only to the success notification item
     success: {
       border: '1px solid #b3da56',

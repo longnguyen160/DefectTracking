@@ -1,12 +1,10 @@
 package com.capstone.defecttracking.controllers;
 
-import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Issue.IssueHistoryResponse;
 import com.capstone.defecttracking.models.Mail.Mail;
-import com.capstone.defecttracking.models.Message.Message;
-import com.capstone.defecttracking.models.Message.MessageHistoryResponse;
-import com.capstone.defecttracking.models.Message.MessageResponse;
-import com.capstone.defecttracking.models.Message.MessageType;
+import com.capstone.defecttracking.models.Message.*;
+import com.capstone.defecttracking.models.Notification.Notification;
+import com.capstone.defecttracking.models.Notification.Recipient;
 import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
@@ -14,6 +12,7 @@ import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
 import com.capstone.defecttracking.repositories.Message.MessageRepository;
 import com.capstone.defecttracking.repositories.Message.MessageRepositoryCustom;
+import com.capstone.defecttracking.repositories.Notification.NotificationRepository;
 import com.capstone.defecttracking.repositories.Project.ProjectRepositoryCustom;
 import com.capstone.defecttracking.repositories.User.UserRepositoryCustom;
 import com.capstone.defecttracking.services.EmailServices;
@@ -32,17 +31,16 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 public class MessageController {
 
     @Autowired
     MessageRepository messageRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @Autowired
     MessageRepositoryCustom messageRepositoryCustom;
@@ -68,44 +66,70 @@ public class MessageController {
     }
 
     @PostMapping("/user/createMessage")
-    public ResponseEntity<?> createMessage(@RequestBody Message message) {
+    public ResponseEntity<?> createMessage(@RequestBody MessageRequest message) {
         ServerResponse serverResponse;
         Mail mail = new Mail();
         Map<String, Object> model = new HashMap<>();
         HttpServletRequest request = ((ServletRequestAttributes)Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String baseURL = String.format("%s://%s:%d/",request.getScheme(),  request.getServerName(), request.getServerPort());
-        MessageType type = message.getType();
+        MessageType type = message.getMessageData().getType();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         if (!userDetailsSecurity.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")) && type.getEntityName().equals("logs") && type.getEntityType().equals("status")) {
-            type.setRejectBy(messageRepositoryCustom.checkReject(message));
+            type.setRejectBy(messageRepositoryCustom.checkReject(message.getMessageData()));
         }
-        message.setType(type);
-        messageRepository.save(message);
+        message.getMessageData().setType(type);
+        messageRepository.save(message.getMessageData());
+        notificationRepository.save(message.getNotification());
+
+        if (type.getEntityType() != null && type.getEntityType().equals("assignee") && type.getOldEntityId() != null) {
+            Notification notification = message.getNotification();
+            List<Recipient> recipients = new ArrayList<>();
+            recipients.add(new Recipient(
+                type.getOldEntityId(),
+                false,
+                false,
+                false
+            ));
+            notification.setMessage("remove you from issue ");
+            notification.setRecipients(recipients);
+            notificationRepository.save(notification);
+            serverResponse = new ServerResponse(true, "Notification");
+
+            template.convertAndSend("/topic/" + type.getOldEntityId() + "/notification", serverResponse);
+
+        }
+
         serverResponse = new ServerResponse(true, "Create message successfully");
 
-        if (message.getType().getEntityName().equals("comments")) {
+        if (type.getEntityName().equals("comments")) {
             template.convertAndSend("/topic/message", serverResponse);
         }
 
-        User sender = userRepositoryCustom.findById(message.getSender());
+        serverResponse = new ServerResponse(true, "Notification");
+
+        for (int i = 0; i < message.getNotification().getRecipients().size(); i++) {
+            template.convertAndSend("/topic/" + message.getNotification().getRecipients().get(i).getUserId() + "/notification", serverResponse);
+        }
+
+        User sender = userRepositoryCustom.findById(message.getMessageData().getSender());
         String src = sender.getProfile() != null  && sender.getProfile().getAvatarURL() != null ? sender.getProfile().getAvatarURL() : "/images/default_avatar.jpg";
-        IssueHistoryResponse issue = messageRepositoryCustom.getIssueKey(message.getIssueId());
-        String email = sender.getUsername() + " " + message.getMessage() + " on " + issue.getKey() + " - " + issue.getName();
-        Project project = projectRepositoryCustom.getProject(message.getIssueId());
+        IssueHistoryResponse issue = messageRepositoryCustom.getIssueKey(message.getMessageData().getIssueId());
+        String email = sender.getUsername() + " " + message.getMessageData().getMessage() + " on " + issue.getKey() + " - " + issue.getName();
+        Project project = projectRepositoryCustom.getProject(message.getMessageData().getIssueId());
 
         model.put("src", baseURL + "files/?fileId=" + src);
         model.put("sender", sender.getUsername());
-        model.put("message", message.getMessage());
-        model.put("issueLink", baseURL + "issue/" + message.getIssueId());
+        model.put("message", message.getMessageData().getMessage());
+        model.put("issueLink", baseURL + "issue/" + message.getMessageData().getIssueId());
         model.put("issueName", issue.getKey() + " - " + issue.getName());
         model.put("projectLink", baseURL + "project/" + project.getId() + "/dashboard");
         model.put("projectName", project.getName());
 
         mail.setFrom("no-reply@defecttracking.com");
         mail.setTo(issueRepositoryCustom
-            .loadWatcherEmails(message.getIssueId())
+            .loadWatcherEmails(message.getMessageData().getIssueId())
             .stream()
             .filter(watcher -> !watcher.equals(sender.getEmail()))
             .toArray(String[]::new));

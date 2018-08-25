@@ -99,16 +99,59 @@ class CommentBox extends Component {
     const { createMessage, issue, user, onSubmit } = this.props;
     const { fileIds } = this.state;
     let { value } = this.props;
+    const recipients = [];
+    const messageData = {
+      issueId: issue.id,
+      message: this.message.value,
+      type: { entityName: MESSAGE_TYPE.COMMENTS },
+      sender: user.id,
+      attachments: fileIds,
+      createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+      updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+    };
+
+    if (user.id === issue.reporter.id && issue.assignee) {
+      recipients.push({
+        userId: issue.assignee.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+    } else if (issue.assignee && user.id === issue.assignee.id) {
+      recipients.push({
+        userId: issue.reporter.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+    } else if (issue.assignee && user.id !== issue.assignee.id && user.id !== issue.reporter.id) {
+      recipients.push({
+        userId: issue.reporter.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+      recipients.push({
+        userId: issue.assignee.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+    }
+    const notification = {
+      issueId: issue.id,
+      message: this.message.value,
+      type: { entityName: MESSAGE_TYPE.COMMENTS },
+      sender: user.id,
+      recipients,
+      createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+      updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+    };
 
     if (!value) {
       createMessage({
-        issueId: issue.id,
-        message: this.message.value,
-        type: { entityName: MESSAGE_TYPE.COMMENTS },
-        sender: user.id,
-        attachments: fileIds,
-        createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
-        updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+        messageData,
+        notification
       }, false);
       this.message.value = '';
       this.setState({ fileIds: [] });

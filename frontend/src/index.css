@@ -59,6 +59,10 @@ a {
 .Select-input input {
   border: none !important;
 }
+
+.notification-info:hover {
+  background-color: #c8d0dd !important;
+}
 *, :after, :before {
   box-sizing: border-box;
   outline: none;

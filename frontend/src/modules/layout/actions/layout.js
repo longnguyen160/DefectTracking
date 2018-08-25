@@ -14,10 +14,15 @@ import {
   LOAD_PROJECT_DETAILS_REQUEST,
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
+  LOAD_NOTIFICATION_COUNT,
+  LOAD_NOTIFICATION_COUNT_REQUEST,
+  LOAD_NOTIFICATION_COUNT_SUCCESS,
+  LOAD_NOTIFICATION_COUNT_FAILURE,
   SELECT_PROJECT,
   RESET_PROJECT,
   RESET_SELECTED_PROJECT,
   RESET_ALL_CATEGORIES,
+  RESET_NOTIFICATION_COUNT,
   RESET_USER
 } from './types';
 
@@ -103,12 +108,32 @@ const loadProjectDetailsFailure = (error) => {
   }
 };
 
-const selectProject = (project) => {
-  return {
-    type: SELECT_PROJECT,
-    project
-  }
-};
+const selectProject = (project) => ({
+  type: SELECT_PROJECT,
+  project
+});
+
+const loadNotificationCount = () => ({
+  type: LOAD_NOTIFICATION_COUNT
+});
+
+const loadNotificationCountRequest = () => ({
+  type: LOAD_NOTIFICATION_COUNT_REQUEST
+});
+
+const loadNotificationCountSuccess = (count) => ({
+  type: LOAD_NOTIFICATION_COUNT_SUCCESS,
+  count
+});
+
+const loadNotificationCountFailure = (error) => ({
+  type: LOAD_NOTIFICATION_COUNT_FAILURE,
+  error
+});
+
+const resetNotificationCount = () => ({
+  type: RESET_NOTIFICATION_COUNT
+});
 
 const resetSelectedProject = () => ({
   type: RESET_SELECTED_PROJECT
@@ -143,8 +168,13 @@ export {
   loadProjectDetailsSuccess,
   loadProjectDetailsFailure,
   selectProject,
+  loadNotificationCount,
+  loadNotificationCountRequest,
+  loadNotificationCountSuccess,
+  loadNotificationCountFailure,
   resetProject,
   resetSelectedProject,
   resetAllCategories,
-  resetUser
+  resetUser,
+  resetNotificationCount
 }

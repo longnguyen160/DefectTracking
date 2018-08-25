@@ -13,7 +13,8 @@ import {
   closeModal,
   resetSelectedProject,
   loadProjectDetails,
-  selectProject, resetUser
+  selectProject,
+  resetUser, loadNotificationCount, resetNotificationCount
 } from '../actions/layout';
 import { logOut } from '../../account/actions/logout';
 import { loadAllProjects } from '../../projects/actions/project';
@@ -30,6 +31,11 @@ import ModalAddCategory from '../../../components/modal/ModalAddingCategory';
 import ModalAddStatus from '../../../components/modal/ModalAddingStatus';
 import ModalSummaryReport from '../../../components/modal/ModalSummaryReport';
 import { loadIssueDetails } from '../../issue/actions/issue';
+import { showCustomNotification } from '../../../components/notification/Notifications';
+import {
+  loadNotification, setAllNotificationsToSeen,
+  setNotificationToRead, setNotificationToSeen
+} from '../../notification/actions/notification';
 
 const LIST_MODAL = {
   [MODAL_TYPE.CREATING_PROJECT]: ModalCreatingProject,
@@ -55,10 +61,11 @@ const getParams = pathname => {
 class MainLayout extends React.Component {
 
   componentWillMount() {
-    const { loadCurrentUser, history, loadAllProjects, selectProject } = this.props;
+    const { loadCurrentUser, history, loadAllProjects, selectProject, loadNotificationCount } = this.props;
     const { pathname } = this.props.location;
     const currentParams = getParams(pathname);
 
+    loadNotificationCount();
     loadAllProjects();
     loadCurrentUser(() => {
       history.push('/signin');
@@ -69,10 +76,16 @@ class MainLayout extends React.Component {
 
       loadProjectDetails(currentParams.projectId, (project) => selectProject(project));
     } else if (currentParams.issueId) {
-      const { openModal, loadIssueDetails } = this.props;
+      this.openModal(currentParams.issueId);
+    }
+  }
 
-      loadIssueDetails(currentParams.issueId, true);
-      openModal(MODAL_TYPE.ISSUE_DETAILS);
+  componentWillReceiveProps(nextProps) {
+    const { notification, loadNotificationCount, setNotificationToSeen } = nextProps;
+
+    if (notification && JSON.stringify(notification) !== JSON.stringify(this.props.notification)) {
+      loadNotificationCount();
+      showCustomNotification({ handleOpenModal: this.openModal, setNotificationToSeen: setNotificationToSeen }, notification);
     }
   }
 
@@ -81,6 +94,14 @@ class MainLayout extends React.Component {
 
     resetUser();
   }
+
+  openModal = (issueId, notificationId) => {
+    const { openModal, loadIssueDetails, setNotificationToRead } = this.props;
+
+    setNotificationToRead(notificationId);
+    loadIssueDetails(issueId, true);
+    openModal(MODAL_TYPE.ISSUE_DETAILS);
+  };
 
   handleOpenModal = () => {
     const { closeModal, layout: { modalIsOpen, modalType } } = this.props;
@@ -98,22 +119,31 @@ class MainLayout extends React.Component {
     return null;
   };
 
-  onMessageReceive = () => {
-    const { loadCurrentUser } = this.props;
+  onMessageReceive = (message) => {
+    const { loadCurrentUser, loadNotification, loadNotificationCount } = this.props;
 
-    loadCurrentUser();
+    if (message.message === 'Notification') {
+      loadNotificationCount();
+      loadNotification();
+    } else if (message.message === 'Notifications') {
+      loadNotificationCount();
+    } else {
+      loadCurrentUser();
+    }
   };
 
   render() {
     const {
       children,
       notifications,
-      layout: { user, selectedProject },
+      layout: { user, selectedProject, notificationCount },
       logOut,
       history,
       openModal,
       loadProjectDetails,
-      selectProject
+      selectProject,
+      setAllNotificationsToSeen,
+      resetNotificationCount
     } = this.props;
 
     return (
@@ -128,7 +158,10 @@ class MainLayout extends React.Component {
           history={history}
           openModal={openModal}
           selectProject={selectProject}
+          notificationCount={notificationCount}
           loadProjectDetails={loadProjectDetails}
+          resetNotificationCount={resetNotificationCount}
+          setAllNotificationsToSeen={setAllNotificationsToSeen}
         />
         <FormGroupStyled padding>
           <SideBar
@@ -139,12 +172,15 @@ class MainLayout extends React.Component {
           {children}
         </FormGroupStyled>
         {this.handleOpenModal()}
-        <SockJsClient
-          url={WEB_SOCKET_URL}
-          topics={['/topic/currentUser']}
-          onMessage={this.onMessageReceive}
-          debug={true}
-        />
+        {
+          user &&
+            <SockJsClient
+              url={WEB_SOCKET_URL}
+              topics={['/topic/currentUser', `/topic/${user.id}/notification`]}
+              onMessage={this.onMessageReceive}
+              debug={true}
+            />
+        }
       </div>
     );
   }
@@ -153,6 +189,7 @@ class MainLayout extends React.Component {
 MainLayout.propTypes = {
   children: PropTypes.element.isRequired,
   history: PropTypes.object.isRequired,
+  notification: PropTypes.object,
   notifications: PropTypes.array.isRequired,
   loadCurrentUser: PropTypes.func.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
@@ -162,19 +199,27 @@ MainLayout.propTypes = {
   closeModal: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
+  loadNotification: PropTypes.func.isRequired,
+  loadNotificationCount: PropTypes.func.isRequired,
   resetUser: PropTypes.func.isRequired,
+  setNotificationToSeen: PropTypes.func.isRequired,
+  setNotificationToRead: PropTypes.func.isRequired,
+  setAllNotificationsToSeen: PropTypes.func.isRequired,
+  resetNotificationCount: PropTypes.func.isRequired,
   layout: PropTypes.shape({
     isLoading: PropTypes.bool.isRequired,
     user: PropTypes.object,
     modalIsOpen: PropTypes.bool.isRequired,
     modalType: PropTypes.string.isRequired,
     selectedProject: PropTypes.object,
+    notificationCount: PropTypes.number.isRequired,
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   })
 };
 
 const mapStateToProps = state => ({
   layout: state.layout,
+  notification: state.notification.notification,
   notifications: state.notifications
 });
 
@@ -188,7 +233,13 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   loadAllProjects: loadAllProjects,
   loadProjectDetails: loadProjectDetails,
   loadIssueDetails: loadIssueDetails,
-  resetUser: resetUser
+  loadNotification: loadNotification,
+  loadNotificationCount: loadNotificationCount,
+  setNotificationToSeen: setNotificationToSeen,
+  setNotificationToRead: setNotificationToRead,
+  setAllNotificationsToSeen: setAllNotificationsToSeen,
+  resetNotificationCount: resetNotificationCount,
+  resetUser: resetUser,
 }, dispatch);
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainLayout));

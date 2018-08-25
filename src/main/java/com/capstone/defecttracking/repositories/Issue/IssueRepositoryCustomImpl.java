@@ -101,8 +101,11 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
     public List<String> loadWatcherEmails(String issueId) {
         Query query = new Query(Criteria.where("_id").is(issueId));
         Issue issue = mongoTemplate.findOne(query, Issue.class);
+        ArrayList<String> watchers = new ArrayList<>();
 
-        return getUserEmail(issue.getWatchers());
+        watchers.add(issue.getAssignee());
+        watchers.add(issue.getReporter());
+        return getUserEmail(watchers);
     }
 
     @Override

@@ -1,5 +1,5 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { LOAD_ALL_CATEGORIES_IN_PROJECT, LOAD_CURRENT_USER, LOAD_PROJECT_DETAILS } from '../actions/types';
+import { LOAD_ALL_CATEGORIES_IN_PROJECT, LOAD_CURRENT_USER, LOAD_PROJECT_DETAILS, LOAD_NOTIFICATION_COUNT } from '../actions/types';
 import {
   loadAllCategoriesInProjectRequest,
   loadAllCategoriesInProjectSuccess,
@@ -9,15 +9,19 @@ import {
   loadCurrentUserFailure,
   loadProjectDetailsRequest,
   loadProjectDetailsSuccess,
-  loadProjectDetailsFailure
+  loadProjectDetailsFailure,
+  loadNotificationCountRequest,
+  loadNotificationCountSuccess,
+  loadNotificationCountFailure
 } from '../actions/layout';
 import API from '../../../utils/api';
 import { getError, removeAccessToken } from '../../../utils/ultis';
-// load all categories in project 
+
+// load all categories in project
 function* loadAllCategoriesInProject({ projectId }) {
   try {
     yield put(loadAllCategoriesInProjectRequest());
-    
+
     const { data } = yield call(API.loadAllCategoriesInProject, projectId);
 
     yield put(loadAllCategoriesInProjectSuccess(data));
@@ -29,7 +33,6 @@ function* loadAllCategoriesInProject({ projectId }) {
 function* watchLoadAllCategoriesInProject(){
   yield takeLatest(LOAD_ALL_CATEGORIES_IN_PROJECT, loadAllCategoriesInProject);
 }
-
 
 // load current user
 function* loadCurrentUser({ goToLoginPage }) {
@@ -73,10 +76,26 @@ function* watchLoadProjectDetails() {
   yield takeLatest(LOAD_PROJECT_DETAILS, loadProjectDetails);
 }
 
+function* loadNotificationCount() {
+  try {
+    yield put(loadNotificationCountRequest());
+    const { data } = yield call(API.loadNotificationCount);
+
+    yield put(loadNotificationCountSuccess(data));
+  } catch (error) {
+    yield put(loadNotificationCountFailure(getError(error)));
+  }
+}
+
+function* watchLoadNotificationCount() {
+  yield takeLatest(LOAD_NOTIFICATION_COUNT, loadNotificationCount);
+}
+
 export default function* accountFlow() {
   yield all([
     watchLoadAllCategoriesInProject(),
     watchLoadCurrentUser(),
-    watchLoadProjectDetails()
+    watchLoadProjectDetails(),
+    watchLoadNotificationCount()
   ]);
 }

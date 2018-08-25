@@ -345,6 +345,11 @@ const MESSAGE = (value) => ({
   UPDATE_CATEGORIES: 'updated categories'
 });
 
+const NOTIFICATION_MESSAGE = {
+  ASSIGN_USER: 'assign you to issue ',
+  REMOVE_USER: 'remove you from issue '
+};
+
 const ISSUE_DETAILS = {
   issueName: 'Summary',
   description: 'Description',
@@ -374,5 +379,6 @@ export {
   MESSAGE,
   ISSUE_DETAILS,
   ROLES,
-  DEFAULT_AVATAR
+  DEFAULT_AVATAR,
+  NOTIFICATION_MESSAGE
 }

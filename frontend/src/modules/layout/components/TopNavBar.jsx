@@ -14,8 +14,21 @@ import {
 import { FilterBoxWrapperStyled , Image} from '../../../stylesheets/GeneralStyled';
 import Icon from '../../../components/icon/Icon';
 import { FILE_BASE_URL, ICONS, MODAL_TYPE, ROLES, DEFAULT_AVATAR } from '../../../utils/enums';
+import Notification from '../../notification/components/Notification';
 
 class TopNavBar extends Component {
+
+  state = {
+    isOpen: false
+  };
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
 
   logOut = () => {
     const { logOut, history } = this.props;
@@ -25,6 +38,12 @@ class TopNavBar extends Component {
     });
   };
 
+  handleClickOutside = (event) => {
+    if (this.wrapper && !this.wrapper.contains(event.target)) {
+      this.setState({ isOpen: false });
+    }
+  };
+
   handleSelectProject = (projectId) => {
     const { loadProjectDetails, history, selectProject } = this.props;
 
@@ -32,8 +51,18 @@ class TopNavBar extends Component {
     history.push(`/project/${projectId}/dashboard`);
   };
 
+  handleNotification = () => {
+    const { isOpen } = this.state;
+    const { setAllNotificationsToSeen, resetNotificationCount } = this.props;
+
+    resetNotificationCount();
+    setAllNotificationsToSeen();
+    this.setState({ isOpen: !isOpen });
+  };
+
   render() {
-    const { user, openModal, projects, selectedProject } = this.props;
+    const { user, openModal, projects, selectedProject, notificationCount } = this.props;
+    const { isOpen } = this.state;
 
     if (user) {
       return (
@@ -108,9 +137,19 @@ class TopNavBar extends Component {
                 }
               </SubSelectStyled>
             </HeaderMainItemsStyled>
-            <HeaderMainItemsStyled notification hover>
-              <i className="fa fa-bell" />
-              <span>21</span>
+            <HeaderMainItemsStyled
+              notification
+              hover
+              innerRef={(node) => this.wrapper = node}
+            >
+              <i className="fa fa-bell" onClick={this.handleNotification} />
+              {
+                notificationCount > 0 &&
+                  <span>{notificationCount}</span>
+              }
+              {
+                isOpen && <Notification />
+              }
             </HeaderMainItemsStyled>
           </HeaderMainBlockStyled>
         </HeaderMainStyled>
@@ -127,8 +166,11 @@ TopNavBar.propTypes = {
   openModal: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   selectedProject: PropTypes.object,
+  notificationCount: PropTypes.number.isRequired,
   loadProjectDetails: PropTypes.func.isRequired,
   selectProject: PropTypes.func.isRequired,
+  resetNotificationCount: PropTypes.func.isRequired,
+  setAllNotificationsToSeen: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

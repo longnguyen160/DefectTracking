@@ -20,6 +20,12 @@ import Icon from '../../../components/icon/Icon';
 
 class Projects extends React.Component {
 
+  componentWillMount() {
+    const { loadAllProjects } = this.props;
+
+    loadAllProjects();
+  }
+
   onMessageReceive = () => {
     const { loadAllProjects } = this.props;
 

@@ -223,6 +223,38 @@ const getKPIData = () => {
 const updateKPI = (kpi) => {
   return axios.post('admin/updateKPI', kpi);
 };
+//Notification
+const loadNotificationCount = () => {
+  return axios.get('user/getUnseenNotification');
+};
+
+const loadNotification = () => {
+  return axios.get('user/getNotification');
+};
+
+const loadNotifications = () => {
+  return axios.get('user/getNotifications');
+};
+
+const setNotificationToSeen = (notificationId) => {
+  return axios.post('user/setNotificationToSeen', notificationId);
+};
+
+const setNotificationToRead = (notificationId) => {
+  return axios.post('user/setNotificationToRead', notificationId);
+};
+
+const setAllNotificationsToSeen = () => {
+  return axios.post('user/setAllNotificationsToSeen');
+};
+
+const setAllNotificationsToRead = () => {
+  return axios.post('user/setAllNotificationsToRead');
+};
+
+const setAllNotificationsToDelete = () => {
+  return axios.post('user/setAllNotificationsToDelete');
+};
 
 const API = {
   login,
@@ -276,7 +308,15 @@ const API = {
   getKPIData,
   updateKPI,
   deleteIssue,
-  getSummaryDetails
+  getSummaryDetails,
+  loadNotificationCount,
+  loadNotification,
+  loadNotifications,
+  setNotificationToSeen,
+  setNotificationToRead,
+  setAllNotificationsToSeen,
+  setAllNotificationsToRead,
+  setAllNotificationsToDelete
 };
 
 export default API;

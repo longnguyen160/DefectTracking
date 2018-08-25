@@ -222,6 +222,19 @@ export const HeaderMainItemsStyled = styled.section`
   }
 `;
 
+export const AngelUpStyled = styled.div`
+  width: 0;
+  height: 0;
+  border-bottom: 8px solid #fff;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  margin-top: -8px;
+  position: absolute;
+  right: ${props => props.right};
+  z-index: 2;
+  cursor: pointer;
+`;
+
 export const LogoStyled = styled.text`
   font-size: 18px;
   color: #fff;
@@ -233,5 +246,100 @@ export const LogoStyled = styled.text`
       color: #fff;
     }
   }
+`;
+
+export const NotificationStyled = styled.div`
+  position: absolute;
+  display: block;
+  z-index: 905;  
+  top: 40px;
+  right: 0;
+  width: 344px;
+  border-radius: 0;
+  box-shadow: 0 2px 4px rgba(30, 30, 100, 0.25);
+  padding: 0;
+  background: #ffffff;
+  border: 1px solid #b3b3b3;
+  font-family: 'Proxima Nova Regular';
+`;
+
+export const NotificationHeader = styled.div`
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;
+  margin: 0;  
+  padding: 8px 12px 6px;  
+  border-bottom: 1px solid #dddfe2;  
+  cursor: pointer;
+  
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+  }
+`;
+
+export const NotificationHeaderAction = styled.div`
+  color: #365899;
+  
+  span {
+    cursor: pointer;
+    font-size: 12px;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+export const NotificationBody = styled.div`
+  font-size: 13px;  
+  display: block;  
+  line-height: 15px;  
+  font-weight: 400;
+`;
+
+export const NotificationBodyContent = styled.div`
+  padding: 0;
+  margin: 0;
+`;
+
+export const NotificationAction = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  opacity: 0;
+
+  i {
+    color: #90949c;
+    font-size: 10px;
+    padding: 2px;
+  }
+`;
+
+export const NotificationBodyContentMessage = styled.div`
+  position: relative;
+  display: flex;
+  padding: 6px 30px 5px 12px;
+  max-width: 350px;
+  margin: 0;
+  background-color: #fff;
+  cursor: pointer;
+  border-bottom: 1px solid #dadada;
+
+  &:hover {
+    background-color: #f6f6f7;
+
+    ${NotificationAction} {
+      opacity: 1;
+    }
+  }
+  
+  ${props => props.unread && css`
+    background-color: #edf2fa;
+
+    &:hover {
+      background-color: #e5eaf2;
+    }
+  `}
 `;
 

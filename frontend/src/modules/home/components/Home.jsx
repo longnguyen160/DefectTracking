@@ -72,9 +72,11 @@ class Home extends React.Component {
   };
 
   onMessageReceive = (message) => {
-    const { loadAllIssuesShortcut, user } = this.props;
+    const { loadAllIssuesShortcut, user, loadAllMessages } = this.props;
 
-    if (user) {
+    if (message.message === 'Create message successfully') {
+      loadAllMessages();
+    } else if (user) {
       loadAllIssuesShortcut(user.id);
     }
   };
@@ -93,8 +95,8 @@ class Home extends React.Component {
             {`${message.message} on `}
           </TitleFormStyled>
           <TitleFormStyled
-            detail
-            noMargin
+            username
+            margin={'0'}
             onClick={() => this.handleOpenModal(message.issue.id)}
           >
             {`${message.issue.key} - ${message.issue.name}`}
@@ -119,8 +121,8 @@ class Home extends React.Component {
             {`commented on `}
           </TitleFormStyled>
           <TitleFormStyled
-            detail
-            noMargin
+            username
+            margin={'0'}
             onClick={() => this.handleOpenModal(message.issue.id)}
           >
             {`${message.issue.key} - ${message.issue.name}`}

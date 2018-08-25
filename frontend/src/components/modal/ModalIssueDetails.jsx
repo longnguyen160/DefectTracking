@@ -36,7 +36,7 @@ import {
   ROLES,
   TEXT_AREA,
   WEB_SOCKET_URL,
-  DEFAULT_AVATAR
+  DEFAULT_AVATAR, NOTIFICATION_MESSAGE
 } from '../../utils/enums';
 import Icon from '../icon/Icon';
 import { deleteFile, uploadFile } from '../../modules/file/actions/file';
@@ -84,8 +84,55 @@ class ModalIssueDetails extends React.Component {
 
   handleCreateMessage = (message, type) => {
     const { createMessage, issue, user } = this.props;
+    let notificationMessage = message;
+    const recipients = [];
 
-    createMessage({
+    if (user.id === issue.reporter.id && issue.assignee) {
+      recipients.push({
+        userId: issue.assignee.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+    } else if (issue.assignee && user.id === issue.assignee.id) {
+      recipients.push({
+        userId: issue.reporter.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+    } else if (issue.assignee && user.id !== issue.assignee.id && user.id !== issue.reporter.id) {
+      recipients.push({
+        userId: issue.reporter.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+      recipients.push({
+        userId: issue.assignee.id,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      });
+    } else if (!issue.assignee && type.entityType === 'assignee') {
+      notificationMessage = NOTIFICATION_MESSAGE.ASSIGN_USER;
+      recipients.push({
+        userId: type.newEntityId,
+        isRead: false,
+        isDeleted: false,
+        isSeen: false
+      })
+    }
+    const notification = {
+      issueId: issue.id,
+      message: notificationMessage,
+      type,
+      sender: user.id,
+      recipients,
+      createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
+      updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+    };
+    const messageData = {
       issueId: issue.id,
       message: message,
       type,
@@ -93,6 +140,11 @@ class ModalIssueDetails extends React.Component {
       attachments: [],
       createdAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS),
       updatedAt: moment(new Date()).format(moment.HTML5_FMT.DATETIME_LOCAL_MS)
+    };
+
+    createMessage({
+      notification,
+      messageData
     }, false);
   };
 
@@ -321,7 +373,7 @@ class ModalIssueDetails extends React.Component {
                         value={issue && { categories, projectId }}
                         showButtons={true}
                         display={(value) => (
-                          <LineFormStyled hover wrap>
+                          <LineFormStyled hover wrap={true}>
                             {
                               value.categories && value.categories.length > 0 ?
                                 value.categories.map(category => (
@@ -349,7 +401,7 @@ class ModalIssueDetails extends React.Component {
                         handleSubmit={this.handleSubmit}
                       />
                     :
-                      <LineFormStyled wrap>
+                      <LineFormStyled wrap={true}>
                         {
                           issue && issue.categories.map(category => (
                             <LabelStyled

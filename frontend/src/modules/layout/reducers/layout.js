@@ -12,14 +12,19 @@ import {
   LOAD_PROJECT_DETAILS_SUCCESS,
   LOAD_PROJECT_DETAILS_FAILURE,
   SELECT_PROJECT,
+  LOAD_NOTIFICATION_COUNT_REQUEST,
+  LOAD_NOTIFICATION_COUNT_SUCCESS,
+  LOAD_NOTIFICATION_COUNT_FAILURE,
   RESET_PROJECT,
   RESET_SELECTED_PROJECT,
   RESET_ALL_CATEGORIES,
-  RESET_USER
+  RESET_USER,
+  RESET_NOTIFICATION_COUNT
 } from '../actions/types';
 
 const initialState = {
   categories: [],
+  notificationCount: 0,
   user: null,
   isLoading: false,
   error: null,
@@ -113,6 +118,24 @@ export default function account(state = initialState, action) {
         selectedProject: action.project,
       });
 
+    case LOAD_NOTIFICATION_COUNT_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        error: null
+      });
+
+    case LOAD_NOTIFICATION_COUNT_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        notificationCount: action.count
+      });
+
+    case LOAD_NOTIFICATION_COUNT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
     case RESET_PROJECT:
       return Object.assign({}, state, {
         project: null
@@ -131,6 +154,11 @@ export default function account(state = initialState, action) {
     case RESET_USER:
       return Object.assign({}, state, {
         user: null
+      });
+
+    case RESET_NOTIFICATION_COUNT:
+      return Object.assign({}, state, {
+        notificationCount: 0
       });
 
     default:

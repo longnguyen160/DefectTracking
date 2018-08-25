@@ -8,6 +8,7 @@ import fileFlow from '../modules/file/sagas/file';
 import backlogFlow from '../modules/backlog/sagas/backlog';
 import messageFlow from '../modules/message/sagas/message';
 import summaryFlow from '../modules/summary/sagas/summary';
+import notificationFlow from '../modules/notification/sagas/notification';
 
 export default function* rootSaga() {
   yield all([
@@ -19,6 +20,7 @@ export default function* rootSaga() {
     fileFlow(),
     backlogFlow(),
     messageFlow(),
-    summaryFlow()
+    summaryFlow(),
+    notificationFlow()
   ]);
 }

@@ -93,7 +93,7 @@ export const ListTableBodyStyled = styled.div`
     ${props => props.fixed && css`
       position: fixed;
     `}    
-  }
+  }  
   ${props => props.showList && css`
     min-height: 55px;
     padding: 0px;
@@ -106,6 +106,14 @@ export const ListTableBodyStyled = styled.div`
   box-shadow: ${({ isDragging }) => (isDragging ? '2px 2px 1px rgba(0,0,0,0.2)' : 'none')};
   ${props => props.noBackground && css`
     background-color: inherit;
+  `}
+  ${props => props.noStyle && css`
+    background: none;
+    border: none;
+    
+    &:hover{
+      box-shadow: none;
+    }
   `}
 `;
 
