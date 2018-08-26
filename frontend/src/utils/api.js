@@ -256,6 +256,11 @@ const setAllNotificationsToDelete = () => {
   return axios.post('user/setAllNotificationsToDelete');
 };
 
+//Search
+const searchData = (type, value) => {
+  return axios.get(`user/searchData?type=${type}&value=${value}`);
+};
+
 const API = {
   login,
   signUp,
@@ -316,7 +321,8 @@ const API = {
   setNotificationToRead,
   setAllNotificationsToSeen,
   setAllNotificationsToRead,
-  setAllNotificationsToDelete
+  setAllNotificationsToDelete,
+  searchData
 };
 
 export default API;

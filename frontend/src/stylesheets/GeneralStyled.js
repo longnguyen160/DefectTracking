@@ -621,6 +621,7 @@ export const InputSearchStyled = styled.div`
   border-radius: 5px 0 0 5px;
   font-family: 'Proxima Nova Regular';
   input {
+    width: 325px;
     &:hover {
       border: none;
     }
@@ -628,6 +629,9 @@ export const InputSearchStyled = styled.div`
       border: none;
     }
   }
+  ${props => props.hasBorder && css`
+    border: 1px solid #026a95;
+  `}
 `;
 
 export const InputCommentStyled = styled.div`
@@ -682,7 +686,7 @@ export const Svg = styled.svg`
 export const TableBlockStyled = styled.div`
   display: flex !important;
   align-items: center;
-  justify-content: center;
+  justify-content: ${props => props.justifyContent || 'center'};
   font-size: ${props => props.fontSize || '14px'};
   flex-wrap: wrap;
   ${props => props.fullText && css`
@@ -702,6 +706,11 @@ export const TableBlockStyled = styled.div`
     &:hover {
       color: #026a95;
       cursor: pointer;
+    }
+  `}
+  ${props => props.search && css`
+    p {
+      flex: 1;
     }
   `}
 `;
@@ -952,4 +961,77 @@ export const InputCheckboxStyled = styled.input`
       4px -8px 0 #056a95;
     transform: rotate(45deg);
   }
+`;
+
+export const AlertStyled = styled.div`
+  margin-bottom: 20px;
+  margin-top: 0;  
+  color: #675100;
+  border: 1px solid transparent;
+  border-width: 0;
+  border-left-width: 5px;
+  padding: 10px;
+  border-radius: 0;
+  font-size: 13px;
+
+  p {
+    margin: 0;    
+  }
+  
+  ${props => props.type === 'info' && css`
+    border-color: #9cb4c5;
+    color: #305d8c;
+    background-color: #d6dde7;
+  `}
+  
+  ${props => props.type === 'success' && css`
+    border-color: #8ac38b;
+    color: #356635;
+    background-color: #dff0d8;
+  `}
+`;
+
+export const SearchDataStyled = styled.div`
+  margin-bottom: 5px;
+`;
+
+export const SearchDataHeaderStyled = styled.div`
+  color: #4c4f53;
+  height: 28px;
+  border: 1px solid #ccc;
+  background: #fafafa;  
+  
+  h2 {    
+    font-size: 13px;
+    align-items: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-family: "Proxima Nova Bold";
+    display: flex;
+    margin: 5px 10px;
+  }
+`;
+
+export const SearchDataBodyStyled = styled.div`
+  border-width: 1px 1px 1px 1px;
+  position: relative;
+  background-color: #fff !important;
+  border-style: solid;
+  border-top-style: solid;
+  border-top: none;
+  border-top-width: medium;
+  border-right-color: #CCC !important;
+  border-bottom-color: #CCC !important;
+  border-left-color: #CCC !important;
+  padding: 13px 13px 0px;
+  overflow: visible;
+  margin: 0;
+  width: 100%;
+`;
+
+export const SearchDataBodyContentStyled = styled.div`
+  min-height: 30px;
+  position: relative;
+  padding-bottom: 13px;
 `;

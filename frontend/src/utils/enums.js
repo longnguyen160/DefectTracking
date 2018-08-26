@@ -137,15 +137,18 @@ const ICONS = {
 const SEARCH_FIELDS = [
   {
     name: 'Projects',
-    icon: ICONS.PROJECT
+    icon: ICONS.PROJECT,
+    roles: ['USER', 'ADMIN']
   },
   {
     name: 'Issues',
-    icon: ICONS.ISSUES
+    icon: ICONS.ISSUES,
+    roles: ['USER', 'ADMIN']
   },
   {
     name: 'Accounts',
-    icon: ICONS.USER
+    icon: ICONS.USER,
+    roles: ['ADMIN']
   },
 ];
 
@@ -244,7 +247,8 @@ const MODAL_TYPE = {
   ADD_USER: 'Add user',
   ADD_CATEGORY: 'Add category',
   ADD_STATUS: 'Add status',
-  SUMMARY_REPORT: 'Summary report'
+  SUMMARY_REPORT: 'Summary report',
+  SEARCH: 'Search'
 };
 
 const PROJECT_STATUS = {

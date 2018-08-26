@@ -65,7 +65,7 @@ export const HeaderMainBlockStyled = styled.div`
 export const HeaderMainItemsStyled = styled.section`
   display: flex;
   flex: 0 0 auto;
-  padding: 0 15px;
+  padding: ${props => props.padding || '0 15px'};
   align-items: center;
   cursor: pointer;
   font-family: 'Proxima Nova bold';

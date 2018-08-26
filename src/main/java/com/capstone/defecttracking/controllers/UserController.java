@@ -2,11 +2,15 @@ package com.capstone.defecttracking.controllers;
 
 import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Filter.Filter;
+import com.capstone.defecttracking.models.Issue.IssueShortcutResponse;
+import com.capstone.defecttracking.models.Project.ProjectResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.Token.JwtAuthentication;
 import com.capstone.defecttracking.models.Token.JwtAuthenticationResponse;
 import com.capstone.defecttracking.models.User.*;
 import com.capstone.defecttracking.repositories.Filter.FilterRepository;
+import com.capstone.defecttracking.repositories.Issue.IssueRepositoryCustom;
+import com.capstone.defecttracking.repositories.Project.ProjectRepositoryCustom;
 import com.capstone.defecttracking.security.CurrentUser;
 import com.capstone.defecttracking.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,12 @@ public class UserController {
 
     @Autowired
     UserRepositoryCustom userRepositoryCustom;
+
+    @Autowired
+    IssueRepositoryCustom issueRepositoryCustom;
+
+    @Autowired
+    ProjectRepositoryCustom projectRepositoryCustom;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -153,5 +163,25 @@ public class UserController {
 
         template.convertAndSend("/topic/manageUser", serverResponse);
         return new ResponseEntity(serverResponse, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/searchData")
+    public ResponseEntity<?> searchData(@RequestParam(value = "type") String type, @RequestParam(value = "value") String value) {
+        switch (type) {
+            case "Projects":
+                return new ResponseEntity<List<ProjectResponse>>(projectRepositoryCustom.searchProject(value), HttpStatus.ACCEPTED);
+
+            case "Issues":
+                return new ResponseEntity<List<IssueShortcutResponse>>(issueRepositoryCustom.searchIssue(value), HttpStatus.ACCEPTED);
+
+            case "Accounts":
+                return new ResponseEntity<List<UserResponse>>(userRepositoryCustom.searchUser(value), HttpStatus.ACCEPTED);
+
+            default:
+                ServerResponse serverResponse;
+                serverResponse = new ServerResponse(false, "Search failed!!!");
+
+                return new ResponseEntity(serverResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 }

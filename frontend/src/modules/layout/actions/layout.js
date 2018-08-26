@@ -19,6 +19,10 @@ import {
   LOAD_NOTIFICATION_COUNT_SUCCESS,
   LOAD_NOTIFICATION_COUNT_FAILURE,
   SELECT_PROJECT,
+  SEARCH,
+  SEARCH_REQUEST,
+  SEARCH_SUCCESS,
+  SEARCH_FAILURE,
   RESET_PROJECT,
   RESET_SELECTED_PROJECT,
   RESET_ALL_CATEGORIES,
@@ -131,6 +135,28 @@ const loadNotificationCountFailure = (error) => ({
   error
 });
 
+const searchData = (inputType, inputValue) => ({
+  type: SEARCH,
+  inputType,
+  inputValue
+});
+
+const searchDataRequest = (inputType, inputValue) => ({
+  type: SEARCH_REQUEST,
+  inputType,
+  inputValue
+});
+
+const searchDataSuccess = (data) => ({
+  type: SEARCH_SUCCESS,
+  data
+});
+
+const searchDataFailure = (error) => ({
+  type: SEARCH_FAILURE,
+  error
+});
+
 const resetNotificationCount = () => ({
   type: RESET_NOTIFICATION_COUNT
 });
@@ -172,6 +198,10 @@ export {
   loadNotificationCountRequest,
   loadNotificationCountSuccess,
   loadNotificationCountFailure,
+  searchData,
+  searchDataRequest,
+  searchDataSuccess,
+  searchDataFailure,
   resetProject,
   resetSelectedProject,
   resetAllCategories,

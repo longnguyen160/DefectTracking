@@ -1,5 +1,11 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { LOAD_ALL_CATEGORIES_IN_PROJECT, LOAD_CURRENT_USER, LOAD_PROJECT_DETAILS, LOAD_NOTIFICATION_COUNT } from '../actions/types';
+import {
+  LOAD_ALL_CATEGORIES_IN_PROJECT,
+  LOAD_CURRENT_USER,
+  LOAD_PROJECT_DETAILS,
+  LOAD_NOTIFICATION_COUNT,
+  SEARCH
+} from '../actions/types';
 import {
   loadAllCategoriesInProjectRequest,
   loadAllCategoriesInProjectSuccess,
@@ -12,7 +18,10 @@ import {
   loadProjectDetailsFailure,
   loadNotificationCountRequest,
   loadNotificationCountSuccess,
-  loadNotificationCountFailure
+  loadNotificationCountFailure,
+  searchDataRequest,
+  searchDataSuccess,
+  searchDataFailure
 } from '../actions/layout';
 import API from '../../../utils/api';
 import { getError, removeAccessToken } from '../../../utils/ultis';
@@ -91,11 +100,27 @@ function* watchLoadNotificationCount() {
   yield takeLatest(LOAD_NOTIFICATION_COUNT, loadNotificationCount);
 }
 
+function* searchData({ inputType, inputValue }) {
+  try {
+    yield put(searchDataRequest(inputType, inputValue));
+    const { data } = yield call(API.searchData, inputType, inputValue);
+
+    yield put(searchDataSuccess(data));
+  } catch (error) {
+    yield put(searchDataFailure(getError(error)));
+  }
+}
+
+function* watchSearchData() {
+  yield takeLatest(SEARCH, searchData);
+}
+
 export default function* accountFlow() {
   yield all([
     watchLoadAllCategoriesInProject(),
     watchLoadCurrentUser(),
     watchLoadProjectDetails(),
-    watchLoadNotificationCount()
+    watchLoadNotificationCount(),
+    watchSearchData()
   ]);
 }

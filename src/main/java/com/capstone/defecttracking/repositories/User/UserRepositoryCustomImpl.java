@@ -65,12 +65,12 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
             criteria.andOperator(
                 Criteria.where("_id").ne(userDetailsSecurity.getId()),
                 Criteria.where("_id").nin(memberIds),
-                criteria.orOperator(Criteria.where("username").regex(input), Criteria.where("email").regex(input))
+                criteria.orOperator(Criteria.where("username").regex(input, "i"), Criteria.where("email").regex(input, "i"))
             );
         } else {
             criteria.andOperator(
                 Criteria.where("_id").ne(userDetailsSecurity.getId()),
-                criteria.orOperator(Criteria.where("username").regex(input), Criteria.where("email").regex(input))
+                criteria.orOperator(Criteria.where("username").regex(input, "i"), Criteria.where("email").regex(input, "i"))
             );
         }
 
@@ -124,6 +124,39 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         UpdateResult updateResult = mongoTemplate.updateFirst(query, update, User.class);
 
         return updateResult.getModifiedCount() != 0;
+    }
+
+    @Override
+    public List<UserResponse> searchUser(String value) {
+        Criteria criteria = new Criteria();
+
+        criteria.orOperator(
+            Criteria.where("username").regex(value, "i"),
+            Criteria.where("email").regex(value, "i")
+        );
+        Query query = new Query(criteria);
+
+        return mongoTemplate
+            .find(query, User.class)
+            .stream()
+            .map(user -> {
+                if (user.getProfile() != null) {
+                    return new UserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getProfile().getAvatarURL(),
+                        user.getEmail()
+                    );
+                } else {
+                    return new UserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        null,
+                        user.getEmail()
+                    );
+                }
+            })
+            .collect(Collectors.toList());
     }
 
 }

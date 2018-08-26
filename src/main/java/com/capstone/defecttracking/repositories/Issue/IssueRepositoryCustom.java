@@ -19,5 +19,6 @@ public interface IssueRepositoryCustom {
     List<IssueReportResponse> getIssueSummary(IssueReportRequest issueReportRequest);
     Boolean updateIssue(String issueId, String type, String value);
     Boolean updateIssueCategories(String issueId, String type, ArrayList<String> value);
+    List<IssueShortcutResponse> searchIssue(String value);
     void addIssueToBacklog(String issueId, String projectId);
 }

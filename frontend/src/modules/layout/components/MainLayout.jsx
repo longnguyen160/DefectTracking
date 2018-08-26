@@ -30,11 +30,15 @@ import ModalAddUser from '../../../components/modal/ModalAddingUser';
 import ModalAddCategory from '../../../components/modal/ModalAddingCategory';
 import ModalAddStatus from '../../../components/modal/ModalAddingStatus';
 import ModalSummaryReport from '../../../components/modal/ModalSummaryReport';
+import ModalSearching from '../../../components/modal/ModalSearching';
 import { loadIssueDetails } from '../../issue/actions/issue';
 import { showCustomNotification } from '../../../components/notification/Notifications';
 import {
-  loadNotification, loadNotifications, setAllNotificationsToSeen,
-  setNotificationToRead, setNotificationToSeen
+  loadNotification,
+  loadNotifications,
+  setAllNotificationsToSeen,
+  setNotificationToRead,
+  setNotificationToSeen
 } from '../../notification/actions/notification';
 
 const LIST_MODAL = {
@@ -46,7 +50,8 @@ const LIST_MODAL = {
   [MODAL_TYPE.ADD_USER]: ModalAddUser,
   [MODAL_TYPE.ADD_CATEGORY]: ModalAddCategory,
   [MODAL_TYPE.ADD_STATUS]: ModalAddStatus,
-  [MODAL_TYPE.SUMMARY_REPORT]: ModalSummaryReport
+  [MODAL_TYPE.SUMMARY_REPORT]: ModalSummaryReport,
+  [MODAL_TYPE.SEARCH]: ModalSearching
 };
 
 const getParams = pathname => {

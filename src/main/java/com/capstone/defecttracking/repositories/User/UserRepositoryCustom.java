@@ -1,9 +1,6 @@
 package com.capstone.defecttracking.repositories.User;
 
-import com.capstone.defecttracking.models.User.User;
-import com.capstone.defecttracking.models.User.UserActiveRequest;
-import com.capstone.defecttracking.models.User.UserProfile;
-import com.capstone.defecttracking.models.User.UserProjectResponse;
+import com.capstone.defecttracking.models.User.*;
 
 import java.util.List;
 
@@ -15,4 +12,5 @@ public interface UserRepositoryCustom {
     Boolean updateUserProfile(String userId, UserProfile profile, String email);
     List<UserProjectResponse> getAllUsersInProject(String projectId);
     Boolean manageUser(UserActiveRequest userActiveRequest);
+    List<UserResponse> searchUser(String value);
 }

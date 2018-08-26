@@ -7,6 +7,7 @@ import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.User;
+import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.capstone.defecttracking.models.User.UserRole;
 import com.mongodb.client.result.UpdateResult;
@@ -18,6 +19,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -195,6 +198,46 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         query = new Query(Criteria.where("_id").is(projectId));
 
         return mongoTemplate.findOne(query, Project.class);
+    }
+
+    @Override
+    public List<ProjectResponse> searchProject(String value) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
+        Query query = new Query(Criteria.where("_id").is(userDetailsSecurity.getId()));
+        User user = mongoTemplate.findOne(query, User.class);
+        Criteria criteria = new Criteria();
+
+        if (user.getRoles().contains(Roles.USER.toString())) {
+            criteria
+                .orOperator(
+                    Criteria.where("status").is("public"),
+                    Criteria.where("members.userId").is(user.getId())
+                )
+                .andOperator(
+                    new Criteria().orOperator(
+                        Criteria.where("name").regex(value, "i"),
+                        Criteria.where("description").regex(value, "i")
+                    )
+                );
+        } else {
+            criteria.orOperator(
+                Criteria.where("name").regex(value, "i"),
+                Criteria.where("description").regex(value, "i")
+            );
+        }
+        query = new Query(criteria);
+
+        return mongoTemplate
+            .find(query, Project.class)
+            .stream()
+            .map(project -> new ProjectResponse(
+                project.getId(),
+                project.getName(),
+                project.getDescription(),
+                project.getStatus()
+            ))
+            .collect(Collectors.toList());
     }
 
     @Override

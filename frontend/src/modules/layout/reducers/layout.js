@@ -15,6 +15,9 @@ import {
   LOAD_NOTIFICATION_COUNT_REQUEST,
   LOAD_NOTIFICATION_COUNT_SUCCESS,
   LOAD_NOTIFICATION_COUNT_FAILURE,
+  SEARCH_REQUEST,
+  SEARCH_SUCCESS,
+  SEARCH_FAILURE,
   RESET_PROJECT,
   RESET_SELECTED_PROJECT,
   RESET_ALL_CATEGORIES,
@@ -31,7 +34,10 @@ const initialState = {
   modalIsOpen: false,
   selectedProject: null,
   project: null,
-  modalType: ''
+  modalType: '',
+  searchData: [],
+  inputValue: '',
+  inputType: 'Projects'
 };
 
 export default function account(state = initialState, action) {
@@ -131,6 +137,26 @@ export default function account(state = initialState, action) {
       });
 
     case LOAD_NOTIFICATION_COUNT_FAILURE:
+      return Object.assign({}, state, {
+        isLoading: false,
+        error: action.error
+      });
+
+    case SEARCH_REQUEST:
+      return Object.assign({}, state, {
+        isLoading: true,
+        inputValue: action.inputValue,
+        inputType: action.inputType,
+        searchData: []
+      });
+
+    case SEARCH_SUCCESS:
+      return Object.assign({}, state, {
+        isLoading: false,
+        searchData: action.data
+      });
+
+    case SEARCH_FAILURE:
       return Object.assign({}, state, {
         isLoading: false,
         error: action.error

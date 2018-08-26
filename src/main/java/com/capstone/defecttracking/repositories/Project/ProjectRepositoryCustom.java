@@ -14,6 +14,7 @@ public interface ProjectRepositoryCustom {
     ResponseEntity<?> addUserToProject(UserProjectRequest userProjectRequest);
     ResponseEntity<?> removeUserFromProject(String projectID, String userID);
     Project getProject(String issueId);
+    List<ProjectResponse> searchProject(String value);
     void updateProject(ProjectCategoryRequest project);
     void updateBacklog(String projectId, ArrayList<String> backlog);
 }

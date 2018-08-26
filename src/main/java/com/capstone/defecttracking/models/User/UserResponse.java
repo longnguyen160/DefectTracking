@@ -4,6 +4,14 @@ public class UserResponse {
     private String id;
     private String username;
     private String avatarURL;
+    private String email;
+
+    public UserResponse(String id, String username, String avatarURL, String email) {
+        this.id = id;
+        this.username = username;
+        this.avatarURL = avatarURL;
+        this.email = email;
+    }
 
     public UserResponse(String id, String username, String avatarURL) {
         this.id = id;
@@ -38,5 +46,13 @@ public class UserResponse {
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

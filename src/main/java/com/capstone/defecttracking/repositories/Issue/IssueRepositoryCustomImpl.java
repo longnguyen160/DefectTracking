@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.repositories.Issue;
 
+import com.capstone.defecttracking.enums.Roles;
 import com.capstone.defecttracking.models.Category.Category;
 import com.capstone.defecttracking.models.Category.CategoryProjectResponse;
 import com.capstone.defecttracking.models.Filter.Filter;
@@ -9,6 +10,7 @@ import com.capstone.defecttracking.models.Project.Project;
 import com.capstone.defecttracking.models.Status.Status;
 import com.capstone.defecttracking.models.Status.StatusResponse;
 import com.capstone.defecttracking.models.User.User;
+import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.models.User.UserResponse;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
@@ -438,6 +442,49 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         UpdateResult result = mongoTemplate.updateFirst(query, update, Issue.class);
 
         return result.getModifiedCount() != 0;
+    }
+
+    @Override
+    public List<IssueShortcutResponse> searchIssue(String value) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
+        Query query = new Query(Criteria.where("_id").is(userDetailsSecurity.getId()));
+        User user = mongoTemplate.findOne(query, User.class);
+        Criteria criteria = new Criteria();
+
+        if (user.getRoles().contains(Roles.USER.toString())) {
+            criteria
+                .orOperator(
+                    Criteria.where("reporter").is(user.getId()),
+                    Criteria.where("assignee").is(user.getId())
+                )
+                .andOperator(
+                    new Criteria().orOperator(
+                        Criteria.where("issueName").regex(value, "i"),
+                        Criteria.where("description").regex(value, "i"),
+                        Criteria.where("issueKey").regex(value, "i")
+                    )
+                );
+        } else {
+            criteria.orOperator(
+                Criteria.where("issueName").regex(value, "i"),
+                Criteria.where("description").regex(value, "i"),
+                Criteria.where("issueKey").regex(value, "i")
+            );
+        }
+        query = new Query(criteria);
+
+        return mongoTemplate
+            .find(query, Issue.class)
+            .stream()
+            .map(issue -> new IssueShortcutResponse(
+                issue.getId(),
+                issue.getIssueKey(),
+                issue.getIssueName(),
+                issue.getPriority(),
+                getStatusResponse(issue.getStatus())
+            ))
+            .collect(Collectors.toList());
     }
 
     @Override
