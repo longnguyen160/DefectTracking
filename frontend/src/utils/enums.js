@@ -1,5 +1,5 @@
-const WEB_SOCKET_URL = `${window.location.origin}/ws`;
-const FILE_BASE_URL = `${window.location.origin}/files/?fileId=`;
+const WEB_SOCKET_URL = `http://localhost:8080/ws`;
+const FILE_BASE_URL = `http://localhost:8080/files/?fileId=`;
 const DEFAULT_AVATAR = '5b6a05d84943ba2af40579bf';
 
 const INPUT_TEXT = 'text';
