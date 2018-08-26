@@ -33,7 +33,7 @@ import ModalSummaryReport from '../../../components/modal/ModalSummaryReport';
 import { loadIssueDetails } from '../../issue/actions/issue';
 import { showCustomNotification } from '../../../components/notification/Notifications';
 import {
-  loadNotification, setAllNotificationsToSeen,
+  loadNotification, loadNotifications, setAllNotificationsToSeen,
   setNotificationToRead, setNotificationToSeen
 } from '../../notification/actions/notification';
 
@@ -98,7 +98,7 @@ class MainLayout extends React.Component {
   openModal = (issueId, notificationId) => {
     const { openModal, loadIssueDetails, setNotificationToRead } = this.props;
 
-    setNotificationToRead(notificationId);
+    setNotificationToRead(notificationId, 'read');
     loadIssueDetails(issueId, true);
     openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
@@ -120,13 +120,14 @@ class MainLayout extends React.Component {
   };
 
   onMessageReceive = (message) => {
-    const { loadCurrentUser, loadNotification, loadNotificationCount } = this.props;
+    const { loadCurrentUser, loadNotification, loadNotifications, loadNotificationCount } = this.props;
 
     if (message.message === 'Notification') {
       loadNotificationCount();
       loadNotification();
     } else if (message.message === 'Notifications') {
       loadNotificationCount();
+      loadNotifications();
     } else {
       loadCurrentUser();
     }
@@ -200,6 +201,7 @@ MainLayout.propTypes = {
   selectProject: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
   loadNotification: PropTypes.func.isRequired,
+  loadNotifications: PropTypes.func.isRequired,
   loadNotificationCount: PropTypes.func.isRequired,
   resetUser: PropTypes.func.isRequired,
   setNotificationToSeen: PropTypes.func.isRequired,
@@ -234,6 +236,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   loadProjectDetails: loadProjectDetails,
   loadIssueDetails: loadIssueDetails,
   loadNotification: loadNotification,
+  loadNotifications: loadNotifications,
   loadNotificationCount: loadNotificationCount,
   setNotificationToSeen: setNotificationToSeen,
   setNotificationToRead: setNotificationToRead,

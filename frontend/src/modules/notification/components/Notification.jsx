@@ -37,9 +37,10 @@ class Notification extends Component {
   }
 
   handleOpenModal = (issueId, notificationId) => {
-    const { openModal, loadIssueDetails, setNotificationToRead } = this.props;
+    const { openModal, loadIssueDetails, setNotificationToRead, closeNotification } = this.props;
 
-    setNotificationToRead(notificationId);
+    closeNotification();
+    setNotificationToRead(notificationId, 'read');
     loadIssueDetails(issueId, true);
     openModal(MODAL_TYPE.ISSUE_DETAILS);
   };
@@ -50,9 +51,14 @@ class Notification extends Component {
         notification={notification}
         handleOpenModal={this.handleOpenModal}
       />
-      <NotificationAction>
-        <Tooltip content={'Mark as Unread'}>
-          <i className="fa fa-dot-circle-o" />
+      <NotificationAction onClick={() => this.props.setNotificationToRead(notification.id, notification.read ? 'unread' : 'read')}>
+        <Tooltip content={`Mark as ${notification.read ? 'Unread': 'Read'}`}>
+          {
+            notification.read ?
+              <i className="fa fa-dot-circle-o" />
+            :
+              <i className="fa fa-circle" />
+          }
         </Tooltip>
       </NotificationAction>
     </NotificationBodyContentMessage>
@@ -104,6 +110,7 @@ Notification.propTypes = {
   openModal: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
   loadNotifications: PropTypes.func.isRequired,
+  closeNotification: PropTypes.func.isRequired,
   setNotificationToRead: PropTypes.func.isRequired,
   setAllNotificationsToRead: PropTypes.func.isRequired,
   setAllNotificationsToDelete: PropTypes.func.isRequired

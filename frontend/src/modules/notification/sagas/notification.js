@@ -78,10 +78,10 @@ function* watchSetNotificationToSeen() {
   yield takeLatest(SET_NOTIFICATION_TO_SEEN, setNotificationToSeen);
 }
 
-function* setNotificationToRead({ notificationId }) {
+function* setNotificationToRead({ notificationId, notificationType }) {
   try {
     yield put(setNotificationToReadRequest());
-    yield call(API.setNotificationToRead, notificationId);
+    yield call(API.setNotificationToRead, notificationId, notificationType);
     yield put(setNotificationToReadSuccess());
   } catch(error) {
     yield put(setNotificationToReadFailure(getError(error)));

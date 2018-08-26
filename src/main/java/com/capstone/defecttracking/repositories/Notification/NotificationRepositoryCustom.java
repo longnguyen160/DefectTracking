@@ -9,7 +9,7 @@ public interface NotificationRepositoryCustom {
     List<NotificationResponse> loadNotifications();
     NotificationResponse loadNotification();
     void setNotificationToSeen(String notificationId);
-    void setNotificationToRead(String notificationId);
+    void setNotificationToRead(String notificationId, String notificationType);
     void setAllNotificationsToSeen();
     void setAllNotificationsToRead();
     void setAllNotificationsToDelete();

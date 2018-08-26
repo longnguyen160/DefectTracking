@@ -240,8 +240,8 @@ const setNotificationToSeen = (notificationId) => {
   return axios.post('user/setNotificationToSeen', notificationId);
 };
 
-const setNotificationToRead = (notificationId) => {
-  return axios.post('user/setNotificationToRead', notificationId);
+const setNotificationToRead = (notificationId, notificationType) => {
+  return axios.post('user/setNotificationToRead', { notificationId, notificationType });
 };
 
 const setAllNotificationsToSeen = () => {

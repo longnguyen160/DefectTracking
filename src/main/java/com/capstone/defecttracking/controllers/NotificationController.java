@@ -1,5 +1,6 @@
 package com.capstone.defecttracking.controllers;
 
+import com.capstone.defecttracking.models.Notification.NotificationRequest;
 import com.capstone.defecttracking.models.Notification.NotificationResponse;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
@@ -61,12 +62,12 @@ public class NotificationController {
     }
 
     @PostMapping("/user/setNotificationToRead")
-    public void setNotificationToRead(@RequestBody String notificationId) {
+    public void setNotificationToRead(@RequestBody NotificationRequest notificationRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
         ServerResponse serverResponse;
 
-        notificationRepositoryCustom.setNotificationToRead(notificationId.substring(0, notificationId.length() - 1));
+        notificationRepositoryCustom.setNotificationToRead(notificationRequest.getNotificationId(), notificationRequest.getNotificationType());
         serverResponse = new ServerResponse(true, "Notifications");
 
         template.convertAndSend("/topic/" + userDetailsSecurity.getId() + "/notification", serverResponse);

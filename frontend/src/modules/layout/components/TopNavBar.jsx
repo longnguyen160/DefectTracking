@@ -60,6 +60,10 @@ class TopNavBar extends Component {
     this.setState({ isOpen: !isOpen });
   };
 
+  closeNotification = () => {
+    this.setState({ isOpen: false });
+  };
+
   render() {
     const { user, openModal, projects, selectedProject, notificationCount } = this.props;
     const { isOpen } = this.state;
@@ -148,7 +152,7 @@ class TopNavBar extends Component {
                   <span>{notificationCount}</span>
               }
               {
-                isOpen && <Notification />
+                isOpen && <Notification closeNotification={this.closeNotification} />
               }
             </HeaderMainItemsStyled>
           </HeaderMainBlockStyled>

@@ -83,9 +83,10 @@ const setNotificationToSeenFailure = (error) => ({
   error
 });
 
-const setNotificationToRead = (notificationId) => ({
+const setNotificationToRead = (notificationId, notificationType) => ({
   type: SET_NOTIFICATION_TO_READ,
-  notificationId
+  notificationId,
+  notificationType
 });
 
 const setNotificationToReadRequest = () => ({

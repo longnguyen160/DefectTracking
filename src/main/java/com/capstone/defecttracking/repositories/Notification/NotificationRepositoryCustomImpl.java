@@ -102,14 +102,18 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
     }
 
     @Override
-    public void setNotificationToRead(String notificationId) {
+    public void setNotificationToRead(String notificationId, String notificationType) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
         Query query = new Query(Criteria.where("_id").is(notificationId).and("recipients.userId").is(userDetailsSecurity.getId()));
         Update update = new Update();
 
         update.set("recipients.$.isSeen", true);
-        update.set("recipients.$.isRead", true);
+        if (notificationType.equals("read")) {
+            update.set("recipients.$.isRead", true);
+        } else {
+            update.set("recipients.$.isRead", false);
+        }
         mongoTemplate.updateFirst(query, update, Notification.class);
     }
 
