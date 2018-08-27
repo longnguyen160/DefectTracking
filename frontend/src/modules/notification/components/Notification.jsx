@@ -16,7 +16,7 @@ import {
 import NotificationDetails from './NotificationDetails';
 import { MODAL_TYPE } from '../../../utils/enums';
 import { loadIssueDetails } from '../../issue/actions/issue';
-import { openModal } from '../../layout/actions/layout';
+import { loadProjectDetails, openModal, selectProject } from '../../layout/actions/layout';
 import {
   loadNotifications,
   setAllNotificationsToDelete,
@@ -36,13 +36,19 @@ class Notification extends Component {
     loadNotifications();
   }
 
-  handleOpenModal = (issueId, notificationId) => {
-    const { openModal, loadIssueDetails, setNotificationToRead, closeNotification } = this.props;
+  handleOpenModal = (type, entityId, notificationId) => {
+    const { openModal, loadIssueDetails, setNotificationToRead, closeNotification, loadProjectDetails, history, selectProject } = this.props;
 
     closeNotification();
     setNotificationToRead(notificationId, 'read');
-    loadIssueDetails(issueId, true);
-    openModal(MODAL_TYPE.ISSUE_DETAILS);
+
+    if (type === 'issue') {
+      loadIssueDetails(entityId, true);
+      openModal(MODAL_TYPE.ISSUE_DETAILS);
+    } else if (type === 'project') {
+      loadProjectDetails(entityId, (project) => selectProject(project));
+      history.push(`/project/${entityId}/dashboard`);
+    }
   };
 
   renderNotificationItem = (notification) => (
@@ -105,9 +111,12 @@ class Notification extends Component {
 }
 
 Notification.propTypes = {
+  history: PropTypes.object.isRequired,
   notifications: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   openModal: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
   loadNotifications: PropTypes.func.isRequired,
   closeNotification: PropTypes.func.isRequired,
@@ -124,6 +133,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   loadIssueDetails: loadIssueDetails,
   openModal: openModal,
+  loadProjectDetails: loadProjectDetails,
+  selectProject: selectProject,
   loadNotifications: loadNotifications,
   setNotificationToRead: setNotificationToRead,
   setAllNotificationsToRead: setAllNotificationsToRead,

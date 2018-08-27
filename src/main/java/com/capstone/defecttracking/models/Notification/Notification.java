@@ -15,6 +15,7 @@ public class Notification {
     @Id
     private String id;
     private String issueId;
+    private String projectId;
     private MessageType type;
     private String message;
     private String sender;
@@ -28,6 +29,25 @@ public class Notification {
         this.id = id;
         this.issueId = issueId;
         this.type = type;
+        this.message = message;
+        this.sender = sender;
+        this.recipients = recipients;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Notification(String id, String projectId, String message, String sender, List<Recipient> recipients, Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.projectId = projectId;
+        this.message = message;
+        this.sender = sender;
+        this.recipients = recipients;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Notification(String projectId, String message, String sender, List<Recipient> recipients, Date createdAt, Date updatedAt) {
+        this.projectId = projectId;
         this.message = message;
         this.sender = sender;
         this.recipients = recipients;
@@ -52,6 +72,14 @@ public class Notification {
 
     public void setIssueId(String issueId) {
         this.issueId = issueId;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
     public MessageType getType() {

@@ -1,10 +1,13 @@
 package com.capstone.defecttracking.controllers;
 
+import com.capstone.defecttracking.models.Notification.Notification;
+import com.capstone.defecttracking.models.Notification.Recipient;
 import com.capstone.defecttracking.models.Project.*;
 import com.capstone.defecttracking.models.Server.ServerResponse;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.models.User.UserRole;
 import com.capstone.defecttracking.repositories.Category.CategoryRepositoryCustom;
+import com.capstone.defecttracking.repositories.Notification.NotificationRepository;
 import com.capstone.defecttracking.repositories.Project.ProjectRepository;
 import com.capstone.defecttracking.repositories.Project.ProjectRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
@@ -32,6 +36,9 @@ public class ProjectController {
 
     @Autowired
     CategoryRepositoryCustom categoryRepositoryCustom;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     private SimpMessagingTemplate template;
 
@@ -51,7 +58,31 @@ public class ProjectController {
         }
 
         String projectId = projectRepository.save(projectCategory.getProject()).getId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
+        List<Recipient> recipients = new ArrayList<>();
+        ArrayList<UserRole> members = projectCategory.getProject().getMembers();
+        serverResponse = new ServerResponse(true, "Notification");
 
+        for (UserRole userRole: members) {
+            recipients.add(new Recipient(
+                userRole.getUserId(),
+                false,
+                false,
+                false
+            ));
+            template.convertAndSend("/topic/" + userRole.getUserId() + "/notification", serverResponse);
+        }
+        Notification notification = new Notification(
+            projectId,
+            " set you as Manager",
+            userDetailsSecurity.getId(),
+            recipients,
+            new Date(),
+            new Date()
+        );
+
+        notificationRepository.save(notification);
         if (projectCategory.getCategories().size() > 0) {
             categoryRepositoryCustom.addProject(projectId, projectCategory.getCategories());
         }
@@ -83,8 +114,30 @@ public class ProjectController {
     @PostMapping("/project/addUserToProject")
     public ResponseEntity<?> addUserToProject(@RequestBody UserProjectRequest userProjectRequest) {
         ResponseEntity<?> responseEntity = projectRepositoryCustom.addUserToProject(userProjectRequest);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsSecurity userDetailsSecurity = (UserDetailsSecurity) authentication.getPrincipal();
 
         template.convertAndSend("/topic/usersInProject", responseEntity);
+        List<Recipient> recipients = new ArrayList<>();
+
+        recipients.add(new Recipient(
+           userProjectRequest.getUserId(),
+           false,
+           false,
+           false
+        ));
+        Notification notification = new Notification(
+            userProjectRequest.getProjectId(),
+            " set you as " + userProjectRequest.getRole().substring(0,1).toUpperCase() + userProjectRequest.getRole().substring(1).toLowerCase(),
+            userDetailsSecurity.getId(),
+            recipients,
+            new Date(),
+            new Date()
+        );
+        ServerResponse serverResponse = new ServerResponse(true, "Notification");
+
+        notificationRepository.save(notification);
+        template.convertAndSend("/topic/" + userProjectRequest.getUserId() + "/notification", serverResponse);
 
         return responseEntity;
     }

@@ -4,6 +4,8 @@ import com.capstone.defecttracking.models.Issue.Issue;
 import com.capstone.defecttracking.models.Issue.IssueHistoryResponse;
 import com.capstone.defecttracking.models.Notification.Notification;
 import com.capstone.defecttracking.models.Notification.NotificationResponse;
+import com.capstone.defecttracking.models.Project.Project;
+import com.capstone.defecttracking.models.Project.ProjectResponse;
 import com.capstone.defecttracking.models.User.User;
 import com.capstone.defecttracking.models.User.UserDetailsSecurity;
 import com.capstone.defecttracking.models.User.UserResponse;
@@ -54,18 +56,33 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
         return mongoTemplate
             .find(query, Notification.class)
             .stream()
-            .map(notification -> new NotificationResponse(
-                notification.getId(),
-                getIssueKey(notification.getIssueId()),
-                notification.getMessage(),
-                notification.getType(),
-                getUserResponse(notification.getSender()),
-                notification.getRecipients()
-                    .stream()
-                    .filter(recipient -> recipient.getUserId().equals(userDetailsSecurity.getId()))
-                    .findFirst().get().isRead(),
-                notification.getCreatedAt()
-            ))
+            .map(notification -> {
+                if (notification.getIssueId() != null) {
+                    return new NotificationResponse(
+                        notification.getId(),
+                        getIssueKey(notification.getIssueId()),
+                        notification.getMessage(),
+                        notification.getType(),
+                        getUserResponse(notification.getSender()),
+                        notification.getRecipients()
+                            .stream()
+                            .filter(recipient -> recipient.getUserId().equals(userDetailsSecurity.getId()))
+                            .findFirst().get().isRead(),
+                        notification.getCreatedAt()
+                    );
+                }
+                return new NotificationResponse(
+                    notification.getId(),
+                    getProject(notification.getProjectId()),
+                    notification.getMessage(),
+                    getUserResponse(notification.getSender()),
+                    notification.getRecipients()
+                        .stream()
+                        .filter(recipient -> recipient.getUserId().equals(userDetailsSecurity.getId()))
+                        .findFirst().get().isRead(),
+                    notification.getCreatedAt()
+                );
+            })
             .collect(Collectors.toList());
     }
 
@@ -76,11 +93,24 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
         Query query = new Query(Criteria.where("recipients.userId").is(userDetailsSecurity.getId())).with(Sort.by("createdAt").descending());
         Notification notification = mongoTemplate.findOne(query, Notification.class);
 
+        if (notification.getIssueId() != null) {
+            return new NotificationResponse(
+                notification.getId(),
+                getIssueKey(notification.getIssueId()),
+                notification.getMessage(),
+                notification.getType(),
+                getUserResponse(notification.getSender()),
+                notification.getRecipients()
+                    .stream()
+                    .filter(recipient -> recipient.getUserId().equals(userDetailsSecurity.getId()))
+                    .findFirst().get().isRead(),
+                notification.getCreatedAt()
+            );
+        }
         return new NotificationResponse(
             notification.getId(),
-            getIssueKey(notification.getIssueId()),
+            getProject(notification.getProjectId()),
             notification.getMessage(),
-            notification.getType(),
             getUserResponse(notification.getSender()),
             notification.getRecipients()
                 .stream()
@@ -189,4 +219,13 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
         );
     }
 
+    private ProjectResponse getProject(String projectId) {
+        Query query = new Query(Criteria.where("_id").is(projectId));
+        Project project = mongoTemplate.findOne(query, Project.class);
+
+        return new ProjectResponse(
+            projectId,
+            project.getName()
+        );
+    }
 }

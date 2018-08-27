@@ -100,12 +100,18 @@ class MainLayout extends React.Component {
     resetUser();
   }
 
-  openModal = (issueId, notificationId) => {
-    const { openModal, loadIssueDetails, setNotificationToRead } = this.props;
+  openModal = (type, entityId, notificationId) => {
+    const { openModal, loadIssueDetails, setNotificationToRead, loadProjectDetails, history, selectProject } = this.props;
 
     setNotificationToRead(notificationId, 'read');
-    loadIssueDetails(issueId, true);
-    openModal(MODAL_TYPE.ISSUE_DETAILS);
+
+    if (type === 'issue') {
+      loadIssueDetails(entityId, true);
+      openModal(MODAL_TYPE.ISSUE_DETAILS);
+    } else if (type === 'project') {
+      loadProjectDetails(entityId, (project) => selectProject(project));
+      history.push(`/project/${entityId}/dashboard`);
+    }
   };
 
   handleOpenModal = () => {
@@ -157,6 +163,7 @@ class MainLayout extends React.Component {
         <Notifications
           notifications={notifications}
           style={notificationStyle}
+          history={history}
         />
         <TopNavBar
           user={user}

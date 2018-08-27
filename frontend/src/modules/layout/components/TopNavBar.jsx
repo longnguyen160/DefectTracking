@@ -65,7 +65,7 @@ class TopNavBar extends Component {
   };
 
   render() {
-    const { user, openModal, projects, selectedProject, notificationCount } = this.props;
+    const { user, openModal, projects, selectedProject, notificationCount, history } = this.props;
     const { isOpen } = this.state;
 
     if (user) {
@@ -152,7 +152,7 @@ class TopNavBar extends Component {
                   <span>{notificationCount}</span>
               }
               {
-                isOpen && <Notification closeNotification={this.closeNotification} />
+                isOpen && <Notification history={history} closeNotification={this.closeNotification} />
               }
             </HeaderMainItemsStyled>
           </HeaderMainBlockStyled>
