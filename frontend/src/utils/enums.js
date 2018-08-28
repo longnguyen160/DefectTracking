@@ -346,7 +346,8 @@ const MESSAGE = (value) => ({
   CHANGE_STATUS: `changed status to ${value}`,
   DELETE_COMMENT: `delete a comment`,
   CHANGE_ASSIGNEE: `changed assignee to ${value ? value : 'no one'}`,
-  UPDATE_CATEGORIES: 'updated categories'
+  UPDATE_CATEGORIES: 'updated categories',
+  UPDATE_DUE_DATE: 'updat due date'
 });
 
 const NOTIFICATION_MESSAGE = {

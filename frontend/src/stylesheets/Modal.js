@@ -106,7 +106,7 @@ export const ModalCloseStyle = styled.div`
 
 export const ModalBodyStyled = styled.div`
   display: flex;
-  overflow: auto;
+  overflow: ${props => props.noScroll ? 'visible' : 'auto'};
   height: 100%;
   ${props => props.padding && css`
     padding: ${props.padding};

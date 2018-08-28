@@ -22,7 +22,7 @@ import {
   ListTableBodyContainerStyled,
   ListTableStyled
 } from '../../../stylesheets/Table';
-import { openModal, resetSelectedProject } from '../../layout/actions/layout';
+import { loadCurrentUser, openModal, resetSelectedProject } from '../../layout/actions/layout';
 import {
   FILE_BASE_URL,
   ICONS,
@@ -40,8 +40,9 @@ import LoadingIcon from '../../../components/icon/LoadingIcon';
 class Home extends React.Component {
 
   componentWillMount() {
-    const { resetSelectedProject, loadAllIssuesShortcut, loadAllMessages, user } = this.props;
+    const { resetSelectedProject, loadAllIssuesShortcut, loadAllMessages, user, loadCurrentUser } = this.props;
 
+    loadCurrentUser();
     resetSelectedProject();
     loadAllMessages();
 
@@ -287,6 +288,7 @@ class Home extends React.Component {
 
 Home.propTypes = {
   resetSelectedProject: PropTypes.func.isRequired,
+  loadCurrentUser: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   loadAllIssuesShortcut: PropTypes.func.isRequired,
   loadIssueDetails: PropTypes.func.isRequired,
@@ -310,6 +312,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   resetSelectedProject: resetSelectedProject,
+  loadCurrentUser: loadCurrentUser,
   openModal: openModal,
   loadAllIssuesShortcut: loadAllIssuesShortcut,
   loadIssueDetails: loadIssueDetails,

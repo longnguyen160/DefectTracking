@@ -51,6 +51,7 @@ import { loadProjectDetails, resetProject } from '../../modules/layout/actions/l
 import { Button } from '../../stylesheets/Button';
 import ModalConfirm from './ModalConfirm';
 import { Scrollbars } from 'react-custom-scrollbars';
+import CustomDateTime from '../editable/CustomDateTime';
 
 class ModalIssueDetails extends React.Component {
 
@@ -223,6 +224,12 @@ class ModalIssueDetails extends React.Component {
         message = MESSAGE(ISSUE_DETAILS[e.props.name]).UPDATE_ISSUE;
         break;
 
+      case 'dueDate':
+        value = e.value;
+        oldValue = e.props.value;
+        message = MESSAGE().UPDATE_DUE_DATE;
+        break;
+
       default:
         value = (e.value && e.value.id) || '';
         oldValue = e.props.value.id;
@@ -330,7 +337,7 @@ class ModalIssueDetails extends React.Component {
           autoHeightMax={550}
           style={{ position: 'relative' }}
         >
-          <ModalBodyStyled padding={'10px 0'}>
+          <ModalBodyStyled padding={'10px 0'} noScroll>
             <ModalContentStyled flex={'0 0 770px'} padding={'0 10px'}>
               <ModalLineStyled noMargin padding={'0 0 10px 0'}>
                 <ModalLineContentStyled alignLeft>
@@ -686,10 +693,26 @@ class ModalIssueDetails extends React.Component {
                   {
                     loadingIssue ?
                       <PlaceHolder />
-                      :
-                      <LineFormStyled>
-                        <span>{moment(issue && issue.dueDate).format('LLL')}</span>
-                      </LineFormStyled>
+                    :
+                      <Editable
+                        name={'dueDate'}
+                        dataType={'custom'}
+                        mode={'inline'}
+                        value={issue && issue.dueDate}
+                        showButtons={true}
+                        display={(value) => (
+                          <LineFormStyled hover>
+                            <span>{moment(value).format('LLL')}</span>
+                          </LineFormStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomDateTime
+                            {...props}
+                            {...state}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
                   }
                 </ModalLineContentStyled>
               </ModalLineStyled>

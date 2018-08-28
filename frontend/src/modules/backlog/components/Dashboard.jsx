@@ -499,30 +499,25 @@ class Dashboard extends Component {
             onChange={(e) => this.handleChangeSelect('categories', e ? e.map(category => category.id) : [])}
           />
         </FormGroupStyled>
-        {
-          view === 'list' ?
-            <PageBoardItemStyled activity margin={'0'}>
-              <ElementHeaderStyled padding={'20px 5px'}>
-                <TitleElementStyled noPadding flex={'0 0 85px'}>
-                  Issues
-                </TitleElementStyled>
-                <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
-                  {issues.length} Issues
-                </TitleElementStyled>
-                {
-                  user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER))) &&
-                    <TitleElementStyled noPadding flex={'0'}>
-                      <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
-                        Create Issue
-                      </Button>
-                    </TitleElementStyled>
-                }
-              </ElementHeaderStyled>
-              {this.renderList()}
-            </PageBoardItemStyled>
-          :
-            <Column />
-        }
+        <PageBoardItemStyled activity margin={'0'}>
+          <ElementHeaderStyled padding={'20px 5px'}>
+            <TitleElementStyled noPadding flex={'0 0 85px'}>
+              Issues
+            </TitleElementStyled>
+            <TitleElementStyled noPadding fontWeight={400} fontSize={'14px'}>
+              {issues.length} Issues
+            </TitleElementStyled>
+            {
+              user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER))) &&
+              <TitleElementStyled noPadding flex={'0'}>
+                <Button hasBorder onClick={() => openModal(MODAL_TYPE.CREATING_ISSUE)}>
+                  Create Issue
+                </Button>
+              </TitleElementStyled>
+            }
+          </ElementHeaderStyled>
+          {this.renderList()}
+        </PageBoardItemStyled>
         <SockJsClient
           url={WEB_SOCKET_URL}
           topics={['/topic/issuesList']}

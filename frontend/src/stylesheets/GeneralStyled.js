@@ -298,6 +298,11 @@ export const LineFormStyled = styled.div`
     .react-datepicker__triangle {
       margin-left: 118px !important;
     }
+    ${props => props.maxContent && css`
+      .react-datepicker {
+        width: max-content;
+      }
+    `}
   `}
   textarea, input, select {
     background: #fff;
@@ -485,7 +490,7 @@ export const Input = styled.input`
   background: #fff;
   border: none;
   border-radius: 3px;
-  width: 280px;
+  width: ${props => `${props.width} !important` || '280px'};
   transition: all 0.3s ease;
   outline: none;
   &:hover {
@@ -503,6 +508,9 @@ export const Input = styled.input`
   `}
   ${props => props.hidden && css`
     display: none;
+  `}
+  ${props => props.noMargin && css`
+    margin: 0 !important;
   `}
 `;
 
