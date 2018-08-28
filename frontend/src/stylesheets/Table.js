@@ -24,7 +24,8 @@ export const ListTableHeaderItemsStyled = styled.div`
     flex: 0 0 75px;    
   `};
   ${props => props.propertyType === 'Status' && css`
-    flex: 0 0 100px;    
+    flex: 0 0 100px;
+    padding: 0 5px;
   `};
   @media (max-width: 1024px) {
     ${props => props.propertyType === 'Issue' && css`
@@ -61,6 +62,9 @@ export const ListTableBodyContainerStyled = styled.div`
   `}
   ${props => props.height && css`
     height: calc(100vh - ${props.height});
+  `}
+  ${props => props.noScroll && css`
+    overflow-y: visible;
   `}
 `;
 
@@ -129,20 +133,22 @@ export const ListTableBodyItemStyled = styled.div`
 
   ${props => props.propertyType === 'Issue' && css`
     flex: 0 0 85px;
-    padding: 0 5px 0 10px;
+    padding: 0 10px;
   `}
   
   ${props => props.propertyType === 'Name' && css`
     flex: 1;
+    padding: 0 10px;
   `}
   
   ${props => props.propertyType === 'Priority' && css`
-    flex: 0 0 75px;    
-    justify-content: center;
+    flex: 0 0 75px;        
+    padding: 0 10px;
   `}
   
   ${props => props.propertyType === 'Status' && css`
-    flex: 0 0 100px;    
+    flex: 0 0 100px;
+    padding: 0 5px;
   `}
   
   ${props => props.container && css`

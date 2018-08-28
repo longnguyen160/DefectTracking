@@ -180,6 +180,7 @@ class ModalProfile extends React.Component {
                         name={'email'}
                         placeholder={'Email...'}
                         renderType={'input'}
+                        disabled={true}
                       />
                     </LineFormStyled>
                   </ModalLineTitleStyled>

@@ -387,6 +387,7 @@ class Dashboard extends Component {
         NoDataComponent={NoDataComponent}
         getTheadFilterThProps={() => { return { style: { position: "inherit", overflow: "inherit" } } }}
         pageSize={issues.length < 10 ? issues.length : 10}
+        showPageSizeOptions={false}
       />
     );
   };

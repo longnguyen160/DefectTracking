@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Scrollbars } from 'react-custom-scrollbars';
 import SockJsClient from "react-stomp";
 import moment from 'moment';
 import {
@@ -197,21 +198,29 @@ class Home extends React.Component {
               <ListTableHeaderItemsStyled propertyType={'Priority'}>Priority</ListTableHeaderItemsStyled>
               <ListTableHeaderItemsStyled propertyType={'Status'}>Status</ListTableHeaderItemsStyled>
             </ListTableHeaderStyled>
-            <ListTableBodyContainerStyled willChange height={'445px'}>
-              {
-                loadingIssues ?
-                  <ElementHeaderStyled loading>
-                    <LoadingIcon />
-                  </ElementHeaderStyled>
-                :
-                  issues.length > 0 ?
-                    this.renderIssue(issues)
-                  :
+            <Scrollbars
+              ref={scroll => this.scroll = scroll}
+              autoHide
+              autoHeight
+              autoHeightMax={300}
+              style={{ position: 'relative' }}
+            >
+              <ListTableBodyContainerStyled noScroll willChange height={'445px'}>
+                {
+                  loadingIssues ?
                     <ElementHeaderStyled loading>
-                      No issues yet
+                      <LoadingIcon />
                     </ElementHeaderStyled>
-              }
-            </ListTableBodyContainerStyled>
+                  :
+                    issues.length > 0 ?
+                      this.renderIssue(issues)
+                    :
+                      <ElementHeaderStyled loading>
+                        No issues yet
+                      </ElementHeaderStyled>
+                }
+              </ListTableBodyContainerStyled>
+            </Scrollbars>
           </div>
         </div>
       </PageBoardItemStyled>
@@ -237,23 +246,31 @@ class Home extends React.Component {
           </ElementHeaderStyled>
           <div>
             <div>
-              <ListTableBodyContainerStyled willChange borderTop activity>
-                {
-                  loadingMessages ?
-                    <ElementHeaderStyled loading>
-                      <LoadingIcon />
-                    </ElementHeaderStyled>
-                  :
-                    messages.length > 0 ?
-                      messages.map(message => (
-                        message.type.entityName === MESSAGE_TYPE.LOGS ? this.renderLog(message) : this.renderComment(message)
-                      ))
-                    :
+              <Scrollbars
+                ref={scroll => this.scroll = scroll}
+                autoHide
+                autoHeight
+                autoHeightMax={600}
+                style={{ position: 'relative' }}
+              >
+                <ListTableBodyContainerStyled noScroll willChange borderTop activity>
+                  {
+                    loadingMessages ?
                       <ElementHeaderStyled loading>
-                        No activities yet
+                        <LoadingIcon />
                       </ElementHeaderStyled>
-                }
-              </ListTableBodyContainerStyled>
+                    :
+                      messages.length > 0 ?
+                        messages.map(message => (
+                          message.type.entityName === MESSAGE_TYPE.LOGS ? this.renderLog(message) : this.renderComment(message)
+                        ))
+                      :
+                        <ElementHeaderStyled loading>
+                          No activities yet
+                        </ElementHeaderStyled>
+                  }
+                </ListTableBodyContainerStyled>
+              </Scrollbars>
             </div>
           </div>
         </PageBoardItemStyled>

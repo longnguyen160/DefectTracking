@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Scrollbars } from 'react-custom-scrollbars';
 import moment from 'moment';
 import Modal from './Modal';
 import {
@@ -39,6 +40,7 @@ import { createIssue } from '../../modules/issue/actions/issue';
 import { deleteFile, resetState, uploadFile } from '../../modules/file/actions/file';
 import { loadAllUsersInProject } from '../../modules/projects/actions/usersInProject';
 import { loadAllCategoriesInProject, resetAllCategories } from '../../modules/layout/actions/layout';
+import { NotificationBodyContent } from '../../stylesheets/TopNavBar';
 
 class ModalCreatingIssue extends React.Component {
 
@@ -146,7 +148,7 @@ class ModalCreatingIssue extends React.Component {
     const { uploadedFile } = this.state;
 
     return (
-      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'600px'}>
+      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'600px'} isHidden={true}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
             <span>Create Issue</span>
@@ -156,194 +158,200 @@ class ModalCreatingIssue extends React.Component {
           onSubmit={handleSubmit(this.handleCreateIssue)}
           id="CreateIssueForm"
         >
-          <ModalContentStyled>
-            <ModalLineStyled hasRows>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Project (*)</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled reactSelect>
-                    <InputField
-                      name={'projectId'}
-                      type={SELECT}
-                      options={projects}
-                      searchable={false}
-                      disabled={!user.roles.includes(ROLES.ADMIN)}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled reactSelect>
-                    <InputField
-                      name={'priority'}
-                      type={SELECT}
-                      options={ISSUE_PRIORITY_ARRAY}
-                      searchable={false}
-                      renderCustom
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>
-                  Summary (*)
-                </ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={INPUT_TEXT}
-                      name={'issueName'}
-                      placeholder={'Summary...'}
-                      renderType={'input'}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={TEXT_AREA}
-                      name={'description'}
-                      renderType={'textarea'}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            {/*<ModalLineStyled>*/}
-              {/*<ModalLineContentStyled alignLeft>*/}
-                {/*<ModalLineTitleStyled>Reporter</ModalLineTitleStyled>*/}
-                {/*<ModalLineTitleStyled fullInput>*/}
-                  {/*<LineFormStyled>*/}
-                    {/*<InputField*/}
-                      {/*type={SELECT}*/}
-                      {/*name={'reporter'}*/}
-                      {/*placeholder={'Reporter...'}*/}
-                      {/*options={[*/}
-                        {/*{ value: user.id, label: user.username, avatarURL: user.profile.avatarURL }*/}
-                      {/*]}*/}
-                      {/*renderCustom*/}
-                      {/*disabled={true}*/}
-                    {/*/>*/}
-                  {/*</LineFormStyled>*/}
-                {/*</ModalLineTitleStyled>*/}
-              {/*</ModalLineContentStyled>*/}
-            {/*</ModalLineStyled>*/}
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Attachment</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled fullWidth>
-                    <InputField
-                      name={'attachments'}
-                      type={FILE}
-                      renderType={'file'}
-                      onDrop={this.onDrop}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
+          <Scrollbars
+            ref={scroll => this.scroll = scroll}
+            autoHide
+            style={{ position: 'relative', height: 500 }}
+          >
+            <ModalContentStyled>
+              <ModalLineStyled hasRows>
+                <ModalLineContentStyled padding={'5px 0'} alignLeft>
+                  <ModalLineTitleStyled>Project (*)</ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled reactSelect>
+                      <InputField
+                        name={'projectId'}
+                        type={SELECT}
+                        options={projects}
+                        searchable={false}
+                        disabled={!user.roles.includes(ROLES.ADMIN)}
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled reactSelect>
+                      <InputField
+                        name={'priority'}
+                        type={SELECT}
+                        options={ISSUE_PRIORITY_ARRAY}
+                        searchable={false}
+                        renderCustom
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>
+                    Summary (*)
+                  </ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled>
+                      <InputField
+                        type={INPUT_TEXT}
+                        name={'issueName'}
+                        placeholder={'Summary...'}
+                        renderType={'input'}
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Description</ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled>
+                      <InputField
+                        type={TEXT_AREA}
+                        name={'description'}
+                        renderType={'textarea'}
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              {/*<ModalLineStyled>*/}
+                {/*<ModalLineContentStyled alignLeft>*/}
+                  {/*<ModalLineTitleStyled>Reporter</ModalLineTitleStyled>*/}
+                  {/*<ModalLineTitleStyled fullInput>*/}
+                    {/*<LineFormStyled>*/}
+                      {/*<InputField*/}
+                        {/*type={SELECT}*/}
+                        {/*name={'reporter'}*/}
+                        {/*placeholder={'Reporter...'}*/}
+                        {/*options={[*/}
+                          {/*{ value: user.id, label: user.username, avatarURL: user.profile.avatarURL }*/}
+                        {/*]}*/}
+                        {/*renderCustom*/}
+                        {/*disabled={true}*/}
+                      {/*/>*/}
+                    {/*</LineFormStyled>*/}
+                  {/*</ModalLineTitleStyled>*/}
+                {/*</ModalLineContentStyled>*/}
+              {/*</ModalLineStyled>*/}
+              <ModalLineStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Attachment</ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled fullWidth>
+                      <InputField
+                        name={'attachments'}
+                        type={FILE}
+                        renderType={'file'}
+                        onDrop={this.onDrop}
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                  <ModalLineContentStyled>
+                    {
+                      uploadedFile.map((file, index) => (
+                        <FilterBoxWrapperStyled key={fileIds[index]}>
+                          {
+                            file.type && file.type.includes('image') ?
+                              <Image project src={FILE_BASE_URL + fileIds[index]} />
+                            :
+                              <Icon icon={ICONS.ATTACHMENT} color={'#1A1A1A'} width={30} height={30}/>
+                          }
+                          <TitleElementStyled padding={'10px 0'}>{file.name}</TitleElementStyled>
+                          <Icon
+                            icon={ICONS.DELETE}
+                            color={'#1A1A1A'}
+                            width={10}
+                            height={10}
+                            onClick={() => this.handleDeleteAttachment(fileIds[index], index)}
+                            hoverPointer
+                          />
+                        </FilterBoxWrapperStyled>
+                      ))
+                    }
+                  </ModalLineContentStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>
+                    Due Date
+                  </ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled>
+                      <InputField
+                        type={DATETIME_PICKER}
+                        name={'dueDate'}
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled hasRows>
+                <ModalLineContentStyled padding={'5px 0'} alignLeft>
+                  <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled reactSelect>
+                      <InputField
+                        name={'assignee'}
+                        type={SELECT}
+                        options={usersInProject}
+                        renderCustom
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
+                  <ModalLineTitleStyled fullInput>
+                    <LineFormStyled reactSelect>
+                      <InputField
+                        name={'categories'}
+                        type={CREATABLE}
+                        options={categories}
+                        multi={true}
+                      />
+                    </LineFormStyled>
+                  </ModalLineTitleStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled>
                 <ModalLineContentStyled>
                   {
-                    uploadedFile.map((file, index) => (
-                      <FilterBoxWrapperStyled key={fileIds[index]}>
-                        {
-                          file.type && file.type.includes('image') ?
-                            <Image project src={FILE_BASE_URL + fileIds[index]} />
-                          :
-                            <Icon icon={ICONS.ATTACHMENT} color={'#1A1A1A'} width={30} height={30}/>
-                        }
-                        <TitleElementStyled padding={'10px 0'}>{file.name}</TitleElementStyled>
-                        <Icon
-                          icon={ICONS.DELETE}
-                          color={'#1A1A1A'}
-                          width={10}
-                          height={10}
-                          onClick={() => this.handleDeleteAttachment(fileIds[index], index)}
-                          hoverPointer
-                        />
-                      </FilterBoxWrapperStyled>
-                    ))
+                    ((submitSucceeded && issue.error) || (submitFailed && error)) &&
+                      <TextErrorStyled error={true}>
+                        {issue.error || error}
+                      </TextErrorStyled>
+                  }
+                  {
+                    submitting || issue.isLoading ?
+                      <Button hasBorder disabled>
+                        <i className="fa fa-circle-o-notch fa-spin" />Loading
+                      </Button>
+                    :
+                      <Button
+                        hasBorder
+                        type="submit"
+                        form="CreateIssueForm"
+                        disabled={pristine}
+                      >
+                        Create
+                      </Button>
                   }
                 </ModalLineContentStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>
-                  Due Date
-                </ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled>
-                    <InputField
-                      type={DATETIME_PICKER}
-                      name={'dueDate'}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled hasRows>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled reactSelect>
-                    <InputField
-                      name={'assignee'}
-                      type={SELECT}
-                      options={usersInProject}
-                      renderCustom
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
-                <ModalLineTitleStyled fullInput>
-                  <LineFormStyled reactSelect>
-                    <InputField
-                      name={'categories'}
-                      type={CREATABLE}
-                      options={categories}
-                      multi={true}
-                    />
-                  </LineFormStyled>
-                </ModalLineTitleStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled>
-              <ModalLineContentStyled>
-                {
-                  ((submitSucceeded && issue.error) || (submitFailed && error)) &&
-                    <TextErrorStyled error={true}>
-                      {issue.error || error}
-                    </TextErrorStyled>
-                }
-                {
-                  submitting || issue.isLoading ?
-                    <Button hasBorder disabled>
-                      <i className="fa fa-circle-o-notch fa-spin" />Loading
-                    </Button>
-                  :
-                    <Button
-                      hasBorder
-                      type="submit"
-                      form="CreateIssueForm"
-                      disabled={pristine}
-                    >
-                      Create
-                    </Button>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-          </ModalContentStyled>
+              </ModalLineStyled>
+            </ModalContentStyled>
+          </Scrollbars>
         </form>
       </Modal>
     );

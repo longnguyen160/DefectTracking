@@ -66,7 +66,7 @@ class Attachment extends React.Component {
   };
 
   render() {
-    const { handleDeleteAttachment, fileId, height, width, type } = this.props;
+    const { handleDeleteAttachment, fileId, height, width, type, checkUserInIssue } = this.props;
     const { attachment } = this.state;
     const isImage = attachment && attachment.contentType.includes('image');
 
@@ -106,13 +106,16 @@ class Attachment extends React.Component {
                       {attachment && formatBytes(attachment.size, 3)}
                     </AttachmentDetailsBodySizeStyled>
                     <AttachmentDetailsBodyDeleteStyled onClick={handleDeleteAttachment}>
-                      <Icon
-                        icon={ICONS.DELETE}
-                        color={'#fff'}
-                        width={10}
-                        height={10}
-                        hoverPointer
-                      />
+                      {
+                        checkUserInIssue &&
+                          <Icon
+                            icon={ICONS.DELETE}
+                            color={'#fff'}
+                            width={10}
+                            height={10}
+                            hoverPointer
+                          />
+                      }
                     </AttachmentDetailsBodyDeleteStyled>
                   </AttachmentDetailsBodyStyled>
                 </AttachmentDetailsStyled>
@@ -132,7 +135,8 @@ Attachment.propTypes = {
   fileId: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
   width: PropTypes.string.isRequired,
-  type: PropTypes.string
+  type: PropTypes.string,
+  checkUserInIssue: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

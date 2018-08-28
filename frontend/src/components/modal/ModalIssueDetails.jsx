@@ -50,6 +50,7 @@ import { createMessage, resetMessage } from '../../modules/message/actions/messa
 import { loadProjectDetails, resetProject } from '../../modules/layout/actions/layout';
 import { Button } from '../../stylesheets/Button';
 import ModalConfirm from './ModalConfirm';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 class ModalIssueDetails extends React.Component {
 
@@ -322,432 +323,441 @@ class ModalIssueDetails extends React.Component {
             {/*onClick={() => this.handleWatchingIssue()}*/}
           {/*/>*/}
         </ModalHeaderStyled>
-        <ModalBodyStyled padding={'10px 0'}>
-          <ModalContentStyled flex={'0 0 770px'} padding={'0 10px'}>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    checkUserInIssue ?
-                      <Editable
-                        name={'issueName'}
-                        dataType={'custom'}
-                        mode={'inline'}
-                        value={issue && issue.issueName}
-                        showButtons={true}
-                        display={(value) => (
-                          <ModalLineTitleStyled hover>
-                            {value}
-                          </ModalLineTitleStyled>
-                        )}
-                        customComponent={(props, state) => (
-                          <CustomInput
-                            {...props}
-                            {...state}
-                            renderType={INPUT_TEXT}
-                          />
-                        )}
-                        handleSubmit={this.handleSubmit}
-                      />
+        <Scrollbars
+          ref={scroll => this.scroll = scroll}
+          autoHide
+          autoHeight
+          autoHeightMax={550}
+          style={{ position: 'relative' }}
+        >
+          <ModalBodyStyled padding={'10px 0'}>
+            <ModalContentStyled flex={'0 0 770px'} padding={'0 10px'}>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
                     :
-                      <ModalLineTitleStyled>
-                        {issue && issue.issueName}
-                      </ModalLineTitleStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled hasRows noMargin padding={'0 0 10px 0'} noPadding>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    checkUserInIssue ?
-                      <Editable
-                        name={'categories'}
-                        dataType={'custom'}
-                        mode={'inline'}
-                        value={issue && { categories, projectId }}
-                        showButtons={true}
-                        display={(value) => (
-                          <LineFormStyled hover wrap={true}>
-                            {
-                              value.categories && value.categories.length > 0 ?
-                                value.categories.map(category => (
-                                  <LabelStyled
-                                    background={category.background}
-                                    color={category.color}
-                                    key={category.id}
-                                  >
-                                    {category.name}
+                      checkUserInIssue ?
+                        <Editable
+                          name={'issueName'}
+                          dataType={'custom'}
+                          mode={'inline'}
+                          value={issue && issue.issueName}
+                          showButtons={true}
+                          display={(value) => (
+                            <ModalLineTitleStyled hover>
+                              {value}
+                            </ModalLineTitleStyled>
+                          )}
+                          customComponent={(props, state) => (
+                            <CustomInput
+                              {...props}
+                              {...state}
+                              renderType={INPUT_TEXT}
+                            />
+                          )}
+                          handleSubmit={this.handleSubmit}
+                        />
+                      :
+                        <ModalLineTitleStyled>
+                          {issue && issue.issueName}
+                        </ModalLineTitleStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled hasRows noMargin padding={'0 0 10px 0'} noPadding>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Categories</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
+                    :
+                      checkUserInIssue ?
+                        <Editable
+                          name={'categories'}
+                          dataType={'custom'}
+                          mode={'inline'}
+                          value={issue && { categories, projectId }}
+                          showButtons={true}
+                          display={(value) => (
+                            <LineFormStyled hover wrap={true}>
+                              {
+                                value.categories && value.categories.length > 0 ?
+                                  value.categories.map(category => (
+                                    <LabelStyled
+                                      background={category.background}
+                                      color={category.color}
+                                      key={category.id}
+                                    >
+                                      {category.name}
+                                    </LabelStyled>
+                                  ))
+                                  :
+                                  <LabelStyled>
                                   </LabelStyled>
-                                ))
-                                :
-                                <LabelStyled>
-                                </LabelStyled>
-                            }
-                          </LineFormStyled>
-                        )}
-                        customComponent={(props, state) => (
-                          <CustomSelect
-                            multi={true}
-                            {...props}
-                            {...state}
-                          />
-                        )}
-                        handleSubmit={this.handleSubmit}
-                      />
+                              }
+                            </LineFormStyled>
+                          )}
+                          customComponent={(props, state) => (
+                            <CustomSelect
+                              multi={true}
+                              {...props}
+                              {...state}
+                            />
+                          )}
+                          handleSubmit={this.handleSubmit}
+                        />
+                      :
+                        <LineFormStyled wrap={true}>
+                          {
+                            issue && issue.categories.map(category => (
+                              <LabelStyled
+                                background={category.background}
+                                color={category.color}
+                                key={category.id}
+                              >
+                                {category.name}
+                              </LabelStyled>
+                            ))
+                          }
+                        </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
                     :
-                      <LineFormStyled wrap={true}>
-                        {
-                          issue && issue.categories.map(category => (
-                            <LabelStyled
-                              background={category.background}
-                              color={category.color}
-                              key={category.id}
-                            >
-                              {category.name}
-                            </LabelStyled>
-                          ))
-                        }
-                      </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Priority</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    checkUserInIssue ?
-                      <Editable
-                        name={'priority'}
-                        dataType={'custom'}
-                        mode={'inline'}
-                        value={issue && priority}
-                        showButtons={true}
-                        options={ISSUE_PRIORITY_ARRAY}
-                        display={(value) => (
-                          <LineFormStyled hover>
+                      checkUserInIssue ?
+                        <Editable
+                          name={'priority'}
+                          dataType={'custom'}
+                          mode={'inline'}
+                          value={issue && priority}
+                          showButtons={true}
+                          options={ISSUE_PRIORITY_ARRAY}
+                          display={(value) => (
+                            <LineFormStyled hover>
+                              <Icon
+                                icon={ICONS.ARROW}
+                                color={value.color}
+                                width={15}
+                                height={15}
+                                rotated rotate={'rotateZ(90deg)'}
+                              />
+                              <span>{value.label}</span>
+                            </LineFormStyled>
+                          )}
+                          customComponent={(props, state) => (
+                            <CustomSelect
+                              renderCustom={true}
+                              clearable={false}
+                              {...props}
+                              {...state}
+                            />
+                          )}
+                          handleSubmit={this.handleSubmit}
+                        />
+                      :
+                        issue &&
+                          <LineFormStyled>
                             <Icon
                               icon={ICONS.ARROW}
-                              color={value.color}
+                              color={priority.color}
                               width={15}
                               height={15}
                               rotated rotate={'rotateZ(90deg)'}
                             />
-                            <span>{value.label}</span>
+                            <span>{priority.label}</span>
                           </LineFormStyled>
-                        )}
-                        customComponent={(props, state) => (
-                          <CustomSelect
-                            renderCustom={true}
-                            clearable={false}
-                            {...props}
-                            {...state}
-                          />
-                        )}
-                        handleSubmit={this.handleSubmit}
-                      />
-                    :
-                      issue &&
-                        <LineFormStyled>
-                          <Icon
-                            icon={ICONS.ARROW}
-                            color={priority.color}
-                            width={15}
-                            height={15}
-                            rotated rotate={'rotateZ(90deg)'}
-                          />
-                          <span>{priority.label}</span>
-                        </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Description</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    checkUserInIssue ?
-                      <Editable
-                        name={'description'}
-                        dataType={'custom'}
-                        mode={'inline'}
-                        value={issue && issue.description}
-                        showButtons={true}
-                        display={(value) => (
-                          <LineFormStyled hover>
-                            <span>
-                              {value}
-                            </span>
-                          </LineFormStyled>
-                        )}
-                        customComponent={(props, state) => (
-                          <CustomInput
-                            {...props}
-                            {...state}
-                            renderType={TEXT_AREA}
-                          />
-                        )}
-                        handleSubmit={this.handleSubmit}
-                      />
-                    :
-                      <LineFormStyled>
-                        <span>
-                          {issue && issue.description}
-                        </span>
-                      </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Attachments</ModalLineTitleStyled>
-                <LineFormStyled fullWidth>
-                  <DropZoneStyled onDrop={this.onDrop}>
-                    Dropping some files here, or click to select files to upload.
-                  </DropZoneStyled>
-                </LineFormStyled>
-                <LineFormStyled>
-                  {
-                    issue && issue.attachments && issue.attachments.map(fileId => (
-                      <Attachment
-                        key={fileId}
-                        fileId={fileId}
-                        height={'125px'}
-                        width={'156px'}
-                        handleDeleteAttachment={() => this.handleDeleteAttachment(fileId)}
-                      />
-                    ))
                   }
-                </LineFormStyled>
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled padding={'5px 0'}>Activity</ModalLineTitleStyled>
-                <Message />
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-          </ModalContentStyled>
-          <ModalContentStyled padding={'0 10px'} fullWidth>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Status</ModalLineTitleStyled>
-                {
-                  issue && (issue.status.handlers.includes(userRole) || user.roles.includes(ROLES.ADMIN)) && checkUserInIssue ?
-                    <Editable
-                      name={'status'}
-                      dataType={'custom'}
-                      mode={'inline'}
-                      value={issue && issue.status}
-                      showButtons={true}
-                      display={(value) => (
-                        <LineFormStyled hover>
-                          <IssueStatusStyled status={value}>{value.name}</IssueStatusStyled>
-                        </LineFormStyled>
-                      )}
-                      customComponent={(props, state) => (
-                        <CustomSelectStatus
-                          userRole={userRole}
-                          {...props}
-                          {...state}
-                        />
-                      )}
-                      handleSubmit={this.handleSubmit}
-                    />
-                  :
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Description</ModalLineTitleStyled>
+                  {
                     loadingIssue ?
                       <PlaceHolder />
                     :
-                      <LineFormStyled hover>
-                       <IssueStatusStyled status={issue && issue.status}>{issue && issue.status.name}</IssueStatusStyled>
-                      </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    <LineFormStyled>
-                      <ElementHeaderStyled padding={'0'}>
-                        <Image
-                          topNav
-                          src={issue && issue.reporter.avatarURL ? FILE_BASE_URL + issue.reporter.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
-                          margin={'0 5px'}
+                      checkUserInIssue ?
+                        <Editable
+                          name={'description'}
+                          dataType={'custom'}
+                          mode={'inline'}
+                          value={issue && issue.description}
+                          showButtons={true}
+                          display={(value) => (
+                            <LineFormStyled hover>
+                              <span>
+                                {value}
+                              </span>
+                            </LineFormStyled>
+                          )}
+                          customComponent={(props, state) => (
+                            <CustomInput
+                              {...props}
+                              {...state}
+                              renderType={TEXT_AREA}
+                            />
+                          )}
+                          handleSubmit={this.handleSubmit}
                         />
-                        <span>{issue && issue.reporter.username}</span>
-                      </ElementHeaderStyled>
-                    </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    checkUserInIssue && userRole === ROLES.MANAGER ?
+                      :
+                        <LineFormStyled>
+                          <span>
+                            {issue && issue.description}
+                          </span>
+                        </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Attachments</ModalLineTitleStyled>
+                  <LineFormStyled fullWidth>
+                    <DropZoneStyled onDrop={this.onDrop}>
+                      Dropping some files here, or click to select files to upload.
+                    </DropZoneStyled>
+                  </LineFormStyled>
+                  <LineFormStyled>
+                    {
+                      issue && issue.attachments && issue.attachments.map(fileId => (
+                        <Attachment
+                          key={fileId}
+                          fileId={fileId}
+                          height={'125px'}
+                          width={'156px'}
+                          checkUserInIssue={checkUserInIssue}
+                          handleDeleteAttachment={() => this.handleDeleteAttachment(fileId)}
+                        />
+                      ))
+                    }
+                  </LineFormStyled>
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled padding={'5px 0'}>Activity</ModalLineTitleStyled>
+                  <Message />
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+            </ModalContentStyled>
+            <ModalContentStyled padding={'0 10px'} fullWidth>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Status</ModalLineTitleStyled>
+                  {
+                    issue && (issue.status.handlers.includes(userRole) || user.roles.includes(ROLES.ADMIN)) && checkUserInIssue ?
                       <Editable
-                        name={'assignee'}
+                        name={'status'}
                         dataType={'custom'}
                         mode={'inline'}
-                        value={issue && { ...assignee, projectId }}
+                        value={issue && issue.status}
                         showButtons={true}
                         display={(value) => (
                           <LineFormStyled hover>
+                            <IssueStatusStyled status={value}>{value.name}</IssueStatusStyled>
+                          </LineFormStyled>
+                        )}
+                        customComponent={(props, state) => (
+                          <CustomSelectStatus
+                            userRole={userRole}
+                            {...props}
+                            {...state}
+                          />
+                        )}
+                        handleSubmit={this.handleSubmit}
+                      />
+                    :
+                      loadingIssue ?
+                        <PlaceHolder />
+                      :
+                        <LineFormStyled hover>
+                         <IssueStatusStyled status={issue && issue.status}>{issue && issue.status.name}</IssueStatusStyled>
+                        </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Reporter</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
+                    :
+                      <LineFormStyled>
+                        <ElementHeaderStyled padding={'0'}>
+                          <Image
+                            topNav
+                            src={issue && issue.reporter.avatarURL ? FILE_BASE_URL + issue.reporter.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
+                            margin={'0 5px'}
+                          />
+                          <span>{issue && issue.reporter.username}</span>
+                        </ElementHeaderStyled>
+                      </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Assignee</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
+                    :
+                      checkUserInIssue && userRole === ROLES.MANAGER ?
+                        <Editable
+                          name={'assignee'}
+                          dataType={'custom'}
+                          mode={'inline'}
+                          value={issue && { ...assignee, projectId }}
+                          showButtons={true}
+                          display={(value) => (
+                            <LineFormStyled hover>
+                              {
+                                value.username ?
+                                  <ElementHeaderStyled padding={'0'}>
+                                    <Image
+                                      topNav
+                                      src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
+                                      margin={'0 5px'}
+                                    />
+                                    <span>{value.username}</span>
+                                  </ElementHeaderStyled>
+                                  :
+                                  <ElementHeaderStyled padding={'0'}>
+                                    <span>No assignee yet</span>
+                                  </ElementHeaderStyled>
+                              }
+                            </LineFormStyled>
+                          )}
+                          customComponent={(props, state) => (
+                            <CustomSelect
+                              renderCustom={true}
+                              {...props}
+                              {...state}
+                            />
+                          )}
+                          handleSubmit={this.handleSubmit}
+                        />
+                      :
+                        issue &&
+                          <LineFormStyled>
                             {
-                              value.username ?
+                              assignee && assignee.username ?
                                 <ElementHeaderStyled padding={'0'}>
                                   <Image
                                     topNav
-                                    src={value.avatarURL ? FILE_BASE_URL + value.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
+                                    src={assignee.avatarURL ? FILE_BASE_URL + assignee.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
                                     margin={'0 5px'}
                                   />
-                                  <span>{value.username}</span>
+                                  <span>{assignee.username}</span>
                                 </ElementHeaderStyled>
-                                :
+                              :
                                 <ElementHeaderStyled padding={'0'}>
                                   <span>No assignee yet</span>
                                 </ElementHeaderStyled>
                             }
                           </LineFormStyled>
-                        )}
-                        customComponent={(props, state) => (
-                          <CustomSelect
-                            renderCustom={true}
-                            {...props}
-                            {...state}
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              {/*<ModalLineStyled noMargin padding={'0 0 10px 0'}>*/}
+                {/*<ModalLineContentStyled alignLeft>*/}
+                  {/*<ModalLineTitleStyled>Watchers</ModalLineTitleStyled>*/}
+                  {/*<LineFormStyled hasTitle>*/}
+                    {/*{*/}
+                      {/*issue && issue.watchers.map(watcher => (*/}
+                        {/*<ElementHeaderStyled padding={'0'} key={watcher.id}>*/}
+                          {/*<Image topNav src={watcher.avatarURL ? watcher.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR} margin={'0 5px'} />*/}
+                          {/*<span>{watcher.username}</span>*/}
+                        {/*</ElementHeaderStyled>*/}
+                      {/*))*/}
+                    {/*}*/}
+                  {/*</LineFormStyled>*/}
+                {/*</ModalLineContentStyled>*/}
+              {/*</ModalLineStyled>*/}
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Due Date</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
+                      :
+                      <LineFormStyled>
+                        <span>{moment(issue && issue.dueDate).format('LLL')}</span>
+                      </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              {
+                issue && issue.finishedAt &&
+                  <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                    <ModalLineContentStyled alignLeft>
+                      <ModalLineTitleStyled>Finished at</ModalLineTitleStyled>
+                      <LineFormStyled>
+                        <span>{moment(issue && issue.finishedAt).format('LLL')}</span>
+                      </LineFormStyled>
+                    </ModalLineContentStyled>
+                  </ModalLineStyled>
+              }
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Created At</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
+                    :
+                      <LineFormStyled>
+                       <span>{moment(issue && issue.createdAt).format('LLL')}</span>
+                      </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                <ModalLineContentStyled alignLeft>
+                  <ModalLineTitleStyled>Updated At</ModalLineTitleStyled>
+                  {
+                    loadingIssue ?
+                      <PlaceHolder />
+                    :
+                      <LineFormStyled>
+                       <span>{moment(issue && issue.updatedAt).format('LLL')}</span>
+                      </LineFormStyled>
+                  }
+                </ModalLineContentStyled>
+              </ModalLineStyled>
+              {
+                user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER)))
+                && issue && issue.status.default &&
+                  <ModalLineStyled noMargin padding={'0 0 10px 0'}>
+                    <ModalLineContentStyled alignLeft>
+                      <ModalLineTitleStyled>
+                        <Button
+                          small
+                          fullHeight
+                          action={'Deactivate'}
+                          onClick={this.handleConfirmModal}
+                        >
+                          <Icon
+                            icon={ICONS.TRASH}
+                            color={'#fff'}
+                            width={15}
+                            height={15}
+                            margin={'0 5px 0 0'}
                           />
-                        )}
-                        handleSubmit={this.handleSubmit}
-                      />
-                    :
-                      issue &&
-                        <LineFormStyled>
-                          {
-                            assignee && assignee.username ?
-                              <ElementHeaderStyled padding={'0'}>
-                                <Image
-                                  topNav
-                                  src={assignee.avatarURL ? FILE_BASE_URL + assignee.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR}
-                                  margin={'0 5px'}
-                                />
-                                <span>{assignee.username}</span>
-                              </ElementHeaderStyled>
-                            :
-                              <ElementHeaderStyled padding={'0'}>
-                                <span>No assignee yet</span>
-                              </ElementHeaderStyled>
-                          }
-                        </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            {/*<ModalLineStyled noMargin padding={'0 0 10px 0'}>*/}
-              {/*<ModalLineContentStyled alignLeft>*/}
-                {/*<ModalLineTitleStyled>Watchers</ModalLineTitleStyled>*/}
-                {/*<LineFormStyled hasTitle>*/}
-                  {/*{*/}
-                    {/*issue && issue.watchers.map(watcher => (*/}
-                      {/*<ElementHeaderStyled padding={'0'} key={watcher.id}>*/}
-                        {/*<Image topNav src={watcher.avatarURL ? watcher.avatarURL : FILE_BASE_URL + DEFAULT_AVATAR} margin={'0 5px'} />*/}
-                        {/*<span>{watcher.username}</span>*/}
-                      {/*</ElementHeaderStyled>*/}
-                    {/*))*/}
-                  {/*}*/}
-                {/*</LineFormStyled>*/}
-              {/*</ModalLineContentStyled>*/}
-            {/*</ModalLineStyled>*/}
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Due Date</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                    :
-                    <LineFormStyled>
-                      <span>{moment(issue && issue.dueDate).format('LLL')}</span>
-                    </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            {
-              issue && issue.finishedAt &&
-                <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-                  <ModalLineContentStyled alignLeft>
-                    <ModalLineTitleStyled>Finished at</ModalLineTitleStyled>
-                    <LineFormStyled>
-                      <span>{moment(issue && issue.finishedAt).format('LLL')}</span>
-                    </LineFormStyled>
-                  </ModalLineContentStyled>
-                </ModalLineStyled>
-            }
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Created At</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    <LineFormStyled>
-                     <span>{moment(issue && issue.createdAt).format('LLL')}</span>
-                    </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-              <ModalLineContentStyled alignLeft>
-                <ModalLineTitleStyled>Updated At</ModalLineTitleStyled>
-                {
-                  loadingIssue ?
-                    <PlaceHolder />
-                  :
-                    <LineFormStyled>
-                     <span>{moment(issue && issue.updatedAt).format('LLL')}</span>
-                    </LineFormStyled>
-                }
-              </ModalLineContentStyled>
-            </ModalLineStyled>
-            {
-              user && ((user.roles.length === 1 && !user.roles.includes(ROLES.USER)) || (user.roles.includes(ROLES.USER) && user.roles.length > 1 && !user.roles.includes(ROLES.DEVELOPER)))
-              && issue && issue.status.default &&
-                <ModalLineStyled noMargin padding={'0 0 10px 0'}>
-                  <ModalLineContentStyled alignLeft>
-                    <ModalLineTitleStyled>
-                      <Button
-                        small
-                        fullHeight
-                        action={'Deactivate'}
-                        onClick={this.handleConfirmModal}
-                      >
-                        <Icon
-                          icon={ICONS.TRASH}
-                          color={'#fff'}
-                          width={15}
-                          height={15}
-                          margin={'0 5px 0 0'}
-                        />
-                        Delete
-                      </Button>
-                    </ModalLineTitleStyled>
-                  </ModalLineContentStyled>
-                </ModalLineStyled>
-            }
-          </ModalContentStyled>
-        </ModalBodyStyled>
+                          Delete
+                        </Button>
+                      </ModalLineTitleStyled>
+                    </ModalLineContentStyled>
+                  </ModalLineStyled>
+              }
+            </ModalContentStyled>
+          </ModalBodyStyled>
+        </Scrollbars>
         {
           showConfirmModal &&
             <ModalConfirm

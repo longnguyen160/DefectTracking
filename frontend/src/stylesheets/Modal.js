@@ -270,6 +270,10 @@ export const ModalLineContentStyled = styled.div`
     overflow: hidden;
   `}  
 
+  ${props => props.padding && css`
+    padding: ${props.padding} !important;
+  `}
+  
   svg {
     margin: 0 5px;
     ${props => props.iconMarginRight && css`

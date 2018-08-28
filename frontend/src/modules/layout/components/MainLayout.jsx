@@ -115,7 +115,7 @@ class MainLayout extends React.Component {
   };
 
   handleOpenModal = () => {
-    const { closeModal, layout: { modalIsOpen, modalType } } = this.props;
+    const { closeModal, history, layout: { modalIsOpen, modalType } } = this.props;
     const Modal = LIST_MODAL[modalType];
 
     if (Modal) {
@@ -123,6 +123,7 @@ class MainLayout extends React.Component {
         <Modal
           isOpen={modalIsOpen}
           onClose={closeModal}
+          history={history}
         />
       );
     }

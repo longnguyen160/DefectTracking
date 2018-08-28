@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Scrollbars } from 'react-custom-scrollbars';
 import Modal from './Modal';
 import {
   ModalCloseStyle,
@@ -11,7 +12,7 @@ import {
   ModalLineStyled
 } from '../../stylesheets/Modal';
 import Icon from '../icon/Icon';
-import { DEFAULT_AVATAR, FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY } from '../../utils/enums';
+import { DEFAULT_AVATAR, FILE_BASE_URL, ICONS, ISSUE_PRIORITY_ARRAY, MODAL_TYPE } from '../../utils/enums';
 import SearchBox from '../../modules/layout/components/SearchBox';
 import {
   AlertStyled, ElementHeaderStyled,
@@ -22,14 +23,38 @@ import {
   SearchDataStyled, TableBlockStyled
 } from '../../stylesheets/GeneralStyled';
 import LoadingIcon from '../icon/LoadingIcon';
+import { loadProjectDetails, openModal, selectProject } from '../../modules/layout/actions/layout';
+import { loadIssueDetails } from '../../modules/issue/actions/issue';
 
 class ModalSearching extends Component {
+
+  handleClick = (entityId) => {
+    const { inputType, history, loadProjectDetails, selectProject, onClose, openModal, loadIssueDetails } = this.props;
+
+    switch (inputType) {
+      case 'Projects':
+        loadProjectDetails(entityId, (project) => {
+          selectProject(project);
+          onClose();
+        });
+        history.push(`/project/${entityId}/dashboard`);
+        break;
+
+      case 'Issues':
+        loadIssueDetails(entityId, true);
+        openModal(MODAL_TYPE.ISSUE_DETAILS);
+        break;
+
+      default:
+        break;
+    }
+  };
 
   renderProjects = () => {
     const { searchData } = this.props;
 
     return searchData.map(data => (
-      <ModalLineStyled key={data.id}>
+      <ModalLineStyled key={data.id} onClick={() => this.handleClick(data.id)}>
         <SearchDataStyled>
           <SearchDataHeaderStyled>
             <h2>
@@ -54,7 +79,7 @@ class ModalSearching extends Component {
       const priority = ISSUE_PRIORITY_ARRAY.find(element => element.value === data.priority);
 
       return (
-        <ModalLineStyled key={data.id}>
+        <ModalLineStyled key={data.id} onClick={() => this.handleClick(data.id)}>
           <SearchDataStyled>
             <SearchDataHeaderStyled>
               <h2>
@@ -154,24 +179,32 @@ class ModalSearching extends Component {
           </ModalCloseStyle>
         </ModalHeaderStyled>
         <ModalContentStyled>
-          <ModalLineStyled>
-            <SearchBox inputValue={inputValue} inputType={inputType} />
-          </ModalLineStyled>
-          {
-            inputValue.length > 0 && !loading &&
-              <ModalLineStyled>
-                <AlertStyled type={searchData.length > 0 ? 'success' : 'info'}>
-                  <p>{`${searchData.length > 0 ? searchData.length : 'No'} results found for '${inputValue}'`}</p>
-                </AlertStyled>
-              </ModalLineStyled>
-          }
-          {
-            loading &&
-              <ElementHeaderStyled loading>
-                <LoadingIcon />
-              </ElementHeaderStyled>
-          }
-          {inputValue.length > 0 && renderData}
+          <Scrollbars
+            ref={scroll => this.scroll = scroll}
+            autoHide
+            autoHeight
+            autoHeightMax={550}
+            style={{ position: 'relative' }}
+          >
+            <ModalLineStyled>
+              <SearchBox inputValue={inputValue} inputType={inputType} />
+            </ModalLineStyled>
+            {
+              inputValue.length > 0 && !loading &&
+                <ModalLineStyled>
+                  <AlertStyled type={searchData.length > 0 ? 'success' : 'info'}>
+                    <p>{`${searchData.length > 0 ? searchData.length : 'No'} results found for '${inputValue}'`}</p>
+                  </AlertStyled>
+                </ModalLineStyled>
+            }
+            {
+              loading &&
+                <ElementHeaderStyled loading>
+                  <LoadingIcon />
+                </ElementHeaderStyled>
+            }
+            {inputValue.length > 0 && renderData}
+          </Scrollbars>
         </ModalContentStyled>
       </Modal>
     );
@@ -184,7 +217,12 @@ ModalSearching.propTypes = {
   searchData: PropTypes.array.isRequired,
   inputValue: PropTypes.string.isRequired,
   inputType: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired
+  history: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
+  loadIssueDetails: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -195,6 +233,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  loadProjectDetails: loadProjectDetails,
+  selectProject: selectProject,
+  openModal: openModal,
+  loadIssueDetails: loadIssueDetails,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalSearching);
