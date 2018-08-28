@@ -453,10 +453,22 @@ public class IssueRepositoryCustomImpl implements IssueRepositoryCustom {
         Criteria criteria = new Criteria();
 
         if (user.getRoles().contains(Roles.USER.toString())) {
+            query = new Query(Criteria.where("members").elemMatch(
+                Criteria
+                    .where("userId").is(userDetailsSecurity.getId())
+                    .and("role").is("manager")
+            ));
+            List<String> projectIdss = mongoTemplate
+                .find(query, Project.class)
+                .stream()
+                .map(Project::getId)
+                .collect(Collectors.toList());
+
             criteria
                 .orOperator(
                     Criteria.where("reporter").is(user.getId()),
-                    Criteria.where("assignee").is(user.getId())
+                    Criteria.where("assignee").is(user.getId()),
+                    Criteria.where("projectId").in(projectIdss)
                 )
                 .andOperator(
                     new Criteria().orOperator(

@@ -143,9 +143,17 @@ class ModalCreatingIssue extends React.Component {
       submitSucceeded,
       fileIds,
       usersInProject,
-      categories
+      categories,
+      selectedProject
     } = this.props;
     const { uploadedFile } = this.state;
+
+    if (!projects.find(project => project.value === selectedProject.id)) {
+      projects.push({
+        value: selectedProject.id,
+        label: selectedProject.name
+      })
+    }
 
     return (
       <Modal onClose={onClose} isOpen={isOpen} maxWidth={'600px'} isHidden={true}>

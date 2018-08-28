@@ -132,7 +132,7 @@ class MainLayout extends React.Component {
   };
 
   onMessageReceive = (message) => {
-    const { loadCurrentUser, loadNotification, loadNotifications, loadNotificationCount } = this.props;
+    const { loadCurrentUser, loadNotification, loadNotifications, loadNotificationCount, loadAllProjects } = this.props;
 
     if (message.message === 'Notification') {
       loadNotificationCount();
@@ -140,6 +140,8 @@ class MainLayout extends React.Component {
     } else if (message.message === 'Notifications') {
       loadNotificationCount();
       loadNotifications();
+    } else if (message.message === 'Create project successfully') {
+      loadAllProjects();
     } else {
       loadCurrentUser();
     }
@@ -190,7 +192,7 @@ class MainLayout extends React.Component {
           user &&
             <SockJsClient
               url={WEB_SOCKET_URL}
-              topics={['/topic/currentUser', `/topic/${user.id}/notification`]}
+              topics={['/topic/currentUser', `/topic/${user.id}/notification`, '/topic/projects']}
               onMessage={this.onMessageReceive}
               debug={true}
             />

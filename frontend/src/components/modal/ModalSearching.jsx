@@ -162,7 +162,7 @@ class ModalSearching extends Component {
     }
 
     return (
-      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'500px'} isVisible={inputValue.length === 0}>
+      <Modal onClose={onClose} isOpen={isOpen} maxWidth={'500px'} isVisible={true}>
         <ModalHeaderStyled>
           <ModalHeaderTitleStyled>
             <span>Search</span>

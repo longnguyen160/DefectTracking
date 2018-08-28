@@ -12,7 +12,7 @@ import {
   TitleElementStyled
 } from '../../../stylesheets/GeneralStyled';
 import { Button } from '../../../stylesheets/Button';
-import { openModal, updateCurrentUserRole } from '../../layout/actions/layout';
+import { loadProjectDetails, openModal, selectProject, updateCurrentUserRole } from '../../layout/actions/layout';
 import { FILE_BASE_URL, MODAL_TYPE, WEB_SOCKET_URL, DEFAULT_AVATAR, USER_ROLE_IN_PROJECT } from '../../../utils/enums';
 import { loadAllUsersInProject } from '../../projects/actions/usersInProject';
 import { removeUser } from '../actions/account';
@@ -45,10 +45,11 @@ class UsersList extends React.Component {
   }
 
   onMessageReceive = () => {
-    const { loadAllUsersInProject, selectedProject } = this.props;
+    const { loadAllUsersInProject, selectedProject, loadProjectDetails, selectProject } = this.props;
 
     if (selectedProject) {
       loadAllUsersInProject(selectedProject.id);
+      loadProjectDetails(selectedProject.id, (project) => selectProject(project));
     }
   };
 
@@ -145,6 +146,8 @@ UsersList.propTypes = {
   loadAllUsersInProject: PropTypes.func.isRequired,
   removeUser: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
+  selectProject: PropTypes.func.isRequired,
+  loadProjectDetails: PropTypes.func.isRequired,
   selectedProject: PropTypes.object,
   user: PropTypes.object,
   loading: PropTypes.bool.isRequired,
@@ -160,6 +163,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   loadAllUsersInProject: loadAllUsersInProject,
   updateCurrentUserRole: updateCurrentUserRole,
+  loadProjectDetails: loadProjectDetails,
+  selectProject: selectProject,
   openModal: openModal,
   removeUser: removeUser
 }, dispatch);
